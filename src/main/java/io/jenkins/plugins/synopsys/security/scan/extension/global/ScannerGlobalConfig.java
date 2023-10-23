@@ -1,8 +1,16 @@
 package io.jenkins.plugins.synopsys.security.scan.extension.global;
 
+import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
+import com.cloudbees.plugins.credentials.impl.BaseStandardCredentials;
 import hudson.Extension;
 import java.io.Serializable;
+import java.util.Collections;
+
+import hudson.security.ACL;
+import hudson.util.FormValidation;
+import hudson.util.ListBoxModel;
 import jenkins.model.GlobalConfiguration;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -12,16 +20,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     private String blackDuckUrl;
 
-    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
-    private String blackDuckApiToken;
-
+    private String blackDuckCredentialsId;
     private String blackDuckInstallationPath;
     private String coverityConnectUrl;
     private String coverityConnectUserName;
-
-    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
-    private String coverityConnectUserPassword;
-
     private String coverityInstallationPath;
     private String synopsysBridgeDownloadUrlForMac;
     private String synopsysBridgeDownloadUrlForWindows;
@@ -29,13 +31,13 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     private String synopsysBridgeVersion;
     private String synopsysBridgeInstallationPath;
 
-    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     private String bitbucketToken;
 
     private String polarisServerUrl;
 
-    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
-    private String polarisAccessToken;
+    private String polarisCredentialsId;
+
+    private String coverityCredentialsId;
 
     @DataBoundConstructor
     public ScannerGlobalConfig() {
@@ -45,12 +47,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @DataBoundSetter
     public void setBlackDuckUrl(String blackDuckUrl) {
         this.blackDuckUrl = blackDuckUrl;
-        save();
-    }
-
-    @DataBoundSetter
-    public void setBlackDuckApiToken(String blackDuckApiToken) {
-        this.blackDuckApiToken = blackDuckApiToken;
         save();
     }
 
@@ -69,12 +65,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @DataBoundSetter
     public void setCoverityConnectUserName(String coverityConnectUserName) {
         this.coverityConnectUserName = coverityConnectUserName;
-        save();
-    }
-
-    @DataBoundSetter
-    public void setCoverityConnectUserPassword(String coverityConnectUserPassword) {
-        this.coverityConnectUserPassword = coverityConnectUserPassword;
         save();
     }
 
@@ -127,17 +117,25 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     }
 
     @DataBoundSetter
-    public void setPolarisAccessToken(String polarisAccessToken) {
-        this.polarisAccessToken = polarisAccessToken;
+    public void setBlackDuckCredentialsId(String blackDuckCredentialsId) {
+        this.blackDuckCredentialsId = blackDuckCredentialsId;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setPolarisCredentialsId(String polarisCredentialsId) {
+        this.polarisCredentialsId = polarisCredentialsId;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setCoverityCredentialsId(String coverityCredentialsId) {
+        this.coverityCredentialsId = coverityCredentialsId;
         save();
     }
 
     public String getBlackDuckUrl() {
         return blackDuckUrl;
-    }
-
-    public String getBlackDuckApiToken() {
-        return blackDuckApiToken;
     }
 
     public String getBlackDuckInstallationPath() {
@@ -146,14 +144,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     public String getCoverityConnectUrl() {
         return coverityConnectUrl;
-    }
-
-    public String getCoverityConnectUserName() {
-        return coverityConnectUserName;
-    }
-
-    public String getCoverityConnectUserPassword() {
-        return coverityConnectUserPassword;
     }
 
     public String getCoverityInstallationPath() {
@@ -180,15 +170,95 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         return synopsysBridgeInstallationPath;
     }
 
-    public String getBitbucketToken() {
-        return bitbucketToken;
-    }
-
     public String getPolarisServerUrl() {
         return polarisServerUrl;
     }
 
-    public String getPolarisAccessToken() {
-        return polarisAccessToken;
+    public String getCoverityConnectUserName() {
+        JenkinsWrapper jenkinsWrapper = JenkinsWrapper.initializeFromJenkinsJVM();
+        jenkinsWrapper.getJenkins().get().checkPermission(Jenkins.ADMINISTER);
+
+        ScanCredentialsHelper synopsysCredentialsHelper = jenkinsWrapper.getCredentialsHelper();
+        return String.valueOf(synopsysCredentialsHelper.getIntegrationCredentialsById(coverityCredentialsId).getUsername());
+    }
+
+    public String getBlackDuckCredentialsId() {
+
+        JenkinsWrapper jenkinsWrapper = JenkinsWrapper.initializeFromJenkinsJVM();
+        jenkinsWrapper.getJenkins().get().checkPermission(Jenkins.ADMINISTER);
+
+        ScanCredentialsHelper synopsysCredentialsHelper = jenkinsWrapper.getCredentialsHelper();
+        return synopsysCredentialsHelper.getApiTokenByCredentialsId(blackDuckCredentialsId).orElse(null);
+    }
+
+    public String getPolarisCredentialsId() {
+
+        JenkinsWrapper jenkinsWrapper = JenkinsWrapper.initializeFromJenkinsJVM();
+        jenkinsWrapper.getJenkins().get().checkPermission(Jenkins.ADMINISTER);
+
+        ScanCredentialsHelper synopsysCredentialsHelper = jenkinsWrapper.getCredentialsHelper();
+        return synopsysCredentialsHelper.getApiTokenByCredentialsId(polarisCredentialsId).orElse(null);
+    }
+
+    public String getCoverityCredentialsId() {
+
+        JenkinsWrapper jenkinsWrapper = JenkinsWrapper.initializeFromJenkinsJVM();
+        jenkinsWrapper.getJenkins().get().checkPermission(Jenkins.ADMINISTER);
+
+        ScanCredentialsHelper synopsysCredentialsHelper = jenkinsWrapper.getCredentialsHelper();
+        return String.valueOf(synopsysCredentialsHelper.getUsernamePasswordCredentialsById(coverityCredentialsId).orElse(null));
+    }
+
+    public String getBitbucketToken() {
+
+        JenkinsWrapper jenkinsWrapper = JenkinsWrapper.initializeFromJenkinsJVM();
+        jenkinsWrapper.getJenkins().get().checkPermission(Jenkins.ADMINISTER);
+
+        ScanCredentialsHelper synopsysCredentialsHelper = jenkinsWrapper.getCredentialsHelper();
+        return synopsysCredentialsHelper.getApiTokenByCredentialsId(bitbucketToken).orElse(null);
+    }
+
+    public ListBoxModel doFillBlackDuckCredentialsIdItems() {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return new StandardListBoxModel().includeEmptyValue();
+        }
+        jenkins.checkPermission(Jenkins.ADMINISTER);
+        return new StandardListBoxModel()
+                .includeEmptyValue()
+                .includeMatchingAs(ACL.SYSTEM, jenkins, BaseStandardCredentials.class, Collections.emptyList(), ScanCredentialsHelper.API_TOKEN_CREDENTIALS);
+    }
+
+    public ListBoxModel  doFillPolarisCredentialsIdItems() {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return new StandardListBoxModel().includeEmptyValue();
+        }
+        jenkins.checkPermission(Jenkins.ADMINISTER);
+        return new StandardListBoxModel()
+                .includeEmptyValue()
+                .includeMatchingAs(ACL.SYSTEM, jenkins, BaseStandardCredentials.class, Collections.emptyList(), ScanCredentialsHelper.API_TOKEN_CREDENTIALS);
+    }
+
+    public ListBoxModel doFillCoverityCredentialsIdItems() {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return new StandardListBoxModel().includeEmptyValue();
+        }
+        jenkins.checkPermission(Jenkins.ADMINISTER);
+        return new StandardListBoxModel()
+                .includeEmptyValue()
+                .includeMatchingAs(ACL.SYSTEM, jenkins, BaseStandardCredentials.class, Collections.emptyList(), ScanCredentialsHelper.USERNAME_PASSWORD_CREDENTIALS);
+    }
+
+    public ListBoxModel doFillBitbucketTokenItems() {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return new StandardListBoxModel().includeEmptyValue();
+        }
+        jenkins.checkPermission(Jenkins.ADMINISTER);
+        return new StandardListBoxModel()
+                .includeEmptyValue()
+                .includeMatchingAs(ACL.SYSTEM, jenkins, BaseStandardCredentials.class, Collections.emptyList(), ScanCredentialsHelper.API_TOKEN_CREDENTIALS);
     }
 }

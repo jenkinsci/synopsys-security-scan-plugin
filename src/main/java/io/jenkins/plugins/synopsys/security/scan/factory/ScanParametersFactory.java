@@ -88,7 +88,7 @@ public class ScanParametersFactory {
 
             addParameterIfNotBlank(globalParameters, ApplicationConstants.BLACKDUCK_URL_KEY, config.getBlackDuckUrl());
             addParameterIfNotBlank(
-                    globalParameters, ApplicationConstants.BLACKDUCK_TOKEN_KEY, config.getBlackDuckApiToken());
+                    globalParameters, ApplicationConstants.BLACKDUCK_TOKEN_KEY, config.getBlackDuckCredentialsId());
             addParameterIfNotBlank(
                     globalParameters,
                     ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY,
@@ -100,7 +100,7 @@ public class ScanParametersFactory {
             addParameterIfNotBlank(
                     globalParameters,
                     ApplicationConstants.COVERITY_PASSPHRASE_KEY,
-                    config.getCoverityConnectUserPassword());
+                    config.getCoverityCredentialsId());
             addParameterIfNotBlank(
                     globalParameters,
                     ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY,
@@ -120,7 +120,7 @@ public class ScanParametersFactory {
             addParameterIfNotBlank(
                     globalParameters, ApplicationConstants.POLARIS_SERVER_URL_KEY, config.getPolarisServerUrl());
             addParameterIfNotBlank(
-                    globalParameters, ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, config.getPolarisAccessToken());
+                    globalParameters, ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, config.getPolarisCredentialsId());
         }
 
         return globalParameters;
