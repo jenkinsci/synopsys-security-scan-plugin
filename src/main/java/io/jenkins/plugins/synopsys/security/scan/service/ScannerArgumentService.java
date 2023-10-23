@@ -225,6 +225,7 @@ public class ScannerArgumentService {
             }
         } catch (Exception e) {
             logger.error("An exception occurred while writing into json file: " + e.getMessage());
+            Thread.currentThread().interrupt();
         }
 
         return inputJsonPath;

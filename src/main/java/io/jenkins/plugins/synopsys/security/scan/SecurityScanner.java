@@ -69,6 +69,7 @@ public class SecurityScanner {
                     .join();
         } catch (Exception e) {
             logger.error(LogMessages.EXCEPTION_OCCURRED_WHILE_INVOKING_SYNOPSYS_BRIDGE, e.getMessage());
+            Thread.currentThread().interrupt();
         } finally {
             logger.println(
                     "******************************* %s *******************************",

@@ -34,6 +34,7 @@ public class Utility {
             } catch (IOException | InterruptedException e) {
                 logger.error("An exception occurred while fetching the OS information for the agent node: "
                         + e.getMessage());
+                Thread.currentThread().interrupt();
             }
         } else {
             os = System.getProperty("os.name").toLowerCase();
@@ -53,6 +54,7 @@ public class Utility {
             }
         } catch (IOException | InterruptedException e) {
             logger.error("An exception occurred while deleting file: " + e.getMessage());
+            Thread.currentThread().interrupt();
         }
     }
 

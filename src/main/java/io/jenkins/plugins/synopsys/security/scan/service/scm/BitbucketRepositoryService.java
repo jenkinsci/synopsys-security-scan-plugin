@@ -43,6 +43,7 @@ public class BitbucketRepositoryService {
         } catch (Exception e) {
             logger.error(
                     "An exception occurred while getting the BitbucketRepository from BitbucketApi: " + e.getMessage());
+            Thread.currentThread().interrupt();
         }
 
         String serverUrl = bitbucketSCMSource.getServerUrl();
