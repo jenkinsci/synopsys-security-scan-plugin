@@ -3,12 +3,10 @@ package io.jenkins.plugins.synopsys.security.scan.extension.global;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.cloudbees.plugins.credentials.impl.BaseStandardCredentials;
 import hudson.Extension;
+import hudson.security.ACL;
+import hudson.util.ListBoxModel;
 import java.io.Serializable;
 import java.util.Collections;
-
-import hudson.security.ACL;
-import hudson.util.FormValidation;
-import hudson.util.ListBoxModel;
 import jenkins.model.GlobalConfiguration;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -179,7 +177,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         jenkinsWrapper.getJenkins().get().checkPermission(Jenkins.ADMINISTER);
 
         ScanCredentialsHelper synopsysCredentialsHelper = jenkinsWrapper.getCredentialsHelper();
-        return synopsysCredentialsHelper.getIntegrationCredentialsById(coverityCredentialsId).getUsername().orElse(null);
+        return synopsysCredentialsHelper
+                .getIntegrationCredentialsById(coverityCredentialsId)
+                .getUsername()
+                .orElse(null);
     }
 
     public String getBlackDuckCredentialsId() {
@@ -188,7 +189,9 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         jenkinsWrapper.getJenkins().get().checkPermission(Jenkins.ADMINISTER);
 
         ScanCredentialsHelper synopsysCredentialsHelper = jenkinsWrapper.getCredentialsHelper();
-        return synopsysCredentialsHelper.getApiTokenByCredentialsId(blackDuckCredentialsId).orElse(null);
+        return synopsysCredentialsHelper
+                .getApiTokenByCredentialsId(blackDuckCredentialsId)
+                .orElse(null);
     }
 
     public String getPolarisCredentialsId() {
@@ -197,7 +200,9 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         jenkinsWrapper.getJenkins().get().checkPermission(Jenkins.ADMINISTER);
 
         ScanCredentialsHelper synopsysCredentialsHelper = jenkinsWrapper.getCredentialsHelper();
-        return synopsysCredentialsHelper.getApiTokenByCredentialsId(polarisCredentialsId).orElse(null);
+        return synopsysCredentialsHelper
+                .getApiTokenByCredentialsId(polarisCredentialsId)
+                .orElse(null);
     }
 
     public String getCoverityCredentialsId() {
@@ -206,7 +211,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         jenkinsWrapper.getJenkins().get().checkPermission(Jenkins.ADMINISTER);
 
         ScanCredentialsHelper synopsysCredentialsHelper = jenkinsWrapper.getCredentialsHelper();
-        return synopsysCredentialsHelper.getIntegrationCredentialsById(coverityCredentialsId).getPassword().orElse(null);
+        return synopsysCredentialsHelper
+                .getIntegrationCredentialsById(coverityCredentialsId)
+                .getPassword()
+                .orElse(null);
     }
 
     public String getBitbucketToken() {
@@ -215,7 +223,9 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         jenkinsWrapper.getJenkins().get().checkPermission(Jenkins.ADMINISTER);
 
         ScanCredentialsHelper synopsysCredentialsHelper = jenkinsWrapper.getCredentialsHelper();
-        return synopsysCredentialsHelper.getApiTokenByCredentialsId(bitbucketToken).orElse(null);
+        return synopsysCredentialsHelper
+                .getApiTokenByCredentialsId(bitbucketToken)
+                .orElse(null);
     }
 
     public ListBoxModel doFillBlackDuckCredentialsIdItems() {
@@ -226,10 +236,15 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         jenkins.checkPermission(Jenkins.ADMINISTER);
         return new StandardListBoxModel()
                 .includeEmptyValue()
-                .includeMatchingAs(ACL.SYSTEM, jenkins, BaseStandardCredentials.class, Collections.emptyList(), ScanCredentialsHelper.API_TOKEN_CREDENTIALS);
+                .includeMatchingAs(
+                        ACL.SYSTEM,
+                        jenkins,
+                        BaseStandardCredentials.class,
+                        Collections.emptyList(),
+                        ScanCredentialsHelper.API_TOKEN_CREDENTIALS);
     }
 
-    public ListBoxModel  doFillPolarisCredentialsIdItems() {
+    public ListBoxModel doFillPolarisCredentialsIdItems() {
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
             return new StandardListBoxModel().includeEmptyValue();
@@ -237,7 +252,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         jenkins.checkPermission(Jenkins.ADMINISTER);
         return new StandardListBoxModel()
                 .includeEmptyValue()
-                .includeMatchingAs(ACL.SYSTEM, jenkins, BaseStandardCredentials.class, Collections.emptyList(), ScanCredentialsHelper.API_TOKEN_CREDENTIALS);
+                .includeMatchingAs(
+                        ACL.SYSTEM,
+                        jenkins,
+                        BaseStandardCredentials.class,
+                        Collections.emptyList(),
+                        ScanCredentialsHelper.API_TOKEN_CREDENTIALS);
     }
 
     public ListBoxModel doFillCoverityCredentialsIdItems() {
@@ -248,7 +268,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         jenkins.checkPermission(Jenkins.ADMINISTER);
         return new StandardListBoxModel()
                 .includeEmptyValue()
-                .includeMatchingAs(ACL.SYSTEM, jenkins, BaseStandardCredentials.class, Collections.emptyList(), ScanCredentialsHelper.USERNAME_PASSWORD_CREDENTIALS);
+                .includeMatchingAs(
+                        ACL.SYSTEM,
+                        jenkins,
+                        BaseStandardCredentials.class,
+                        Collections.emptyList(),
+                        ScanCredentialsHelper.USERNAME_PASSWORD_CREDENTIALS);
     }
 
     public ListBoxModel doFillBitbucketTokenItems() {
@@ -259,6 +284,11 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         jenkins.checkPermission(Jenkins.ADMINISTER);
         return new StandardListBoxModel()
                 .includeEmptyValue()
-                .includeMatchingAs(ACL.SYSTEM, jenkins, BaseStandardCredentials.class, Collections.emptyList(), ScanCredentialsHelper.API_TOKEN_CREDENTIALS);
+                .includeMatchingAs(
+                        ACL.SYSTEM,
+                        jenkins,
+                        BaseStandardCredentials.class,
+                        Collections.emptyList(),
+                        ScanCredentialsHelper.API_TOKEN_CREDENTIALS);
     }
 }

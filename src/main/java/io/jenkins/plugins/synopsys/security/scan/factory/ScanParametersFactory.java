@@ -98,9 +98,7 @@ public class ScanParametersFactory {
             addParameterIfNotBlank(
                     globalParameters, ApplicationConstants.COVERITY_USER_KEY, config.getCoverityConnectUserName());
             addParameterIfNotBlank(
-                    globalParameters,
-                    ApplicationConstants.COVERITY_PASSPHRASE_KEY,
-                    config.getCoverityCredentialsId());
+                    globalParameters, ApplicationConstants.COVERITY_PASSPHRASE_KEY, config.getCoverityCredentialsId());
             addParameterIfNotBlank(
                     globalParameters,
                     ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY,

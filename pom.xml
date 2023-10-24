@@ -62,6 +62,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.synopsys.integration</groupId>
+      <artifactId>integration-rest</artifactId>
+      <version>10.4.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>cloudbees-bitbucket-branch-source</artifactId>
       <exclusions>
@@ -116,11 +121,6 @@
       <artifactId>mockito-core</artifactId>
       <version>2.23.4</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.synopsys.integration</groupId>
-      <artifactId>integration-rest</artifactId>
-      <version>10.4.2</version>
     </dependency>
   </dependencies>
 

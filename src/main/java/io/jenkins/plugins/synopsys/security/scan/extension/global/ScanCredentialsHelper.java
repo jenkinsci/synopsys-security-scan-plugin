@@ -1,26 +1,25 @@
 package io.jenkins.plugins.synopsys.security.scan.extension.global;
 
-import java.util.Optional;
-
-import org.apache.commons.lang.StringUtils;
-import org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl;
-
 import com.cloudbees.plugins.credentials.Credentials;
 import com.cloudbees.plugins.credentials.CredentialsMatcher;
 import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
 import com.cloudbees.plugins.credentials.matchers.IdMatcher;
 import com.synopsys.integration.rest.credentials.CredentialsBuilder;
-
 import hudson.util.Secret;
+import java.util.Optional;
+import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl;
 
 public class ScanCredentialsHelper {
     public static final Class<StringCredentialsImpl> API_TOKEN_CREDENTIALS_CLASS = StringCredentialsImpl.class;
-    public static final CredentialsMatcher API_TOKEN_CREDENTIALS = CredentialsMatchers.instanceOf(API_TOKEN_CREDENTIALS_CLASS);
-    public static final Class<UsernamePasswordCredentialsImpl> USERNAME_PASSWORD_CREDENTIALS_CLASS = UsernamePasswordCredentialsImpl.class;
-    public static final CredentialsMatcher USERNAME_PASSWORD_CREDENTIALS = CredentialsMatchers.instanceOf(USERNAME_PASSWORD_CREDENTIALS_CLASS);
+    public static final CredentialsMatcher API_TOKEN_CREDENTIALS =
+            CredentialsMatchers.instanceOf(API_TOKEN_CREDENTIALS_CLASS);
+    public static final Class<UsernamePasswordCredentialsImpl> USERNAME_PASSWORD_CREDENTIALS_CLASS =
+            UsernamePasswordCredentialsImpl.class;
+    public static final CredentialsMatcher USERNAME_PASSWORD_CREDENTIALS =
+            CredentialsMatchers.instanceOf(USERNAME_PASSWORD_CREDENTIALS_CLASS);
     private final JenkinsWrapper jenkinsWrapper;
-
 
     public ScanCredentialsHelper(JenkinsWrapper jenkinsWrapper) {
         this.jenkinsWrapper = jenkinsWrapper;
@@ -31,10 +30,10 @@ public class ScanCredentialsHelper {
 
         CredentialsBuilder credentialsBuilder = com.synopsys.integration.rest.credentials.Credentials.newBuilder();
 
-        credentials.map(UsernamePasswordCredentialsImpl::getUsername)
-                .ifPresent(credentialsBuilder::setUsername);
+        credentials.map(UsernamePasswordCredentialsImpl::getUsername).ifPresent(credentialsBuilder::setUsername);
 
-        credentials.map(UsernamePasswordCredentialsImpl::getPassword)
+        credentials
+                .map(UsernamePasswordCredentialsImpl::getPassword)
                 .map(Secret::getPlainText)
                 .ifPresent(credentialsBuilder::setPassword);
 
