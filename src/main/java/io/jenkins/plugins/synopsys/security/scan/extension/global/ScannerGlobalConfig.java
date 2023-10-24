@@ -179,7 +179,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         jenkinsWrapper.getJenkins().get().checkPermission(Jenkins.ADMINISTER);
 
         ScanCredentialsHelper synopsysCredentialsHelper = jenkinsWrapper.getCredentialsHelper();
-        return String.valueOf(synopsysCredentialsHelper.getIntegrationCredentialsById(coverityCredentialsId).getUsername());
+        return synopsysCredentialsHelper.getIntegrationCredentialsById(coverityCredentialsId).getUsername().orElse(null);
     }
 
     public String getBlackDuckCredentialsId() {
@@ -206,7 +206,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         jenkinsWrapper.getJenkins().get().checkPermission(Jenkins.ADMINISTER);
 
         ScanCredentialsHelper synopsysCredentialsHelper = jenkinsWrapper.getCredentialsHelper();
-        return String.valueOf(synopsysCredentialsHelper.getUsernamePasswordCredentialsById(coverityCredentialsId).orElse(null));
+        return synopsysCredentialsHelper.getIntegrationCredentialsById(coverityCredentialsId).getPassword().orElse(null);
     }
 
     public String getBitbucketToken() {
