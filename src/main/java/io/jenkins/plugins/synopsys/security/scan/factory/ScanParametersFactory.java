@@ -1,5 +1,6 @@
 package io.jenkins.plugins.synopsys.security.scan.factory;
 
+import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
 import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -7,9 +8,11 @@ import hudson.Launcher;
 import hudson.model.Node;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.util.Secret;
 import io.jenkins.plugins.synopsys.security.scan.PluginParametersHandler;
 import io.jenkins.plugins.synopsys.security.scan.SecurityScanner;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
+import io.jenkins.plugins.synopsys.security.scan.extension.global.ScanCredentialsHelper;
 import io.jenkins.plugins.synopsys.security.scan.extension.global.ScannerGlobalConfig;
 import io.jenkins.plugins.synopsys.security.scan.extension.pipeline.SecurityScanStep;
 import io.jenkins.plugins.synopsys.security.scan.global.*;
@@ -77,8 +80,9 @@ public class ScanParametersFactory {
         Map<String, Object> globalParameters = new HashMap<>();
         ScannerGlobalConfig config = GlobalConfiguration.all().get(ScannerGlobalConfig.class);
 
-        if (config != null) {
+        ScanCredentialsHelper scanCredentialsHelper = new ScanCredentialsHelper();
 
+        if (config != null) {
             String synopsysBridgeDownloadUrl = getSynopsysBridgeDownloadUrlBasedOnAgentOS(
                     workspace,
                     listener,
@@ -88,7 +92,9 @@ public class ScanParametersFactory {
 
             addParameterIfNotBlank(globalParameters, ApplicationConstants.BLACKDUCK_URL_KEY, config.getBlackDuckUrl());
             addParameterIfNotBlank(
-                    globalParameters, ApplicationConstants.BLACKDUCK_TOKEN_KEY, config.getBlackDuckCredentialsId());
+                    globalParameters, ApplicationConstants.BLACKDUCK_TOKEN_KEY, scanCredentialsHelper.getApiTokenByCredentialsId(
+                        config.getBlackDuckCredentialsId())
+                    .orElse(null));
             addParameterIfNotBlank(
                     globalParameters,
                     ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY,
@@ -96,15 +102,24 @@ public class ScanParametersFactory {
             addParameterIfNotBlank(
                     globalParameters, ApplicationConstants.COVERITY_URL_KEY, config.getCoverityConnectUrl());
             addParameterIfNotBlank(
-                    globalParameters, ApplicationConstants.COVERITY_USER_KEY, config.getCoverityConnectUserName());
+                    globalParameters, ApplicationConstants.COVERITY_USER_KEY, scanCredentialsHelper.getUsernamePasswordCredentialsById(
+                        config.getCoverityCredentialsId())
+                    .map(UsernamePasswordCredentialsImpl::getUsername)
+                    .orElse(null));
             addParameterIfNotBlank(
-                    globalParameters, ApplicationConstants.COVERITY_PASSPHRASE_KEY, config.getCoverityCredentialsId());
+                    globalParameters, ApplicationConstants.COVERITY_PASSPHRASE_KEY, scanCredentialsHelper.getUsernamePasswordCredentialsById(
+                        config.getCoverityCredentialsId())
+                    .map(UsernamePasswordCredentialsImpl::getPassword)
+                    .map(Secret::getPlainText)
+                    .orElse(null));
             addParameterIfNotBlank(
                     globalParameters,
                     ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY,
                     config.getCoverityInstallationPath());
             addParameterIfNotBlank(
-                    globalParameters, ApplicationConstants.BITBUCKET_TOKEN_KEY, config.getBitbucketToken());
+                    globalParameters, ApplicationConstants.BITBUCKET_TOKEN_KEY, scanCredentialsHelper.getApiTokenByCredentialsId(
+                        config.getBitbucketCredentialsId())
+                    .orElse(null));
             addParameterIfNotBlank(
                     globalParameters, ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, synopsysBridgeDownloadUrl);
             addParameterIfNotBlank(
@@ -118,7 +133,9 @@ public class ScanParametersFactory {
             addParameterIfNotBlank(
                     globalParameters, ApplicationConstants.POLARIS_SERVER_URL_KEY, config.getPolarisServerUrl());
             addParameterIfNotBlank(
-                    globalParameters, ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, config.getPolarisCredentialsId());
+                    globalParameters, ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, scanCredentialsHelper.getApiTokenByCredentialsId(
+                        config.getPolarisCredentialsId())
+                    .orElse(null));
         }
 
         return globalParameters;
