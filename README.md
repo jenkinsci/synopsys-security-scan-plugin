@@ -96,7 +96,17 @@ So to trigger only the specific branch during the first time job configuration, 
 #### Configure Global UI:
 Navigate to Dashboard → Manage Jenkins → System  
 Then go to the Synopsys Security Scan section.  
-And from there you can populate the inputs for configuration.
+And from there you can populate the inputs for configuration.     
+
+**Note:** To give input for secret fields such as password or token you need to use the jenkins credential provider. To do this follow these instructions,
+>- First you need to click on the add button. Then click Jenkins item on the dropdown.
+>- Then click on the dropdown named Kind and select Secret text item. <br>
+   **Note:** To config coverity security product, you need to select Username with password item. Also you need to populate Username and Password fields with proper values.
+>- Now, enter your Secret text.
+>- Also you can put an id against the Secret.
+>- Then keep everything as default.
+>- Finally, click the Add button. <bR>
+   Then it will appear as a dropdown item under the default -none- item.
 
 #### Generate Pipeline Syntax:
 >- Go to the Dashboard → JOB NAME → Branches / Pull Requests
