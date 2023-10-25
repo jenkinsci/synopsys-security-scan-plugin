@@ -3,11 +3,14 @@ package io.jenkins.plugins.synopsys.security.scan.extension.global;
 import com.cloudbees.plugins.credentials.Credentials;
 import com.cloudbees.plugins.credentials.CredentialsMatcher;
 import com.cloudbees.plugins.credentials.CredentialsMatchers;
+import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
 import com.cloudbees.plugins.credentials.matchers.IdMatcher;
-import com.synopsys.integration.rest.credentials.CredentialsBuilder;
+import hudson.security.ACL;
 import hudson.util.Secret;
+import java.util.Collections;
 import java.util.Optional;
+import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl;
 
@@ -19,26 +22,6 @@ public class ScanCredentialsHelper {
             UsernamePasswordCredentialsImpl.class;
     public static final CredentialsMatcher USERNAME_PASSWORD_CREDENTIALS =
             CredentialsMatchers.instanceOf(USERNAME_PASSWORD_CREDENTIALS_CLASS);
-    private final JenkinsWrapper jenkinsWrapper;
-
-    public ScanCredentialsHelper(JenkinsWrapper jenkinsWrapper) {
-        this.jenkinsWrapper = jenkinsWrapper;
-    }
-
-    public com.synopsys.integration.rest.credentials.Credentials getIntegrationCredentialsById(String credentialsId) {
-        Optional<UsernamePasswordCredentialsImpl> credentials = getUsernamePasswordCredentialsById(credentialsId);
-
-        CredentialsBuilder credentialsBuilder = com.synopsys.integration.rest.credentials.Credentials.newBuilder();
-
-        credentials.map(UsernamePasswordCredentialsImpl::getUsername).ifPresent(credentialsBuilder::setUsername);
-
-        credentials
-                .map(UsernamePasswordCredentialsImpl::getPassword)
-                .map(Secret::getPlainText)
-                .ifPresent(credentialsBuilder::setPassword);
-
-        return credentialsBuilder.build();
-    }
 
     public Optional<String> getApiTokenByCredentialsId(String credentialsId) {
         return getApiTokenCredentialsById(credentialsId)
@@ -55,12 +38,17 @@ public class ScanCredentialsHelper {
     }
 
     public <T extends Credentials> Optional<T> getCredentialsById(Class<T> credentialsType, String credentialsId) {
-        if (StringUtils.isBlank(credentialsId)) {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+
+        if (jenkins == null || StringUtils.isBlank(credentialsId)) {
             return Optional.empty();
         }
 
         IdMatcher idMatcher = new IdMatcher(credentialsId);
 
-        return jenkinsWrapper.getCredentialsById(idMatcher, credentialsType);
+        return CredentialsProvider.lookupCredentials(credentialsType, jenkins, ACL.SYSTEM, Collections.emptyList())
+            .stream()
+            .filter(idMatcher::matches)
+            .findAny();
     }
 }
