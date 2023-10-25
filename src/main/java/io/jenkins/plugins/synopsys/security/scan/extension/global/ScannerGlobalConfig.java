@@ -5,6 +5,7 @@ import com.cloudbees.plugins.credentials.impl.BaseStandardCredentials;
 import hudson.Extension;
 import hudson.security.ACL;
 import hudson.util.ListBoxModel;
+import io.jenkins.plugins.synopsys.security.scan.global.ScanCredentialsHelper;
 import java.io.Serializable;
 import java.util.Collections;
 import jenkins.model.GlobalConfiguration;

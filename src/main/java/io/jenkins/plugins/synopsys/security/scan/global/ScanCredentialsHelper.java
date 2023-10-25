@@ -1,4 +1,4 @@
-package io.jenkins.plugins.synopsys.security.scan.extension.global;
+package io.jenkins.plugins.synopsys.security.scan.global;
 
 import com.cloudbees.plugins.credentials.Credentials;
 import com.cloudbees.plugins.credentials.CredentialsMatcher;
