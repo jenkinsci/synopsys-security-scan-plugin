@@ -1,5 +1,5 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
     <f:section title="Synopsys Security Scan">
 
         <!-- Place a single info line above the tabs -->
@@ -20,8 +20,8 @@
             <f:entry field="blackDuckUrl" title="Black Duck URL">
                 <f:textbox name="blackDuckUrl" />
             </f:entry>
-            <f:entry field="blackDuckApiToken" title="Black Duck Token">
-                <f:password name="blackDuckApiToken" />
+            <f:entry field="blackDuckCredentialsId" title="Black Duck Token">
+                 <c:select/>
             </f:entry>
             <f:entry field="blackDuckInstallationPath" title="Black Duck Install Directory(Optional)">
                 <f:textbox name="blackDuckInstallationPath" />
@@ -34,11 +34,8 @@
             <f:entry field="coverityConnectUrl" title="Coverity URL">
                 <f:textbox name="coverityConnectUrl" />
             </f:entry>
-            <f:entry field="coverityConnectUserName" title="Coverity Username">
-                <f:textbox name="coverityConnectUserName" />
-            </f:entry>
-            <f:entry field="coverityConnectUserPassword" title="Coverity Passphrase">
-                <f:password name="coverityConnectUserPassword" />
+            <f:entry field="coverityCredentialsId" title="Coverity Credentials">
+                <c:select/>
             </f:entry>
             <f:entry field="coverityInstallationPath" title="Coverity Install Directory (Optional)">
                 <f:textbox name="coverityInstallationPath" />
@@ -51,15 +48,15 @@
             <f:entry field="polarisServerUrl" title="Polaris Server URL">
                 <f:textbox name="polarisServerUrl" />
             </f:entry>
-            <f:entry field="polarisAccessToken" title="Polaris Access Token">
-                <f:password name="polarisAccessToken" />
+            <f:entry field="polarisCredentialsId" title="Polaris Access Token">
+                <c:select/>
             </f:entry>
             <button type="button" class="clear-button" onclick="clearTabFields('POLARISSection')">Clear</button>
         </div>
 
         <div>
             <f:entry field="bitbucketToken" title="Bitbucket Token (Optional)">
-                <f:password/>
+               <c:select/>
             </f:entry>
 
             <!-- Place a single info line above the tabs -->
