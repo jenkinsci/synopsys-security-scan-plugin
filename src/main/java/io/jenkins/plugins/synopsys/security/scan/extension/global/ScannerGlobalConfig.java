@@ -183,13 +183,13 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         }
         jenkins.checkPermission(Jenkins.ADMINISTER);
         return new StandardListBoxModel()
-            .includeEmptyValue()
-            .includeMatchingAs(
-                ACL.SYSTEM,
-                jenkins,
-                BaseStandardCredentials.class,
-                Collections.emptyList(),
-                ScanCredentialsHelper.API_TOKEN_CREDENTIALS);
+                .includeEmptyValue()
+                .includeMatchingAs(
+                        ACL.SYSTEM,
+                        jenkins,
+                        BaseStandardCredentials.class,
+                        Collections.emptyList(),
+                        ScanCredentialsHelper.API_TOKEN_CREDENTIALS);
     }
 
     public ListBoxModel doFillBlackDuckCredentialsIdItems() {

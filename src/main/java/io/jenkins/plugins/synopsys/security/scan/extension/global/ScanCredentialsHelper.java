@@ -47,8 +47,8 @@ public class ScanCredentialsHelper {
         IdMatcher idMatcher = new IdMatcher(credentialsId);
 
         return CredentialsProvider.lookupCredentials(credentialsType, jenkins, ACL.SYSTEM, Collections.emptyList())
-            .stream()
-            .filter(idMatcher::matches)
-            .findAny();
+                .stream()
+                .filter(idMatcher::matches)
+                .findAny();
     }
 }
