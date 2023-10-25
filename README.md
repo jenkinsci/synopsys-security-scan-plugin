@@ -35,7 +35,7 @@ To use this token for PR comments,
 it must hold Repository permissions such as "Repository write" or "Repository admin."
 This token is employed when working at the repository level. To Generate this token, follow these instructions:
 >- First go to the source of your repository.
->- Click on the repostory settings icon.
+>- Click on the repository settings icon.
 >- Then click on the HTTP access tokens.
 >- Next click Create token button.
 >- Enter Token name.
@@ -103,9 +103,9 @@ And from there you can populate the inputs for configuration.
 >- Then click on the dropdown named Kind and select Secret text item. <br>
    **Note:** To config coverity security product, you need to select Username with password item. Also you need to populate Username and Password fields with proper values.
 >- Now, enter your Secret text.
->- Also you can put an id against the Secret.
+>- Also, you can put an id against the Secret.
 >- Then keep everything as default.
->- Finally, click the Add button. <bR>
+>- Finally, click the Add button. <br>
    Then it will appear as a dropdown item under the default -none- item.
 
 #### Generate Pipeline Syntax:
