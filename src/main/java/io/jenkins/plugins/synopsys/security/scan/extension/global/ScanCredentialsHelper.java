@@ -29,6 +29,17 @@ public class ScanCredentialsHelper {
                 .map(Secret::getPlainText);
     }
 
+    public Optional<String> getUsernameByCredentialsId(String credentialsId) {
+        return getUsernamePasswordCredentialsById(credentialsId)
+            .map(UsernamePasswordCredentialsImpl::getUsername);
+    }
+
+    public Optional<String> getPasswordByCredentialsId(String credentialsId) {
+        return getUsernamePasswordCredentialsById(credentialsId)
+            .map(UsernamePasswordCredentialsImpl::getPassword)
+            .map(Secret::getPlainText);
+    }
+
     public Optional<UsernamePasswordCredentialsImpl> getUsernamePasswordCredentialsById(String credentialsId) {
         return getCredentialsById(USERNAME_PASSWORD_CREDENTIALS_CLASS, credentialsId);
     }

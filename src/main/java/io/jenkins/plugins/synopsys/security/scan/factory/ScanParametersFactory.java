@@ -107,16 +107,13 @@ public class ScanParametersFactory {
                     globalParameters,
                     ApplicationConstants.COVERITY_USER_KEY,
                     scanCredentialsHelper
-                            .getUsernamePasswordCredentialsById(config.getCoverityCredentialsId())
-                            .map(UsernamePasswordCredentialsImpl::getUsername)
+                            .getUsernameByCredentialsId(config.getCoverityCredentialsId())
                             .orElse(null));
             addParameterIfNotBlank(
                     globalParameters,
                     ApplicationConstants.COVERITY_PASSPHRASE_KEY,
                     scanCredentialsHelper
-                            .getUsernamePasswordCredentialsById(config.getCoverityCredentialsId())
-                            .map(UsernamePasswordCredentialsImpl::getPassword)
-                            .map(Secret::getPlainText)
+                            .getPasswordByCredentialsId(config.getCoverityCredentialsId())
                             .orElse(null));
             addParameterIfNotBlank(
                     globalParameters,
