@@ -98,7 +98,9 @@ Navigate to Dashboard → Manage Jenkins → System
 Then go to the Synopsys Security Scan section.  
 And from there you can populate the inputs for configuration.     
 
-**Note:** To give input for secret fields such as password or token you need to use the jenkins credential provider. To do this follow these instructions,
+**Note:** To give input for secret fields such as password or token you need to use the jenkins credentials provider.
+- If you have already added secrets using jenkins credentials provider (Manage Jenkins → Credentials or the following way) then they will be listed in the dropdown, and you can select it.
+- But if you haven't configured secrets yet, then you need to follow these instructions,
 >- First you need to click on the add button. Then click Jenkins item on the dropdown.
 >- Then click on the dropdown named Kind and select Secret text item. <br>
    **Note:** To config coverity security product, you need to select Username with password item. Also you need to populate Username and Password fields with proper values.
