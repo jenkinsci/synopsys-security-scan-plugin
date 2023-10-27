@@ -35,7 +35,7 @@ To use this token for PR comments,
 it must hold Repository permissions such as "Repository write" or "Repository admin."
 This token is employed when working at the repository level. To Generate this token, follow these instructions:
 >- First go to the source of your repository.
->- Click on the repostory settings icon.
+>- Click on the repository settings icon.
 >- Then click on the HTTP access tokens.
 >- Next click Create token button.
 >- Enter Token name.
@@ -96,7 +96,19 @@ So to trigger only the specific branch during the first time job configuration, 
 #### Configure Global UI:
 Navigate to Dashboard → Manage Jenkins → System  
 Then go to the Synopsys Security Scan section.  
-And from there you can populate the inputs for configuration.
+And from there you can populate the inputs for configuration.     
+
+**Note:** To give input for secret fields such as password or token you need to use the jenkins credentials provider.
+- If you have already added secrets using jenkins credentials provider (Manage Jenkins → Credentials or the following way) then they will be listed in the dropdown, and you can select them.
+- But if you haven't configured secrets yet, then you need to follow these instructions,
+>- First you need to click on the add button. Then click Jenkins item on the dropdown.
+>- Then click on the dropdown named Kind and select Secret text item. <br>
+   **Note:** To config coverity security product, you need to select Username with password item. Also you need to populate Username and Password fields with proper values.
+>- Now, enter your Secret text.
+>- Also, you can put an id against the Secret.
+>- Then keep everything as default.
+>- Finally, click the Add button. <br>
+   Then it will appear as a dropdown item under the default -none- item.
 
 #### Generate Pipeline Syntax:
 >- Go to the Dashboard → JOB NAME → Branches / Pull Requests
