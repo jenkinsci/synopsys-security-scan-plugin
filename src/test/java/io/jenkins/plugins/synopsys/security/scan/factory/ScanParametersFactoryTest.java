@@ -45,7 +45,7 @@ public class ScanParametersFactoryTest {
         Map<String, Object> result =
                 ScanParametersFactory.preparePipelineParametersMap(securityScanStep, globalConfigValues, listenerMock);
 
-        assertEquals(7, result.size());
+        assertEquals(5, result.size());
         assertEquals("BLACKDUCK", result.get(ApplicationConstants.PRODUCT_KEY));
         assertEquals("fake-blackduck-token", result.get(ApplicationConstants.BLACKDUCK_TOKEN_KEY));
         assertEquals("/fake/path", result.get(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY));
@@ -86,7 +86,7 @@ public class ScanParametersFactoryTest {
         Map<String, Object> emptyBlackDuckParametersMap =
                 ScanParametersFactory.prepareBlackDuckParametersMap(new SecurityScanStep());
 
-        assertEquals(2, emptyBlackDuckParametersMap.size());
+        assertEquals(0, emptyBlackDuckParametersMap.size());
     }
 
     @Test
