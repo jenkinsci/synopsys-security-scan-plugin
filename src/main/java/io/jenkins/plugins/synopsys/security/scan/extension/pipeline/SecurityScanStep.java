@@ -34,10 +34,10 @@ public class SecurityScanStep extends Step implements Serializable {
     private String blackduck_url;
     private transient String blackduck_token;
     private String blackduck_install_directory;
-    private Boolean blackduck_scan_full = false;
+    private Boolean blackduck_scan_full;
     private String blackduck_scan_failure_severities;
     //    private Boolean blackduck_automation_fixpr;
-    private Boolean blackduck_automation_prcomment = false;
+    private Boolean blackduck_automation_prcomment;
     private String blackduck_download_url;
 
     private String coverity_url;
