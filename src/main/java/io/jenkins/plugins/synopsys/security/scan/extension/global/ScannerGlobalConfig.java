@@ -65,6 +65,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @DataBoundSetter
     public void setBitbucketCredentialsId(String bitbucketCredentialsId) {
         this.bitbucketCredentialsId = bitbucketCredentialsId;
+        save();
     }
 
     @DataBoundSetter
@@ -217,7 +218,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
                         ScanCredentialsHelper.USERNAME_PASSWORD_CREDENTIALS);
     }
 
-    public ListBoxModel doFillBitbucketTokenItems() {
+    public ListBoxModel doFillBitbucketCredentialsIdItems() {
         return getOptionsWithApiTokenCredentials();
     }
 }
