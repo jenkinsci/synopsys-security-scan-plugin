@@ -219,7 +219,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setBlackduck_scan_full(Boolean blackduck_scan_full) {
-        this.blackduck_scan_full = blackduck_scan_full ? true : null;
+        this.blackduck_scan_full = blackduck_scan_full;
     }
 
     @DataBoundSetter
@@ -229,7 +229,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setBlackduck_automation_prcomment(Boolean blackduck_automation_prcomment) {
-        this.blackduck_automation_prcomment = blackduck_automation_prcomment ? true : null;
+        this.blackduck_automation_prcomment = blackduck_automation_prcomment;
     }
 
     @DataBoundSetter
@@ -274,7 +274,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setCoverity_automation_prcomment(Boolean coverity_automation_prcomment) {
-        this.coverity_automation_prcomment = coverity_automation_prcomment ? true : null;
+        this.coverity_automation_prcomment = coverity_automation_prcomment;
     }
 
     @DataBoundSetter
@@ -284,7 +284,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setCoverity_local(Boolean coverity_local) {
-        this.coverity_local = coverity_local ? true : null;
+        this.coverity_local = coverity_local;
     }
 
     @DataBoundSetter
@@ -344,12 +344,12 @@ public class SecurityScanStep extends Step implements Serializable {
 
     @DataBoundSetter
     public void setInclude_diagnostics(Boolean include_diagnostics) {
-        this.include_diagnostics = include_diagnostics ? true : null;
+        this.include_diagnostics = include_diagnostics;
     }
 
     @DataBoundSetter
     public void setNetwork_airgap(Boolean network_airgap) {
-        this.network_airgap = network_airgap ? true : null;
+        this.network_airgap = network_airgap;
     }
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)
