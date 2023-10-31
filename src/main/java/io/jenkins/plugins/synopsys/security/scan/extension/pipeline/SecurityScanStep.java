@@ -364,9 +364,9 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)
-        throws PluginExceptionHandler {
+            throws PluginExceptionHandler {
         return ScanParametersFactory.preparePipelineParametersMap(
-            this, ScanParametersFactory.getGlobalConfigurationValues(workspace, listener), listener);
+                this, ScanParametersFactory.getGlobalConfigurationValues(workspace, listener), listener);
     }
 
     @Override
@@ -379,7 +379,7 @@ public class SecurityScanStep extends Step implements Serializable {
         @Override
         public Set<? extends Class<?>> getRequiredContext() {
             return new HashSet<>(Arrays.asList(
-                Run.class, TaskListener.class, EnvVars.class, FilePath.class, Launcher.class, Node.class));
+                    Run.class, TaskListener.class, EnvVars.class, FilePath.class, Launcher.class, Node.class));
         }
 
         @Override
@@ -443,11 +443,11 @@ public class SecurityScanStep extends Step implements Serializable {
             int result;
 
             logger.println(
-                "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+                    "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
             try {
                 result = ScanParametersFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
-                    .initializeScanner(getParametersMap(workspace, listener));
+                        .initializeScanner(getParametersMap(workspace, listener));
             } catch (Exception e) {
                 if (e instanceof PluginExceptionHandler) {
                     throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
@@ -456,7 +456,7 @@ public class SecurityScanStep extends Step implements Serializable {
                 }
             } finally {
                 logger.println(
-                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+                        "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
             }
 
             return result;

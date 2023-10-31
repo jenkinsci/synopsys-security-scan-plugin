@@ -175,7 +175,8 @@ public class ScanParametersFactory {
         }
 
         if (scanStep.isBlackduckIntelligentScan() != null) {
-            blackDuckParameters.put(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, scanStep.isBlackduckIntelligentScan());
+            blackDuckParameters.put(
+                    ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, scanStep.isBlackduckIntelligentScan());
         }
 
         //        if (scanStep.isBlackduck_automation_fixpr() != null) {
