@@ -174,8 +174,9 @@ public class ScanParametersFactory {
                     scanStep.getBlackduck_scan_failure_severities().toUpperCase());
         }
 
-        if (scanStep.isBlackduck_scan_full() != null) {
-            blackDuckParameters.put(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, scanStep.isBlackduck_scan_full());
+        if (scanStep.isBlackduckIntelligentScan() != null) {
+            blackDuckParameters.put(
+                    ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, scanStep.isBlackduckIntelligentScan());
         }
 
         //        if (scanStep.isBlackduck_automation_fixpr() != null) {
