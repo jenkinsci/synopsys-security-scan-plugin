@@ -141,6 +141,7 @@ pipeline {
     stages {
         stage("synopsys-security-scan") {
             when {
+                // Triggering the Synopsys Security Scan on master branch or Pull Request 
                 anyOf {
                     branch 'master'
                     branch pattern: "PR-\\d+", comparator: "REGEXP"
@@ -149,6 +150,7 @@ pipeline {
             steps {
                 echo 'SYNOPSYS SECURITY SCAN EXECUTION STARTED'
                 script {
+                    // Enabling Black Duck PR comment for Pull Request
                     def blackduckPrComment = (env.CHANGE_ID != null && !env.BRANCH_IS_PRIMARY) ? true : false
 
                     synopsys_scan product: "blackduck", blackduck_url: "BLACKDUCK_URL", blackduck_token: "YOUR_BLACKDUCK_TOKEN", 
@@ -207,6 +209,7 @@ pipeline {
     stages {
         stage("synopsys-security-scan") {
             when {
+                // Triggering the Synopsys Security Scan on master branch or Pull Request
                 anyOf {
                     branch 'master'
                     branch pattern: "PR-\\d+", comparator: "REGEXP"
@@ -214,6 +217,7 @@ pipeline {
             }
             steps {
                 script {
+                    // Enabling Coverity PR comment for Pull Request
                     def coverityPrComment = (env.CHANGE_ID != null && !env.BRANCH_IS_PRIMARY) ? true : false
 
                     synopsys_scan product: "coverity", coverity_url: "COVERITY_URL", coverity_user: "COVERITY_USER_NAME", 
