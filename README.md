@@ -140,20 +140,21 @@ pipeline {
     agent any
     stages {
         stage("synopsys-security-scan") {
+            when {
+                // Triggering the Synopsys Security Scan on master branch or Pull Request 
+                anyOf {
+                    branch 'master'
+                    branch pattern: "PR-\\d+", comparator: "REGEXP"
+                }
+            }
             steps {
                 echo 'SYNOPSYS SECURITY SCAN EXECUTION STARTED'
                 script {
-                    def blackDuckScanFull = false
-                    def blackDuckPrComment = false
-                    
-                    if (env.BRANCH_IS_PRIMARY) {
-                        blackDuckScanFull = true
-                    } else if (env.CHANGE_ID != null) {
-                        blackDuckPrComment = true
-                    }
+                    // Enabling Black Duck PR comment for Pull Request
+                    def blackduckPrComment = (env.CHANGE_ID != null && !env.BRANCH_IS_PRIMARY) ? true : false
 
                     synopsys_scan product: "blackduck", blackduck_url: "BLACKDUCK_URL", blackduck_token: "YOUR_BLACKDUCK_TOKEN", 
-                            blackduck_scan_full: "${blackDuckScanFull}", blackduck_automation_prcomment: "${blackDuckPrComment}"
+                            blackduck_automation_prcomment: "${blackDuckPrComment}"
                 }
             }
 
@@ -207,18 +208,20 @@ pipeline {
     agent any
     stages {
         stage("synopsys-security-scan") {
+            when {
+                // Triggering the Synopsys Security Scan on master branch or Pull Request
+                anyOf {
+                    branch 'master'
+                    branch pattern: "PR-\\d+", comparator: "REGEXP"
+                }
+            }
             steps {
                 script {
-                    def coverityAutomationPrComment
-
-                    if (env.CHANGE_ID == null) {
-                        coverityAutomationPrComment = false
-                    } else {
-                        coverityAutomationPrComment = true
-                    }
+                    // Enabling Coverity PR comment for Pull Request
+                    def coverityPrComment = (env.CHANGE_ID != null && !env.BRANCH_IS_PRIMARY) ? true : false
 
                     synopsys_scan product: "coverity", coverity_url: "COVERITY_URL", coverity_user: "COVERITY_USER_NAME", 
-                            coverity_passphrase: "COVERITY_PASSWORD", coverity_automation_prcomment: "${coverityAutomationPrComment}"
+                            coverity_passphrase: "COVERITY_PASSWORD", coverity_automation_prcomment: "${coverityPrComment}"
                 }
             }
         }
