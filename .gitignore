@@ -3,7 +3,7 @@
 *.iws
 *.ipr
 .idea
-
+.DS_Store
 # Eclipse project files
 .settings
 .classpath
