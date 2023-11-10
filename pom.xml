@@ -32,7 +32,6 @@
     <jenkins.version>2.401.3</jenkins.version>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
     <spotless.check.skip>false</spotless.check.skip>
-    <project.scm.id>githubcredentials</project.scm.id>
   </properties>
 
   <dependencyManagement>
