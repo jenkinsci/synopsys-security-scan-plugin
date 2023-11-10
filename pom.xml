@@ -9,7 +9,7 @@
   </parent>
   <groupId>io.jenkins.plugins</groupId>
   <artifactId>synopsys-security-scan</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>${revision}${changelist}</version>
   <packaging>hpi</packaging>
   <name>Synopsys Security Scan</name>
   <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
@@ -27,6 +27,8 @@
   </scm>
   <properties>
     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
+    <revision>1.0.0</revision>
+    <changelist>-SNAPSHOT</changelist>
     <jenkins.version>2.401.3</jenkins.version>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
     <spotless.check.skip>false</spotless.check.skip>
