@@ -9,7 +9,7 @@
   </parent>
   <groupId>io.jenkins.plugins</groupId>
   <artifactId>synopsys-security-scan</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>hpi</packaging>
   <name>Synopsys Security Scan</name>
   <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
