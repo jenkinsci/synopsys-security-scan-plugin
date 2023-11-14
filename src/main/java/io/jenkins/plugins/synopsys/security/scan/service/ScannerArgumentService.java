@@ -182,7 +182,7 @@ public class ScannerArgumentService {
             bridgeInput.setCoverity(coverity);
         } else if (scanObject instanceof Polaris) {
             Polaris polaris = (Polaris) scanObject;
-            setPolarisProjectNameAndApplicationName(polaris ,scmObject);
+            setPolarisProjectNameAndApplicationName(polaris, scmObject);
             bridgeInput.setPolaris((Polaris) scanObject);
         }
     }
@@ -197,11 +197,15 @@ public class ScannerArgumentService {
             coverity.getConnect().getProject().setName(repositoryName);
         }
         if (Utility.isStringNullOrBlank(coverity.getConnect().getStream().getName())) {
-            if(isEventPullRequest){
+            if (isEventPullRequest) {
                 String changeTarget = envVars.get(ApplicationConstants.ENV_CHANGE_TARGET_KEY);
-                coverity.getConnect().getStream().setName(repositoryName.concat("-").concat(changeTarget));
-            }else{
-                coverity.getConnect().getStream().setName(repositoryName.concat("-").concat(branchName));
+                coverity.getConnect()
+                        .getStream()
+                        .setName(repositoryName.concat("-").concat(changeTarget));
+            } else {
+                coverity.getConnect()
+                        .getStream()
+                        .setName(repositoryName.concat("-").concat(branchName));
             }
         }
     }
@@ -218,7 +222,6 @@ public class ScannerArgumentService {
         if (Utility.isStringNullOrBlank(polaris.getProjectName().getName())) {
             polaris.getProjectName().setName(repositoryName);
         }
-
     }
 
     private String getRepositoryName(Object scmObject) {

@@ -45,6 +45,10 @@ public class ScannerArgumentServiceTest {
         Mockito.doReturn("fake-branch").when(envVarsMock).get(ApplicationConstants.ENV_BRANCH_NAME_KEY);
         Mockito.doReturn("fake-job/branch").when(envVarsMock).get(ApplicationConstants.ENV_JOB_NAME_KEY);
         Mockito.doReturn("0").when(envVarsMock).get(ApplicationConstants.ENV_CHANGE_ID_KEY);
+        Mockito.doReturn("https://github.com//scm/TEST_JENKINS/node-pipeline-test.git")
+                .when(envVarsMock)
+                .get(ApplicationConstants.ENV_GIT_URL_KEY);
+        Mockito.doReturn("new-fake-branch").when(envVarsMock).get(ApplicationConstants.ENV_CHANGE_TARGET_KEY);
 
         scannerArgumentService = new ScannerArgumentService(listenerMock, envVarsMock, workspace);
     }
