@@ -181,20 +181,44 @@ public class ScannerArgumentService {
             setCoverityProjectNameAndStreamName(coverity, scmObject);
             bridgeInput.setCoverity(coverity);
         } else if (scanObject instanceof Polaris) {
+            Polaris polaris = (Polaris) scanObject;
+            setPolarisProjectNameAndApplicationName(polaris ,scmObject);
             bridgeInput.setPolaris((Polaris) scanObject);
         }
     }
 
     private void setCoverityProjectNameAndStreamName(Coverity coverity, Object scmObject) {
-        String repositoryName = getRepositoryName(scmObject);
+        String gitURL = envVars.get(ApplicationConstants.ENV_GIT_URL_KEY);
+        String repositoryName = gitURL.replaceFirst("^.*\\/(.+?)\\.git$", "$1");
         String branchName = envVars.get(ApplicationConstants.ENV_BRANCH_NAME_KEY);
+        boolean isEventPullRequest = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null;
 
         if (Utility.isStringNullOrBlank(coverity.getConnect().getProject().getName())) {
             coverity.getConnect().getProject().setName(repositoryName);
         }
         if (Utility.isStringNullOrBlank(coverity.getConnect().getStream().getName())) {
-            coverity.getConnect().getStream().setName(repositoryName.concat("-").concat(branchName));
+            if(isEventPullRequest){
+                String changeTarget = envVars.get(ApplicationConstants.ENV_CHANGE_TARGET_KEY);
+                coverity.getConnect().getStream().setName(repositoryName.concat("-").concat(changeTarget));
+            }else{
+                coverity.getConnect().getStream().setName(repositoryName.concat("-").concat(branchName));
+            }
         }
+    }
+
+    private void setPolarisProjectNameAndApplicationName(Polaris polaris, Object scmObject) {
+        String gitURL = envVars.get(ApplicationConstants.ENV_GIT_URL_KEY);
+        String repositoryName = gitURL.replaceFirst("^.*\\/(.+?)\\.git$", "$1");
+        String ownerName = gitURL.replaceFirst("^.*/([^/]+)/[^/]+\\.git$", "$1");
+
+        if (Utility.isStringNullOrBlank(polaris.getApplicationName().getName())) {
+            polaris.getApplicationName().setName(ownerName);
+        }
+
+        if (Utility.isStringNullOrBlank(polaris.getProjectName().getName())) {
+            polaris.getProjectName().setName(repositoryName);
+        }
+
     }
 
     private String getRepositoryName(Object scmObject) {
