@@ -23,6 +23,7 @@
             <f:entry field="blackDuckCredentialsId" title="Black Duck Token">
                  <c:select/>
             </f:entry>
+            <f:validateButton method="testBlackDuckConnection" title="Test connection" progress="Testing..." with="blackDuckUrl,blackDuckCredentialsId"/>
             <f:entry field="blackDuckInstallationPath" title="Black Duck Install Directory(Optional)">
                 <f:textbox name="blackDuckInstallationPath" />
             </f:entry>
@@ -40,6 +41,7 @@
             <f:entry field="coverityInstallationPath" title="Coverity Install Directory (Optional)">
                 <f:textbox name="coverityInstallationPath" />
             </f:entry>
+            <f:validateButton method="testCoverityConnection" title="Test connection" progress="Testing..." with="coverityConnectUrl,coverityCredentialsId"/>
             <button type="button" class="clear-button" onclick="clearTabFields('COVERITYSection')">Clear</button>
         </div>
 
@@ -51,6 +53,7 @@
             <f:entry field="polarisCredentialsId" title="Polaris Access Token">
                 <c:select/>
             </f:entry>
+            <f:validateButton method="testPolarisConnection" title="Test connection" progress="Testing..." with="polarisServerUrl,polarisCredentialsId"/>
             <button type="button" class="clear-button" onclick="clearTabFields('POLARISSection')">Clear</button>
         </div>
 

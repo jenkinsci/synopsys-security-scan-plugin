@@ -6,6 +6,7 @@ import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
 import com.cloudbees.plugins.credentials.matchers.IdMatcher;
+import com.synopsys.integration.rest.credentials.CredentialsBuilder;
 import hudson.security.ACL;
 import hudson.util.Secret;
 import java.util.Collections;
@@ -22,6 +23,16 @@ public class ScanCredentialsHelper {
             UsernamePasswordCredentialsImpl.class;
     public static final CredentialsMatcher USERNAME_PASSWORD_CREDENTIALS =
             CredentialsMatchers.instanceOf(USERNAME_PASSWORD_CREDENTIALS_CLASS);
+
+    public com.synopsys.integration.rest.credentials.Credentials getIntegrationCredentialsById(String credentialsId) {
+        Optional<UsernamePasswordCredentialsImpl> credentials = this.getUsernamePasswordCredentialsById(credentialsId);
+        CredentialsBuilder credentialsBuilder = com.synopsys.integration.rest.credentials.Credentials.newBuilder();
+        if (credentials.isPresent()) {
+            credentialsBuilder.setUsername(credentials.get().getUsername());
+            credentialsBuilder.setPassword(credentials.get().getPassword().getPlainText());
+        }
+        return credentialsBuilder.build();
+    }
 
     public Optional<String> getApiTokenByCredentialsId(String credentialsId) {
         return getApiTokenCredentialsById(credentialsId)
