@@ -5,6 +5,7 @@ import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
+import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
 
 public class BridgeInput {
     @JsonProperty("blackduck")
@@ -21,6 +22,17 @@ public class BridgeInput {
 
     @JsonProperty("network")
     private NetworkAirGap networkAirGap;
+
+    @JsonProperty("reports")
+    private Reports reports;
+
+    public Reports getReports() {
+        return reports;
+    }
+
+    public void setReports(Reports reports) {
+        this.reports = reports;
+    }
 
     public BlackDuck getBlackDuck() {
         return blackDuck;
