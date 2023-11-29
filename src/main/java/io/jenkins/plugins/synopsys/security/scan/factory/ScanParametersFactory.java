@@ -62,6 +62,7 @@ public class ScanParametersFactory {
             parametersMap.putAll(prepareCoverityParametersMap(scanStep));
             parametersMap.putAll(preparePolarisParametersMap(scanStep));
             parametersMap.putAll(prepareBlackDuckParametersMap(scanStep));
+            parametersMap.putAll(prepareSarifReportParametersMap(scanStep));
 
             if (!Utility.isStringNullOrBlank(scanStep.getBitbucket_token())) {
                 parametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, scanStep.getBitbucket_token());
@@ -316,6 +317,36 @@ public class ScanParametersFactory {
         //        }
 
         return polarisParametersMap;
+    }
+
+    public static Map<String, Object> prepareSarifReportParametersMap(SecurityScanStep scanStep) {
+        Map<String, Object> sarifParameters = new HashMap<>();
+
+        if (scanStep.isReports_sarif_create() != null) {
+            sarifParameters.put(ApplicationConstants.REPORTS_SARIF_CREATE_KEY, scanStep.isReports_sarif_create());
+        }
+
+        if (!Utility.isStringNullOrBlank(scanStep.getReports_sarif_file_path())) {
+            sarifParameters.put(
+                    ApplicationConstants.REPORTS_SARIF_FILE_PATH_KEY, scanStep.getReports_sarif_file_path());
+        }
+
+        if (!Utility.isStringNullOrBlank(scanStep.getReports_sarif_issue_types())) {
+            sarifParameters.put(
+                    ApplicationConstants.REPORTS_SARIF_ISSUE_TYPES_KEY, scanStep.getReports_sarif_issue_types());
+        }
+
+        if (!Utility.isStringNullOrBlank(scanStep.getReports_sarif_severities())) {
+            sarifParameters.put(
+                    ApplicationConstants.REPORTS_SARIF_SEVERITIES_KEY, scanStep.getReports_sarif_severities());
+        }
+
+        if (scanStep.isReports_sarif_groupSCAIssues() != null) {
+            sarifParameters.put(
+                    ApplicationConstants.REPORTS_SARIF_GROUPSCAISSUES_KEY, scanStep.isReports_sarif_groupSCAIssues());
+        }
+
+        return sarifParameters;
     }
 
     public static String getSynopsysBridgeDownloadUrlBasedOnAgentOS(

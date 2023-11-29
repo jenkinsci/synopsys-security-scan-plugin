@@ -13,16 +13,14 @@ import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
 import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.report.Sarif;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -56,7 +54,7 @@ public class ScannerArgumentServiceTest {
         blackDuck.setToken("MDJDSROSVC56FAKEKEY");
 
         String inputJsonPath = scannerArgumentService.createBridgeInputJson(
-                blackDuck, bitBucket, false, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
+                blackDuck, bitBucket, false, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
         Path filePath = Paths.get(inputJsonPath);
 
         assertTrue(
@@ -109,7 +107,7 @@ public class ScannerArgumentServiceTest {
         coverity.getConnect().getUser().setPassword("fakeUserPassword");
 
         String inputJsonPath = scannerArgumentService.createBridgeInputJson(
-                coverity, bitBucket, false, null, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX);
+                coverity, bitBucket, false, null, null, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX);
         Path filePath = Paths.get(inputJsonPath);
 
         assertTrue(
@@ -270,6 +268,27 @@ public class ScannerArgumentServiceTest {
         for (String path : inputJsonPath) {
             assertFalse(Files.exists(Paths.get(path)));
         }
+    }
+
+    @Test
+    public void prepareSarifObjectTest() {
+        Map<String, Object> scanParameters = new HashMap<>();
+        scanParameters.put(ApplicationConstants.REPORTS_SARIF_CREATE_KEY, true);
+        scanParameters.put(ApplicationConstants.REPORTS_SARIF_FILE_PATH_KEY, "/path/to/sarif/file");
+        scanParameters.put(ApplicationConstants.REPORTS_SARIF_SEVERITIES_KEY, "HIGH,MEDIUM");
+        scanParameters.put(ApplicationConstants.REPORTS_SARIF_GROUPSCAISSUES_KEY, true);
+        scanParameters.put(ApplicationConstants.REPORTS_SARIF_ISSUE_TYPES_KEY, "BUG,VULNERABILITY");
+
+        Set<String> securityProducts = new HashSet<>(List.of("BLACKDUCK"));
+        Sarif sarif = scannerArgumentService.prepareSarifObject(securityProducts, scanParameters);
+
+        assertTrue(sarif.getCreate());
+        assertEquals("/path/to/sarif/file", sarif.getFile().getPath());
+        assertEquals(Arrays.asList("HIGH", "MEDIUM"), sarif.getSeverities());
+        assertTrue(sarif.getGroupSCAIssues());
+
+        assertTrue(sarif.getIssue().getTypes().contains("BUG"));
+        assertTrue(sarif.getIssue().getTypes().contains("VULNERABILITY"));
     }
 
     public String getHomeDirectoryForTest() {

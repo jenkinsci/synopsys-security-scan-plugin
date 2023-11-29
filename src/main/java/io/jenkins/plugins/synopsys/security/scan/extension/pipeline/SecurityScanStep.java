@@ -68,6 +68,11 @@ public class SecurityScanStep extends Step implements Serializable {
     private String synopsys_bridge_install_directory;
     private Boolean include_diagnostics;
     private Boolean network_airgap;
+    private Boolean reports_sarif_create;
+    private String reports_sarif_file_path;
+    private String reports_sarif_issue_types;
+    private String reports_sarif_severities;
+    private Boolean reports_sarif_groupSCAIssues;
 
     @DataBoundConstructor
     public SecurityScanStep() {
@@ -200,6 +205,26 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public Boolean isNetwork_airgap() {
         return network_airgap;
+    }
+
+    public Boolean isReports_sarif_create() {
+        return reports_sarif_create;
+    }
+
+    public String getReports_sarif_file_path() {
+        return reports_sarif_file_path;
+    }
+
+    public String getReports_sarif_issue_types() {
+        return reports_sarif_issue_types;
+    }
+
+    public String getReports_sarif_severities() {
+        return reports_sarif_severities;
+    }
+
+    public Boolean isReports_sarif_groupSCAIssues() {
+        return reports_sarif_groupSCAIssues;
     }
 
     @DataBoundSetter
@@ -361,6 +386,31 @@ public class SecurityScanStep extends Step implements Serializable {
     @DataBoundSetter
     public void setNetwork_airgap(Boolean network_airgap) {
         this.network_airgap = network_airgap ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setReports_sarif_create(Boolean reports_sarif_create) {
+        this.reports_sarif_create = reports_sarif_create ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setReports_sarif_file_path(String reports_sarif_file_path) {
+        this.reports_sarif_file_path = Util.fixEmptyAndTrim(reports_sarif_file_path);
+    }
+
+    @DataBoundSetter
+    public void setReports_sarif_issue_types(String reports_sarif_issue_types) {
+        this.reports_sarif_issue_types = Util.fixEmptyAndTrim(reports_sarif_issue_types);
+    }
+
+    @DataBoundSetter
+    public void setReports_sarif_severities(String reports_sarif_severities) {
+        this.reports_sarif_severities = Util.fixEmptyAndTrim(reports_sarif_severities);
+    }
+
+    @DataBoundSetter
+    public void setReports_sarif_groupSCAIssues(Boolean reports_sarif_groupSCAIssues) {
+        this.reports_sarif_groupSCAIssues = reports_sarif_groupSCAIssues ? true : null;
     }
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)

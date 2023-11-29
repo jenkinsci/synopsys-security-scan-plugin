@@ -10,8 +10,9 @@ import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandle
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.ReportType;
 import io.jenkins.plugins.synopsys.security.scan.service.ScannerArgumentService;
-import io.jenkins.plugins.synopsys.security.scan.service.diagnostics.DiagnosticsService;
+import io.jenkins.plugins.synopsys.security.scan.service.diagnostics.UploadReportService;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -78,14 +79,30 @@ public class SecurityScanner {
             scannerArgumentService.removeTemporaryInputJson(commandLineArgs);
 
             if (Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
-                DiagnosticsService diagnosticsService = new DiagnosticsService(
+                UploadReportService uploadReportService = new UploadReportService(
                         run,
                         listener,
                         launcher,
                         envVars,
                         new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
-                diagnosticsService.archiveDiagnostics(
-                        workspace.child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY));
+                uploadReportService.archiveReports(
+                        workspace.child(ApplicationConstants.BRIDGE_REPORT_DIRECTORY), ReportType.DIAGNOSTIC);
+            }
+
+            if (Objects.equals(scanParams.get(ApplicationConstants.REPORTS_SARIF_CREATE_KEY), true)) {
+                String sarifReportFilePath = (String) scanParams.get(ApplicationConstants.REPORTS_SARIF_FILE_PATH_KEY);
+                UploadReportService uploadReportService = new UploadReportService(
+                        run,
+                        listener,
+                        launcher,
+                        envVars,
+                        new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
+                uploadReportService.archiveReports(
+                        workspace.child(
+                                sarifReportFilePath == null
+                                        ? ApplicationConstants.BRIDGE_REPORT_DIRECTORY
+                                        : ApplicationConstants.REPORTS_SARIF_FILE_PATH_KEY),
+                        ReportType.SARIF);
             }
         }
 

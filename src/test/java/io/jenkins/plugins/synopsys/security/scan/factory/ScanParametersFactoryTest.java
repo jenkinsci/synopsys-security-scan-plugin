@@ -169,6 +169,30 @@ public class ScanParametersFactoryTest {
     }
 
     @Test
+    public void prepareSarifReportParametersMap() {
+        securityScanStep.setReports_sarif_create(true);
+        securityScanStep.setReports_sarif_file_path("/fake/path");
+        securityScanStep.setReports_sarif_issue_types("SAST");
+        securityScanStep.setReports_sarif_severities("CRITICAL");
+        securityScanStep.setReports_sarif_groupSCAIssues(true);
+
+        Map<String, Object> sarifParametersMap =
+                ScanParametersFactory.prepareSarifReportParametersMap(securityScanStep);
+
+        assertEquals(5, sarifParametersMap.size());
+        assertTrue((boolean) sarifParametersMap.get(ApplicationConstants.REPORTS_SARIF_CREATE_KEY));
+        assertEquals("/fake/path", sarifParametersMap.get(ApplicationConstants.REPORTS_SARIF_FILE_PATH_KEY));
+        assertEquals("SAST", sarifParametersMap.get(ApplicationConstants.REPORTS_SARIF_ISSUE_TYPES_KEY));
+        assertEquals("CRITICAL", sarifParametersMap.get(ApplicationConstants.REPORTS_SARIF_SEVERITIES_KEY));
+        assertTrue((boolean) sarifParametersMap.get(ApplicationConstants.REPORTS_SARIF_GROUPSCAISSUES_KEY));
+
+        Map<String, Object> emptySarifParametersMap =
+                ScanParametersFactory.prepareSarifReportParametersMap(new SecurityScanStep());
+
+        assertEquals(0, emptySarifParametersMap.size());
+    }
+
+    @Test
     public void getSynopsysBridgeDownloadUrlBasedOnAgentOSTest() {
         String downloadUrlLinux = "https://fake-url.com/linux";
         String downloadUrlMac = "https://fake-url.com/mac";

@@ -14,7 +14,7 @@ public class ApplicationConstants {
     public static final String PLATFORM_WINDOWS = "win64";
     public static final String PLATFORM_MAC = "macosx";
     public static final String DEFAULT_DIRECTORY_NAME = "synopsys-bridge";
-    public static final String BRIDGE_DIAGNOSTICS_DIRECTORY = ".bridge";
+    public static final String BRIDGE_REPORT_DIRECTORY = ".bridge";
     public static final int BRIDGE_DOWNLOAD_MAX_RETRIES = 3;
     public static final int INTERVAL_BETWEEN_CONSECUTIVE_RETRY_ATTEMPTS = 10000;
     public static final String ALL_FILES_WILDCARD_SYMBOL = "**";
@@ -60,6 +60,16 @@ public class ApplicationConstants {
     public static final String INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 
     public static final String NETWORK_AIRGAP_KEY = "network_airgap";
+
+    public static final String REPORTS_SARIF_CREATE_KEY = "reports_sarif_create";
+
+    public static final String REPORTS_SARIF_FILE_PATH_KEY = "reports_sarif_file_path";
+
+    public static final String REPORTS_SARIF_ISSUE_TYPES_KEY = "reports_sarif_issue_types";
+
+    public static final String REPORTS_SARIF_SEVERITIES_KEY = "reports_sarif_severities";
+
+    public static final String REPORTS_SARIF_GROUPSCAISSUES_KEY = "reports_sarif_groupSCAIssues";
 
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
 
