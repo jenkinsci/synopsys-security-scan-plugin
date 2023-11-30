@@ -38,10 +38,10 @@
             <f:entry field="coverityCredentialsId" title="Coverity Credentials">
                 <c:select/>
             </f:entry>
+            <f:validateButton method="testCoverityConnection" title="Test connection" progress="Testing..." with="coverityConnectUrl,coverityCredentialsId"/>
             <f:entry field="coverityInstallationPath" title="Coverity Install Directory (Optional)">
                 <f:textbox name="coverityInstallationPath" />
             </f:entry>
-            <f:validateButton method="testCoverityConnection" title="Test connection" progress="Testing..." with="coverityConnectUrl,coverityCredentialsId"/>
             <button type="button" class="clear-button" onclick="clearTabFields('COVERITYSection')">Clear</button>
         </div>
 
