@@ -8,7 +8,6 @@ import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.synopsys.security.scan.global.ScanCredentialsHelper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
-import java.io.IOException;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.util.Collections;
@@ -16,10 +15,7 @@ import java.util.Locale;
 import jenkins.model.GlobalConfiguration;
 import jenkins.model.Jenkins;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.EnglishReasonPhraseCatalog;
-import org.apache.http.impl.client.HttpClients;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -254,21 +250,22 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         }
 
         try {
-            HttpResponse response = attemptAuthentication(blackDuckUrl, blackDuckCredentialsId);
+            AuthenticationSupport authenticationSupport = new AuthenticationSupport();
+            HttpResponse response = authenticationSupport.attemptBlackDuckAuthentication(blackDuckUrl, blackDuckCredentialsId);
 
             if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
-                String validationMessage = determineValidationMessage(response.getStatusLine().getStatusCode());
+                String validationMessage = getValidationMessage(response.getStatusLine().getStatusCode());
 
                 return FormValidation.error(String.join(" ", validationMessage));
             }
-        } catch (IllegalArgumentException e) {
-            return FormValidation.error(e.getMessage());
+        } catch (Exception e) {
+            return FormValidation.error("Could not perform the authorization request: " + e.getCause().getMessage());
         }
 
         return FormValidation.ok("Connection successful.");
     }
 
-    private String determineValidationMessage(int statusCode) {
+    private String getValidationMessage(int statusCode) {
         String validationMessage;
         try {
             String statusPhrase = EnglishReasonPhraseCatalog.INSTANCE.getReason(statusCode, Locale.ENGLISH);
@@ -279,21 +276,74 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         return validationMessage;
     }
 
-    public final HttpResponse attemptAuthentication(String blackDuckUrl, String blackDuckCredentialsId) {
-        ScanCredentialsHelper scanCredentialsHelper = new ScanCredentialsHelper();
-        String apiToken = scanCredentialsHelper.getApiTokenByCredentialsId(blackDuckCredentialsId).orElse(null);
+    @POST
+    public FormValidation doTestPolarisConnection(
+        @QueryParameter("polarisServerUrl") String polarisServerUrl,
+        @QueryParameter("polarisCredentialsId") String polarisCredentialsId
+    ) {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return FormValidation.warning(
+                "Connection validation could not be completed: Validation couldn't retrieve the instance of Jenkins from the JVM. This may happen if Jenkins is still starting up or if this code is running on a different JVM than your Jenkins server.");
+        }
+        jenkins.checkPermission(Jenkins.ADMINISTER);
 
-        HttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(blackDuckUrl.concat("api/tokens/authenticate"));
-
-        // Set the Authorization header with the token
-        httpPost.setHeader("Authorization", "token " + apiToken);;
+        if (Utility.isStringNullOrBlank(polarisServerUrl)) {
+            return FormValidation.error("The Polaris server url must be specified");
+        }
+        if (Utility.isStringNullOrBlank(polarisCredentialsId)) {
+            return FormValidation.error("The Polaris credentials must be specified");
+        }
 
         try {
-            return httpClient.execute(httpPost);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            AuthenticationSupport authenticationSupport = new AuthenticationSupport();
+            HttpResponse response = authenticationSupport.attemptPolarisAuthentication(polarisServerUrl, polarisCredentialsId);
+
+            if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
+                String validationMessage = getValidationMessage(response.getStatusLine().getStatusCode());
+
+                return FormValidation.error(String.join(" ", validationMessage));
+            }
+        } catch (Exception e) {
+            return FormValidation.error("Could not perform the authorization request: " + e.getCause().getMessage());
         }
+
+        return FormValidation.ok("Connection successful.");
+    }
+
+    @POST
+    public FormValidation doTestCoverityConnection(
+        @QueryParameter("coverityConnectUrl") String coverityConnectUrl,
+        @QueryParameter("coverityCredentialsId") String coverityCredentialsId
+    ) {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return FormValidation.warning(
+                "Connection validation could not be completed: Validation couldn't retrieve the instance of Jenkins from the JVM. This may happen if Jenkins is still starting up or if this code is running on a different JVM than your Jenkins server.");
+        }
+        jenkins.checkPermission(Jenkins.ADMINISTER);
+
+        if (Utility.isStringNullOrBlank(coverityConnectUrl)) {
+            return FormValidation.error("The Coverity connect url must be specified");
+        }
+        if (Utility.isStringNullOrBlank(coverityCredentialsId)) {
+            return FormValidation.error("The Coverity credentials must be specified");
+        }
+
+        try {
+            AuthenticationSupport authenticationSupport = new AuthenticationSupport();
+            HttpResponse response = authenticationSupport.attemptCoverityAuthentication(coverityConnectUrl, coverityCredentialsId);
+
+            if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
+                String validationMessage = getValidationMessage(response.getStatusLine().getStatusCode());
+
+                return FormValidation.error(String.join(" ", validationMessage));
+            }
+        } catch (Exception e) {
+            return FormValidation.error("Could not perform the authorization request: " + e.getCause().getMessage());
+        }
+
+        return FormValidation.ok("Connection successful.");
     }
 
 }
