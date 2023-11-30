@@ -61,10 +61,10 @@
             <f:entry field="polaris_assessment_types" title="Polaris Assessment Types (Mandatory)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
+            <f:entry field="polaris_branch_name" title="Polaris Branch Name (Mandatory)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="polaris_branch_name" title="Polaris Branch Name (Optional)">
+            <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
                 <f:textbox/>
             </f:entry>
         </f:section>

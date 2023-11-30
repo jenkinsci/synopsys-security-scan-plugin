@@ -20,6 +20,7 @@ public class PolarisParametersServiceTest {
     private final String TEST_POLARIS_ACCESS_TOKEN = "fakePolarisAccessToken";
     private final String TEST_APPLICATION_NAME = "fake-polaris-application-name";
     private final String TEST_POLARIS_ASSESSMENT_TYPES = "SCA, SAST";
+    private final String TEST_POLARIS_BRANCH_NAME = "test-branch";
 
     @BeforeEach
     void setUp() {
@@ -48,6 +49,7 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, TEST_POLARIS_ACCESS_TOKEN);
         polarisParameters.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
         polarisParameters.put(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, TEST_POLARIS_ASSESSMENT_TYPES);
+        polarisParameters.put(ApplicationConstants.POLARIS_BRANCH_NAME_KEY, TEST_POLARIS_BRANCH_NAME);
 
         assertTrue(polarisParametersService.isValidPolarisParameters(polarisParameters));
     }

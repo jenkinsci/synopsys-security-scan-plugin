@@ -55,6 +55,7 @@ public class ScanParametersServiceTest {
         parameters.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, "test-application");
         parameters.put(ApplicationConstants.POLARIS_PROJECT_NAME_KEY, "test-project");
         parameters.put(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, "SCA, SAST");
+        parameters.put(ApplicationConstants.POLARIS_BRANCH_NAME_KEY, "test-branch");
 
         assertTrue(scanParametersService.isValidScanParameters(parameters));
     }

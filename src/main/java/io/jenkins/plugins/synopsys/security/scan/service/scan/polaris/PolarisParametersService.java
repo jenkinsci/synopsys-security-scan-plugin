@@ -28,7 +28,8 @@ public class PolarisParametersService {
                         ApplicationConstants.POLARIS_SERVER_URL_KEY,
                         ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY,
                         ApplicationConstants.POLARIS_APPLICATION_NAME_KEY,
-                        ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY)
+                        ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY,
+                        ApplicationConstants.POLARIS_BRANCH_NAME_KEY)
                 .forEach(key -> {
                     boolean isKeyValid = polarisParameters.containsKey(key)
                             && polarisParameters.get(key) != null
