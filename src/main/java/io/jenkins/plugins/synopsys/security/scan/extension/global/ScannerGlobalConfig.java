@@ -24,6 +24,7 @@ import org.kohsuke.stapler.verb.POST;
 @Extension
 public class ScannerGlobalConfig extends GlobalConfiguration implements Serializable {
     private static final long serialVersionUID = -3129542889827231427L;
+    private final int DEFAULT_TIMEOUT_IN_SECONDS = 20;
 
     private String blackDuckUrl;
 
@@ -251,7 +252,8 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
         try {
             AuthenticationSupport authenticationSupport = new AuthenticationSupport();
-            HttpResponse response = authenticationSupport.attemptBlackDuckAuthentication(blackDuckUrl, blackDuckCredentialsId);
+            HttpResponse response = authenticationSupport
+                .attemptBlackDuckAuthentication(blackDuckUrl, blackDuckCredentialsId, DEFAULT_TIMEOUT_IN_SECONDS);
 
             if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
                 String validationMessage = getValidationMessage(response.getStatusLine().getStatusCode());
@@ -297,7 +299,8 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
         try {
             AuthenticationSupport authenticationSupport = new AuthenticationSupport();
-            HttpResponse response = authenticationSupport.attemptPolarisAuthentication(polarisServerUrl, polarisCredentialsId);
+            HttpResponse response = authenticationSupport
+                .attemptPolarisAuthentication(polarisServerUrl, polarisCredentialsId, DEFAULT_TIMEOUT_IN_SECONDS);
 
             if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
                 String validationMessage = getValidationMessage(response.getStatusLine().getStatusCode());
@@ -332,7 +335,8 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
         try {
             AuthenticationSupport authenticationSupport = new AuthenticationSupport();
-            HttpResponse response = authenticationSupport.attemptCoverityAuthentication(coverityConnectUrl, coverityCredentialsId);
+            HttpResponse response = authenticationSupport
+                .attemptCoverityAuthentication(coverityConnectUrl, coverityCredentialsId, DEFAULT_TIMEOUT_IN_SECONDS);
 
             if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
                 String validationMessage = getValidationMessage(response.getStatusLine().getStatusCode());

@@ -17,10 +17,11 @@ public class AuthenticationSupport {
     private final String POLARIS_PORTFOLIO_API = "api/portfolio/portfolios";
     private final String COVERITY_VIEWS_API = "api/v2/views";
     private final String AUTHORIZATION_HEADER = "Authorization";
-    private int DEFAULT_CONNECTION_TIMEOUT = 20;
+
     private final ScanCredentialsHelper scanCredentialsHelper = new ScanCredentialsHelper();
 
-    public final HttpResponse attemptBlackDuckAuthentication(String blackDuckUrl, String blackDuckCredentialsId) {
+    public final HttpResponse attemptBlackDuckAuthentication(
+        String blackDuckUrl, String blackDuckCredentialsId, int timeoutInSeconds) {
         String blackDuckAuthApi = blackDuckUrl.endsWith("/") ?
             blackDuckUrl.concat(BLACKDUCK_AUTH_API) :
             blackDuckUrl.concat("/").concat(BLACKDUCK_AUTH_API);
@@ -29,10 +30,11 @@ public class AuthenticationSupport {
         HttpPost httpPost = new HttpPost(blackDuckAuthApi);
         httpPost.setHeader(AUTHORIZATION_HEADER, "token " + blackDuckApiToken);
 
-        return executeRequest(httpPost);
+        return executeRequest(httpPost, timeoutInSeconds);
     }
 
-    public final HttpResponse attemptPolarisAuthentication(String polarisServerUrl, String polarisCredentialsId) {
+    public final HttpResponse attemptPolarisAuthentication(
+        String polarisServerUrl, String polarisCredentialsId, int timeoutInSeconds) {
         String polarisAuthApi = polarisServerUrl.endsWith("/") ?
             polarisServerUrl.concat(POLARIS_PORTFOLIO_API) :
             polarisServerUrl.concat("/").concat(POLARIS_PORTFOLIO_API);
@@ -41,10 +43,11 @@ public class AuthenticationSupport {
         HttpGet httpGet = new HttpGet(polarisAuthApi);
         httpGet.setHeader("Api-token", polarisAccessToken);
 
-        return executeRequest(httpGet);
+        return executeRequest(httpGet, timeoutInSeconds);
     }
 
-    public final HttpResponse attemptCoverityAuthentication(String coverityConnectUrl, String coverityCredentialsId) {
+    public final HttpResponse attemptCoverityAuthentication(
+        String coverityConnectUrl, String coverityCredentialsId, int timeoutInSeconds) {
         String coverityAuthApi = coverityConnectUrl.endsWith("/") ?
             coverityConnectUrl.concat(COVERITY_VIEWS_API) :
             coverityConnectUrl.concat("/").concat(COVERITY_VIEWS_API);
@@ -59,12 +62,12 @@ public class AuthenticationSupport {
             httpGet.setHeader(AUTHORIZATION_HEADER, "Basic " + new String(encodedAuth));
         }
 
-        return executeRequest(httpGet);
+        return executeRequest(httpGet, timeoutInSeconds);
     }
 
-    public HttpResponse executeRequest(HttpUriRequest httpUriRequest) {
+    public HttpResponse executeRequest(HttpUriRequest httpUriRequest, int timeoutInSeconds) {
         try {
-            RequestConfig requestConfig = getRequestConfig(DEFAULT_CONNECTION_TIMEOUT);
+            RequestConfig requestConfig = getRequestConfig(timeoutInSeconds);
             HttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
             return httpClient.execute(httpUriRequest);
         } catch (IOException e) {
@@ -72,7 +75,7 @@ public class AuthenticationSupport {
         }
     }
 
-    private RequestConfig getRequestConfig(int timeoutInSeconds) {
+    public RequestConfig getRequestConfig(int timeoutInSeconds) {
         return RequestConfig.custom()
             .setConnectTimeout(timeoutInSeconds * 1000)
             .setConnectionRequestTimeout(timeoutInSeconds * 1000)
