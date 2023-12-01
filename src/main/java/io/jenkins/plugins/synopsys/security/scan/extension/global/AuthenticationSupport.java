@@ -21,11 +21,13 @@ public class AuthenticationSupport {
     private final ScanCredentialsHelper scanCredentialsHelper = new ScanCredentialsHelper();
 
     public final HttpResponse attemptBlackDuckAuthentication(
-        String blackDuckUrl, String blackDuckCredentialsId, int timeoutInSeconds) {
-        String blackDuckAuthApi = blackDuckUrl.endsWith("/") ?
-            blackDuckUrl.concat(BLACKDUCK_AUTH_API) :
-            blackDuckUrl.concat("/").concat(BLACKDUCK_AUTH_API);
-        String blackDuckApiToken = scanCredentialsHelper.getApiTokenByCredentialsId(blackDuckCredentialsId).orElse(null);
+            String blackDuckUrl, String blackDuckCredentialsId, int timeoutInSeconds) {
+        String blackDuckAuthApi = blackDuckUrl.endsWith("/")
+                ? blackDuckUrl.concat(BLACKDUCK_AUTH_API)
+                : blackDuckUrl.concat("/").concat(BLACKDUCK_AUTH_API);
+        String blackDuckApiToken = scanCredentialsHelper
+                .getApiTokenByCredentialsId(blackDuckCredentialsId)
+                .orElse(null);
 
         HttpPost httpPost = new HttpPost(blackDuckAuthApi);
         httpPost.setHeader(AUTHORIZATION_HEADER, "token " + blackDuckApiToken);
@@ -34,11 +36,13 @@ public class AuthenticationSupport {
     }
 
     public final HttpResponse attemptPolarisAuthentication(
-        String polarisServerUrl, String polarisCredentialsId, int timeoutInSeconds) {
-        String polarisAuthApi = polarisServerUrl.endsWith("/") ?
-            polarisServerUrl.concat(POLARIS_PORTFOLIO_API) :
-            polarisServerUrl.concat("/").concat(POLARIS_PORTFOLIO_API);
-        String polarisAccessToken = scanCredentialsHelper.getApiTokenByCredentialsId(polarisCredentialsId).orElse(null);
+            String polarisServerUrl, String polarisCredentialsId, int timeoutInSeconds) {
+        String polarisAuthApi = polarisServerUrl.endsWith("/")
+                ? polarisServerUrl.concat(POLARIS_PORTFOLIO_API)
+                : polarisServerUrl.concat("/").concat(POLARIS_PORTFOLIO_API);
+        String polarisAccessToken = scanCredentialsHelper
+                .getApiTokenByCredentialsId(polarisCredentialsId)
+                .orElse(null);
 
         HttpGet httpGet = new HttpGet(polarisAuthApi);
         httpGet.setHeader("Api-token", polarisAccessToken);
@@ -47,12 +51,16 @@ public class AuthenticationSupport {
     }
 
     public final HttpResponse attemptCoverityAuthentication(
-        String coverityConnectUrl, String coverityCredentialsId, int timeoutInSeconds) {
-        String coverityAuthApi = coverityConnectUrl.endsWith("/") ?
-            coverityConnectUrl.concat(COVERITY_VIEWS_API) :
-            coverityConnectUrl.concat("/").concat(COVERITY_VIEWS_API);
-        String username = scanCredentialsHelper.getUsernameByCredentialsId(coverityCredentialsId).orElse(null);
-        String password = scanCredentialsHelper.getPasswordByCredentialsId(coverityCredentialsId).orElse(null);
+            String coverityConnectUrl, String coverityCredentialsId, int timeoutInSeconds) {
+        String coverityAuthApi = coverityConnectUrl.endsWith("/")
+                ? coverityConnectUrl.concat(COVERITY_VIEWS_API)
+                : coverityConnectUrl.concat("/").concat(COVERITY_VIEWS_API);
+        String username = scanCredentialsHelper
+                .getUsernameByCredentialsId(coverityCredentialsId)
+                .orElse(null);
+        String password = scanCredentialsHelper
+                .getPasswordByCredentialsId(coverityCredentialsId)
+                .orElse(null);
 
         HttpGet httpGet = new HttpGet(coverityAuthApi);
 
@@ -68,7 +76,8 @@ public class AuthenticationSupport {
     public HttpResponse executeRequest(HttpUriRequest httpUriRequest, int timeoutInSeconds) {
         try {
             RequestConfig requestConfig = getRequestConfig(timeoutInSeconds);
-            HttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
+            HttpClient httpClient =
+                    HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
             return httpClient.execute(httpUriRequest);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -77,9 +86,9 @@ public class AuthenticationSupport {
 
     public RequestConfig getRequestConfig(int timeoutInSeconds) {
         return RequestConfig.custom()
-            .setConnectTimeout(timeoutInSeconds * 1000)
-            .setConnectionRequestTimeout(timeoutInSeconds * 1000)
-            .setSocketTimeout(timeoutInSeconds * 1000)
-            .build();
+                .setConnectTimeout(timeoutInSeconds * 1000)
+                .setConnectionRequestTimeout(timeoutInSeconds * 1000)
+                .setSocketTimeout(timeoutInSeconds * 1000)
+                .build();
     }
 }

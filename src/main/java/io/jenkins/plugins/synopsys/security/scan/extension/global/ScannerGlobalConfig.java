@@ -6,6 +6,7 @@ import hudson.Extension;
 import hudson.security.ACL;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.ScanCredentialsHelper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import java.io.Serializable;
@@ -233,13 +234,11 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     @POST
     public FormValidation doTestBlackDuckConnection(
-        @QueryParameter("blackDuckUrl") String blackDuckUrl,
-        @QueryParameter("blackDuckCredentialsId") String blackDuckCredentialsId
-    ) {
+            @QueryParameter("blackDuckUrl") String blackDuckUrl,
+            @QueryParameter("blackDuckCredentialsId") String blackDuckCredentialsId) {
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
-            return FormValidation.warning(
-                "Connection validation could not be completed: Validation couldn't retrieve the instance of Jenkins from the JVM. This may happen if Jenkins is still starting up or if this code is running on a different JVM than your Jenkins server.");
+            return FormValidation.warning(LogMessages.JENKINS_INSTANCE_MISSING_WARNING_MESSAGE);
         }
         jenkins.checkPermission(Jenkins.ADMINISTER);
 
@@ -252,16 +251,18 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
         try {
             AuthenticationSupport authenticationSupport = new AuthenticationSupport();
-            HttpResponse response = authenticationSupport
-                .attemptBlackDuckAuthentication(blackDuckUrl, blackDuckCredentialsId, DEFAULT_TIMEOUT_IN_SECONDS);
+            HttpResponse response = authenticationSupport.attemptBlackDuckAuthentication(
+                    blackDuckUrl, blackDuckCredentialsId, DEFAULT_TIMEOUT_IN_SECONDS);
 
             if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
-                String validationMessage = getValidationMessage(response.getStatusLine().getStatusCode());
+                String validationMessage =
+                        getValidationMessage(response.getStatusLine().getStatusCode());
 
                 return FormValidation.error(String.join(" ", validationMessage));
             }
         } catch (Exception e) {
-            return FormValidation.error("Could not perform the authorization request: " + e.getCause().getMessage());
+            return FormValidation.error("Could not perform the authorization request: "
+                    + e.getCause().getMessage());
         }
 
         return FormValidation.ok("Connection successful.");
@@ -280,13 +281,11 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     @POST
     public FormValidation doTestPolarisConnection(
-        @QueryParameter("polarisServerUrl") String polarisServerUrl,
-        @QueryParameter("polarisCredentialsId") String polarisCredentialsId
-    ) {
+            @QueryParameter("polarisServerUrl") String polarisServerUrl,
+            @QueryParameter("polarisCredentialsId") String polarisCredentialsId) {
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
-            return FormValidation.warning(
-                "Connection validation could not be completed: Validation couldn't retrieve the instance of Jenkins from the JVM. This may happen if Jenkins is still starting up or if this code is running on a different JVM than your Jenkins server.");
+            return FormValidation.warning(LogMessages.JENKINS_INSTANCE_MISSING_WARNING_MESSAGE);
         }
         jenkins.checkPermission(Jenkins.ADMINISTER);
 
@@ -299,16 +298,18 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
         try {
             AuthenticationSupport authenticationSupport = new AuthenticationSupport();
-            HttpResponse response = authenticationSupport
-                .attemptPolarisAuthentication(polarisServerUrl, polarisCredentialsId, DEFAULT_TIMEOUT_IN_SECONDS);
+            HttpResponse response = authenticationSupport.attemptPolarisAuthentication(
+                    polarisServerUrl, polarisCredentialsId, DEFAULT_TIMEOUT_IN_SECONDS);
 
             if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
-                String validationMessage = getValidationMessage(response.getStatusLine().getStatusCode());
+                String validationMessage =
+                        getValidationMessage(response.getStatusLine().getStatusCode());
 
                 return FormValidation.error(String.join(" ", validationMessage));
             }
         } catch (Exception e) {
-            return FormValidation.error("Could not perform the authorization request: " + e.getCause().getMessage());
+            return FormValidation.error("Could not perform the authorization request: "
+                    + e.getCause().getMessage());
         }
 
         return FormValidation.ok("Connection successful.");
@@ -316,13 +317,11 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     @POST
     public FormValidation doTestCoverityConnection(
-        @QueryParameter("coverityConnectUrl") String coverityConnectUrl,
-        @QueryParameter("coverityCredentialsId") String coverityCredentialsId
-    ) {
+            @QueryParameter("coverityConnectUrl") String coverityConnectUrl,
+            @QueryParameter("coverityCredentialsId") String coverityCredentialsId) {
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
-            return FormValidation.warning(
-                "Connection validation could not be completed: Validation couldn't retrieve the instance of Jenkins from the JVM. This may happen if Jenkins is still starting up or if this code is running on a different JVM than your Jenkins server.");
+            return FormValidation.warning(LogMessages.JENKINS_INSTANCE_MISSING_WARNING_MESSAGE);
         }
         jenkins.checkPermission(Jenkins.ADMINISTER);
 
@@ -335,19 +334,20 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
         try {
             AuthenticationSupport authenticationSupport = new AuthenticationSupport();
-            HttpResponse response = authenticationSupport
-                .attemptCoverityAuthentication(coverityConnectUrl, coverityCredentialsId, DEFAULT_TIMEOUT_IN_SECONDS);
+            HttpResponse response = authenticationSupport.attemptCoverityAuthentication(
+                    coverityConnectUrl, coverityCredentialsId, DEFAULT_TIMEOUT_IN_SECONDS);
 
             if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
-                String validationMessage = getValidationMessage(response.getStatusLine().getStatusCode());
+                String validationMessage =
+                        getValidationMessage(response.getStatusLine().getStatusCode());
 
                 return FormValidation.error(String.join(" ", validationMessage));
             }
         } catch (Exception e) {
-            return FormValidation.error("Could not perform the authorization request: " + e.getCause().getMessage());
+            return FormValidation.error("Could not perform the authorization request: "
+                    + e.getCause().getMessage());
         }
 
         return FormValidation.ok("Connection successful.");
     }
-
 }
