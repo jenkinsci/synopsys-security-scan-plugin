@@ -173,7 +173,12 @@ public class PluginParametersHandler {
             if (key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL)
                     || key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION)
                     || key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY)
-                    || key.equals(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY)) {
+                    || key.equals(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY)
+                    || key.equals(ApplicationConstants.REPORTS_SARIF_CREATE_KEY)
+                    || key.equals(ApplicationConstants.REPORTS_SARIF_FILE_PATH_KEY)
+                    || key.equals(ApplicationConstants.REPORTS_SARIF_ISSUE_TYPES_KEY)
+                    || key.equals(ApplicationConstants.REPORTS_SARIF_SEVERITIES_KEY)
+                    || key.equals(ApplicationConstants.REPORTS_SARIF_GROUPSCAISSUES_KEY)) {
                 Object value = entry.getValue();
                 logger.info(LOG_DASH + key + " = " + value.toString());
             }
