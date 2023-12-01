@@ -101,7 +101,7 @@ public class SecurityScanner {
                         workspace.child(
                                 sarifReportFilePath == null
                                         ? ApplicationConstants.BRIDGE_REPORT_DIRECTORY
-                                        : ApplicationConstants.REPORTS_SARIF_FILE_PATH_KEY),
+                                        : sarifReportFilePath),
                         ReportType.SARIF);
             }
         }
