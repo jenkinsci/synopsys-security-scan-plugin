@@ -25,7 +25,7 @@ import org.kohsuke.stapler.verb.POST;
 @Extension
 public class ScannerGlobalConfig extends GlobalConfiguration implements Serializable {
     private static final long serialVersionUID = -3129542889827231427L;
-    private final int DEFAULT_TIMEOUT_IN_SECONDS = 20;
+    private final int CONNECTION_TIMEOUT_IN_SECONDS = 120;
 
     private String blackDuckUrl;
 
@@ -238,7 +238,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
             @QueryParameter("blackDuckCredentialsId") String blackDuckCredentialsId) {
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
-            return FormValidation.warning(LogMessages.JENKINS_INSTANCE_MISSING_WARNING_MESSAGE);
+            return FormValidation.warning(LogMessages.JENKINS_INSTANCE_MISSING_WARNING);
         }
         jenkins.checkPermission(Jenkins.ADMINISTER);
 
@@ -252,7 +252,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         try {
             AuthenticationSupport authenticationSupport = new AuthenticationSupport();
             HttpResponse response = authenticationSupport.attemptBlackDuckAuthentication(
-                    blackDuckUrl, blackDuckCredentialsId, DEFAULT_TIMEOUT_IN_SECONDS);
+                    blackDuckUrl, blackDuckCredentialsId, CONNECTION_TIMEOUT_IN_SECONDS);
 
             if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
                 String validationMessage =
@@ -285,7 +285,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
             @QueryParameter("polarisCredentialsId") String polarisCredentialsId) {
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
-            return FormValidation.warning(LogMessages.JENKINS_INSTANCE_MISSING_WARNING_MESSAGE);
+            return FormValidation.warning(LogMessages.JENKINS_INSTANCE_MISSING_WARNING);
         }
         jenkins.checkPermission(Jenkins.ADMINISTER);
 
@@ -299,7 +299,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         try {
             AuthenticationSupport authenticationSupport = new AuthenticationSupport();
             HttpResponse response = authenticationSupport.attemptPolarisAuthentication(
-                    polarisServerUrl, polarisCredentialsId, DEFAULT_TIMEOUT_IN_SECONDS);
+                    polarisServerUrl, polarisCredentialsId, CONNECTION_TIMEOUT_IN_SECONDS);
 
             if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
                 String validationMessage =
@@ -321,7 +321,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
             @QueryParameter("coverityCredentialsId") String coverityCredentialsId) {
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
-            return FormValidation.warning(LogMessages.JENKINS_INSTANCE_MISSING_WARNING_MESSAGE);
+            return FormValidation.warning(LogMessages.JENKINS_INSTANCE_MISSING_WARNING);
         }
         jenkins.checkPermission(Jenkins.ADMINISTER);
 
@@ -335,7 +335,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         try {
             AuthenticationSupport authenticationSupport = new AuthenticationSupport();
             HttpResponse response = authenticationSupport.attemptCoverityAuthentication(
-                    coverityConnectUrl, coverityCredentialsId, DEFAULT_TIMEOUT_IN_SECONDS);
+                    coverityConnectUrl, coverityCredentialsId, CONNECTION_TIMEOUT_IN_SECONDS);
 
             if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
                 String validationMessage =
