@@ -184,6 +184,13 @@
         align-items: center;
         justify-content: flex-end;
         }
+
+        /*Override jenkins-validate-button default css*/
+        .jenkins-validate-button__container__status {
+            .validation-error-area {
+            min-height: 24px !important;
+            }
+        }
     </style>
 
     <script type="text/javascript">
