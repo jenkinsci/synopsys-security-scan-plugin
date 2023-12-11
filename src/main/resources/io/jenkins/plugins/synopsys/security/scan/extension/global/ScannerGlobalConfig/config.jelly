@@ -31,7 +31,7 @@
                     <f:validateButton method="testBlackDuckConnection" title="Test connection" progress="Testing..." with="blackDuckUrl,blackDuckCredentialsId"/>
                 </div>
                 <f:entry>
-                    <button type="button" class="jenkins-button ml-7" onclick="clearTabFields('BLACKDUCKSection')">Clear</button>
+                    <button type="button" class="jenkins-button ml-7" onclick="clearTabFieldsAndTestConnectionMessages('BLACKDUCKSection')">Clear</button>
                 </f:entry>
             </div>
         </div>
@@ -52,7 +52,7 @@
                     <f:validateButton method="testCoverityConnection" title="Test connection" progress="Testing..." with="coverityConnectUrl,coverityCredentialsId"/>
                 </div>
                 <f:entry>
-                    <button type="button" class="jenkins-button ml-7" onclick="clearTabFields('COVERITYSection')">Clear</button>
+                    <button type="button" class="jenkins-button ml-7" onclick="clearTabFieldsAndTestConnectionMessages('COVERITYSection')">Clear</button>
                 </f:entry>
             </div>
         </div>
@@ -70,7 +70,7 @@
                     <f:validateButton method="testPolarisConnection" title="Test connection" progress="Testing..." with="polarisServerUrl,polarisCredentialsId"/>
                 </div>
                 <f:entry>
-                    <button type="button" class="jenkins-button ml-7" onclick="clearTabFields('POLARISSection')">Clear</button>
+                    <button type="button" class="jenkins-button ml-7" onclick="clearTabFieldsAndTestConnectionMessages('POLARISSection')">Clear</button>
                 </f:entry>
             </div>
         </div>
@@ -289,13 +289,28 @@
         }
 
         // Function to clear all input fields except those with a specific class
-        function clearTabFields(sectionId) {
+        function clearTabFieldsAndTestConnectionMessages(sectionId) {
+            // Clear tab fields
             var tabSection = document.getElementById(sectionId);
             if (tabSection) {
                 var inputFields = tabSection.querySelectorAll("input, select");
                 inputFields.forEach(function (inputField) {
                     inputField.value = "";
                 });
+            }
+
+            // Clear test connection messages
+            var blackDuckSection = document.getElementById(sectionId);
+            if (blackDuckSection) {
+                var okElement = blackDuckSection.querySelector('.ok');
+                if (okElement) {
+                    okElement.remove();
+                }
+
+                var errorElement = blackDuckSection.querySelector('.error');
+                if (errorElement) {
+                    errorElement.remove();
+                }
             }
         }
 
