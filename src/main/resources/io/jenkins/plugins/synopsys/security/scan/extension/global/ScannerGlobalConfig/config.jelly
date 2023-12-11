@@ -297,17 +297,13 @@
                 inputFields.forEach(function (inputField) {
                     inputField.value = "";
                 });
-            }
 
-            // Clear test connection messages
-            var blackDuckSection = document.getElementById(sectionId);
-            if (blackDuckSection) {
-                var okElement = blackDuckSection.querySelector('.ok');
+                var okElement = tabSection.querySelector('.ok');
                 if (okElement) {
                     okElement.remove();
                 }
 
-                var errorElement = blackDuckSection.querySelector('.error');
+                var errorElement = tabSection.querySelector('.error');
                 if (errorElement) {
                     errorElement.remove();
                 }
