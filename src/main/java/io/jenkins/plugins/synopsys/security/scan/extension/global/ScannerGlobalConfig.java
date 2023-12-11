@@ -345,7 +345,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
             }
         } catch (Exception e) {
             return FormValidation.error("Could not perform the authorization request: "
-                    + e.getCause().getMessage());
+                    + e.getCause().getCause().getMessage());
         }
 
         return FormValidation.ok("Connection successful.");
