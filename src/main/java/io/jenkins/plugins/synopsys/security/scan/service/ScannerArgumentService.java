@@ -16,6 +16,7 @@ import io.jenkins.plugins.synopsys.security.scan.input.NetworkAirGap;
 import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck.BlackDuckParametersService;
@@ -165,6 +166,8 @@ public class ScannerArgumentService {
         String jsonPath = null;
         try {
             String inputJson = mapper.writeValueAsString(inputJsonMap);
+            //TODO: remove this followign line
+            logger.info("========== Input Json:  "+inputJson);
             jsonPath = writeInputJsonToFile(inputJson, jsonPrefix);
         } catch (Exception e) {
             logger.error("An exception occurred while creating input.json file: " + e.getMessage());
@@ -201,14 +204,21 @@ public class ScannerArgumentService {
         if (scmObject instanceof Bitbucket) {
             Bitbucket bitbucket = (Bitbucket) scmObject;
             return bitbucket.getProject().getRepository().getName();
+        } else if(scmObject instanceof Github) {
+            Github github = (Github) scmObject;
+            return github.getRepository().getName();
         }
+        //TODO: gitlab
         return "";
     }
 
     public void setScmObject(BridgeInput bridgeInput, Object scmObject) {
         if (scmObject instanceof Bitbucket) {
             bridgeInput.setBitbucket((Bitbucket) scmObject);
+        } else if (scmObject instanceof Github) {
+            bridgeInput.setGithub((Github) scmObject);
         }
+        //TODO: gitlab
     }
 
     public String writeInputJsonToFile(String inputJson, String jsonPrefix) {

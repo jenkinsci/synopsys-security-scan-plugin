@@ -62,6 +62,7 @@ public class ApplicationConstants {
     public static final String NETWORK_AIRGAP_KEY = "network_airgap";
 
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
+    public static final String GITHUB_TOKEN_KEY = "github_token";
 
     public static final String SYNOPSYS_BRIDGE_DOWNLOAD_URL = "synopsys_bridge_download_url";
     public static final String SYNOPSYS_BRIDGE_DOWNLOAD_VERSION = "synopsys_bridge_download_version";
@@ -74,4 +75,8 @@ public class ApplicationConstants {
     public static final String HTTPS_PROXY = "HTTPS_PROXY";
     public static final String HTTP_PROXY = "HTTP_PROXY";
     public static final String NO_PROXY = "NO_PROXY";
+
+    public static final String BRANCH_NAME = "BRANCH_NAME";
+    public static final String GIT_URL = "GIT_URL";
+
 }
