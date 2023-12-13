@@ -106,9 +106,9 @@
         }
 
         function hideAllDivs() {
-            blackduckDiv.style.display = 'none';
-            coverityDiv.style.display = 'none';
-            polarisDiv.style.display = 'none';
+            document.getElementById('blackduck').style.display='none';
+            document.getElementById('coverity').style.display='none';
+            document.getElementById('polaris').style.display='none';
             clearInputFields(blackduckDiv);
             clearInputFields(coverityDiv);
             clearInputFields(polarisDiv);
@@ -142,55 +142,34 @@
         document.addEventListener('change', function() {
             console.log('here1')
 
-            var selectedOption = document.querySelector('select[name="_.product"]').value;
+            var selectedOption2 = document.querySelector('select[name="_.product"]').value;
 
-            console.log('selectedOption2', selectedOption)
-            if (selectedOption == 'blackduck') {
+            console.log('selectedOption2', selectedOption2)
+            if (selectedOption2 == 'blackduck') {
                 clearInputFields(coverityDiv);
-                hideAParticularDiv(coverityDiv);
+                hideAParticularDiv(document.getElementById('coverity'));
                 clearInputFields(polarisDiv);
-                hideAParticularDiv(polarisDiv);
-                showDiv(blackduckDiv);
-            } else if (selectedOption == 'coverity') {
+                hideAParticularDiv(document.getElementById('polaris'));
+                showDiv(document.getElementById('blackduck'));
+            } else if (selectedOption2 == 'coverity') {
                 clearInputFields(blackduckDiv);
-                hideAParticularDiv(blackduckDiv);
+                hideAParticularDiv(document.getElementById('blackduck'));
                 clearInputFields(polarisDiv);
-                hideAParticularDiv(polarisDiv);
-                showDiv(coverityDiv);
-            } else if (selectedOption == 'polaris') {
+                hideAParticularDiv(document.getElementById('polaris'));
+                showDiv(document.getElementById('coverity'));
+            } else if (selectedOption2 == 'polaris') {
                 clearInputFields(blackduckDiv);
-                hideAParticularDiv(blackduckDiv);
+                hideAParticularDiv(document.getElementById('blackduck'));
                 clearInputFields(coverityDiv);
-                hideAParticularDiv(coverityDiv);
-                showDiv(polarisDiv);
-            }else if (selectedOption == 'select') {
+                hideAParticularDiv(document.getElementById('coverity'));
+                showDiv(document.getElementById('polaris'));
+            }else if (selectedOption2 == 'select') {
                 hideAllDivs();
             }
 
-            // document.querySelector('select[name="_.product"]')?.addEventListener('change', function () {
-            //     console.log('here2')
-            //
-            //     // hideAllDivs();
-            //     var selectedOption = document.querySelector('select[name="_.product"]').value;
-            //
-            //     console.log('selectedOption2', selectedOption)
-            //     if (selectedOption == 'blackduck') {
-            //         clearInputFields(coverityDiv);
-            //         clearInputFields(polarisDiv);
-            //         showDiv(blackduckDiv);
-            //     } else if (selectedOption == 'coverity') {
-            //         clearInputFields(blackduckDiv);
-            //         clearInputFields(polarisDiv);
-            //         showDiv(coverityDiv);
-            //     } else if (selectedOption == 'polaris') {
-            //         clearInputFields(blackduckDiv);
-            //         clearInputFields(coverityDiv);
-            //         showDiv(polarisDiv);
-            //     }else if (selectedOption == 'Select') {
-            //         hideAllDivs();
-            //     }
-            // });
         });
+
+
     </script>
 
 </j:jelly>
