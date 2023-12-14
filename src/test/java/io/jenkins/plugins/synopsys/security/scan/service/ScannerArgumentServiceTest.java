@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
