@@ -95,7 +95,8 @@ public class ScannerArgumentService {
             networkAirGap.setAirgap(isNetworkAirgap);
         }
 
-        if (scanParameters.containsKey(ApplicationConstants.REPORTS_SARIF_CREATE_KEY)) {
+        if (scanParameters.containsKey(ApplicationConstants.REPORTS_SARIF_CREATE_KEY)
+                && envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) == null) {
             sarif = prepareSarifObject(securityProducts, scanParameters);
         }
 
@@ -302,7 +303,7 @@ public class ScannerArgumentService {
                 sarif.setGroupSCAIssues(reports_sarif_groupSCAIssues);
             }
 
-            if (securityProducts.contains(SecurityProduct.BLACKDUCK.name())) {
+            if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
                 if (scanParameters.containsKey(ApplicationConstants.REPORTS_SARIF_ISSUE_TYPES_KEY)) {
                     String reports_sarif_issue_types =
                             (String) scanParameters.get(ApplicationConstants.REPORTS_SARIF_ISSUE_TYPES_KEY);

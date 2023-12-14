@@ -11,11 +11,14 @@ import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.ReportType;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.ScannerArgumentService;
 import io.jenkins.plugins.synopsys.security.scan.service.diagnostics.UploadReportService;
+import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SecurityScanner {
@@ -90,18 +93,27 @@ public class SecurityScanner {
             }
 
             if (Objects.equals(scanParams.get(ApplicationConstants.REPORTS_SARIF_CREATE_KEY), true)) {
-                String sarifReportFilePath = (String) scanParams.get(ApplicationConstants.REPORTS_SARIF_FILE_PATH_KEY);
+                ScanParametersService scanParametersService = new ScanParametersService(listener);
+                Set<String> scanType = scanParametersService.getSynopsysSecurityProducts(scanParams);
+                boolean isBlackDuckScan = scanType.contains(SecurityProduct.BLACKDUCK.name());
+                boolean isPolarisDuckScan = scanType.contains(SecurityProduct.POLARIS.name());
+                String defaultSarifReportFilePath = isBlackDuckScan
+                        ? ApplicationConstants.DEFAULT_BLACKDUCK_SARIF_REPORT_FILE_PATH
+                        : isPolarisDuckScan ? ApplicationConstants.DEFAULT_POLARIS_SARIF_REPORT_FILE_PATH : "";
+                String customSarifReportFilePath =
+                        (String) scanParams.get(ApplicationConstants.REPORTS_SARIF_FILE_PATH_KEY);
+
                 UploadReportService uploadReportService = new UploadReportService(
                         run,
                         listener,
                         launcher,
                         envVars,
-                        new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
+                        new ArtifactArchiver(ApplicationConstants.SARIF_REPORT_FILENAME));
                 uploadReportService.archiveReports(
                         workspace.child(
-                                sarifReportFilePath == null
-                                        ? ApplicationConstants.BRIDGE_REPORT_DIRECTORY
-                                        : sarifReportFilePath),
+                                customSarifReportFilePath == null
+                                        ? defaultSarifReportFilePath
+                                        : customSarifReportFilePath),
                         ReportType.SARIF);
             }
         }

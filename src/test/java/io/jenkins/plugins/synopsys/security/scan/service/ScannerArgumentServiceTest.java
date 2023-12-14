@@ -279,7 +279,7 @@ public class ScannerArgumentServiceTest {
         scanParameters.put(ApplicationConstants.REPORTS_SARIF_GROUPSCAISSUES_KEY, true);
         scanParameters.put(ApplicationConstants.REPORTS_SARIF_ISSUE_TYPES_KEY, "BUG,VULNERABILITY");
 
-        Set<String> securityProducts = new HashSet<>(List.of("BLACKDUCK"));
+        Set<String> securityProducts = new HashSet<>(List.of("POLARIS"));
         Sarif sarif = scannerArgumentService.prepareSarifObject(securityProducts, scanParameters);
 
         assertTrue(sarif.getCreate());
