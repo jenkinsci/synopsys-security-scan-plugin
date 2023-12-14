@@ -59,6 +59,10 @@
                <c:select/>
             </f:entry>
 
+            <f:entry field="githubCredentialsId" title="Github Token (Optional)">
+                <c:select/>
+            </f:entry>
+
             <!-- Place a single info line above the tabs -->
             <div class="tab-info-os">Configure Synopsys Bridge download URL for different platforms</div>
 
