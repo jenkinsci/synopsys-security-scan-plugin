@@ -166,8 +166,6 @@ public class ScannerArgumentService {
         String jsonPath = null;
         try {
             String inputJson = mapper.writeValueAsString(inputJsonMap);
-            //TODO: remove this followign line
-            logger.info("========== Input Json:  "+inputJson);
             jsonPath = writeInputJsonToFile(inputJson, jsonPrefix);
         } catch (Exception e) {
             logger.error("An exception occurred while creating input.json file: " + e.getMessage());
