@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -71,10 +73,13 @@ public class ScannerArgumentServiceTest {
     public void setScmObjectTest() {
         BridgeInput bridgeInput = Mockito.mock(BridgeInput.class);
         Bitbucket bitbucket = Mockito.mock(Bitbucket.class);
+        Github github = Mockito.mock(Github.class);
 
         scannerArgumentService.setScmObject(bridgeInput, bitbucket);
-
         Mockito.verify(bridgeInput).setBitbucket(bitbucket);
+
+        scannerArgumentService.setScmObject(bridgeInput, github);
+        Mockito.verify(bridgeInput).setGithub(github);
     }
 
     @Test
