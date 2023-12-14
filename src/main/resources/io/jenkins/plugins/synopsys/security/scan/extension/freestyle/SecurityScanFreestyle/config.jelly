@@ -80,47 +80,32 @@
     </f:section>
 
     <script type="text/javascript">
-        var synopsysSecurityProduct = document.querySelector('select[name="_.product"]');
 
-        var blackduckDiv = document.getElementById('blackduck');
-        var coverityDiv = document.getElementById('coverity');
-        var polarisDiv = document.getElementById('polaris');
+        var selectedOption = document.querySelector('select[name="_.product"]')?.value;
 
-        var selectedOption = synopsysSecurityProduct?.value;
-        console.log('selectedOption1', synopsysSecurityProduct);
-
-        if (selectedOption == 'blackduck') {
-            clearInputFields(coverityDiv);
-            clearInputFields(polarisDiv);
-            showDiv(blackduckDiv);
-        } else if (selectedOption == 'coverity') {
-            clearInputFields(blackduckDiv);
-            clearInputFields(polarisDiv);
-            showDiv(coverityDiv);
-        } else if (selectedOption == 'polaris') {
-            clearInputFields(blackduckDiv);
-            clearInputFields(coverityDiv);
-            showDiv(polarisDiv);
-        }else if (selectedOption == 'Select') {
-            hideAllDivs();
+        if(selectedOption &amp;&amp; selectedOption !== 'select') {
+            document.getElementById(selectedOption).style.display = 'block';
         }
 
-        function hideAllDivs() {
-            document.getElementById('blackduck').style.display='none';
-            document.getElementById('coverity').style.display='none';
-            document.getElementById('polaris').style.display='none';
-            clearInputFields(blackduckDiv);
-            clearInputFields(coverityDiv);
-            clearInputFields(polarisDiv);
+        function hideAllDivs(blackduckDiv, coverityDiv, polarisDiv) {
+            if(blackduckDiv) {
+                blackduckDiv.style.display='none';
+            }
+            if(coverityDiv) {
+                coverityDiv.style.display='none';
+            }
+            if(polarisDiv) {
+                polarisDiv.style.display='none';
+            }
         }
 
         function hideAParticularDiv(div) {
-            console.log('div', div);
-            div.style.display = 'none';
+            if(div) {
+                div.style.display = 'none';
+            }
         }
 
         function showDiv(div) {
-            console.log('div', div);
             if (div) {
                 div.style.display = 'block';
             }
@@ -140,31 +125,31 @@
         }
 
         document.addEventListener('change', function() {
-            console.log('here1')
+            var selectedOption = document.querySelector('select[name="_.product"]')?.value;
+            var blackduckDiv = document.getElementById('blackduck');
+            var coverityDiv = document.getElementById('coverity');
+            var polarisDiv = document.getElementById('polaris');
 
-            var selectedOption2 = document.querySelector('select[name="_.product"]').value;
-
-            console.log('selectedOption2', selectedOption2)
-            if (selectedOption2 == 'blackduck') {
+            if (selectedOption === 'blackduck') {
                 clearInputFields(coverityDiv);
-                hideAParticularDiv(document.getElementById('coverity'));
+                hideAParticularDiv(polarisDiv);
                 clearInputFields(polarisDiv);
-                hideAParticularDiv(document.getElementById('polaris'));
-                showDiv(document.getElementById('blackduck'));
-            } else if (selectedOption2 == 'coverity') {
+                hideAParticularDiv(coverityDiv);
+                showDiv(blackduckDiv);
+            } else if (selectedOption === 'coverity') {
                 clearInputFields(blackduckDiv);
-                hideAParticularDiv(document.getElementById('blackduck'));
+                hideAParticularDiv(blackduckDiv);
                 clearInputFields(polarisDiv);
-                hideAParticularDiv(document.getElementById('polaris'));
-                showDiv(document.getElementById('coverity'));
-            } else if (selectedOption2 == 'polaris') {
+                hideAParticularDiv(polarisDiv);
+                showDiv(coverityDiv);
+            } else if (selectedOption === 'polaris') {
                 clearInputFields(blackduckDiv);
-                hideAParticularDiv(document.getElementById('blackduck'));
+                hideAParticularDiv(blackduckDiv);
                 clearInputFields(coverityDiv);
-                hideAParticularDiv(document.getElementById('coverity'));
-                showDiv(document.getElementById('polaris'));
-            }else if (selectedOption2 == 'select') {
-                hideAllDivs();
+                hideAParticularDiv(coverityDiv);
+                showDiv(polarisDiv);
+            }else if (selectedOption === 'select') {
+                hideAllDivs(blackduckDiv, coverityDiv, polarisDiv);
             }
 
         });
