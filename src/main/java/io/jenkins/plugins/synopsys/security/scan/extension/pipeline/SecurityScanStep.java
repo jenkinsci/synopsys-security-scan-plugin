@@ -182,6 +182,7 @@ public class SecurityScanStep extends Step implements Serializable {
     public String getBitbucket_token() {
         return bitbucket_token;
     }
+
     public String getGithub_token() {
         return github_token;
     }

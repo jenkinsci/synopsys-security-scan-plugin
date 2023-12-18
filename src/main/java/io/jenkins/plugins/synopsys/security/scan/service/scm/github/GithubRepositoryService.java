@@ -13,8 +13,9 @@ import java.util.Map;
 
 public class GithubRepositoryService {
     private final LoggerWrapper logger;
-    private final String GITHUB_CLOUD_HOST_URL = "https://github.com/";
-    private final String INVALID_GITHUB_REPO_URL = "Invalid Github repository URL";
+    private String GITHUB_CLOUD_HOST_URL = "https://github.com/";
+    private String INVALID_GITHUB_REPO_URL = "Invalid Github repository URL";
+
     public GithubRepositoryService(TaskListener listener) {
         this.logger = new LoggerWrapper(listener);
     }
@@ -44,7 +45,7 @@ public class GithubRepositoryService {
         github.getRepository().getBranch().setName(branchName);
 
         String githubHostUrl = extractGitHubHost(repositoryUrl);
-        if(githubHostUrl.equals(INVALID_GITHUB_REPO_URL)) {
+        if (githubHostUrl.equals(INVALID_GITHUB_REPO_URL)) {
             throw new PluginExceptionHandler(INVALID_GITHUB_REPO_URL);
         } else {
             if (githubHostUrl.startsWith(GITHUB_CLOUD_HOST_URL)) {
@@ -61,7 +62,8 @@ public class GithubRepositoryService {
         try {
             URL gitHubUrl = new URL(url);
             int port = gitHubUrl.getPort();
-            return String.format("%s://%s%s/", gitHubUrl.getProtocol(), gitHubUrl.getHost(), (port == -1) ? "" : ":" + port);
+            return String.format(
+                    "%s://%s%s/", gitHubUrl.getProtocol(), gitHubUrl.getHost(), (port == -1) ? "" : ":" + port);
         } catch (MalformedURLException e) {
             return INVALID_GITHUB_REPO_URL;
         }

@@ -1,16 +1,17 @@
 package io.jenkins.plugins.synopsys.security.scan.service.scm.github;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class GithubRepositoryServiceTest {
     private TaskListener listenerMock;
@@ -38,36 +39,53 @@ public class GithubRepositoryServiceTest {
     void createGithubObjectTest() throws PluginExceptionHandler {
         scanParametersMap.put(ApplicationConstants.GITHUB_TOKEN_KEY, TEST_GITHUB_TOKEN);
 
-        Github githubCloud = githubRepositoryService.createGithubObject(scanParametersMap, TEST_REPOSITORY_NAME,
-                TEST_REPOSITORY_OWNER, TEST_REPOSITORY_PULL_NUMBER, TEST_REPOSITORY_BRANCH_NAME,
-                TEST_REPOSITORY_URL_CLOUD, true);
+        Github githubCloud = githubRepositoryService.createGithubObject(
+                scanParametersMap,
+                TEST_REPOSITORY_NAME,
+                TEST_REPOSITORY_OWNER,
+                TEST_REPOSITORY_PULL_NUMBER,
+                TEST_REPOSITORY_BRANCH_NAME,
+                TEST_REPOSITORY_URL_CLOUD,
+                true);
 
-        assertEquals(githubCloud.getUser().getToken(), scanParametersMap.get(ApplicationConstants.GITHUB_TOKEN_KEY).toString());
+        assertEquals(
+                githubCloud.getUser().getToken(),
+                scanParametersMap.get(ApplicationConstants.GITHUB_TOKEN_KEY).toString());
         assertEquals(githubCloud.getRepository().getName(), TEST_REPOSITORY_NAME);
         assertEquals(githubCloud.getRepository().getOwner().getName(), TEST_REPOSITORY_OWNER);
         assertEquals(githubCloud.getRepository().getPull().getNumber(), TEST_REPOSITORY_PULL_NUMBER);
         assertEquals(githubCloud.getRepository().getBranch().getName(), TEST_REPOSITORY_BRANCH_NAME);
         assertEquals(githubCloud.getHost().getUrl(), "");
 
-        Github githubEnterprise = githubRepositoryService.createGithubObject(scanParametersMap, TEST_REPOSITORY_NAME,
-                TEST_REPOSITORY_OWNER, TEST_REPOSITORY_PULL_NUMBER, TEST_REPOSITORY_BRANCH_NAME,
-                TEST_REPOSITORY_URL_ENTERPRISE, true);
+        Github githubEnterprise = githubRepositoryService.createGithubObject(
+                scanParametersMap,
+                TEST_REPOSITORY_NAME,
+                TEST_REPOSITORY_OWNER,
+                TEST_REPOSITORY_PULL_NUMBER,
+                TEST_REPOSITORY_BRANCH_NAME,
+                TEST_REPOSITORY_URL_ENTERPRISE,
+                true);
 
-
-        assertEquals(githubEnterprise.getUser().getToken(), scanParametersMap.get(ApplicationConstants.GITHUB_TOKEN_KEY).toString());
+        assertEquals(
+                githubEnterprise.getUser().getToken(),
+                scanParametersMap.get(ApplicationConstants.GITHUB_TOKEN_KEY).toString());
         assertEquals(githubEnterprise.getRepository().getName(), TEST_REPOSITORY_NAME);
         assertEquals(githubEnterprise.getRepository().getOwner().getName(), TEST_REPOSITORY_OWNER);
         assertEquals(githubEnterprise.getRepository().getPull().getNumber(), TEST_REPOSITORY_PULL_NUMBER);
         assertEquals(githubEnterprise.getRepository().getBranch().getName(), TEST_REPOSITORY_BRANCH_NAME);
         assertEquals(githubEnterprise.getHost().getUrl(), "https://custom.githubserver.com/");
 
-        Github githubEnterpriseIp = githubRepositoryService.createGithubObject(scanParametersMap, TEST_REPOSITORY_NAME,
-                TEST_REPOSITORY_OWNER, TEST_REPOSITORY_PULL_NUMBER, TEST_REPOSITORY_BRANCH_NAME,
-                TEST_REPOSITORY_ENTERPRISE_IP, true);
+        Github githubEnterpriseIp = githubRepositoryService.createGithubObject(
+                scanParametersMap,
+                TEST_REPOSITORY_NAME,
+                TEST_REPOSITORY_OWNER,
+                TEST_REPOSITORY_PULL_NUMBER,
+                TEST_REPOSITORY_BRANCH_NAME,
+                TEST_REPOSITORY_ENTERPRISE_IP,
+                true);
 
         assertEquals(githubEnterpriseIp.getHost().getUrl(), "https://10.0.0.97:8181/");
     }
-
 
     @Test
     void createGithubObjectPluginExceptionTest() throws PluginExceptionHandler {
@@ -75,9 +93,14 @@ public class GithubRepositoryServiceTest {
 
         assertThrows(
                 PluginExceptionHandler.class,
-                () -> githubRepositoryService.createGithubObject(scanParametersMap, TEST_REPOSITORY_NAME,
-                        TEST_REPOSITORY_OWNER, TEST_REPOSITORY_PULL_NUMBER, TEST_REPOSITORY_BRANCH_NAME,
-                        TEST_REPOSITORY_URL_CLOUD, true));
+                () -> githubRepositoryService.createGithubObject(
+                        scanParametersMap,
+                        TEST_REPOSITORY_NAME,
+                        TEST_REPOSITORY_OWNER,
+                        TEST_REPOSITORY_PULL_NUMBER,
+                        TEST_REPOSITORY_BRANCH_NAME,
+                        TEST_REPOSITORY_URL_CLOUD,
+                        true));
     }
 
     @Test

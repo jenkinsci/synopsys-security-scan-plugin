@@ -75,7 +75,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         save();
     }
 
-
     @DataBoundSetter
     public void setSynopsysBridgeDownloadUrlForMac(String synopsysBridgeDownloadUrlForMac) {
         this.synopsysBridgeDownloadUrlForMac = synopsysBridgeDownloadUrlForMac;

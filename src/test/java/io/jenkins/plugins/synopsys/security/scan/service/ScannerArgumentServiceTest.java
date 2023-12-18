@@ -1,6 +1,7 @@
 package io.jenkins.plugins.synopsys.security.scan.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hudson.EnvVars;
@@ -14,6 +15,9 @@ import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
 import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
+import io.jenkins.plugins.synopsys.security.scan.service.scm.bitbucket.BitbucketRepositoryService;
+import io.jenkins.plugins.synopsys.security.scan.service.scm.github.GithubRepositoryService;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -24,9 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
-import io.jenkins.plugins.synopsys.security.scan.service.scm.bitbucket.BitbucketRepositoryService;
-import io.jenkins.plugins.synopsys.security.scan.service.scm.github.GithubRepositoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,7 +39,6 @@ public class ScannerArgumentServiceTest {
     private final EnvVars envVarsMock = Mockito.mock(EnvVars.class);
     private FilePath workspace;
     private final String TOKEN = "MDJDSROSVC56FAKEKEY";
-
 
     @BeforeEach
     void setUp() {
@@ -81,11 +81,13 @@ public class ScannerArgumentServiceTest {
         blackDuck.setUrl("https://fake.blackduck.url");
         blackDuck.setToken(TOKEN);
 
-        Bitbucket bitbucketObject = BitbucketRepositoryService
-                .createBitbucketObject("https://bitbucket.org", TOKEN, 12, "test", "abc");
+        Bitbucket bitbucketObject =
+                BitbucketRepositoryService.createBitbucketObject("https://bitbucket.org", TOKEN, 12, "test", "abc");
 
         try {
-            String jsonStringNonPrCommentOrFixPr = "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{}}}}";
+            String jsonStringNonPrCommentOrFixPr =
+                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":"
+                            + "\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{}}}}";
 
             String inputJsonPathForNonFixPr = scannerArgumentService.createBridgeInputJson(
                     blackDuck, bitbucketObject, false, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
@@ -104,7 +106,12 @@ public class ScannerArgumentServiceTest {
         }
 
         try {
-            String jsonStringForPrComment = "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{}},\"bitbucket\": { \"api\": { \"url\": \"https://bitbucket.org\", \"token\": \"MDJDSROSVC56FAKEKEY\" }, \"project\": { \"repository\": { \"pull\": { \"number\": 12 }, \"name\": \"test\" }, \"key\": \"abc\" } }}}";
+            String jsonStringForPrComment =
+                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\""
+                            + ",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{}},\"bitbucket\": { \"api\": "
+                            + "{ \"url\": \"https://bitbucket.org\", \"token\": \"MDJDSROSVC56FAKEKEY\" }, \"project\": "
+                            + "{ \"repository\": { \"pull\": { \"number\": 12 }, \"name\": \"test\" }, "
+                            + "\"key\": \"abc\" } }}}";
             String inputJsonPathForPrComment = scannerArgumentService.createBridgeInputJson(
                     blackDuck, bitbucketObject, true, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
             Path filePath = Paths.get(inputJsonPathForPrComment);
@@ -121,7 +128,6 @@ public class ScannerArgumentServiceTest {
             throw new RuntimeException(e);
         }
     }
-
 
     @Test
     public void setScmObjectTest() {
@@ -180,15 +186,20 @@ public class ScannerArgumentServiceTest {
     }
 
     @Test
-    public void github_coverityInputJsonTest() throws PluginExceptionHandler{
+    public void github_coverityInputJsonTest() throws PluginExceptionHandler {
         ObjectMapper objectMapper = new ObjectMapper();
         GithubRepositoryService githubRepositoryService = new GithubRepositoryService(listenerMock);
 
         Map<String, Object> scanParametersMap = new HashMap<>();
         scanParametersMap.put(ApplicationConstants.GITHUB_TOKEN_KEY, TOKEN);
 
-
-        String jsonStringForPrComment = "{\"data\":{\"coverity\":{\"connect\":{\"url\":\"https://fake.coverity.url\",\"user\":{\"name\":\"fake-user\",\"password\":\"fakeUserPassword\"},\"project\":{\"name\":\"fake-repo\"},\"stream\":{\"name\":\"fake-repo-fake-branch\"},\"policy\":{}},\"install\":{},\"automation\":{},\"local\":false},\"github\":{\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"name\":\"fake-repo\",\"owner\":{\"name\":\"fake-owner\"},\"pull\":{\"number\":1},\"branch\":{\"name\":\"fake-branch\"}},\"host\":{\"url\":\"\"}}}}";
+        String jsonStringForPrComment = "{\"data\":{\"coverity\":{\"connect\":{\"url\":\"https://fake.coverity.url\","
+                + "\"user\":{\"name\":\"fake-user\",\"password\":\"fakeUserPassword\"},"
+                + "\"project\":{\"name\":\"fake-repo\"},\"stream\":{\"name\":\"fake-repo-fake-branch\"},"
+                + "\"policy\":{}},\"install\":{},\"automation\":{},\"local\":false},"
+                + "\"github\":{\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"name\":\"fake-repo\""
+                + ",\"owner\":{\"name\":\"fake-owner\"},\"pull\":{\"number\":1},\"branch\":{\"name\":"
+                + "\"fake-branch\"}},\"host\":{\"url\":\"\"}}}}";
 
         Coverity coverity = new Coverity();
         coverity.getConnect().setUrl("https://fake.coverity.url");
@@ -196,9 +207,14 @@ public class ScannerArgumentServiceTest {
         coverity.getConnect().getUser().setPassword("fakeUserPassword");
 
         try {
-            Github github = githubRepositoryService.createGithubObject(scanParametersMap, "fake-repo",
-                    "fake-owner", 1, "fake-branch",
-                    "https://github.com/user/fake-repo.git",true);
+            Github github = githubRepositoryService.createGithubObject(
+                    scanParametersMap,
+                    "fake-repo",
+                    "fake-owner",
+                    1,
+                    "fake-branch",
+                    "https://github.com/user/fake-repo.git",
+                    true);
             String inputJsonPath = scannerArgumentService.createBridgeInputJson(
                     coverity, github, true, null, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX);
             Path filePath = Paths.get(inputJsonPath);

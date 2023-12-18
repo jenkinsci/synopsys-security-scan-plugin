@@ -78,5 +78,4 @@ public class ApplicationConstants {
 
     public static final String BRANCH_NAME = "BRANCH_NAME";
     public static final String GIT_URL = "GIT_URL";
-
 }

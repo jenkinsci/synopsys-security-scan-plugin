@@ -16,11 +16,9 @@ import io.jenkins.plugins.synopsys.security.scan.global.*;
 import io.jenkins.plugins.synopsys.security.scan.global.ScanCredentialsHelper;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.ScannerArgumentService;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 import jenkins.model.GlobalConfiguration;
 
 public class ScanParametersFactory {
@@ -351,11 +349,11 @@ public class ScanParametersFactory {
 
         boolean isValid = !Utility.isStringNullOrBlank(product)
                 && Arrays.stream(product.split(","))
-                .map(String::trim)
-                .map(String::toUpperCase)
-                .allMatch(p -> p.equals(SecurityProduct.BLACKDUCK.name())
-                        || p.equals(SecurityProduct.POLARIS.name())
-                        || p.equals(SecurityProduct.COVERITY.name()));
+                        .map(String::trim)
+                        .map(String::toUpperCase)
+                        .allMatch(p -> p.equals(SecurityProduct.BLACKDUCK.name())
+                                || p.equals(SecurityProduct.POLARIS.name())
+                                || p.equals(SecurityProduct.COVERITY.name()));
 
         if (!isValid) {
             logger.error(LogMessages.INVALID_SYNOPSYS_SECURITY_PRODUCT);

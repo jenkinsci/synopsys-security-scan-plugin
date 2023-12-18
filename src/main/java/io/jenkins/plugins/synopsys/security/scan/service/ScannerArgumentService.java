@@ -202,11 +202,11 @@ public class ScannerArgumentService {
         if (scmObject instanceof Bitbucket) {
             Bitbucket bitbucket = (Bitbucket) scmObject;
             return bitbucket.getProject().getRepository().getName();
-        } else if(scmObject instanceof Github) {
+        } else if (scmObject instanceof Github) {
             Github github = (Github) scmObject;
             return github.getRepository().getName();
         }
-        //TODO: gitlab
+        // TODO: gitlab
         return "";
     }
 
@@ -216,7 +216,7 @@ public class ScannerArgumentService {
         } else if (scmObject instanceof Github) {
             bridgeInput.setGithub((Github) scmObject);
         }
-        //TODO: gitlab
+        // TODO: gitlab
     }
 
     public String writeInputJsonToFile(String inputJson, String jsonPrefix) {
