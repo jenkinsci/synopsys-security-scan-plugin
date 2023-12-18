@@ -52,7 +52,6 @@ public class SCMRepositoryService {
                     repositoryUrl,
                     isFixPrOrPrComment);
         }
-        // TODO: gitlab
         return null;
     }
 

@@ -206,7 +206,6 @@ public class ScannerArgumentService {
             Github github = (Github) scmObject;
             return github.getRepository().getName();
         }
-        // TODO: gitlab
         return "";
     }
 
@@ -216,7 +215,6 @@ public class ScannerArgumentService {
         } else if (scmObject instanceof Github) {
             bridgeInput.setGithub((Github) scmObject);
         }
-        // TODO: gitlab
     }
 
     public String writeInputJsonToFile(String inputJson, String jsonPrefix) {
