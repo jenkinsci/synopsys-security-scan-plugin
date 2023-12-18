@@ -35,9 +35,6 @@ public class GithubRepositoryService {
             throw new PluginExceptionHandler(LogMessages.NO_GITHUB_TOKEN_FOUND);
         }
 
-        logger.info("Github token: ========= " + githubToken);
-
-
         Github github = new Github();
 
         github.getUser().setToken(githubToken);
