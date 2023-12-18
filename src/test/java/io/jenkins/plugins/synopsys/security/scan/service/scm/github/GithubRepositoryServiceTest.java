@@ -23,7 +23,6 @@ public class GithubRepositoryServiceTest {
     private final String TEST_REPOSITORY_NAME = "TEST_REPO";
     private final String TEST_REPOSITORY_OWNER = "TEST_OWNER";
     private final String TEST_REPOSITORY_BRANCH_NAME = "TEST_BRANCH";
-    private final String TEST_PROJECT_KEY = "my_key";
     private Map<String, Object> scanParametersMap;
 
     @BeforeEach

@@ -46,6 +46,7 @@ public class SCMRepositoryService {
             return githubRepositoryService.createGithubObject(
                     scanParameters, repositoryName, repositoryOwner, projectRepositoryPullNumber, branchName, repositoryUrl, isFixPrOrPrComment);
         }
+        //TODO: gitlab
         return null;
     }
 
