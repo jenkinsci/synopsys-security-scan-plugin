@@ -1,0 +1,160 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+    <div id="product">
+        <f:entry field="product" title="Select Security Product">
+            <f:select/>
+        </f:entry>
+    </div>
+
+    <div id="blackduck" style="display: none;">
+        <f:section title="Black Duck Parameters">
+            <f:entry field="blackduck_scan_failure_severities" title="Black Duck Scan Failure Severities (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="blackduck_download_url" title="Black Duck Download URL (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="blackduck_scan_full" title="Black Duck Full Scan (Optional)">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="blackduck_automation_prcomment" title="Add Comments to Pull Requests (Optional)">
+                <f:checkbox/>
+            </f:entry>
+            <!--        <f:entry field="bridge_blackduck_automation_fixpr" title="Create Fix Pull Requests">-->
+            <!--            <f:checkbox/>-->
+            <!--        </f:entry>-->
+        </f:section>
+    </div>
+
+    <div id="coverity" style="display: none;">
+        <f:section title="Coverity Parameters">
+            <f:entry field="coverity_project_name" title="Coverity Project Name (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_stream_name" title="Coverity Stream Name (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_policy_view" title="Coverity Policy View (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_version" title="Coverity Version Number (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_automation_prcomment" title="Add Comments to Pull Requests (Optional)">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
+                <f:checkbox/>
+            </f:entry>
+        </f:section>
+    </div>
+
+    <div id="polaris" style="display: none;">
+        <f:section title="Polaris Parameters">
+            <f:entry field="polaris_application_name" title="Polaris Application Name (Mandatory)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_project_name" title="Polaris Project Name (Mandatory)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_assessment_types" title="Polaris Assessment Types (Mandatory)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_branch_name" title="Polaris Branch Name (Mandatory)">
+                <f:textbox/>
+            </f:entry>
+        </f:section>
+    </div>
+
+    <f:section title="Additional Options">
+        <f:entry field="include_diagnostics" title="Include Diagnostics (Optional)">
+            <f:checkbox/>
+        </f:entry>
+        <f:entry field="network_airgap" title="Network Airgap (Optional)">
+            <f:checkbox/>
+        </f:entry>
+    </f:section>
+
+    <script type="text/javascript">
+
+        var selectedOption = document.querySelector('select[name="_.product"]')?.value;
+
+        if(selectedOption &amp;&amp; selectedOption !== 'select') {
+            document.getElementById(selectedOption).style.display = 'block';
+        }
+
+        function hideAllDivs(blackduckDiv, coverityDiv, polarisDiv) {
+            if(blackduckDiv) {
+                blackduckDiv.style.display='none';
+            }
+            if(coverityDiv) {
+                coverityDiv.style.display='none';
+            }
+            if(polarisDiv) {
+                polarisDiv.style.display='none';
+            }
+        }
+
+        function hideAParticularDiv(div) {
+            if(div) {
+                div.style.display = 'none';
+            }
+        }
+
+        function showDiv(div) {
+            if (div) {
+                div.style.display = 'block';
+            }
+        }
+
+        function clearInputFields(div) {
+            if (div) {
+                var inputFields = div.querySelectorAll('input[type="text"], input[type="checkbox"]');
+                inputFields.forEach(function (field) {
+                    if (field.type === 'text') {
+                        field.value = '';
+                    } else if (field.type === 'checkbox') {
+                        field.checked = false;
+                    }
+                });
+            }
+        }
+
+        document.addEventListener('change', function() {
+            var selectedOption = document.querySelector('select[name="_.product"]')?.value;
+            var blackduckDiv = document.getElementById('blackduck');
+            var coverityDiv = document.getElementById('coverity');
+            var polarisDiv = document.getElementById('polaris');
+
+            if (selectedOption === 'blackduck') {
+                clearInputFields(coverityDiv);
+                hideAParticularDiv(polarisDiv);
+                clearInputFields(polarisDiv);
+                hideAParticularDiv(coverityDiv);
+                showDiv(blackduckDiv);
+            } else if (selectedOption === 'coverity') {
+                clearInputFields(blackduckDiv);
+                hideAParticularDiv(blackduckDiv);
+                clearInputFields(polarisDiv);
+                hideAParticularDiv(polarisDiv);
+                showDiv(coverityDiv);
+            } else if (selectedOption === 'polaris') {
+                clearInputFields(blackduckDiv);
+                hideAParticularDiv(blackduckDiv);
+                clearInputFields(coverityDiv);
+                hideAParticularDiv(coverityDiv);
+                showDiv(polarisDiv);
+            }else if (selectedOption === 'select') {
+                hideAllDivs(blackduckDiv, coverityDiv, polarisDiv);
+            }
+
+        });
+
+
+    </script>
+
+</j:jelly>
