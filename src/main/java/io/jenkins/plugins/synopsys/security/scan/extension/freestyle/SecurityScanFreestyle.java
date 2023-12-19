@@ -407,6 +407,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
             return jobType.isAssignableFrom(FreeStyleProject.class);
         }
 
+        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
         public ListBoxModel doFillProductItems() {
             ListBoxModel items = new ListBoxModel();
             Map<String, String> customLabels = new HashMap<>();
