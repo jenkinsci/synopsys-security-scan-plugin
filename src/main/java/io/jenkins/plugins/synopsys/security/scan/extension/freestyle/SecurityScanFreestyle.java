@@ -5,11 +5,6 @@ import hudson.*;
 import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
@@ -17,10 +12,11 @@ import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
+import java.util.HashMap;
+import java.util.Map;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-
 
 public class SecurityScanFreestyle extends Builder implements SecurityScan, SimpleBuildStep {
     private String product;
@@ -362,16 +358,20 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
                 this, ScanParametersFactory.getGlobalConfigurationValues(workspace, listener), listener);
     }
 
-
     @Override
-    public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
+    public void perform(
+            @NonNull Run<?, ?> run,
+            @NonNull FilePath workspace,
+            @NonNull EnvVars env,
+            @NonNull Launcher launcher,
+            @NonNull TaskListener listener) {
 
-        listener.getLogger().println("**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
-
-        int result;
+        listener.getLogger()
+                .println(
+                        "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
         try {
-            result = ScanParametersFactory.createPipelineCommand(run, listener, env, launcher, null, workspace)
+            ScanParametersFactory.createPipelineCommand(run, listener, env, launcher, null, workspace)
                     .initializeScanner(getParametersMap(workspace, listener));
         } catch (Exception e) {
             if (e instanceof PluginExceptionHandler) {
@@ -388,9 +388,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
                 }
             }
         } finally {
-            listener.getLogger().println("**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+            listener.getLogger()
+                    .println(
+                            "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
         }
-
     }
 
     @Extension
@@ -405,7 +406,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         public boolean isApplicable(Class<? extends AbstractProject> jobType) {
             return jobType.isAssignableFrom(FreeStyleProject.class);
         }
-
 
         public ListBoxModel doFillProductItems() {
             ListBoxModel items = new ListBoxModel();

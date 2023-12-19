@@ -12,7 +12,6 @@ import io.jenkins.plugins.synopsys.security.scan.SecurityScanner;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.global.ScannerGlobalConfig;
-import io.jenkins.plugins.synopsys.security.scan.extension.pipeline.SecurityScanStep;
 import io.jenkins.plugins.synopsys.security.scan.global.*;
 import io.jenkins.plugins.synopsys.security.scan.global.ScanCredentialsHelper;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
@@ -166,7 +165,8 @@ public class ScanParametersFactory {
 
         if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_install_directory())) {
             blackDuckParameters.put(
-                    ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY, securityScan.getBlackduck_install_directory());
+                    ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY,
+                    securityScan.getBlackduck_install_directory());
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_scan_failure_severities())) {
@@ -215,15 +215,18 @@ public class ScanParametersFactory {
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getCoverity_project_name())) {
-            coverityParameters.put(ApplicationConstants.COVERITY_PROJECT_NAME_KEY, securityScan.getCoverity_project_name());
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_PROJECT_NAME_KEY, securityScan.getCoverity_project_name());
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getCoverity_stream_name())) {
-            coverityParameters.put(ApplicationConstants.COVERITY_STREAM_NAME_KEY, securityScan.getCoverity_stream_name());
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_STREAM_NAME_KEY, securityScan.getCoverity_stream_name());
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getCoverity_policy_view())) {
-            coverityParameters.put(ApplicationConstants.COVERITY_POLICY_VIEW_KEY, securityScan.getCoverity_policy_view());
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_POLICY_VIEW_KEY, securityScan.getCoverity_policy_view());
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getCoverity_install_directory())) {
@@ -241,7 +244,8 @@ public class ScanParametersFactory {
 
         if (securityScan.isCoverity_automation_prcomment() != null) {
             coverityParameters.put(
-                    ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY, securityScan.isCoverity_automation_prcomment());
+                    ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
+                    securityScan.isCoverity_automation_prcomment());
         }
 
         return coverityParameters;
@@ -286,7 +290,8 @@ public class ScanParametersFactory {
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getPolaris_access_token())) {
-            polarisParametersMap.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, securityScan.getPolaris_access_token());
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, securityScan.getPolaris_access_token());
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getPolaris_application_name())) {
@@ -295,7 +300,8 @@ public class ScanParametersFactory {
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getPolaris_project_name())) {
-            polarisParametersMap.put(ApplicationConstants.POLARIS_PROJECT_NAME_KEY, securityScan.getPolaris_project_name());
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_PROJECT_NAME_KEY, securityScan.getPolaris_project_name());
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getPolaris_assessment_types())) {
@@ -308,7 +314,8 @@ public class ScanParametersFactory {
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getPolaris_branch_name())) {
-            polarisParametersMap.put(ApplicationConstants.POLARIS_BRANCH_NAME_KEY, securityScan.getPolaris_branch_name());
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_BRANCH_NAME_KEY, securityScan.getPolaris_branch_name());
         }
 
         //        if (!Utility.isStringNullOrBlank(securityScan.getBridge_polaris_branch_parent_name())) {
@@ -340,11 +347,11 @@ public class ScanParametersFactory {
 
         boolean isValid = !Utility.isStringNullOrBlank(product)
                 && Arrays.stream(product.split(","))
-                .map(String::trim)
-                .map(String::toUpperCase)
-                .allMatch(p -> p.equals(SecurityProduct.BLACKDUCK.name())
-                        || p.equals(SecurityProduct.POLARIS.name())
-                        || p.equals(SecurityProduct.COVERITY.name()));
+                        .map(String::trim)
+                        .map(String::toUpperCase)
+                        .allMatch(p -> p.equals(SecurityProduct.BLACKDUCK.name())
+                                || p.equals(SecurityProduct.POLARIS.name())
+                                || p.equals(SecurityProduct.COVERITY.name()));
 
         if (!isValid) {
             logger.error(LogMessages.INVALID_SYNOPSYS_SECURITY_PRODUCT);
