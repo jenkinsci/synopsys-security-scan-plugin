@@ -5,10 +5,13 @@ import hudson.EnvVars;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.service.scm.bitbucket.BitbucketRepositoryService;
+import io.jenkins.plugins.synopsys.security.scan.service.scm.github.GithubRepositoryService;
 import java.util.Map;
 import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSource;
 import jenkins.scm.api.SCMSourceOwner;
+import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
 
 public class SCMRepositoryService {
     private final TaskListener listener;
@@ -31,6 +34,23 @@ public class SCMRepositoryService {
             BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
             return bitbucketRepositoryService.fetchBitbucketRepositoryDetails(
                     scanParameters, bitbucketSCMSource, projectRepositoryPullNumber, isFixPrOrPrComment);
+        } else if (scmSource instanceof GitHubSCMSource) {
+            GithubRepositoryService githubRepositoryService = new GithubRepositoryService(listener);
+            GitHubSCMSource gitHubSCMSource = (GitHubSCMSource) scmSource;
+
+            String repositoryOwner = gitHubSCMSource.getRepoOwner();
+            String repositoryName = gitHubSCMSource.getRepository();
+            String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
+            String repositoryUrl = envVars.get(ApplicationConstants.GIT_URL);
+
+            return githubRepositoryService.createGithubObject(
+                    scanParameters,
+                    repositoryName,
+                    repositoryOwner,
+                    projectRepositoryPullNumber,
+                    branchName,
+                    repositoryUrl,
+                    isFixPrOrPrComment);
         }
         return null;
     }

@@ -1,4 +1,4 @@
-package io.jenkins.plugins.synopsys.security.scan.service.scm;
+package io.jenkins.plugins.synopsys.security.scan.service.scm.bitbucket;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;

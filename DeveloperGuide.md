@@ -13,7 +13,7 @@ To work with the project locally and run it with a Jenkins server, follow these 
 
 2. Build the project:
 ```
-./mvnw clean install -Dspotbugs.skip=true
+./mvnw clean install
 ```
 
 3. Generate the `hpi` file:
@@ -29,7 +29,7 @@ The generated `hpi` file can be found in the `target` folder of your project dir
 
 * Build the project:
 ```
-./mvnw clean install -Dspotbugs.skip=true
+./mvnw clean install
 ```
 
 * Generate the `hpi` file:
