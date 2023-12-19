@@ -43,6 +43,25 @@ public class Utility {
         return os;
     }
 
+    public static String getAgentOsArch(FilePath workspace, TaskListener listener) {
+        String arch = null;
+        LoggerWrapper logger = new LoggerWrapper(listener);
+
+        if (workspace.isRemote()) {
+            try {
+                arch = workspace.act(new OsArchTask());
+            } catch (IOException | InterruptedException e) {
+                logger.error("An exception occurred while fetching the OS information for the agent node: "
+                        + e.getMessage());
+                Thread.currentThread().interrupt();
+            }
+        } else {
+            arch = System.getProperty("os.arch").toLowerCase();
+        }
+
+        return arch;
+    }
+
     public static void removeFile(String filePath, FilePath workspace, TaskListener listener) {
         LoggerWrapper logger = new LoggerWrapper(listener);
         try {

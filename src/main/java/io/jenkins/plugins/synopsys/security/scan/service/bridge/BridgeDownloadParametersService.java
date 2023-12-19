@@ -143,7 +143,12 @@ public class BridgeDownloadParametersService {
         if (os.contains("win")) {
             return ApplicationConstants.PLATFORM_WINDOWS;
         } else if (os.contains("mac")) {
-            return ApplicationConstants.PLATFORM_MAC;
+            String arch = Utility.getAgentOsArch(workspace, listener);
+            if (arch.startsWith("arm") || arch.startsWith("aarch")) {
+                return ApplicationConstants.PLATFORM_MAC_ARM;
+            } else {
+                return ApplicationConstants.PLATFORM_MACOSX;
+            }
         } else {
             return ApplicationConstants.PLATFORM_LINUX;
         }
