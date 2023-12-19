@@ -25,4 +25,6 @@ public class LogMessages {
             "An exception occurred while installing/downloading synopsys-bridge: %s";
     public static final String INVALID_SYNOPSYS_SECURITY_PRODUCT = "Invalid Synopsys Security Product!";
     public static final String SYNOPSYS_BRIDGE_DOWNLOAD_FAILED = "Synopsys bridge download failed!";
+    public static final String JENKINS_INSTANCE_MISSING_WARNING =
+            "Connection validation could not be completed: Validation couldn't retrieve the instance of Jenkins from the JVM. This may happen if Jenkins is still starting up or if this code is running on a different JVM than your Jenkins server.";
 }
