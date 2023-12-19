@@ -4,18 +4,28 @@ import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.cloudbees.plugins.credentials.impl.BaseStandardCredentials;
 import hudson.Extension;
 import hudson.security.ACL;
+import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.ScanCredentialsHelper;
+import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
 import java.util.Collections;
+import java.util.Locale;
 import jenkins.model.GlobalConfiguration;
 import jenkins.model.Jenkins;
+import org.apache.http.HttpResponse;
+import org.apache.http.impl.EnglishReasonPhraseCatalog;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 @Extension
 public class ScannerGlobalConfig extends GlobalConfiguration implements Serializable {
     private static final long serialVersionUID = -3129542889827231427L;
+    private final int CONNECTION_TIMEOUT_IN_SECONDS = 120;
 
     private String blackDuckUrl;
 
@@ -235,5 +245,124 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     public ListBoxModel doFillGithubCredentialsIdItems() {
         return getOptionsWithApiTokenCredentials();
+    }
+
+    @POST
+    public FormValidation doTestBlackDuckConnection(
+            @QueryParameter("blackDuckUrl") String blackDuckUrl,
+            @QueryParameter("blackDuckCredentialsId") String blackDuckCredentialsId) {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return FormValidation.warning(LogMessages.JENKINS_INSTANCE_MISSING_WARNING);
+        }
+        jenkins.checkPermission(Jenkins.ADMINISTER);
+
+        if (Utility.isStringNullOrBlank(blackDuckUrl)) {
+            return FormValidation.error("The Black Duck url must be specified");
+        }
+        if (Utility.isStringNullOrBlank(blackDuckCredentialsId)) {
+            return FormValidation.error("The Black Duck credentials must be specified");
+        }
+
+        try {
+            AuthenticationSupport authenticationSupport = new AuthenticationSupport();
+            HttpResponse response = authenticationSupport.attemptBlackDuckAuthentication(
+                    blackDuckUrl, blackDuckCredentialsId, CONNECTION_TIMEOUT_IN_SECONDS);
+
+            if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
+                String validationMessage =
+                        getValidationMessage(response.getStatusLine().getStatusCode());
+
+                return FormValidation.error(String.join(" ", validationMessage));
+            }
+        } catch (Exception e) {
+            return FormValidation.error("Could not perform the authorization request: "
+                    + e.getCause().getMessage());
+        }
+
+        return FormValidation.ok("Connection successful.");
+    }
+
+    private String getValidationMessage(int statusCode) {
+        String validationMessage;
+        try {
+            String statusPhrase = EnglishReasonPhraseCatalog.INSTANCE.getReason(statusCode, Locale.ENGLISH);
+            validationMessage = String.format("ERROR: Connection attempt returned %s %s", statusCode, statusPhrase);
+        } catch (IllegalArgumentException ignored) {
+            validationMessage = "ERROR: Connection could not be established.";
+        }
+        return validationMessage;
+    }
+
+    @POST
+    public FormValidation doTestPolarisConnection(
+            @QueryParameter("polarisServerUrl") String polarisServerUrl,
+            @QueryParameter("polarisCredentialsId") String polarisCredentialsId) {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return FormValidation.warning(LogMessages.JENKINS_INSTANCE_MISSING_WARNING);
+        }
+        jenkins.checkPermission(Jenkins.ADMINISTER);
+
+        if (Utility.isStringNullOrBlank(polarisServerUrl)) {
+            return FormValidation.error("The Polaris server url must be specified");
+        }
+        if (Utility.isStringNullOrBlank(polarisCredentialsId)) {
+            return FormValidation.error("The Polaris credentials must be specified");
+        }
+
+        try {
+            AuthenticationSupport authenticationSupport = new AuthenticationSupport();
+            HttpResponse response = authenticationSupport.attemptPolarisAuthentication(
+                    polarisServerUrl, polarisCredentialsId, CONNECTION_TIMEOUT_IN_SECONDS);
+
+            if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
+                String validationMessage =
+                        getValidationMessage(response.getStatusLine().getStatusCode());
+
+                return FormValidation.error(String.join(" ", validationMessage));
+            }
+        } catch (Exception e) {
+            return FormValidation.error("Could not perform the authorization request: "
+                    + e.getCause().getMessage());
+        }
+
+        return FormValidation.ok("Connection successful.");
+    }
+
+    @POST
+    public FormValidation doTestCoverityConnection(
+            @QueryParameter("coverityConnectUrl") String coverityConnectUrl,
+            @QueryParameter("coverityCredentialsId") String coverityCredentialsId) {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return FormValidation.warning(LogMessages.JENKINS_INSTANCE_MISSING_WARNING);
+        }
+        jenkins.checkPermission(Jenkins.ADMINISTER);
+
+        if (Utility.isStringNullOrBlank(coverityConnectUrl)) {
+            return FormValidation.error("The Coverity connect url must be specified");
+        }
+        if (Utility.isStringNullOrBlank(coverityCredentialsId)) {
+            return FormValidation.error("The Coverity credentials must be specified");
+        }
+
+        try {
+            AuthenticationSupport authenticationSupport = new AuthenticationSupport();
+            HttpResponse response = authenticationSupport.attemptCoverityAuthentication(
+                    coverityConnectUrl, coverityCredentialsId, CONNECTION_TIMEOUT_IN_SECONDS);
+
+            if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
+                String validationMessage =
+                        getValidationMessage(response.getStatusLine().getStatusCode());
+
+                return FormValidation.error(String.join(" ", validationMessage));
+            }
+        } catch (Exception e) {
+            return FormValidation.error("Could not perform the authorization request: "
+                    + e.getCause().getCause().getMessage());
+        }
+
+        return FormValidation.ok("Connection successful.");
     }
 }

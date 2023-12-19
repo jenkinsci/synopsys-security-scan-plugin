@@ -26,7 +26,14 @@
             <f:entry field="blackDuckInstallationPath" title="Black Duck Install Directory(Optional)">
                 <f:textbox name="blackDuckInstallationPath" />
             </f:entry>
-            <button type="button" class="clear-button" onclick="clearTabFields('BLACKDUCKSection')">Clear</button>
+            <div class="button-container">
+                <div class="flex-1">
+                    <f:validateButton method="testBlackDuckConnection" title="Test connection" progress="Testing..." with="blackDuckUrl,blackDuckCredentialsId"/>
+                </div>
+                <f:entry>
+                    <button type="button" class="jenkins-button ml-7" onclick="clearTabFieldsAndTestConnectionMessages('BLACKDUCKSection')">Clear</button>
+                </f:entry>
+            </div>
         </div>
 
         <!-- Coverity Configuration -->
@@ -40,7 +47,14 @@
             <f:entry field="coverityInstallationPath" title="Coverity Install Directory (Optional)">
                 <f:textbox name="coverityInstallationPath" />
             </f:entry>
-            <button type="button" class="clear-button" onclick="clearTabFields('COVERITYSection')">Clear</button>
+            <div class="button-container">
+                <div class="flex-1">
+                    <f:validateButton method="testCoverityConnection" title="Test connection" progress="Testing..." with="coverityConnectUrl,coverityCredentialsId"/>
+                </div>
+                <f:entry>
+                    <button type="button" class="jenkins-button ml-7" onclick="clearTabFieldsAndTestConnectionMessages('COVERITYSection')">Clear</button>
+                </f:entry>
+            </div>
         </div>
 
         <!-- Polaris Configuration -->
@@ -51,7 +65,14 @@
             <f:entry field="polarisCredentialsId" title="Polaris Access Token">
                 <c:select/>
             </f:entry>
-            <button type="button" class="clear-button" onclick="clearTabFields('POLARISSection')">Clear</button>
+            <div class="button-container">
+                <div class="flex-1">
+                    <f:validateButton method="testPolarisConnection" title="Test connection" progress="Testing..." with="polarisServerUrl,polarisCredentialsId"/>
+                </div>
+                <f:entry>
+                    <button type="button" class="jenkins-button ml-7" onclick="clearTabFieldsAndTestConnectionMessages('POLARISSection')">Clear</button>
+                </f:entry>
+            </div>
         </div>
 
         <div>
@@ -128,7 +149,7 @@
         .scan-type-section, .os-type-section {
         border: 2px dashed var(--input-border);
         border-radius: 10px;
-        padding: 10px;
+        padding: 10px 10px 0px 10px;
         margin-top: 10px;
         margin-bottom: 20px;
         }
@@ -154,20 +175,25 @@
         margin-bottom: 20px; /* Adjust the margin as needed */
         }
 
-        /* Style the Clear button */
-        .clear-button {
-        background-color: #fff; /* Button background color */
-        border: 1px solid #ccc; /* Button border */
-        border-radius: 5px; /* Rounded corners */
-        padding: 5px 10px; /* Padding around the button text */
-        cursor: pointer; /* Cursor on hover */
-        transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+        .ml-7 {
+        margin-left: 7px;
         }
 
-        /* Style the Clear button on hover */
-        .clear-button:hover {
-        background-color: red; /* Background color on hover */
-        color: #fff; /* Text color on hover (white) */
+        .flex-1 {
+        flex: 1;
+        }
+
+        .button-container {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        }
+
+        /*Override jenkins-validate-button default css*/
+        .jenkins-validate-button__container__status {
+            .validation-error-area {
+            min-height: 24px !important;
+            }
         }
     </style>
 
@@ -274,13 +300,24 @@
         }
 
         // Function to clear all input fields except those with a specific class
-        function clearTabFields(sectionId) {
+        function clearTabFieldsAndTestConnectionMessages(sectionId) {
+            // Clear tab fields
             var tabSection = document.getElementById(sectionId);
             if (tabSection) {
-                var inputFields = tabSection.querySelectorAll("input:not(.hidden-password-update-btn)");
+                var inputFields = tabSection.querySelectorAll("input, select");
                 inputFields.forEach(function (inputField) {
                     inputField.value = "";
                 });
+
+                var okElement = tabSection.querySelector('.ok');
+                if (okElement) {
+                    okElement.remove();
+                }
+
+                var errorElement = tabSection.querySelector('.error');
+                if (errorElement) {
+                    errorElement.remove();
+                }
             }
         }
 

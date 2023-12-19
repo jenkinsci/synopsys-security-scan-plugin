@@ -76,6 +76,11 @@ public class ApplicationConstants {
     public static final String HTTP_PROXY = "HTTP_PROXY";
     public static final String NO_PROXY = "NO_PROXY";
 
+    public static final String BLACKDUCK_AUTH_API = "api/tokens/authenticate";
+    public static final String POLARIS_PORTFOLIO_API = "api/portfolio/portfolios";
+    public static final String COVERITY_VIEWS_API = "api/v2/views";
+    public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
+
     public static final String BRANCH_NAME = "BRANCH_NAME";
     public static final String GIT_URL = "GIT_URL";
 }
