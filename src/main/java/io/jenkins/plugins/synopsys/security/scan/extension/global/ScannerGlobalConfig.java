@@ -239,10 +239,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
                         ScanCredentialsHelper.USERNAME_PASSWORD_CREDENTIALS);
     }
 
+    @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
     public ListBoxModel doFillBitbucketCredentialsIdItems() {
         return getOptionsWithApiTokenCredentials();
     }
 
+    @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
     public ListBoxModel doFillGithubCredentialsIdItems() {
         return getOptionsWithApiTokenCredentials();
     }
