@@ -16,6 +16,7 @@ import io.jenkins.plugins.synopsys.security.scan.input.NetworkAirGap;
 import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck.BlackDuckParametersService;
@@ -201,6 +202,9 @@ public class ScannerArgumentService {
         if (scmObject instanceof Bitbucket) {
             Bitbucket bitbucket = (Bitbucket) scmObject;
             return bitbucket.getProject().getRepository().getName();
+        } else if (scmObject instanceof Github) {
+            Github github = (Github) scmObject;
+            return github.getRepository().getName();
         }
         return "";
     }
@@ -208,6 +212,8 @@ public class ScannerArgumentService {
     public void setScmObject(BridgeInput bridgeInput, Object scmObject) {
         if (scmObject instanceof Bitbucket) {
             bridgeInput.setBitbucket((Bitbucket) scmObject);
+        } else if (scmObject instanceof Github) {
+            bridgeInput.setGithub((Github) scmObject);
         }
     }
 

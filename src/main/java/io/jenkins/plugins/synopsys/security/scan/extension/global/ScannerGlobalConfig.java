@@ -42,6 +42,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     private String polarisServerUrl;
     private String polarisCredentialsId;
     private String bitbucketCredentialsId;
+    private String githubCredentialsId;
 
     @DataBoundConstructor
     public ScannerGlobalConfig() {
@@ -75,6 +76,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @DataBoundSetter
     public void setBitbucketCredentialsId(String bitbucketCredentialsId) {
         this.bitbucketCredentialsId = bitbucketCredentialsId;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setGithubCredentialsId(String githubCredentialsId) {
+        this.githubCredentialsId = githubCredentialsId;
         save();
     }
 
@@ -188,6 +195,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         return bitbucketCredentialsId;
     }
 
+    public String getGithubCredentialsId() {
+        return githubCredentialsId;
+    }
+
     private ListBoxModel getOptionsWithApiTokenCredentials() {
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
@@ -229,6 +240,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     }
 
     public ListBoxModel doFillBitbucketCredentialsIdItems() {
+        return getOptionsWithApiTokenCredentials();
+    }
+
+    public ListBoxModel doFillGithubCredentialsIdItems() {
         return getOptionsWithApiTokenCredentials();
     }
 
