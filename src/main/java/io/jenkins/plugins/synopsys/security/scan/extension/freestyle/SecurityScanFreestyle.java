@@ -12,7 +12,6 @@ import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
-import java.util.HashMap;
 import java.util.Map;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -378,7 +377,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
             if (e instanceof PluginExceptionHandler) {
                 throw new RuntimeException(new PluginExceptionHandler("Workflow failed! " + e.getMessage()));
             } else {
-                throw new RuntimeException(new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage())));
+                throw new RuntimeException(
+                        new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage())));
             }
 
         } finally {
