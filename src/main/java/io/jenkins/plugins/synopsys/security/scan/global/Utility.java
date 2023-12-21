@@ -51,7 +51,7 @@ public class Utility {
             try {
                 arch = workspace.act(new OsArchTask());
             } catch (IOException | InterruptedException e) {
-                logger.error("An exception occurred while fetching the OS information for the agent node: "
+                logger.error("An exception occurred while fetching OS architecture information for the agent node: "
                         + e.getMessage());
                 Thread.currentThread().interrupt();
             }
