@@ -374,19 +374,13 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
             ScanParametersFactory.createPipelineCommand(run, listener, env, launcher, null, workspace)
                     .initializeScanner(getParametersMap(workspace, listener));
         } catch (Exception e) {
+
             if (e instanceof PluginExceptionHandler) {
-                try {
-                    throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
-                } catch (PluginExceptionHandler ex) {
-                    throw new RuntimeException(ex);
-                }
+                throw new RuntimeException(new PluginExceptionHandler("Workflow failed! " + e.getMessage()));
             } else {
-                try {
-                    throw new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
-                } catch (ScannerException ex) {
-                    throw new RuntimeException(ex);
-                }
+                throw new RuntimeException(new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage())));
             }
+
         } finally {
             listener.getLogger()
                     .println(
@@ -410,16 +404,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
         public ListBoxModel doFillProductItems() {
             ListBoxModel items = new ListBoxModel();
-            Map<String, String> customLabels = new HashMap<>();
-
             items.add(new ListBoxModel.Option("Select", "select"));
-            customLabels.put(SecurityProduct.BLACKDUCK.name().toLowerCase(), "Black Duck");
-            customLabels.put(SecurityProduct.COVERITY.name().toLowerCase(), "Coverity");
-            customLabels.put(SecurityProduct.POLARIS.name().toLowerCase(), "Polaris");
 
             for (SecurityProduct product : SecurityProduct.values()) {
+                String label = product.getProductLabel();
                 String value = product.name().toLowerCase();
-                String label = customLabels.getOrDefault(value, product.name());
                 items.add(new ListBoxModel.Option(label, value));
             }
             return items;
