@@ -1,4 +1,4 @@
-package io.jenkins.plugins.synopsys.security.scan.service.scm;
+package io.jenkins.plugins.synopsys.security.scan.service.scm.bitbucket;
 
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketApi;

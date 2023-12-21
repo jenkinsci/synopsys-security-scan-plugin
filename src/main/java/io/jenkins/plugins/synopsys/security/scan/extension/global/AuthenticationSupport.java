@@ -4,7 +4,6 @@ import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.ScanCredentialsHelper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -63,8 +62,8 @@ public class AuthenticationSupport {
 
         if (username != null && password != null) {
             String auth = username + ":" + password;
-            byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.ISO_8859_1));
-            httpGet.setHeader(ApplicationConstants.AUTHORIZATION_HEADER_NAME, "Basic " + Arrays.toString(encodedAuth));
+            String encodedAuth = Base64.encodeBase64String(auth.getBytes(StandardCharsets.UTF_8));
+            httpGet.setHeader(ApplicationConstants.AUTHORIZATION_HEADER_NAME, "Basic " + encodedAuth);
         }
 
         return executeRequest(httpGet, timeoutInSeconds);
