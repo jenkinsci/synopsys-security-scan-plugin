@@ -3,17 +3,20 @@ package io.jenkins.plugins.synopsys.security.scan.service.scm;
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import hudson.EnvVars;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.bitbucket.BitbucketRepositoryService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.github.GithubRepositoryService;
 import java.util.Map;
+import io.jenkins.plugins.synopsys.security.scan.service.scm.gitlab.GitlabRepositoryService;
 import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSource;
 import jenkins.scm.api.SCMSourceOwner;
 import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
 
 public class SCMRepositoryService {
+    private final String gitlabSCMSourceClassName = "io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource";
     private final TaskListener listener;
     private final EnvVars envVars;
 
@@ -29,6 +32,11 @@ public class SCMRepositoryService {
                 : null;
 
         SCMSource scmSource = findSCMSource();
+        if(scmSource instanceof GitLabSCMSource) {
+            GitLabSCMSource gitLabSCMSource = (GitLabSCMSource) scmSource;
+            listener.getLogger().println("====== Repository Name: " + gitLabSCMSource.getProjectName());
+
+        }
         if (scmSource instanceof BitbucketSCMSource) {
             BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listener);
             BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
@@ -50,6 +58,22 @@ public class SCMRepositoryService {
                     projectRepositoryPullNumber,
                     branchName,
                     repositoryUrl,
+                    isFixPrOrPrComment);
+        } else if(scmSource.getClass().getName().equals(gitlabSCMSourceClassName)) {
+            GitlabRepositoryService gitlabRepositoryService = new GitlabRepositoryService(listener);
+            //api.url if starts with https://gitlab.com then otherwise server-url
+            //user.token - scanparametersMap.get(GITLAB_KEY)
+            //repository.name - GIT_URL regex
+            //repository.branch.name - BRANCH_NAME -> main
+            //repository.pull.request
+            String repositoryUrl = envVars.get(ApplicationConstants.GIT_URL);
+            String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
+//            String repositoryOwner = envVars.
+
+            return gitlabRepositoryService.createGitlabObject(
+                    scanParameters,
+                    repositoryUrl,
+                    projectRepositoryPullNumber,
                     isFixPrOrPrComment);
         }
         return null;

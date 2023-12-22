@@ -69,6 +69,9 @@ public class ScanParametersFactory {
             if (!Utility.isStringNullOrBlank(scanStep.getGithub_token())) {
                 parametersMap.put(ApplicationConstants.GITHUB_TOKEN_KEY, scanStep.getGithub_token());
             }
+            if (!Utility.isStringNullOrBlank(scanStep.getGitlab_token())) {
+                parametersMap.put(ApplicationConstants.GITLAB_TOKEN_KEY, scanStep.getGitlab_token());
+            }
 
             parametersMap.putAll(prepareBridgeParametersMap(scanStep));
 

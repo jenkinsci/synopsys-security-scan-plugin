@@ -18,6 +18,7 @@ import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
 import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck.BlackDuckParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.coverity.CoverityParametersService;
@@ -166,6 +167,7 @@ public class ScannerArgumentService {
         String jsonPath = null;
         try {
             String inputJson = mapper.writeValueAsString(inputJsonMap);
+            logger.info("+++++++ Input json:  " + inputJson);
             jsonPath = writeInputJsonToFile(inputJson, jsonPrefix);
         } catch (Exception e) {
             logger.error("An exception occurred while creating input.json file: " + e.getMessage());
@@ -205,7 +207,11 @@ public class ScannerArgumentService {
         } else if (scmObject instanceof Github) {
             Github github = (Github) scmObject;
             return github.getRepository().getName();
+        } else if (scmObject instanceof Gitlab) {
+            Gitlab gitlab = (Gitlab) scmObject;
+            return gitlab.getRepository().getName();
         }
+
         return "";
     }
 
