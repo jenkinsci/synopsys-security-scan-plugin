@@ -21,6 +21,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String product;
     private String blackduck_url;
     private transient String blackduck_token;
+    private transient String github_token;
     private String blackduck_install_directory;
     private Boolean blackduck_scan_full;
     private Boolean blackduckIntelligentScan;
@@ -168,6 +169,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public String getBitbucket_token() {
         return bitbucket_token;
+    }
+
+    public String getGithub_token() {
+        return github_token;
     }
 
     public String getSynopsys_bridge_download_url() {
@@ -324,6 +329,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setBitbucket_token(String bitbucket_token) {
         this.bitbucket_token = bitbucket_token;
+    }
+
+    @DataBoundSetter
+    public void setGithub_token(String github_token) {
+        this.github_token = github_token;
     }
 
     @DataBoundSetter

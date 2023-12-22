@@ -66,6 +66,11 @@ public class ScanParametersFactory {
             if (!Utility.isStringNullOrBlank(securityScan.getBitbucket_token())) {
                 parametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, securityScan.getBitbucket_token());
             }
+
+            if (!Utility.isStringNullOrBlank(securityScan.getGithub_token())) {
+                parametersMap.put(ApplicationConstants.GITHUB_TOKEN_KEY, securityScan.getGithub_token());
+            }
+
             parametersMap.putAll(prepareBridgeParametersMap(securityScan));
 
             return parametersMap;
@@ -122,6 +127,12 @@ public class ScanParametersFactory {
                     ApplicationConstants.BITBUCKET_TOKEN_KEY,
                     scanCredentialsHelper
                             .getApiTokenByCredentialsId(config.getBitbucketCredentialsId())
+                            .orElse(null));
+            addParameterIfNotBlank(
+                    globalParameters,
+                    ApplicationConstants.GITHUB_TOKEN_KEY,
+                    scanCredentialsHelper
+                            .getApiTokenByCredentialsId(config.getGithubCredentialsId())
                             .orElse(null));
             addParameterIfNotBlank(
                     globalParameters, ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, synopsysBridgeDownloadUrl);

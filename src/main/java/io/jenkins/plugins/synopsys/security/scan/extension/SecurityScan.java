@@ -55,6 +55,8 @@ public interface SecurityScan {
 
     public String getBitbucket_token();
 
+    public String getGithub_token();
+
     public String getSynopsys_bridge_download_url();
 
     public String getSynopsys_bridge_download_version();
