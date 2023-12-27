@@ -154,8 +154,8 @@ public class BridgeDownloadParameterServiceTest {
 
     @Test
     void getPlatformTest() {
-        String osName = System.getProperty("os.name");
-        String osArch = System.getProperty("os.arch");
+        String osName = System.getProperty("os.name").toLowerCase();
+        String osArch = System.getProperty("os.arch").toLowerCase();
 
         String platform = bridgeDownloadParametersService.getPlatform();
 
