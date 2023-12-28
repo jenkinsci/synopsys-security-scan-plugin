@@ -32,11 +32,12 @@ public class SCMRepositoryService {
                 : null;
 
         SCMSource scmSource = findSCMSource();
-        if(scmSource instanceof GitLabSCMSource) {
-            GitLabSCMSource gitLabSCMSource = (GitLabSCMSource) scmSource;
+        /*if(scmSource instanceof GitLabSCMSource) {
+            GitLabSCMSource  gitLabSCMSource = (GitLabSCMSource) scmSource;
             listener.getLogger().println("====== Repository Name: " + gitLabSCMSource.getProjectName());
-
-        }
+            //repo name null so need to regex
+            // owner name needs to come from  gitLabSCMSource.getProjectOwner()
+        }*/
         if (scmSource instanceof BitbucketSCMSource) {
             BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listener);
             BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
@@ -59,20 +60,16 @@ public class SCMRepositoryService {
                     branchName,
                     repositoryUrl,
                     isFixPrOrPrComment);
-        } else if(scmSource.getClass().getName().equals(gitlabSCMSourceClassName)) {
+        } else if(scmSource.getClass().getName().equals(gitlabSCMSourceClassName)) { //(scmSource instanceof GitLabSCMSource) { TODO: remove the following
             GitlabRepositoryService gitlabRepositoryService = new GitlabRepositoryService(listener);
-            //api.url if starts with https://gitlab.com then otherwise server-url
-            //user.token - scanparametersMap.get(GITLAB_KEY)
-            //repository.name - GIT_URL regex
-            //repository.branch.name - BRANCH_NAME -> main
-            //repository.pull.request
+
             String repositoryUrl = envVars.get(ApplicationConstants.GIT_URL);
             String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
-//            String repositoryOwner = envVars.
 
             return gitlabRepositoryService.createGitlabObject(
                     scanParameters,
                     repositoryUrl,
+                    branchName,
                     projectRepositoryPullNumber,
                     isFixPrOrPrComment);
         }

@@ -220,6 +220,8 @@ public class ScannerArgumentService {
             bridgeInput.setBitbucket((Bitbucket) scmObject);
         } else if (scmObject instanceof Github) {
             bridgeInput.setGithub((Github) scmObject);
+        } else if (scmObject instanceof Gitlab) {
+            bridgeInput.setGitlab((Gitlab) scmObject);
         }
     }
 
