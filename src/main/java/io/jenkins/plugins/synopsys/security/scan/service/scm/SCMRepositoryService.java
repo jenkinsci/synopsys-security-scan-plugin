@@ -16,8 +16,6 @@ import jenkins.scm.api.SCMSourceOwner;
 import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
 
 public class SCMRepositoryService {
-    //TODO: remove the following before final commit
-    private final String gitlabSCMSourceClassName = "io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource";
     private final TaskListener listener;
     private final EnvVars envVars;
 
@@ -55,15 +53,13 @@ public class SCMRepositoryService {
                     branchName,
                     repositoryUrl,
                     isFixPrOrPrComment);
-        } else if(scmSource.getClass().getName().equals(gitlabSCMSourceClassName)) {
-            //(scmSource instanceof GitLabSCMSource) {
+        } else if(scmSource instanceof GitLabSCMSource) {
             GitlabRepositoryService gitlabRepositoryService = new GitlabRepositoryService(listener);
-            // GitLabSCMSource gitLabSCMSource = (GitLabSCMSource) scmSource;
+            GitLabSCMSource gitLabSCMSource = (GitLabSCMSource) scmSource;
 
             String repositoryUrl = envVars.get(ApplicationConstants.GIT_URL);
             String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
-            // String repositoryName = scmSource.getProjectPath();
-            String repositoryName = "test1750347/nodegoat-gitlab";
+            String repositoryName = gitLabSCMSource.getProjectPath();
 
             return gitlabRepositoryService.createGitlabObject(
                     scanParameters,
