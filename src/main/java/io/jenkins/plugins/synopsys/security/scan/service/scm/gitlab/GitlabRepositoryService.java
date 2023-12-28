@@ -22,9 +22,10 @@ public class GitlabRepositoryService {
 
     public Gitlab createGitlabObject(
             Map<String, Object> scanParameters,
-            String repositoryUrl,
-            String branchName,
+            String repositoryName,
             Integer projectRepositoryPullNumber,
+            String branchName,
+            String repositoryUrl,
             boolean isFixPrOrPrComment) throws PluginExceptionHandler {
         String gitlabToken = (String) scanParameters.get(ApplicationConstants.GITLAB_TOKEN_KEY);
 
@@ -35,43 +36,23 @@ public class GitlabRepositoryService {
 
         Gitlab gitlab = new Gitlab();
 
-        String repositoryName = extractRepositoryNameFromGitUrl(repositoryUrl);
-        String gitlabHostUrl = extractGitlabHost(repositoryUrl);
+        gitlab.getUser().setToken(gitlabToken);
+        gitlab.getRepository().setName(repositoryName);
+        gitlab.getRepository().getBranch().setName(branchName);
+        gitlab.getRepository().getPull().setNumber(projectRepositoryPullNumber);
 
+        String gitlabHostUrl = extractGitlabHost(repositoryUrl);
         if (gitlabHostUrl.equals(INVALID_GITLAB_REPO_URL)) {
             throw new PluginExceptionHandler(INVALID_GITLAB_REPO_URL);
         } else {
             if (gitlabHostUrl.startsWith(GITLAB_CLOUD_HOST_URL)) {
                 gitlab.getApi().setUrl("");
-                logger.info("Using gitlab cloud for PR comment.");
             } else {
                 logger.warn("PR comment for Gitlab is supported for only cloud instances");
-                // uncomment the following lines for self-hosted gitlab instance.
-                // gitlab.getApi().setUrl(gitlabHostUrl);
             }
         }
 
-        gitlab.getUser().setToken(gitlabToken);
-//        gitlab.getRepository().setName(repositoryName);
-        // scm.getProjectPath();
-        gitlab.getRepository().setName("test1750347/nodegoat-gitlab");
-        gitlab.getRepository().getBranch().setName(branchName);
-//        gitlab.getRepository().getOwner().setName("test1750347");
-        gitlab.getRepository().getPull().setNumber(projectRepositoryPullNumber);
-
         return gitlab;
-    }
-
-    //The following method is no longer needed!
-    public String extractRepositoryNameFromGitUrl(String url) {
-        try {
-            URL gitlabUrl = new URL(url);
-            String path = gitlabUrl.getPath();
-            return path.substring(path.lastIndexOf('/') + 1).replace(".git", "");
-        } catch (Exception e) {
-            logger.error("Exception occurred while extracting Project Name for Gitlab repository URL");
-            return null;
-        }
     }
 
     public String extractGitlabHost(String url) {

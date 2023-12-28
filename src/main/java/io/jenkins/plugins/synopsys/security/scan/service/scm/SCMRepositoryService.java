@@ -33,12 +33,6 @@ public class SCMRepositoryService {
                 : null;
 
         SCMSource scmSource = findSCMSource();
-        /*if(scmSource instanceof GitLabSCMSource) {
-            GitLabSCMSource  gitLabSCMSource = (GitLabSCMSource) scmSource;
-            listener.getLogger().println("====== Repository Name: " + gitLabSCMSource.getProjectName());
-            //repo name null so need to regex
-            // owner name needs to come from  gitLabSCMSource.getProjectOwner()
-        }*/
         if (scmSource instanceof BitbucketSCMSource) {
             BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listener);
             BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
@@ -61,17 +55,22 @@ public class SCMRepositoryService {
                     branchName,
                     repositoryUrl,
                     isFixPrOrPrComment);
-        } else if(scmSource.getClass().getName().equals(gitlabSCMSourceClassName)) { //(scmSource instanceof GitLabSCMSource) { TODO: remove the following
+        } else if(scmSource.getClass().getName().equals(gitlabSCMSourceClassName)) {
+            //(scmSource instanceof GitLabSCMSource) {
             GitlabRepositoryService gitlabRepositoryService = new GitlabRepositoryService(listener);
+            // GitLabSCMSource gitLabSCMSource = (GitLabSCMSource) scmSource;
 
             String repositoryUrl = envVars.get(ApplicationConstants.GIT_URL);
             String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
+            // String repositoryName = scmSource.getProjectPath();
+            String repositoryName = "test1750347/nodegoat-gitlab";
 
             return gitlabRepositoryService.createGitlabObject(
                     scanParameters,
-                    repositoryUrl,
-                    branchName,
+                    repositoryName,
                     projectRepositoryPullNumber,
+                    branchName,
+                    repositoryUrl,
                     isFixPrOrPrComment);
         }
         return null;

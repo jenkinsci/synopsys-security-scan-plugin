@@ -7,15 +7,12 @@ public class Repository {
     private Branch branch;
     @JsonProperty("pull")
     private Pull pull;
-    /*@JsonProperty("owner")
-    private Owner owner;*/
     @JsonProperty("name")
     private String name;
 
     public Repository() {
         branch = new Branch();
         pull = new Pull();
-//        owner = new Owner();
     }
 
     public Branch getBranch() {
@@ -41,12 +38,4 @@ public class Repository {
     public void setName(String name) {
         this.name = name;
     }
-
-    /*public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
-    }*/
 }

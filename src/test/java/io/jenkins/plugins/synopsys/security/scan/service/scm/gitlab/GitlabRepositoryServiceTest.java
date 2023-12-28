@@ -10,7 +10,6 @@ import org.mockito.Mockito;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GitlabRepositoryServiceTest {
@@ -41,9 +40,10 @@ public class GitlabRepositoryServiceTest {
 
         Gitlab gitlabCloud = gitlabRepositoryService.createGitlabObject(
                 scanParametersMap,
-                TEST_REPOSITORY_URL_CLOUD,
-                TEST_REPOSITORY_BRANCH_NAME,
+                TEST_REPOSITORY_NAME,
                 TEST_REPOSITORY_PULL_NUMBER,
+                TEST_REPOSITORY_BRANCH_NAME,
+                TEST_REPOSITORY_URL_CLOUD,
                 true);
 
         assertEquals(
@@ -52,7 +52,7 @@ public class GitlabRepositoryServiceTest {
         assertEquals(gitlabCloud.getRepository().getName(), TEST_REPOSITORY_NAME);
         assertEquals(gitlabCloud.getRepository().getPull().getNumber(), TEST_REPOSITORY_PULL_NUMBER);
         assertEquals(gitlabCloud.getRepository().getBranch().getName(), TEST_REPOSITORY_BRANCH_NAME);
-        assertEquals(gitlabCloud.getApi().getUrl(), GITLAB_BASE_URL);
+        assertEquals(gitlabCloud.getApi().getUrl(), "");
     }
 
     @Test
@@ -63,26 +63,11 @@ public class GitlabRepositoryServiceTest {
                 PluginExceptionHandler.class,
                 () -> gitlabRepositoryService.createGitlabObject(
                         scanParametersMap,
-                        TEST_REPOSITORY_URL_CLOUD,
-                        TEST_REPOSITORY_BRANCH_NAME,
+                        TEST_REPOSITORY_NAME,
                         TEST_REPOSITORY_PULL_NUMBER,
+                        TEST_REPOSITORY_BRANCH_NAME,
+                        TEST_REPOSITORY_URL_CLOUD,
                         true));
-    }
-
-    @Test
-    void extractRepositoryNameFromGitUrl() {
-        String gitUrlWithoutGroup  = "https://gitlab.com/fake-repo.git";
-        String gitUrlWithOneGroup  = "https://gitlab.com/fake-group/fake-repo.git";
-        String gitUrlWithNestedGroup = "https://gitlab.com/fake-group01/fake-group0098383/fake-repo.git";
-        String gitUrlWithMultipleNestedGroup = "https://gitlab.com/group01/group0093393/fake-group98383/fake-repo.git";
-        String gitUrlInvalid = "invalid.url";
-        String repositoryName  = "fake-repo";
-
-        assertEquals(repositoryName, gitlabRepositoryService.extractRepositoryNameFromGitUrl(gitUrlWithoutGroup));
-        assertEquals(repositoryName, gitlabRepositoryService.extractRepositoryNameFromGitUrl(gitUrlWithOneGroup));
-        assertEquals(repositoryName, gitlabRepositoryService.extractRepositoryNameFromGitUrl(gitUrlWithNestedGroup));
-        assertEquals(repositoryName, gitlabRepositoryService.extractRepositoryNameFromGitUrl(gitUrlWithMultipleNestedGroup));
-        assertNull(gitlabRepositoryService.extractRepositoryNameFromGitUrl(gitUrlInvalid));
     }
 
     @Test
