@@ -42,20 +42,27 @@ public class GitlabRepositoryService {
             throw new PluginExceptionHandler(INVALID_GITLAB_REPO_URL);
         } else {
             if (gitlabHostUrl.startsWith(GITLAB_CLOUD_HOST_URL)) {
-                gitlab.getApi().setUrl(GITLAB_CLOUD_HOST_URL);
+                gitlab.getApi().setUrl("");
+                logger.info("Using gitlab cloud for PR comment.");
             } else {
                 logger.warn("PR comment for Gitlab is supported for only cloud instances");
+                // uncomment the following lines for self-hosted gitlab instance.
+                // gitlab.getApi().setUrl(gitlabHostUrl);
             }
         }
 
         gitlab.getUser().setToken(gitlabToken);
-        gitlab.getRepository().setName(repositoryName);
+//        gitlab.getRepository().setName(repositoryName);
+        // scm.getProjectPath();
+        gitlab.getRepository().setName("test1750347/nodegoat-gitlab");
         gitlab.getRepository().getBranch().setName(branchName);
+//        gitlab.getRepository().getOwner().setName("test1750347");
         gitlab.getRepository().getPull().setNumber(projectRepositoryPullNumber);
 
         return gitlab;
     }
 
+    //The following method is no longer needed!
     public String extractRepositoryNameFromGitUrl(String url) {
         try {
             URL gitlabUrl = new URL(url);

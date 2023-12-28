@@ -16,6 +16,7 @@ import jenkins.scm.api.SCMSourceOwner;
 import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
 
 public class SCMRepositoryService {
+    //TODO: remove the following before final commit
     private final String gitlabSCMSourceClassName = "io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource";
     private final TaskListener listener;
     private final EnvVars envVars;
