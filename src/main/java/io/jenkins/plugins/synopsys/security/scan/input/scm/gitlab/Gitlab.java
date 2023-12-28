@@ -1,7 +1,6 @@
 package io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.jenkins.plugins.synopsys.security.scan.input.github.Host;
 
 public class Gitlab {
 

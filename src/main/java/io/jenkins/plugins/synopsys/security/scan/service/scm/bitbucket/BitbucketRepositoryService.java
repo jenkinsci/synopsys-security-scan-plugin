@@ -9,9 +9,9 @@ import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
-import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Bitbucket;
-import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Pull;
-import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Repository;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Pull;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Repository;
 import java.util.Map;
 
 public class BitbucketRepositoryService {
