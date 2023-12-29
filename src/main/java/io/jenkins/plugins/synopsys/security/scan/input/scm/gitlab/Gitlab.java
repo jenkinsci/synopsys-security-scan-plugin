@@ -6,8 +6,10 @@ public class Gitlab {
 
     @JsonProperty("api")
     private Api api;
+
     @JsonProperty("user")
     private User user;
+
     @JsonProperty("repository")
     private Repository repository;
 

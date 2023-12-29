@@ -12,13 +12,14 @@ import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.BridgeParams;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
-import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.bitbucket.BitbucketRepositoryService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.github.GithubRepositoryService;
+import io.jenkins.plugins.synopsys.security.scan.service.scm.gitlab.GitlabRepositoryService;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -29,8 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import io.jenkins.plugins.synopsys.security.scan.service.scm.gitlab.GitlabRepositoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -257,21 +256,20 @@ public class ScannerArgumentServiceTest {
         blackDuck.setToken(TOKEN);
         blackDuck.getAutomation().setPrComment(true);
 
-        String jsonStringForPrComment = "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\"," +
-                "\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}}," +
-                "\"automation\":{\"prComment\":true}},\"gitlab\":{\"api\":{\"url\":\"\"}," +
-                "\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"branch\":{\"name\":\"fake-gitlab-branch\"}," +
-                "\"pull\":{\"number\":12},\"name\":\"fake-group/fake-gitlab-repo\"}}}}";
+        String jsonStringForPrComment = "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\","
+                + "\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},"
+                + "\"automation\":{\"prComment\":true}},\"gitlab\":{\"api\":{\"url\":\"\"},"
+                + "\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"branch\":{\"name\":\"fake-gitlab-branch\"},"
+                + "\"pull\":{\"number\":12},\"name\":\"fake-group/fake-gitlab-repo\"}}}}";
 
         try {
-            Gitlab gitlabObject =
-                    gitlabRepositoryService.createGitlabObject(
-                            scanParametersMap,
-                            "fake-group/fake-gitlab-repo",
-                            12,
-                            "fake-gitlab-branch",
-                            "https://gitlab.com/fake-group/fake-gitlab-repo.git",
-                            true);
+            Gitlab gitlabObject = gitlabRepositoryService.createGitlabObject(
+                    scanParametersMap,
+                    "fake-group/fake-gitlab-repo",
+                    12,
+                    "fake-gitlab-branch",
+                    "https://gitlab.com/fake-group/fake-gitlab-repo.git",
+                    true);
             String inputJsonPathForGitlabPrComment = scannerArgumentService.createBridgeInputJson(
                     blackDuck, gitlabObject, true, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
 

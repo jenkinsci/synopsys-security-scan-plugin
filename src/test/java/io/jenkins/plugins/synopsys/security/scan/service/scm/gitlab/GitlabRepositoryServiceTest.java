@@ -1,16 +1,17 @@
 package io.jenkins.plugins.synopsys.security.scan.service.scm.gitlab;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class GitlabRepositoryServiceTest {
     private TaskListener listenerMock;

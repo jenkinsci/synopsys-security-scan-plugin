@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Repository {
     @JsonProperty("branch")
     private Branch branch;
+
     @JsonProperty("pull")
     private Pull pull;
+
     @JsonProperty("name")
     private String name;
 

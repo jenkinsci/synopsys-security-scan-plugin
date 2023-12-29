@@ -8,8 +8,8 @@ import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandle
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.bitbucket.BitbucketRepositoryService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.github.GithubRepositoryService;
-import java.util.Map;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.gitlab.GitlabRepositoryService;
+import java.util.Map;
 import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSource;
 import jenkins.scm.api.SCMSourceOwner;
@@ -53,7 +53,7 @@ public class SCMRepositoryService {
                     branchName,
                     repositoryUrl,
                     isFixPrOrPrComment);
-        } else if(scmSource instanceof GitLabSCMSource) {
+        } else if (scmSource instanceof GitLabSCMSource) {
             GitlabRepositoryService gitlabRepositoryService = new GitlabRepositoryService(listener);
             GitLabSCMSource gitLabSCMSource = (GitLabSCMSource) scmSource;
 

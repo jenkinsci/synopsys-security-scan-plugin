@@ -26,7 +26,8 @@ public class GitlabRepositoryService {
             Integer projectRepositoryPullNumber,
             String branchName,
             String repositoryUrl,
-            boolean isFixPrOrPrComment) throws PluginExceptionHandler {
+            boolean isFixPrOrPrComment)
+            throws PluginExceptionHandler {
         String gitlabToken = (String) scanParameters.get(ApplicationConstants.GITLAB_TOKEN_KEY);
 
         if (isFixPrOrPrComment && Utility.isStringNullOrBlank(gitlabToken)) {

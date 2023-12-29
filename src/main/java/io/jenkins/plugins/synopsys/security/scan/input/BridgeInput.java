@@ -1,11 +1,11 @@
 package io.jenkins.plugins.synopsys.security.scan.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
-import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
 
 public class BridgeInput {

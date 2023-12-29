@@ -6,7 +6,6 @@ public class Pull {
     @JsonProperty("number")
     private Integer number;
 
-
     public Integer getNumber() {
         return number;
     }
