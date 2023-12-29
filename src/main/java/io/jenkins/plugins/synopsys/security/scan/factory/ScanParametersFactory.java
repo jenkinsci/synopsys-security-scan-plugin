@@ -137,6 +137,12 @@ public class ScanParametersFactory {
                             .getApiTokenByCredentialsId(config.getGithubCredentialsId())
                             .orElse(null));
             addParameterIfNotBlank(
+                    globalParameters,
+                    ApplicationConstants.GITLAB_TOKEN_KEY,
+                    scanCredentialsHelper
+                            .getApiTokenByCredentialsId(config.getGitlabCredentialsId())
+                            .orElse(null));
+            addParameterIfNotBlank(
                     globalParameters, ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, synopsysBridgeDownloadUrl);
             addParameterIfNotBlank(
                     globalParameters,
