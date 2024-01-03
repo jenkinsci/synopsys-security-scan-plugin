@@ -2,6 +2,8 @@ package io.jenkins.plugins.synopsys.security.scan.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
@@ -13,14 +15,19 @@ import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
 import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
-import io.jenkins.plugins.synopsys.security.scan.input.report.Sarif;
+import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
+import io.jenkins.plugins.synopsys.security.scan.service.scm.bitbucket.BitbucketRepositoryService;
+import io.jenkins.plugins.synopsys.security.scan.service.scm.github.GithubRepositoryService;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -31,6 +38,7 @@ public class ScannerArgumentServiceTest {
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
     private final EnvVars envVarsMock = Mockito.mock(EnvVars.class);
     private FilePath workspace;
+    private final String TOKEN = "MDJDSROSVC56FAKEKEY";
 
     @BeforeEach
     void setUp() {
@@ -51,7 +59,7 @@ public class ScannerArgumentServiceTest {
     void createBlackDuckInputJsonTest() {
         BlackDuck blackDuck = new BlackDuck();
         blackDuck.setUrl("https://fake.blackduck.url");
-        blackDuck.setToken("MDJDSROSVC56FAKEKEY");
+        blackDuck.setToken(TOKEN);
 
         String inputJsonPath = scannerArgumentService.createBridgeInputJson(
                 blackDuck, bitBucket, false, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
@@ -66,13 +74,72 @@ public class ScannerArgumentServiceTest {
     }
 
     @Test
+    void bitbucket_blackDuckInputJsonTest() {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        BlackDuck blackDuck = new BlackDuck();
+        blackDuck.setUrl("https://fake.blackduck.url");
+        blackDuck.setToken(TOKEN);
+
+        Bitbucket bitbucketObject =
+                BitbucketRepositoryService.createBitbucketObject("https://bitbucket.org", TOKEN, 12, "test", "abc");
+
+        try {
+            String jsonStringNonPrCommentOrFixPr =
+                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":"
+                            + "\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{}}}}";
+
+            String inputJsonPathForNonFixPr = scannerArgumentService.createBridgeInputJson(
+                    blackDuck, bitbucketObject, false, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
+            Path filePath = Paths.get(inputJsonPathForNonFixPr);
+
+            String actualJsonString = new String(Files.readAllBytes(filePath));
+
+            JsonNode expectedJsonNode = objectMapper.readTree(jsonStringNonPrCommentOrFixPr);
+            JsonNode actualJsonNode = objectMapper.readTree(actualJsonString);
+
+            assertEquals(expectedJsonNode, actualJsonNode);
+            Utility.removeFile(filePath.toString(), workspace, listenerMock);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String jsonStringForPrComment =
+                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\""
+                            + ",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{}},\"bitbucket\": { \"api\": "
+                            + "{ \"url\": \"https://bitbucket.org\", \"token\": \"MDJDSROSVC56FAKEKEY\" }, \"project\": "
+                            + "{ \"repository\": { \"pull\": { \"number\": 12 }, \"name\": \"test\" }, "
+                            + "\"key\": \"abc\" } }}}";
+            String inputJsonPathForPrComment = scannerArgumentService.createBridgeInputJson(
+                    blackDuck, bitbucketObject, true, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
+            Path filePath = Paths.get(inputJsonPathForPrComment);
+
+            JsonNode expectedJsonNode = objectMapper.readTree(jsonStringForPrComment);
+
+            String actualJsonString = new String(Files.readAllBytes(Paths.get(inputJsonPathForPrComment)));
+            JsonNode actualJsonNode = objectMapper.readTree(actualJsonString);
+
+            assertEquals(expectedJsonNode, actualJsonNode);
+            Utility.removeFile(filePath.toString(), workspace, listenerMock);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
     public void setScmObjectTest() {
         BridgeInput bridgeInput = Mockito.mock(BridgeInput.class);
         Bitbucket bitbucket = Mockito.mock(Bitbucket.class);
+        Github github = Mockito.mock(Github.class);
 
         scannerArgumentService.setScmObject(bridgeInput, bitbucket);
-
         Mockito.verify(bridgeInput).setBitbucket(bitbucket);
+
+        scannerArgumentService.setScmObject(bridgeInput, github);
+        Mockito.verify(bridgeInput).setGithub(github);
     }
 
     @Test
@@ -119,11 +186,63 @@ public class ScannerArgumentServiceTest {
     }
 
     @Test
+    public void github_coverityInputJsonTest() throws PluginExceptionHandler {
+        ObjectMapper objectMapper = new ObjectMapper();
+        GithubRepositoryService githubRepositoryService = new GithubRepositoryService(listenerMock);
+
+        Map<String, Object> scanParametersMap = new HashMap<>();
+        scanParametersMap.put(ApplicationConstants.GITHUB_TOKEN_KEY, TOKEN);
+
+        String jsonStringForPrComment = "{\"data\":{\"coverity\":{\"connect\":{\"url\":\"https://fake.coverity.url\","
+                + "\"user\":{\"name\":\"fake-user\",\"password\":\"fakeUserPassword\"},"
+                + "\"project\":{\"name\":\"fake-repo\"},\"stream\":{\"name\":\"fake-repo-fake-branch\"},"
+                + "\"policy\":{}},\"install\":{},\"automation\":{},\"local\":false},"
+                + "\"github\":{\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"name\":\"fake-repo\""
+                + ",\"owner\":{\"name\":\"fake-owner\"},\"pull\":{\"number\":1},\"branch\":{\"name\":"
+                + "\"fake-branch\"}},\"host\":{\"url\":\"\"}}}}";
+
+        Coverity coverity = new Coverity();
+        coverity.getConnect().setUrl("https://fake.coverity.url");
+        coverity.getConnect().getUser().setName("fake-user");
+        coverity.getConnect().getUser().setPassword("fakeUserPassword");
+
+        try {
+            Github github = githubRepositoryService.createGithubObject(
+                    scanParametersMap,
+                    "fake-repo",
+                    "fake-owner",
+                    1,
+                    "fake-branch",
+                    "https://github.com/user/fake-repo.git",
+                    true);
+            String inputJsonPath = scannerArgumentService.createBridgeInputJson(
+                    coverity, github, true, null, null, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX);
+            Path filePath = Paths.get(inputJsonPath);
+
+            assertTrue(
+                    Files.exists(filePath),
+                    String.format(
+                            "File %s does not exist at the specified path.",
+                            ApplicationConstants.COVERITY_INPUT_JSON_PREFIX.concat(".json")));
+
+            JsonNode expectedJsonNode = objectMapper.readTree(jsonStringForPrComment);
+
+            String actualJsonString = new String(Files.readAllBytes(filePath));
+            JsonNode actualJsonNode = objectMapper.readTree(actualJsonString);
+
+            assertEquals(expectedJsonNode, actualJsonNode);
+            Utility.removeFile(filePath.toString(), workspace, listenerMock);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void getCommandLineArgsForBlackDuckTest() throws PluginExceptionHandler {
         Map<String, Object> blackDuckParametersMap = new HashMap<>();
         blackDuckParametersMap.put(ApplicationConstants.PRODUCT_KEY, "blackduck");
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
-        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
+        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, TOKEN);
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, false);
         blackDuckParametersMap.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, true);
 
@@ -268,27 +387,6 @@ public class ScannerArgumentServiceTest {
         for (String path : inputJsonPath) {
             assertFalse(Files.exists(Paths.get(path)));
         }
-    }
-
-    @Test
-    public void prepareSarifObjectTest() {
-        Map<String, Object> scanParameters = new HashMap<>();
-        scanParameters.put(ApplicationConstants.REPORTS_SARIF_CREATE_KEY, true);
-        scanParameters.put(ApplicationConstants.REPORTS_SARIF_FILE_PATH_KEY, "/path/to/sarif/file");
-        scanParameters.put(ApplicationConstants.REPORTS_SARIF_SEVERITIES_KEY, "HIGH,MEDIUM");
-        scanParameters.put(ApplicationConstants.REPORTS_SARIF_GROUPSCAISSUES_KEY, true);
-        scanParameters.put(ApplicationConstants.REPORTS_SARIF_ISSUE_TYPES_KEY, "BUG,VULNERABILITY");
-
-        Set<String> securityProducts = new HashSet<>(List.of("POLARIS"));
-        Sarif sarif = scannerArgumentService.prepareSarifObject(securityProducts, scanParameters);
-
-        assertTrue(sarif.getCreate());
-        assertEquals("/path/to/sarif/file", sarif.getFile().getPath());
-        assertEquals(Arrays.asList("HIGH", "MEDIUM"), sarif.getSeverities());
-        assertTrue(sarif.getGroupSCAIssues());
-
-        assertTrue(sarif.getIssue().getTypes().contains("BUG"));
-        assertTrue(sarif.getIssue().getTypes().contains("VULNERABILITY"));
     }
 
     public String getHomeDirectoryForTest() {

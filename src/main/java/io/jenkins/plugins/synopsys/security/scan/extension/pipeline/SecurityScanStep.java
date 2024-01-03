@@ -62,6 +62,7 @@ public class SecurityScanStep extends Step implements Serializable {
     //    private String polaris_branch_parent_name;
 
     private transient String bitbucket_token;
+    private transient String github_token;
 
     private String synopsys_bridge_download_url;
     private String synopsys_bridge_download_version;
@@ -185,6 +186,10 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public String getBitbucket_token() {
         return bitbucket_token;
+    }
+
+    public String getGithub_token() {
+        return github_token;
     }
 
     public String getSynopsys_bridge_download_url() {
@@ -361,6 +366,11 @@ public class SecurityScanStep extends Step implements Serializable {
     @DataBoundSetter
     public void setBitbucket_token(String bitbucket_token) {
         this.bitbucket_token = bitbucket_token;
+    }
+
+    @DataBoundSetter
+    public void setGithub_token(String github_token) {
+        this.github_token = github_token;
     }
 
     @DataBoundSetter
