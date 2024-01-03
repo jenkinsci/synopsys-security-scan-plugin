@@ -138,16 +138,21 @@ public class BridgeDownloadParametersService {
         return bridgeDownloadParameters;
     }
 
-    public String getPlatform() {
+    public String getPlatform(String version) {
         String os = Utility.getAgentOs(workspace, listener);
         if (os.contains("win")) {
             return ApplicationConstants.PLATFORM_WINDOWS;
         } else if (os.contains("mac")) {
             String arch = Utility.getAgentOsArch(workspace, listener);
-            if (arch.startsWith("arm") || arch.startsWith("aarch")) {
-                return ApplicationConstants.PLATFORM_MAC_ARM;
-            } else {
+            if (version != null
+                    && Utility.compareVersions(version, ApplicationConstants.MAC_ARM_COMPATIBLE_BRIDGE_VERSION) < 0) {
                 return ApplicationConstants.PLATFORM_MACOSX;
+            } else {
+                if (arch.startsWith("arm") || arch.startsWith("aarch")) {
+                    return ApplicationConstants.PLATFORM_MAC_ARM;
+                } else {
+                    return ApplicationConstants.PLATFORM_MACOSX;
+                }
             }
         } else {
             return ApplicationConstants.PLATFORM_LINUX;
@@ -157,7 +162,7 @@ public class BridgeDownloadParametersService {
     public String getSynopsysBridgeZipFileName() {
         return ApplicationConstants.BRIDGE_BINARY
                 .concat("-")
-                .concat(getPlatform())
+                .concat(getPlatform(null))
                 .concat(".zip");
     }
 
@@ -166,7 +171,7 @@ public class BridgeDownloadParametersService {
                 .concat("-")
                 .concat(version)
                 .concat("-")
-                .concat(getPlatform())
+                .concat(getPlatform(version))
                 .concat(".zip");
     }
 }

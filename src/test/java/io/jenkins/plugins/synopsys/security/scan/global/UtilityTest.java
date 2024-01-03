@@ -172,6 +172,15 @@ public class UtilityTest {
         assertNull(Authenticator.getDefault());
     }
 
+    @Test
+    public void compareVersionsTest() {
+        assertTrue(Utility.compareVersions("1.0.1", "1.1.2") < 0);
+        assertTrue(Utility.compareVersions("1.0.1", "1.10") < 0);
+        assertTrue(Utility.compareVersions("1.1.2", "1.0.1") > 0);
+        assertTrue(Utility.compareVersions("1.1.2", "1.2.0") < 0);
+        assertEquals(0, Utility.compareVersions("1.3.0", "1.3"));
+    }
+
     public String getHomeDirectory() {
         return System.getProperty("user.home");
     }
