@@ -24,6 +24,19 @@
             <!--        <f:entry field="bridge_blackduck_automation_fixpr" title="Create Fix Pull Requests">-->
             <!--            <f:checkbox/>-->
             <!--        </f:entry>-->
+
+            <f:entry field="blackduck_reports_sarif_create" title="Enable Black Duck SARIF Report Generation (Optional)">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="blackduck_reports_sarif_groupSCAIssues" title="Enable Black Duck SARIF Report Group SCA Issues (Optional)">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="blackduck_reports_sarif_file_path" title="Black Duck SARIF Report File Path (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="blackduck_reports_sarif_issue_types" title="Black Duck SARIF Report Issue Types (Optional)">
+                <f:textbox/>
+            </f:entry>
         </f:section>
     </div>
 
@@ -67,6 +80,21 @@
             <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
                 <f:textbox/>
             </f:entry>
+            <f:entry field="polaris_reports_sarif_create" title="Enable Polaris SARIF Report Generation (Optional)">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="polaris_reports_sarif_groupSCAIssues" title="Enable Polaris SARIF Report Group SCA Issues (Optional)">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="polaris_reports_sarif_file_path" title="Polaris SARIF Report File Path (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_reports_sarif_issue_types" title="Polaris SARIF Report Issue Types (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_reports_sarif_severities" title="Polaris Polaris Report Severities (Optional)">
+                <f:textbox/>
+            </f:entry>
         </f:section>
     </div>
 
@@ -76,24 +104,6 @@
         </f:entry>
         <f:entry field="network_airgap" title="Network Airgap (Optional)">
             <f:checkbox/>
-        </f:entry>
-    </f:section>
-
-    <f:section title="SARIF Report">
-        <f:entry field="reports_sarif_create" title="Enable SARIF Report Generation (Optional)">
-            <f:checkbox/>
-        </f:entry>
-        <f:entry field="reports_sarif_groupSCAIssues" title="Enable SARIF Report Group SCA Issues (Optional)">
-            <f:checkbox/>
-        </f:entry>
-        <f:entry field="reports_sarif_file_path" title="SARIF Report File Path (Optional)">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="reports_sarif_issue_types" title="SARIF Report Issue Types (Optional)">
-            <f:textbox/>
-        </f:entry>
-        <f:entry field="reports_sarif_severities" title="Polaris Report Severities (Optional)">
-            <f:textbox/>
         </f:entry>
     </f:section>
 

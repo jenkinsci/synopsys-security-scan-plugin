@@ -18,7 +18,6 @@ import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
 import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
-import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Sarif;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck.BlackDuckParametersService;
@@ -159,7 +158,7 @@ public class ScannerArgumentService {
             String jsonPrefix) {
         BridgeInput bridgeInput = new BridgeInput();
 
-        setScanObject(bridgeInput, scanObject, scmObject);
+        setScanObject(bridgeInput, scanObject, scmObject, sarif);
 
         if (fixPrOrPrComment) {
             setScmObject(bridgeInput, scmObject);
@@ -167,12 +166,6 @@ public class ScannerArgumentService {
 
         if (networkAirGap != null) {
             bridgeInput.setNetworkAirGap(networkAirGap);
-        }
-
-        if (sarif != null) {
-            Reports reports = new Reports();
-            reports.setSarif(sarif);
-            bridgeInput.setReports(reports);
         }
 
         Map<String, Object> inputJsonMap = new HashMap<>();
@@ -192,15 +185,24 @@ public class ScannerArgumentService {
         return jsonPath;
     }
 
-    private void setScanObject(BridgeInput bridgeInput, Object scanObject, Object scmObject) {
+    private void setScanObject(BridgeInput bridgeInput, Object scanObject, Object scmObject, Sarif sarifObject) {
+
         if (scanObject instanceof BlackDuck) {
-            bridgeInput.setBlackDuck((BlackDuck) scanObject);
+            BlackDuck blackDuck = (BlackDuck) scanObject;
+            if (sarifObject != null) {
+                blackDuck.getReports().setSarif(sarifObject);
+            }
+            bridgeInput.setBlackDuck(blackDuck);
         } else if (scanObject instanceof Coverity) {
             Coverity coverity = (Coverity) scanObject;
             setCoverityProjectNameAndStreamName(coverity, scmObject);
             bridgeInput.setCoverity(coverity);
         } else if (scanObject instanceof Polaris) {
-            bridgeInput.setPolaris((Polaris) scanObject);
+            Polaris polaris = (Polaris) scanObject;
+            if (sarifObject != null) {
+                polaris.getReports().setSarif(sarifObject);
+            }
+            bridgeInput.setPolaris(polaris);
         }
     }
 

@@ -170,11 +170,11 @@ public class ScanParametersFactoryTest {
 
     @Test
     public void prepareSarifReportParametersMap() {
-        securityScanStep.setReports_sarif_create(true);
-        securityScanStep.setReports_sarif_file_path("/fake/path");
-        securityScanStep.setReports_sarif_issue_types("SAST");
-        securityScanStep.setReports_sarif_severities("CRITICAL");
-        securityScanStep.setReports_sarif_groupSCAIssues(true);
+        securityScanStep.setPolaris_reports_sarif_create(true);
+        securityScanStep.setPolaris_reports_sarif_file_path("/fake/path");
+        securityScanStep.setPolaris_reports_sarif_issue_types("SAST");
+        securityScanStep.setPolaris_reports_sarif_severities("CRITICAL");
+        securityScanStep.setPolaris_reports_sarif_groupSCAIssues(true);
 
         Map<String, Object> sarifParametersMap =
                 ScanParametersFactory.prepareSarifReportParametersMap(securityScanStep);

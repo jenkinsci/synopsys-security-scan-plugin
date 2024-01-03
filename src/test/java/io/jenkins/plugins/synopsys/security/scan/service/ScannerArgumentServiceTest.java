@@ -86,8 +86,7 @@ public class ScannerArgumentServiceTest {
 
         try {
             String jsonStringNonPrCommentOrFixPr =
-                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":"
-                            + "\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{}}}}";
+                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{},\"reports\":{\"sarif\":{\"issue\":{},\"file\":{}}}}}}";
 
             String inputJsonPathForNonFixPr = scannerArgumentService.createBridgeInputJson(
                     blackDuck, bitbucketObject, false, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
@@ -107,11 +106,7 @@ public class ScannerArgumentServiceTest {
 
         try {
             String jsonStringForPrComment =
-                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\""
-                            + ",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{}},\"bitbucket\": { \"api\": "
-                            + "{ \"url\": \"https://bitbucket.org\", \"token\": \"MDJDSROSVC56FAKEKEY\" }, \"project\": "
-                            + "{ \"repository\": { \"pull\": { \"number\": 12 }, \"name\": \"test\" }, "
-                            + "\"key\": \"abc\" } }}}";
+                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{},\"reports\":{\"sarif\":{\"issue\":{},\"file\":{}}}},\"bitbucket\":{\"api\":{\"url\":\"https://bitbucket.org\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\"},\"key\":\"abc\"}}}}";
             String inputJsonPathForPrComment = scannerArgumentService.createBridgeInputJson(
                     blackDuck, bitbucketObject, true, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
             Path filePath = Paths.get(inputJsonPathForPrComment);
