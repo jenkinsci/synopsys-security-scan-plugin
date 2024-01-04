@@ -92,7 +92,8 @@ public class SecurityScanner {
                         workspace.child(ApplicationConstants.BRIDGE_REPORT_DIRECTORY), ReportType.DIAGNOSTIC);
             }
 
-            if (Objects.equals(scanParams.get(ApplicationConstants.REPORTS_SARIF_CREATE_KEY), true)) {
+            if (Objects.equals(scanParams.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
+                    || Objects.equals(scanParams.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true)) {
                 ScanParametersService scanParametersService = new ScanParametersService(listener);
                 Set<String> scanType = scanParametersService.getSynopsysSecurityProducts(scanParams);
                 boolean isBlackDuckScan = scanType.contains(SecurityProduct.BLACKDUCK.name());
@@ -100,8 +101,9 @@ public class SecurityScanner {
                 String defaultSarifReportFilePath = isBlackDuckScan
                         ? ApplicationConstants.DEFAULT_BLACKDUCK_SARIF_REPORT_FILE_PATH
                         : isPolarisDuckScan ? ApplicationConstants.DEFAULT_POLARIS_SARIF_REPORT_FILE_PATH : "";
-                String customSarifReportFilePath =
-                        (String) scanParams.get(ApplicationConstants.REPORTS_SARIF_FILE_PATH_KEY);
+                String customSarifReportFilePath = isBlackDuckScan
+                        ? (String) scanParams.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)
+                        : (String) scanParams.get(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY);
 
                 UploadReportService uploadReportService = new UploadReportService(
                         run,

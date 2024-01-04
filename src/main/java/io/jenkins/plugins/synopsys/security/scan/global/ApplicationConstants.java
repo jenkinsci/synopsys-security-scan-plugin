@@ -64,15 +64,27 @@ public class ApplicationConstants {
 
     public static final String NETWORK_AIRGAP_KEY = "network_airgap";
 
-    public static final String REPORTS_SARIF_CREATE_KEY = "reports_sarif_create";
+    public static final String BLACKDUCK_REPORTS_SARIF_CREATE_KEY = "blackduck_reports_sarif_create";
 
-    public static final String REPORTS_SARIF_FILE_PATH_KEY = "reports_sarif_file_path";
+    public static final String BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = "blackduck_reports_sarif_file_path";
 
-    public static final String REPORTS_SARIF_ISSUE_TYPES_KEY = "reports_sarif_issue_types";
+    public static final String BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY = "blackduck_reports_sarif_groupSCAIssues";
 
-    public static final String REPORTS_SARIF_SEVERITIES_KEY = "reports_sarif_severities";
+    public static final String BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = "blackduck_reports_sarif_severities";
 
-    public static final String REPORTS_SARIF_GROUPSCAISSUES_KEY = "reports_sarif_groupSCAIssues";
+    public static final String BLACKDUCK_REPORTS_SARIF_ISSUES_KEY = "blackduck_reports_sarif_issues";
+
+    public static final String POLARIS_REPORTS_SARIF_CREATE_KEY = "polaris_reports_sarif_create";
+
+    public static final String POLARIS_REPORTS_SARIF_FILE_PATH_KEY = "polaris_reports_sarif_file_path";
+
+    public static final String POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY = "polaris_reports_sarif_groupSCAIssues";
+
+    public static final String POLARIS_REPORTS_SARIF_SEVERITIES_KEY = "polaris_reports_sarif_severities";
+
+    public static final String POLARIS_REPORTS_SARIF_ISSUES_KEY = "polaris_reports_sarif_issues";
+
+    public static final String POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY = "polaris_reports_sarif_issue_types";
 
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
     public static final String GITHUB_TOKEN_KEY = "github_token";

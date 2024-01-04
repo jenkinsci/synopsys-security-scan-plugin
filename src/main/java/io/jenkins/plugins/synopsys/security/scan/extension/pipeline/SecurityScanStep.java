@@ -71,13 +71,15 @@ public class SecurityScanStep extends Step implements Serializable {
     private Boolean network_airgap;
     private Boolean blackduck_reports_sarif_create;
     private String blackduck_reports_sarif_file_path;
-    private String blackduck_reports_sarif_issue_types;
+    private String blackduck_reports_sarif_issues;
     private Boolean blackduck_reports_sarif_groupSCAIssues;
+    private String blackduck_reports_sarif_severities;
     private Boolean polaris_reports_sarif_create;
     private String polaris_reports_sarif_file_path;
     private String polaris_reports_sarif_issue_types;
     private Boolean polaris_reports_sarif_groupSCAIssues;
     private String polaris_reports_sarif_severities;
+    private String polaris_reports_sarif_issues;
 
     @DataBoundConstructor
     public SecurityScanStep() {
@@ -224,12 +226,16 @@ public class SecurityScanStep extends Step implements Serializable {
         return blackduck_reports_sarif_file_path;
     }
 
-    public String getBlackduck_reports_sarif_issue_types() {
-        return blackduck_reports_sarif_issue_types;
+    public String getBlackduck_reports_sarif_issues() {
+        return blackduck_reports_sarif_issues;
     }
 
     public Boolean isBlackduck_reports_sarif_groupSCAIssues() {
         return blackduck_reports_sarif_groupSCAIssues;
+    }
+
+    public String getBlackduck_reports_sarif_severities() {
+        return blackduck_reports_sarif_severities;
     }
 
     public Boolean isPolaris_reports_sarif_create() {
@@ -240,8 +246,8 @@ public class SecurityScanStep extends Step implements Serializable {
         return polaris_reports_sarif_file_path;
     }
 
-    public String getPolaris_reports_sarif_issue_types() {
-        return polaris_reports_sarif_issue_types;
+    public String getPolaris_reports_sarif_issues() {
+        return polaris_reports_sarif_issues;
     }
 
     public Boolean isPolaris_reports_sarif_groupSCAIssues() {
@@ -250,6 +256,10 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public String getPolaris_reports_sarif_severities() {
         return polaris_reports_sarif_severities;
+    }
+
+    public String getPolaris_reports_sarif_issue_types() {
+        return polaris_reports_sarif_issue_types;
     }
 
     @DataBoundSetter
@@ -429,13 +439,18 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
-    public void setBlackduck_reports_sarif_issue_types(String blackduck_reports_sarif_issue_types) {
-        this.blackduck_reports_sarif_issue_types = Util.fixEmptyAndTrim(blackduck_reports_sarif_issue_types);
+    public void setBlackduck_reports_sarif_issues(String blackduck_reports_sarif_issues) {
+        this.blackduck_reports_sarif_issues = Util.fixEmptyAndTrim(blackduck_reports_sarif_issues);
     }
 
     @DataBoundSetter
     public void setBlackduck_reports_sarif_groupSCAIssues(Boolean blackduck_reports_sarif_groupSCAIssues) {
         this.blackduck_reports_sarif_groupSCAIssues = blackduck_reports_sarif_groupSCAIssues ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_reports_sarif_severities(String blackduck_reports_sarif_severities) {
+        this.blackduck_reports_sarif_severities = Util.fixEmptyAndTrim(blackduck_reports_sarif_severities);
     }
 
     @DataBoundSetter
@@ -449,8 +464,8 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
-    public void setPolaris_reports_sarif_issue_types(String polaris_reports_sarif_issue_types) {
-        this.polaris_reports_sarif_issue_types = Util.fixEmptyAndTrim(polaris_reports_sarif_issue_types);
+    public void setPolaris_reports_sarif_issues(String polaris_reports_sarif_issues) {
+        this.polaris_reports_sarif_issues = Util.fixEmptyAndTrim(polaris_reports_sarif_issues);
     }
 
     @DataBoundSetter
@@ -461,6 +476,11 @@ public class SecurityScanStep extends Step implements Serializable {
     @DataBoundSetter
     public void setPolaris_reports_sarif_severities(String polaris_reports_sarif_severities) {
         this.polaris_reports_sarif_severities = Util.fixEmptyAndTrim(polaris_reports_sarif_severities);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_reports_sarif_issue_types(String polaris_reports_sarif_issue_types) {
+        this.polaris_reports_sarif_issue_types = Util.fixEmptyAndTrim(polaris_reports_sarif_issue_types);
     }
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)

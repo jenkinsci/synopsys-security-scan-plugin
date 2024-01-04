@@ -180,11 +180,11 @@ public class ScanParametersFactoryTest {
                 ScanParametersFactory.prepareSarifReportParametersMap(securityScanStep);
 
         assertEquals(5, sarifParametersMap.size());
-        assertTrue((boolean) sarifParametersMap.get(ApplicationConstants.REPORTS_SARIF_CREATE_KEY));
-        assertEquals("/fake/path", sarifParametersMap.get(ApplicationConstants.REPORTS_SARIF_FILE_PATH_KEY));
-        assertEquals("SAST", sarifParametersMap.get(ApplicationConstants.REPORTS_SARIF_ISSUE_TYPES_KEY));
-        assertEquals("CRITICAL", sarifParametersMap.get(ApplicationConstants.REPORTS_SARIF_SEVERITIES_KEY));
-        assertTrue((boolean) sarifParametersMap.get(ApplicationConstants.REPORTS_SARIF_GROUPSCAISSUES_KEY));
+        assertTrue((boolean) sarifParametersMap.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY));
+        assertEquals("/fake/path", sarifParametersMap.get(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY));
+        assertEquals("SAST", sarifParametersMap.get(ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY));
+        assertEquals("CRITICAL", sarifParametersMap.get(ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY));
+        assertTrue((boolean) sarifParametersMap.get(ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY));
 
         Map<String, Object> emptySarifParametersMap =
                 ScanParametersFactory.prepareSarifReportParametersMap(new SecurityScanStep());

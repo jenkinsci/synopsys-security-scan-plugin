@@ -334,51 +334,66 @@ public class ScanParametersFactory {
 
         if (scanStep.isBlackduck_reports_sarif_create() != null) {
             sarifParameters.put(
-                    ApplicationConstants.REPORTS_SARIF_CREATE_KEY, scanStep.isBlackduck_reports_sarif_create());
+                    ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY,
+                    scanStep.isBlackduck_reports_sarif_create());
         }
 
         if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_reports_sarif_file_path())) {
             sarifParameters.put(
-                    ApplicationConstants.REPORTS_SARIF_FILE_PATH_KEY, scanStep.getBlackduck_reports_sarif_file_path());
+                    ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY,
+                    scanStep.getBlackduck_reports_sarif_file_path());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_reports_sarif_issue_types())) {
+        if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_reports_sarif_issues())) {
             sarifParameters.put(
-                    ApplicationConstants.REPORTS_SARIF_ISSUE_TYPES_KEY,
-                    scanStep.getBlackduck_reports_sarif_issue_types());
+                    ApplicationConstants.BLACKDUCK_REPORTS_SARIF_ISSUES_KEY,
+                    scanStep.getBlackduck_reports_sarif_issues());
         }
 
         if (scanStep.isBlackduck_reports_sarif_groupSCAIssues() != null) {
             sarifParameters.put(
-                    ApplicationConstants.REPORTS_SARIF_GROUPSCAISSUES_KEY,
+                    ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY,
                     scanStep.isBlackduck_reports_sarif_groupSCAIssues());
+        }
+
+        if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_reports_sarif_severities())) {
+            sarifParameters.put(
+                    ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY,
+                    scanStep.getBlackduck_reports_sarif_severities());
         }
 
         if (scanStep.isPolaris_reports_sarif_create() != null) {
             sarifParameters.put(
-                    ApplicationConstants.REPORTS_SARIF_CREATE_KEY, scanStep.isPolaris_reports_sarif_create());
+                    ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY, scanStep.isPolaris_reports_sarif_create());
         }
 
         if (!Utility.isStringNullOrBlank(scanStep.getPolaris_reports_sarif_file_path())) {
             sarifParameters.put(
-                    ApplicationConstants.REPORTS_SARIF_FILE_PATH_KEY, scanStep.getPolaris_reports_sarif_file_path());
+                    ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY,
+                    scanStep.getPolaris_reports_sarif_file_path());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getPolaris_reports_sarif_issue_types())) {
+        if (!Utility.isStringNullOrBlank(scanStep.getPolaris_reports_sarif_issues())) {
             sarifParameters.put(
-                    ApplicationConstants.REPORTS_SARIF_ISSUE_TYPES_KEY,
-                    scanStep.getPolaris_reports_sarif_issue_types());
+                    ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUES_KEY, scanStep.getPolaris_reports_sarif_issues());
         }
 
         if (scanStep.isPolaris_reports_sarif_groupSCAIssues() != null) {
             sarifParameters.put(
-                    ApplicationConstants.REPORTS_SARIF_GROUPSCAISSUES_KEY,
+                    ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY,
                     scanStep.isPolaris_reports_sarif_groupSCAIssues());
         }
 
         if (!Utility.isStringNullOrBlank(scanStep.getPolaris_reports_sarif_severities())) {
             sarifParameters.put(
-                    ApplicationConstants.REPORTS_SARIF_SEVERITIES_KEY, scanStep.getPolaris_reports_sarif_severities());
+                    ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY,
+                    scanStep.getPolaris_reports_sarif_severities());
+        }
+
+        if (!Utility.isStringNullOrBlank(scanStep.getPolaris_reports_sarif_issue_types())) {
+            sarifParameters.put(
+                    ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY,
+                    scanStep.getPolaris_reports_sarif_issue_types());
         }
 
         return sarifParameters;
