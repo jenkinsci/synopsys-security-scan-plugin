@@ -1,6 +1,8 @@
 package io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.common.Branch;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.common.Pull;
 
 public class Repository {
     @JsonProperty("branch")
