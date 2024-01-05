@@ -17,7 +17,6 @@ public class GitlabRepositoryServiceTest {
     private TaskListener listenerMock;
     private GitlabRepositoryService gitlabRepositoryService;
     private final String TEST_REPOSITORY_URL_CLOUD = "https://gitlab.com/user/fake-repo";
-    private final String GITLAB_BASE_URL = "https://gitlab.com/";
     private final String TEST_REPOSITORY_URL_ENTERPRISE = "https://custom.gitlabserver.com/user/fake-repo";
     private final String TEST_REPOSITORY_ENTERPRISE_IP = "https://10.0.0.97:8181/user/fake-repo";
     private final String TEST_GITLAB_TOKEN = "MSDFSGOIIEGWGWEGFAKEKEY";
@@ -54,6 +53,27 @@ public class GitlabRepositoryServiceTest {
         assertEquals(gitlabCloud.getRepository().getPull().getNumber(), TEST_REPOSITORY_PULL_NUMBER);
         assertEquals(gitlabCloud.getRepository().getBranch().getName(), TEST_REPOSITORY_BRANCH_NAME);
         assertEquals(gitlabCloud.getApi().getUrl(), "");
+    }
+
+    @Test
+    void server_createGitlabObjectTest() throws PluginExceptionHandler {
+        scanParametersMap.put(ApplicationConstants.GITLAB_TOKEN_KEY, TEST_GITLAB_TOKEN);
+
+        Gitlab gitlabCloud = gitlabRepositoryService.createGitlabObject(
+                scanParametersMap,
+                TEST_REPOSITORY_NAME,
+                TEST_REPOSITORY_PULL_NUMBER,
+                TEST_REPOSITORY_BRANCH_NAME,
+                TEST_REPOSITORY_URL_ENTERPRISE,
+                true);
+
+        assertEquals(
+                gitlabCloud.getUser().getToken(),
+                scanParametersMap.get(ApplicationConstants.GITLAB_TOKEN_KEY).toString());
+        assertEquals(gitlabCloud.getRepository().getName(), TEST_REPOSITORY_NAME);
+        assertEquals(gitlabCloud.getRepository().getPull().getNumber(), TEST_REPOSITORY_PULL_NUMBER);
+        assertEquals(gitlabCloud.getRepository().getBranch().getName(), TEST_REPOSITORY_BRANCH_NAME);
+        assertEquals(gitlabCloud.getApi().getUrl(), "https://custom.gitlabserver.com/");
     }
 
     @Test

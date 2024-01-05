@@ -49,7 +49,7 @@ public class GitlabRepositoryService {
             if (gitlabHostUrl.startsWith(GITLAB_CLOUD_HOST_URL)) {
                 gitlab.getApi().setUrl("");
             } else {
-                logger.warn("PR comment for Gitlab is supported for only cloud instances");
+                gitlab.getApi().setUrl(gitlabHostUrl);
             }
         }
 
