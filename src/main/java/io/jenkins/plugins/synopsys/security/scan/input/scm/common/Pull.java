@@ -1,4 +1,4 @@
-package io.jenkins.plugins.synopsys.security.scan.input.bitbucket;
+package io.jenkins.plugins.synopsys.security.scan.input.scm.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

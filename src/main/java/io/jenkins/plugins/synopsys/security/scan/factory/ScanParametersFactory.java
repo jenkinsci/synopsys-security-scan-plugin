@@ -69,6 +69,9 @@ public class ScanParametersFactory {
             if (!Utility.isStringNullOrBlank(scanStep.getGithub_token())) {
                 parametersMap.put(ApplicationConstants.GITHUB_TOKEN_KEY, scanStep.getGithub_token());
             }
+            if (!Utility.isStringNullOrBlank(scanStep.getGitlab_token())) {
+                parametersMap.put(ApplicationConstants.GITLAB_TOKEN_KEY, scanStep.getGitlab_token());
+            }
 
             parametersMap.putAll(prepareBridgeParametersMap(scanStep));
 
@@ -132,6 +135,12 @@ public class ScanParametersFactory {
                     ApplicationConstants.GITHUB_TOKEN_KEY,
                     scanCredentialsHelper
                             .getApiTokenByCredentialsId(config.getGithubCredentialsId())
+                            .orElse(null));
+            addParameterIfNotBlank(
+                    globalParameters,
+                    ApplicationConstants.GITLAB_TOKEN_KEY,
+                    scanCredentialsHelper
+                            .getApiTokenByCredentialsId(config.getGitlabCredentialsId())
                             .orElse(null));
             addParameterIfNotBlank(
                     globalParameters, ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, synopsysBridgeDownloadUrl);

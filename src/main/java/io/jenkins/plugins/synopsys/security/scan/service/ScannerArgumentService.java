@@ -13,11 +13,12 @@ import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
 import io.jenkins.plugins.synopsys.security.scan.input.NetworkAirGap;
-import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
-import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck.BlackDuckParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.coverity.CoverityParametersService;
@@ -205,7 +206,11 @@ public class ScannerArgumentService {
         } else if (scmObject instanceof Github) {
             Github github = (Github) scmObject;
             return github.getRepository().getName();
+        } else if (scmObject instanceof Gitlab) {
+            Gitlab gitlab = (Gitlab) scmObject;
+            return gitlab.getRepository().getName();
         }
+
         return "";
     }
 
@@ -214,6 +219,8 @@ public class ScannerArgumentService {
             bridgeInput.setBitbucket((Bitbucket) scmObject);
         } else if (scmObject instanceof Github) {
             bridgeInput.setGithub((Github) scmObject);
+        } else if (scmObject instanceof Gitlab) {
+            bridgeInput.setGitlab((Gitlab) scmObject);
         }
     }
 

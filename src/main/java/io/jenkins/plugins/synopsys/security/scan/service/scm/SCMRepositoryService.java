@@ -3,10 +3,12 @@ package io.jenkins.plugins.synopsys.security.scan.service.scm;
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import hudson.EnvVars;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.bitbucket.BitbucketRepositoryService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.github.GithubRepositoryService;
+import io.jenkins.plugins.synopsys.security.scan.service.scm.gitlab.GitlabRepositoryService;
 import java.util.Map;
 import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMSource;
@@ -47,6 +49,21 @@ public class SCMRepositoryService {
                     scanParameters,
                     repositoryName,
                     repositoryOwner,
+                    projectRepositoryPullNumber,
+                    branchName,
+                    repositoryUrl,
+                    isFixPrOrPrComment);
+        } else if (scmSource instanceof GitLabSCMSource) {
+            GitlabRepositoryService gitlabRepositoryService = new GitlabRepositoryService(listener);
+            GitLabSCMSource gitLabSCMSource = (GitLabSCMSource) scmSource;
+
+            String repositoryUrl = envVars.get(ApplicationConstants.GIT_URL);
+            String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
+            String repositoryName = gitLabSCMSource.getProjectPath();
+
+            return gitlabRepositoryService.createGitlabObject(
+                    scanParameters,
+                    repositoryName,
                     projectRepositoryPullNumber,
                     branchName,
                     repositoryUrl,
