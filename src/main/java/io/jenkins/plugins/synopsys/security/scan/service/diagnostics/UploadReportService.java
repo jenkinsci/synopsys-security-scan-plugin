@@ -35,8 +35,12 @@ public class UploadReportService {
         try {
             if (reportsPath.exists()) {
                 logger.info("Archiving " + reportType.name() + " jenkins artifact from: " + reportsPath.getRemote());
-
-                artifactArchiver.perform(run, reportsPath, envVars, launcher, listener);
+                artifactArchiver.perform(
+                        run,
+                        reportType == ReportType.SARIF ? reportsPath.getParent() : reportsPath,
+                        envVars,
+                        launcher,
+                        listener);
             } else {
                 logger.error("Archiving " + reportType.name() + " failed as " + reportType.name()
                         + " path not found at: " + reportsPath.getRemote());
