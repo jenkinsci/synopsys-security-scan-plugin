@@ -15,8 +15,8 @@ public class ApplicationConstants {
     public static final String PLATFORM_MAC = "macosx";
     public static final String DEFAULT_DIRECTORY_NAME = "synopsys-bridge";
     public static final String BRIDGE_REPORT_DIRECTORY = ".bridge";
-    public static final String DEFAULT_BLACKDUCK_SARIF_REPORT_FILE_PATH = ".bridge/Blackduck SARIF Generator";
-    public static final String DEFAULT_POLARIS_SARIF_REPORT_FILE_PATH = ".bridge/Polaris SARIF Generator";
+    public static final String DEFAULT_BLACKDUCK_SARIF_REPORT_FILE_PATH = ".bridge/Blackduck SARIF Generator/";
+    public static final String DEFAULT_POLARIS_SARIF_REPORT_FILE_PATH = ".bridge/Polaris SARIF Generator/";
     public static final String SARIF_REPORT_FILENAME = "report.sarif.json";
     public static final int BRIDGE_DOWNLOAD_MAX_RETRIES = 3;
     public static final int INTERVAL_BETWEEN_CONSECUTIVE_RETRY_ATTEMPTS = 10000;

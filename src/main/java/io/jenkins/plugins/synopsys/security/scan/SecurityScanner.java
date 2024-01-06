@@ -15,6 +15,7 @@ import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.ScannerArgumentService;
 import io.jenkins.plugins.synopsys.security.scan.service.diagnostics.UploadReportService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -99,23 +100,28 @@ public class SecurityScanner {
                 boolean isBlackDuckScan = scanType.contains(SecurityProduct.BLACKDUCK.name());
                 boolean isPolarisDuckScan = scanType.contains(SecurityProduct.POLARIS.name());
                 String defaultSarifReportFilePath = isBlackDuckScan
-                        ? ApplicationConstants.DEFAULT_BLACKDUCK_SARIF_REPORT_FILE_PATH + "/"
+                        ? ApplicationConstants.DEFAULT_BLACKDUCK_SARIF_REPORT_FILE_PATH
                                 + ApplicationConstants.SARIF_REPORT_FILENAME
                         : isPolarisDuckScan
-                                ? ApplicationConstants.DEFAULT_POLARIS_SARIF_REPORT_FILE_PATH + "/"
+                                ? ApplicationConstants.DEFAULT_POLARIS_SARIF_REPORT_FILE_PATH
                                         + ApplicationConstants.SARIF_REPORT_FILENAME
                                 : "";
 
                 String customSarifReportFilePath = isBlackDuckScan
                         ? (String) scanParams.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)
-                        : (String) scanParams.get(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY);
+                        : isPolarisDuckScan
+                                ? (String) scanParams.get(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY)
+                                : "";
 
                 UploadReportService uploadReportService = new UploadReportService(
                         run,
                         listener,
                         launcher,
                         envVars,
-                        new ArtifactArchiver(ApplicationConstants.SARIF_REPORT_FILENAME));
+                        new ArtifactArchiver(
+                                customSarifReportFilePath == null
+                                        ? ApplicationConstants.SARIF_REPORT_FILENAME
+                                        : new File(customSarifReportFilePath).getName()));
                 uploadReportService.archiveReports(
                         workspace.child(
                                 customSarifReportFilePath == null
