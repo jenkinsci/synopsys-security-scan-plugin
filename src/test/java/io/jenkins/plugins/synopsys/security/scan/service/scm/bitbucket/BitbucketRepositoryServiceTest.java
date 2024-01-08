@@ -11,7 +11,7 @@ import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketRepository;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Bitbucket;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;

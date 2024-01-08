@@ -43,6 +43,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     private String polarisCredentialsId;
     private String bitbucketCredentialsId;
     private String githubCredentialsId;
+    private String gitlabCredentialsId;
 
     @DataBoundConstructor
     public ScannerGlobalConfig() {
@@ -82,6 +83,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @DataBoundSetter
     public void setGithubCredentialsId(String githubCredentialsId) {
         this.githubCredentialsId = githubCredentialsId;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setGitlabCredentialsId(String gitlabCredentialsId) {
+        this.gitlabCredentialsId = gitlabCredentialsId;
         save();
     }
 
@@ -199,6 +206,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         return githubCredentialsId;
     }
 
+    public String getGitlabCredentialsId() {
+        return gitlabCredentialsId;
+    }
+
     private ListBoxModel getOptionsWithApiTokenCredentials() {
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
@@ -239,11 +250,18 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
                         ScanCredentialsHelper.USERNAME_PASSWORD_CREDENTIALS);
     }
 
+    @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
     public ListBoxModel doFillBitbucketCredentialsIdItems() {
         return getOptionsWithApiTokenCredentials();
     }
 
+    @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
     public ListBoxModel doFillGithubCredentialsIdItems() {
+        return getOptionsWithApiTokenCredentials();
+    }
+
+    @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
+    public ListBoxModel doFillGitlabCredentialsIdItems() {
         return getOptionsWithApiTokenCredentials();
     }
 
