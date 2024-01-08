@@ -1,5 +1,6 @@
 package io.jenkins.plugins.synopsys.security.scan.service.bridge;
 
+import com.fasterxml.jackson.core.Version;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.bridge.BridgeDownloadParameters;
@@ -144,8 +145,7 @@ public class BridgeDownloadParametersService {
             return ApplicationConstants.PLATFORM_WINDOWS;
         } else if (os.contains("mac")) {
             String arch = Utility.getAgentOsArch(workspace, listener);
-            if (version != null
-                    && Utility.compareVersions(version, ApplicationConstants.MAC_ARM_COMPATIBLE_BRIDGE_VERSION) < 0) {
+            if (version != null && !isVersionCompatibleForMacARM(version)) {
                 return ApplicationConstants.PLATFORM_MACOSX;
             } else {
                 if (arch.startsWith("arm") || arch.startsWith("aarch")) {
@@ -173,5 +173,29 @@ public class BridgeDownloadParametersService {
                 .concat("-")
                 .concat(getPlatform(version))
                 .concat(".zip");
+    }
+
+    public boolean isVersionCompatibleForMacARM(String version) {
+        String[] inputVersionSplits = version.split("\\.");
+        String[] minCompatibleArmVersionSplits = ApplicationConstants.MAC_ARM_COMPATIBLE_BRIDGE_VERSION.split("\\.");
+        if (inputVersionSplits.length != 3 && minCompatibleArmVersionSplits.length != 3) {
+            return false;
+        }
+        Version inputVersion = new Version(
+                Integer.parseInt(inputVersionSplits[0]),
+                Integer.parseInt(inputVersionSplits[1]),
+                Integer.parseInt(inputVersionSplits[2]),
+                null,
+                null,
+                null);
+        Version minCompatibleArmVersion = new Version(
+                Integer.parseInt(minCompatibleArmVersionSplits[0]),
+                Integer.parseInt(minCompatibleArmVersionSplits[1]),
+                Integer.parseInt(minCompatibleArmVersionSplits[2]),
+                null,
+                null,
+                null);
+
+        return inputVersion.compareTo(minCompatibleArmVersion) >= 0;
     }
 }

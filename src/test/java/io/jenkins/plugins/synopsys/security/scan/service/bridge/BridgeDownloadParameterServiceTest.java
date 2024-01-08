@@ -174,6 +174,14 @@ public class BridgeDownloadParameterServiceTest {
         }
     }
 
+    @Test
+    public void isVersionCompatibleForMacARMTest() {
+        assertTrue(bridgeDownloadParametersService.isVersionCompatibleForMacARM("2.1.0"));
+        assertTrue(bridgeDownloadParametersService.isVersionCompatibleForMacARM("2.2.38"));
+        assertFalse(bridgeDownloadParametersService.isVersionCompatibleForMacARM("2.0.0"));
+        assertFalse(bridgeDownloadParametersService.isVersionCompatibleForMacARM("1.2.12"));
+    }
+
     public String getHomeDirectory() {
         return System.getProperty("user.home");
     }
