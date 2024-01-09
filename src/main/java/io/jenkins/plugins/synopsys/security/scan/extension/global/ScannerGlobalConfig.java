@@ -344,7 +344,8 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
                 return FormValidation.error(String.join(" ", validationMessage));
             }
         } catch (Exception e) {
-            return FormValidation.error(AUTHORIZATION_FAILURE + e.getCause().getCause().getMessage());
+            return FormValidation.error(
+                    AUTHORIZATION_FAILURE + e.getCause().getCause().getMessage());
         }
 
         return FormValidation.ok(CONNECTION_SUCCESSFUL);
