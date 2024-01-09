@@ -251,11 +251,8 @@ public class ScannerArgumentServiceTest {
         blackDuck.setToken(TOKEN);
         blackDuck.getAutomation().setPrComment(true);
 
-        String jsonStringForPrComment = "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\","
-                + "\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},"
-                + "\"automation\":{\"prComment\":true}},\"gitlab\":{\"api\":{\"url\":\"\"},"
-                + "\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"branch\":{\"name\":\"fake-gitlab-branch\"},"
-                + "\"pull\":{\"number\":12},\"name\":\"fake-group/fake-gitlab-repo\"}}}}";
+        String jsonStringForPrComment =
+                "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{\"prComment\":true},\"reports\":{\"sarif\":{\"issue\":{},\"file\":{}}}},\"gitlab\":{\"api\":{\"url\":\"\"},\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"branch\":{\"name\":\"fake-gitlab-branch\"},\"pull\":{\"number\":12},\"name\":\"fake-group/fake-gitlab-repo\"}}}}";
 
         try {
             Gitlab gitlabObject = gitlabRepositoryService.createGitlabObject(
@@ -266,7 +263,7 @@ public class ScannerArgumentServiceTest {
                     "https://gitlab.com/fake-group/fake-gitlab-repo.git",
                     true);
             String inputJsonPathForGitlabPrComment = scannerArgumentService.createBridgeInputJson(
-                    blackDuck, gitlabObject, true, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
+                    blackDuck, gitlabObject, true, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
 
             JsonNode expectedJsonNode = objectMapper.readTree(jsonStringForPrComment);
 
