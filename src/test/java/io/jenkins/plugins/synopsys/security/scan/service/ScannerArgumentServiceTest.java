@@ -12,12 +12,14 @@ import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.BridgeParams;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
-import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
-import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.bitbucket.BitbucketRepositoryService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.github.GithubRepositoryService;
+import io.jenkins.plugins.synopsys.security.scan.service.scm.gitlab.GitlabRepositoryService;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -129,12 +131,16 @@ public class ScannerArgumentServiceTest {
         BridgeInput bridgeInput = Mockito.mock(BridgeInput.class);
         Bitbucket bitbucket = Mockito.mock(Bitbucket.class);
         Github github = Mockito.mock(Github.class);
+        Gitlab gitlab = Mockito.mock(Gitlab.class);
 
         scannerArgumentService.setScmObject(bridgeInput, bitbucket);
         Mockito.verify(bridgeInput).setBitbucket(bitbucket);
 
         scannerArgumentService.setScmObject(bridgeInput, github);
         Mockito.verify(bridgeInput).setGithub(github);
+
+        scannerArgumentService.setScmObject(bridgeInput, gitlab);
+        Mockito.verify(bridgeInput).setGitlab(gitlab);
     }
 
     @Test
@@ -229,6 +235,50 @@ public class ScannerArgumentServiceTest {
             Utility.removeFile(filePath.toString(), workspace, listenerMock);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Test
+    void gitlab_blackDuckInputJsonTest() throws PluginExceptionHandler {
+        GitlabRepositoryService gitlabRepositoryService = new GitlabRepositoryService(listenerMock);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Map<String, Object> scanParametersMap = new HashMap<>();
+        scanParametersMap.put(ApplicationConstants.GITLAB_TOKEN_KEY, TOKEN);
+
+        BlackDuck blackDuck = new BlackDuck();
+        blackDuck.setUrl("https://fake.blackduck.url");
+        blackDuck.setToken(TOKEN);
+        blackDuck.getAutomation().setPrComment(true);
+
+        String jsonStringForPrComment = "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\","
+                + "\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},"
+                + "\"automation\":{\"prComment\":true}},\"gitlab\":{\"api\":{\"url\":\"\"},"
+                + "\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"branch\":{\"name\":\"fake-gitlab-branch\"},"
+                + "\"pull\":{\"number\":12},\"name\":\"fake-group/fake-gitlab-repo\"}}}}";
+
+        try {
+            Gitlab gitlabObject = gitlabRepositoryService.createGitlabObject(
+                    scanParametersMap,
+                    "fake-group/fake-gitlab-repo",
+                    12,
+                    "fake-gitlab-branch",
+                    "https://gitlab.com/fake-group/fake-gitlab-repo.git",
+                    true);
+            String inputJsonPathForGitlabPrComment = scannerArgumentService.createBridgeInputJson(
+                    blackDuck, gitlabObject, true, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
+
+            JsonNode expectedJsonNode = objectMapper.readTree(jsonStringForPrComment);
+
+            Path filePath = Paths.get(inputJsonPathForGitlabPrComment);
+            String actualJsonString = new String(Files.readAllBytes(Paths.get(inputJsonPathForGitlabPrComment)));
+            JsonNode actualJsonNode = objectMapper.readTree(actualJsonString);
+
+            assertEquals(expectedJsonNode, actualJsonNode);
+            Utility.removeFile(filePath.toString(), workspace, listenerMock);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

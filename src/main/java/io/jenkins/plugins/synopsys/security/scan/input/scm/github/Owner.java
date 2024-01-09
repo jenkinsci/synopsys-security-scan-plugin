@@ -1,4 +1,4 @@
-package io.jenkins.plugins.synopsys.security.scan.input.github;
+package io.jenkins.plugins.synopsys.security.scan.input.scm.github;
 
 public class Owner {
     private String name;

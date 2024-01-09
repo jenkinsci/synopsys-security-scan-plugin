@@ -1,12 +1,13 @@
 package io.jenkins.plugins.synopsys.security.scan.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.jenkins.plugins.synopsys.security.scan.input.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
-import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
 
 public class BridgeInput {
     @JsonProperty("blackduck")
@@ -23,6 +24,9 @@ public class BridgeInput {
 
     @JsonProperty("github")
     private Github github;
+
+    @JsonProperty("gitlab")
+    private Gitlab gitlab;
 
     @JsonProperty("network")
     private NetworkAirGap networkAirGap;
@@ -84,5 +88,13 @@ public class BridgeInput {
 
     public void setGithub(Github github) {
         this.github = github;
+    }
+
+    public Gitlab getGitlab() {
+        return gitlab;
+    }
+
+    public void setGitlab(Gitlab gitlab) {
+        this.gitlab = gitlab;
     }
 }

@@ -13,6 +13,7 @@ public class LogMessages {
     public static final String POLARIS_PARAMETER_VALIDATION_FAILED = "Polaris parameters are not valid";
     public static final String NO_BITBUCKET_TOKEN_FOUND = "PrComment is set true but no Bitbucket token found!";
     public static final String NO_GITHUB_TOKEN_FOUND = "PrComment is set true but no Github token found!";
+    public static final String NO_GITLAB_TOKEN_FOUND = "PrComment is set true but no Gitlab token found!";
     public static final String INVALID_BRIDGE_DOWNLOAD_PARAMETERS = "Bridge download parameters are not valid";
     public static final String EMPTY_BRIDGE_DOWNLOAD_URL_PROVIDED = "The provided Bridge download URL is empty";
     public static final String INVALID_BRIDGE_DOWNLOAD_URL_PROVIDED =
