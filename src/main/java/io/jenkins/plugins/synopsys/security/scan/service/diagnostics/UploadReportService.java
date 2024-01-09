@@ -33,17 +33,13 @@ public class UploadReportService {
 
     public void archiveReports(FilePath reportsPath, ReportType reportType) {
         try {
-            if (reportsPath.exists()) {
+            FilePath path = reportType == ReportType.SARIF ? reportsPath.getParent() : reportsPath;
+            if (path != null && path.exists()) {
                 logger.info("Archiving " + reportType.name() + " jenkins artifact from: " + reportsPath.getRemote());
-                artifactArchiver.perform(
-                        run,
-                        reportType == ReportType.SARIF ? reportsPath.getParent() : reportsPath,
-                        envVars,
-                        launcher,
-                        listener);
+                artifactArchiver.perform(run, path, envVars, launcher, listener);
             } else {
                 logger.error("Archiving " + reportType.name() + " failed as " + reportType.name()
-                        + " path not found at: " + reportsPath.getRemote());
+                        + " path not found at: " + path.getRemote());
                 return;
             }
         } catch (Exception e) {
