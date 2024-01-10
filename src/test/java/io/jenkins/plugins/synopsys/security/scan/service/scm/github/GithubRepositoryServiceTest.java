@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;

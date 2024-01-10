@@ -6,7 +6,7 @@ import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
-import io.jenkins.plugins.synopsys.security.scan.input.github.Github;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;

@@ -38,6 +38,8 @@ public class ScanParametersFactoryTest {
 
         securityScanStep.setProduct("BLACKDUCK");
         securityScanStep.setBitbucket_token("FAKETOKEN");
+        securityScanStep.setGithub_token("faketoken-github");
+        securityScanStep.setGitlab_token("fakeTokeN-gItlAb");
         globalConfigValues.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake-blackduck.url");
         globalConfigValues.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "fake-blackduck-token");
         globalConfigValues.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, "/fake/path");
@@ -45,11 +47,13 @@ public class ScanParametersFactoryTest {
         Map<String, Object> result =
                 ScanParametersFactory.preparePipelineParametersMap(securityScanStep, globalConfigValues, listenerMock);
 
-        assertEquals(5, result.size());
+        assertEquals(7, result.size());
         assertEquals("BLACKDUCK", result.get(ApplicationConstants.PRODUCT_KEY));
         assertEquals("fake-blackduck-token", result.get(ApplicationConstants.BLACKDUCK_TOKEN_KEY));
         assertEquals("/fake/path", result.get(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY));
         assertEquals("FAKETOKEN", result.get(ApplicationConstants.BITBUCKET_TOKEN_KEY));
+        assertEquals("faketoken-github", result.get(ApplicationConstants.GITHUB_TOKEN_KEY));
+        assertEquals("fakeTokeN-gItlAb", result.get(ApplicationConstants.GITLAB_TOKEN_KEY));
 
         securityScanStep.setProduct("invalid-product");
 
