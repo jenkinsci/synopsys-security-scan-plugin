@@ -66,8 +66,8 @@ public class ScanParametersFactory {
             if (!Utility.isStringNullOrBlank(securityScan.getBitbucket_token())) {
                 parametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, securityScan.getBitbucket_token());
             }
-            if (!Utility.isStringNullOrBlank(scanStep.getGitlab_token())) {
-                parametersMap.put(ApplicationConstants.GITLAB_TOKEN_KEY, scanStep.getGitlab_token());
+            if (!Utility.isStringNullOrBlank(securityScan.getGitlab_token())) {
+                parametersMap.put(ApplicationConstants.GITLAB_TOKEN_KEY, securityScan.getGitlab_token());
             }
 
             if (!Utility.isStringNullOrBlank(securityScan.getGithub_token())) {

@@ -18,9 +18,9 @@
             <f:entry field="blackduck_scan_full" title="Black Duck Full Scan (Optional)">
                 <f:checkbox/>
             </f:entry>
-            <f:entry field="blackduck_automation_prcomment" title="Add Comments to Pull Requests (Optional)">
-                <f:checkbox/>
-            </f:entry>
+<!--            <f:entry field="blackduck_automation_prcomment" title="Add Comments to Pull Requests (Optional)">-->
+<!--                <f:checkbox/>-->
+<!--            </f:entry>-->
             <!--        <f:entry field="bridge_blackduck_automation_fixpr" title="Create Fix Pull Requests">-->
             <!--            <f:checkbox/>-->
             <!--        </f:entry>-->
@@ -41,9 +41,9 @@
             <f:entry field="coverity_version" title="Coverity Version Number (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="coverity_automation_prcomment" title="Add Comments to Pull Requests (Optional)">
-                <f:checkbox/>
-            </f:entry>
+<!--            <f:entry field="coverity_automation_prcomment" title="Add Comments to Pull Requests (Optional)">-->
+<!--                <f:checkbox/>-->
+<!--            </f:entry>-->
             <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
                 <f:checkbox/>
             </f:entry>
