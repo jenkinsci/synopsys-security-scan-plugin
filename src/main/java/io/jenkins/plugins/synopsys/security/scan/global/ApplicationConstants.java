@@ -60,6 +60,7 @@ public class ApplicationConstants {
     public static final String INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 
     public static final String NETWORK_AIRGAP_KEY = "network_airgap";
+    public static final String RETURN_STATUS_KEY = "return_status";
 
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
     public static final String GITHUB_TOKEN_KEY = "github_token";

@@ -3,6 +3,7 @@ package io.jenkins.plugins.synopsys.security.scan.service.scm.gitlab;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
@@ -32,7 +33,7 @@ public class GitlabRepositoryService {
 
         if (isFixPrOrPrComment && Utility.isStringNullOrBlank(gitlabToken)) {
             logger.error(LogMessages.NO_GITLAB_TOKEN_FOUND);
-            throw new PluginExceptionHandler(LogMessages.NO_GITLAB_TOKEN_FOUND);
+            throw new PluginExceptionHandler(ErrorCode.SCM_TOKEN_NOT_FOUND, LogMessages.NO_GITLAB_TOKEN_FOUND);
         }
 
         Gitlab gitlab = new Gitlab();
@@ -44,7 +45,7 @@ public class GitlabRepositoryService {
 
         String gitlabHostUrl = extractGitlabHost(repositoryUrl);
         if (gitlabHostUrl.equals(INVALID_GITLAB_REPO_URL)) {
-            throw new PluginExceptionHandler(INVALID_GITLAB_REPO_URL);
+            throw new PluginExceptionHandler(ErrorCode.SCM_URL_VALIDATION_FAILED, INVALID_GITLAB_REPO_URL);
         } else {
             if (gitlabHostUrl.startsWith(GITLAB_CLOUD_HOST_URL)) {
                 gitlab.getApi().setUrl("");

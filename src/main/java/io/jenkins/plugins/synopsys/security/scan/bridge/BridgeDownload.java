@@ -5,6 +5,7 @@ import hudson.FilePath;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
@@ -43,8 +44,8 @@ public class BridgeDownload {
                     downloadSuccess = true;
                 }
             } catch (InterruptedException e) {
-                logger.error("Interrupted while waiting to retry Synopsys Bridge download");
-                throw e;
+                logger.error(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_RETRY_INTERRUPTED);
+                throw new PluginExceptionHandler(ErrorCode.BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED, LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_RETRY_INTERRUPTED);
             } catch (Exception e) {
                 handleDownloadException(e, bridgeDownloadUrl, retryCount);
                 retryCount++;
@@ -58,7 +59,7 @@ public class BridgeDownload {
         }
 
         if (bridgeZipFilePath == null) {
-            throw new PluginExceptionHandler(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED);
+            throw new PluginExceptionHandler(ErrorCode.BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED, LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED);
         }
 
         return bridgeZipFilePath;
@@ -81,9 +82,9 @@ public class BridgeDownload {
 
         if (terminateRetry(statusCode)) {
             logger.error(
-                    "Synopsys Bridge download failed with status code: %s and plugin won't retry to download.",
+                    LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WONT_RETRY,
                     statusCode);
-            throw e;
+            throw new PluginExceptionHandler(ErrorCode.BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED, LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WONT_RETRY);
         }
 
         Thread.sleep(ApplicationConstants.INTERVAL_BETWEEN_CONSECUTIVE_RETRY_ATTEMPTS);

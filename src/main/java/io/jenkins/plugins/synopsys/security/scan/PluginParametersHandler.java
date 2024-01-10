@@ -6,9 +6,8 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.bridge.BridgeDownloadManager;
 import io.jenkins.plugins.synopsys.security.scan.bridge.BridgeDownloadParameters;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
-import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.service.bridge.BridgeDownloadParametersService;
@@ -32,7 +31,7 @@ public class PluginParametersHandler {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public int initializeScanner(Map<String, Object> scanParameters) throws PluginExceptionHandler, ScannerException {
+    public int initializeScanner(Map<String, Object> scanParameters) throws PluginExceptionHandler {
         ScanParametersService scanParametersService = new ScanParametersService(listener);
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listener);
         BridgeDownloadParametersService bridgeDownloadParametersService =
@@ -42,7 +41,7 @@ public class PluginParametersHandler {
 
         logMessagesForParameters(scanParameters, scanParametersService.getSynopsysSecurityProducts(scanParameters));
 
-        int exitCode = -1;
+        int exitCode = 31; // Scan parameter validation failure error code
 
         if (isValidScanParametersAndBridgeDownload(
                 bridgeDownloadParams, scanParametersService, bridgeDownloadParametersService, scanParameters)) {
@@ -64,10 +63,9 @@ public class PluginParametersHandler {
             FilePath bridgeInstallationPath =
                     new FilePath(workspace.getChannel(), bridgeDownloadParams.getBridgeInstallationPath());
 
-            exitCode = runScanner(scanParameters, bridgeInstallationPath);
+            exitCode = scanner.runScanner(scanParameters, bridgeInstallationPath);
         }
 
-        handleExitCode(exitCode);
         return exitCode;
     }
 
@@ -90,7 +88,7 @@ public class PluginParametersHandler {
             throws PluginExceptionHandler {
         if (isNetworkAirgap && !bridgeDownloadParams.getBridgeDownloadUrl().contains(".zip") && !isBridgeInstalled) {
             logger.error("Synopsys Bridge could not be found in " + bridgeDownloadParams.getBridgeInstallationPath());
-            throw new PluginExceptionHandler(
+            throw new PluginExceptionHandler(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND,
                     "Synopsys Bridge could not be found in " + bridgeDownloadParams.getBridgeInstallationPath());
         }
 
@@ -116,26 +114,6 @@ public class PluginParametersHandler {
             logger.info("Bridge download is not required. Found installed in: "
                     + bridgeDownloadParams.getBridgeInstallationPath());
             logger.println(LogMessages.DASHES);
-        }
-    }
-
-    private int runScanner(Map<String, Object> scanParameters, FilePath bridgeInstallationPath)
-            throws PluginExceptionHandler, ScannerException {
-        try {
-            return scanner.runScanner(scanParameters, bridgeInstallationPath);
-        } catch (PluginExceptionHandler e) {
-            throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
-        } catch (Exception e) {
-            throw new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
-        }
-    }
-
-    private void handleExitCode(int exitCode) throws PluginExceptionHandler {
-        if (exitCode != 0) {
-            Map<Integer, String> exitCodeToMessage = ExceptionMessages.bridgeErrorMessages();
-            logger.error(
-                    exitCodeToMessage.getOrDefault(exitCode, ExceptionMessages.scannerFailedWithExitCode(exitCode)));
-            throw new PluginExceptionHandler("Workflow failed!");
         }
     }
 

@@ -1,7 +1,11 @@
 package io.jenkins.plugins.synopsys.security.scan.extension.pipeline;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import hudson.*;
+import hudson.EnvVars;
+import hudson.Extension;
+import hudson.FilePath;
+import hudson.Launcher;
+import hudson.Util;
 import hudson.model.Node;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -11,12 +15,17 @@ import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandle
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
 import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
@@ -70,6 +79,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private String synopsys_bridge_install_directory;
     private Boolean include_diagnostics;
     private Boolean network_airgap;
+    private Boolean return_status;
 
     @DataBoundConstructor
     public SecurityScanStep() {
@@ -210,6 +220,10 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public Boolean isNetwork_airgap() {
         return network_airgap;
+    }
+
+    public Boolean isReturn_status() {
+        return return_status;
     }
 
     @DataBoundSetter
@@ -383,6 +397,11 @@ public class SecurityScanStep extends Step implements Serializable {
         this.network_airgap = network_airgap ? true : null;
     }
 
+    @DataBoundSetter
+    public void setReturn_status(Boolean return_status) {
+        this.return_status = return_status ? true : null;
+    }
+
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)
             throws PluginExceptionHandler {
         return ScanParametersFactory.preparePipelineParametersMap(
@@ -460,26 +479,52 @@ public class SecurityScanStep extends Step implements Serializable {
         @Override
         protected Integer run() throws PluginExceptionHandler, ScannerException {
             LoggerWrapper logger = new LoggerWrapper(listener);
-            int result;
+            int exitCode = 0;
 
             logger.println(
                     "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
             try {
-                result = ScanParametersFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
+                exitCode = ScanParametersFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
                         .initializeScanner(getParametersMap(workspace, listener));
+
+                handleExitCode(exitCode, logger, null);
             } catch (Exception e) {
                 if (e instanceof PluginExceptionHandler) {
-                    throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
+                    exitCode = ((PluginExceptionHandler) e).getCode();
+                    handleExitCode(exitCode, logger, null);
                 } else {
-                    throw new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
+                    exitCode = ErrorCode.UNKNOWN_PLUGIN_ERROR;
+                    handleExitCode(exitCode, logger, e.getMessage());
                 }
             } finally {
                 logger.println(
                         "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
             }
 
-            return result;
+            return exitCode;
+        }
+    }
+
+    private void handleExitCode(int exitCode, LoggerWrapper logger, String unknownErrorMessage)
+        throws PluginExceptionHandler, ScannerException {
+        if (exitCode != 0) {
+            String errorMessage;
+            Map<Integer, String> exitCodeToMessage = ExceptionMessages.getExitCodeToMessageMap();
+            if (exitCodeToMessage.containsKey(exitCode)) {
+                errorMessage = "Workflow failed! Exit code " + exitCode + ": " + exitCodeToMessage.get(exitCode);
+            } else {
+                errorMessage = ExceptionMessages.scannerFailedWithExitCode(exitCode);
+            }
+
+            logger.error(errorMessage);
+
+            if (!isReturn_status() && exitCode == ErrorCode.UNKNOWN_PLUGIN_ERROR) {
+                // Throw exception with stack trace for unknown errors
+                throw new ScannerException(ExceptionMessages.scannerFailureMessage(unknownErrorMessage));
+            } else if (!isReturn_status()) {
+                throw new PluginExceptionHandler(errorMessage);
+            }
         }
     }
 }

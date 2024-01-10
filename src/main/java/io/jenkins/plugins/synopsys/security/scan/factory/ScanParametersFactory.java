@@ -75,9 +75,13 @@ public class ScanParametersFactory {
 
             parametersMap.putAll(prepareBridgeParametersMap(scanStep));
 
+            if (scanStep.isReturn_status() != null) {
+                parametersMap.put(ApplicationConstants.RETURN_STATUS_KEY, scanStep.isReturn_status());
+            }
+
             return parametersMap;
         } else {
-            throw new PluginExceptionHandler(LogMessages.INVALID_SYNOPSYS_SECURITY_PRODUCT);
+            throw new PluginExceptionHandler(ErrorCode.PARAMETER_VALIDATION_FAILED, LogMessages.INVALID_SYNOPSYS_SECURITY_PRODUCT);
         }
     }
 

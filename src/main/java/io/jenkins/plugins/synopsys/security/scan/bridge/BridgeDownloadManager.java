@@ -5,6 +5,7 @@ import hudson.FilePath;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
@@ -43,7 +44,7 @@ public class BridgeDownloadManager {
         } catch (Exception e) {
             logger.error(
                     LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE, e.getMessage());
-            throw new PluginExceptionHandler(e.getMessage());
+            throw new PluginExceptionHandler(ErrorCode.BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED, e.getMessage());
         }
     }
 
