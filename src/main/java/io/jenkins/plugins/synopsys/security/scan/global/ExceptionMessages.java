@@ -6,14 +6,6 @@ import java.util.Map;
 public class ExceptionMessages {
     public static final String NULL_WORKSPACE = "Detect cannot be executed when the workspace is null";
 
-    public static String scannerFailedWithExitCode(int exitCode) {
-        return "Synopsys Security Scan failed with unknown exit code " + exitCode;
-    }
-
-    public static String scannerFailureMessage(String message) {
-        return "Synopsys Security Scan failed!! " + message;
-    }
-
     public static Map<Integer, String> getExitCodeToMessageMap() {
         Map<Integer, String> exitCodeToMessage = new HashMap<>();
 
@@ -28,8 +20,26 @@ public class ExceptionMessages {
         exitCodeToMessage.put(ErrorCode.SYNOPSYS_BRIDGE_EXECUTABLE_NOT_FOUND, "Synopsys bridge executable not found in installation path");
         exitCodeToMessage.put(ErrorCode.SCM_TOKEN_NOT_FOUND, "SCM token not found");
         exitCodeToMessage.put(ErrorCode.SCM_URL_VALIDATION_FAILED, "SCM URL validation failed");
-        exitCodeToMessage.put(ErrorCode.UNDEFINED_PLUGIN_ERROR, "Undefined plugin error, check error logs");
+        exitCodeToMessage.put(ErrorCode.UNDEFINED_PLUGIN_ERROR, "Undefined plugin error");
 
         return exitCodeToMessage;
+    }
+
+    public static String getErrorMessage(int exitCode, String undefinedErrorMessage) {
+        String errorMessage;
+        Map<Integer, String> exitCodeToMessage = ExceptionMessages.getExitCodeToMessageMap();
+        if (exitCodeToMessage.containsKey(exitCode)) {
+            if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
+                errorMessage = "Workflow failed! Exit code " +
+                    exitCode + ": " + exitCodeToMessage.get(exitCode) +
+                    " - " + undefinedErrorMessage;
+            } else {
+                errorMessage = "Workflow failed! Exit code " +
+                    exitCode + ": " + exitCodeToMessage.get(exitCode);
+            }
+        } else {
+            errorMessage = "Synopsys Security Scan failed! Reason: " + undefinedErrorMessage;
+        }
+        return errorMessage;
     }
 }

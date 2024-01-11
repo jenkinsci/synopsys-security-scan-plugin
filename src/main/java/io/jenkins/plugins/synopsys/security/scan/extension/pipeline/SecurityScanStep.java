@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import org.jenkinsci.plugins.workflow.steps.Step;
@@ -480,6 +481,7 @@ public class SecurityScanStep extends Step implements Serializable {
         protected Integer run() throws PluginExceptionHandler, ScannerException {
             LoggerWrapper logger = new LoggerWrapper(listener);
             int exitCode = 0;
+            String undefinedErrorMessage = null;
 
             logger.println(
                     "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
@@ -487,44 +489,39 @@ public class SecurityScanStep extends Step implements Serializable {
             try {
                 exitCode = ScanParametersFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
                         .initializeScanner(getParametersMap(workspace, listener));
-
-                handleExitCode(exitCode, logger, null);
             } catch (Exception e) {
                 if (e instanceof PluginExceptionHandler) {
                     exitCode = ((PluginExceptionHandler) e).getCode();
-                    handleExitCode(exitCode, logger, null);
                 } else {
                     exitCode = ErrorCode.UNDEFINED_PLUGIN_ERROR;
-                    handleExitCode(exitCode, logger, e.getMessage());
+                    undefinedErrorMessage = e.getMessage();
                 }
             } finally {
+                String errorMessage = ExceptionMessages.getErrorMessage(exitCode, undefinedErrorMessage);
+                logger.error(errorMessage);
+                
                 logger.println(
-                        "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+
+                handleExitCode(exitCode, errorMessage);
             }
 
             return exitCode;
         }
     }
 
-    private void handleExitCode(int exitCode, LoggerWrapper logger, String unknownErrorMessage)
-        throws PluginExceptionHandler, ScannerException {
+    private void handleExitCode(int exitCode, String errorMessage) throws PluginExceptionHandler, ScannerException {
         if (exitCode != 0) {
-            String errorMessage;
-            Map<Integer, String> exitCodeToMessage = ExceptionMessages.getExitCodeToMessageMap();
-            if (exitCodeToMessage.containsKey(exitCode)) {
-                errorMessage = "Workflow failed! Exit code " + exitCode + ": " + exitCodeToMessage.get(exitCode);
-            } else {
-                errorMessage = ExceptionMessages.scannerFailedWithExitCode(exitCode);
+            if (Objects.equals(isReturn_status(), true)) {
+                return;
             }
 
-            logger.error(errorMessage);
-
-            if (!isReturn_status() && exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
+            if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
                 // Throw exception with stack trace for undefined errors
-                throw new ScannerException(ExceptionMessages.scannerFailureMessage(unknownErrorMessage));
-            } else if (!isReturn_status()) {
-                throw new PluginExceptionHandler(errorMessage);
+                throw new ScannerException(errorMessage);
             }
+
+            throw new PluginExceptionHandler(errorMessage);
         }
     }
 }
