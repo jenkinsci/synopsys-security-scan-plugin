@@ -45,7 +45,9 @@ public class BridgeDownload {
                 }
             } catch (InterruptedException e) {
                 logger.error(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_RETRY_INTERRUPTED);
-                throw new PluginExceptionHandler(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED, LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_RETRY_INTERRUPTED);
+                throw new PluginExceptionHandler(
+                        ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED,
+                        LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_RETRY_INTERRUPTED);
             } catch (Exception e) {
                 handleDownloadException(e, bridgeDownloadUrl, retryCount);
                 retryCount++;
@@ -59,7 +61,9 @@ public class BridgeDownload {
         }
 
         if (bridgeZipFilePath == null) {
-            throw new PluginExceptionHandler(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED, LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED);
+            throw new PluginExceptionHandler(
+                    ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED,
+                    LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED);
         }
 
         return bridgeZipFilePath;
@@ -81,10 +85,10 @@ public class BridgeDownload {
         int statusCode = getHttpStatusCode(bridgeDownloadUrl);
 
         if (terminateRetry(statusCode)) {
-            logger.error(
-                    LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WONT_RETRY,
-                    statusCode);
-            throw new PluginExceptionHandler(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED, LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WONT_RETRY);
+            logger.error(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WONT_RETRY, statusCode);
+            throw new PluginExceptionHandler(
+                    ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED,
+                    LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WONT_RETRY);
         }
 
         Thread.sleep(ApplicationConstants.INTERVAL_BETWEEN_CONSECUTIVE_RETRY_ATTEMPTS);

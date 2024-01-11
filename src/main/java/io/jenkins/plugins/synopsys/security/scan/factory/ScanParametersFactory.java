@@ -81,7 +81,8 @@ public class ScanParametersFactory {
 
             return parametersMap;
         } else {
-            throw new PluginExceptionHandler(ErrorCode.PARAMETER_VALIDATION_FAILED, LogMessages.INVALID_SYNOPSYS_SECURITY_PRODUCT);
+            throw new PluginExceptionHandler(
+                    ErrorCode.PARAMETER_VALIDATION_FAILED, LogMessages.INVALID_SYNOPSYS_SECURITY_PRODUCT);
         }
     }
 

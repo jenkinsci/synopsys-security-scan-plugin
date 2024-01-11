@@ -487,7 +487,8 @@ public class SecurityScanStep extends Step implements Serializable {
                     "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
             try {
-                exitCode = ScanParametersFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
+                exitCode = ScanParametersFactory.createPipelineCommand(
+                                run, listener, envVars, launcher, node, workspace)
                         .initializeScanner(getParametersMap(workspace, listener));
             } catch (Exception e) {
                 if (e instanceof PluginExceptionHandler) {
@@ -499,9 +500,9 @@ public class SecurityScanStep extends Step implements Serializable {
             } finally {
                 String errorMessage = ExceptionMessages.getErrorMessage(exitCode, undefinedErrorMessage);
                 logger.error(errorMessage);
-                
+
                 logger.println(
-                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+                        "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
                 handleExitCode(exitCode, errorMessage);
             }
