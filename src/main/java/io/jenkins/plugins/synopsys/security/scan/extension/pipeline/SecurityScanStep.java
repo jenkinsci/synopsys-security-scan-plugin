@@ -494,7 +494,7 @@ public class SecurityScanStep extends Step implements Serializable {
                     exitCode = ((PluginExceptionHandler) e).getCode();
                     handleExitCode(exitCode, logger, null);
                 } else {
-                    exitCode = ErrorCode.UNKNOWN_PLUGIN_ERROR;
+                    exitCode = ErrorCode.UNDEFINED_PLUGIN_ERROR;
                     handleExitCode(exitCode, logger, e.getMessage());
                 }
             } finally {
@@ -519,8 +519,8 @@ public class SecurityScanStep extends Step implements Serializable {
 
             logger.error(errorMessage);
 
-            if (!isReturn_status() && exitCode == ErrorCode.UNKNOWN_PLUGIN_ERROR) {
-                // Throw exception with stack trace for unknown errors
+            if (!isReturn_status() && exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
+                // Throw exception with stack trace for undefined errors
                 throw new ScannerException(ExceptionMessages.scannerFailureMessage(unknownErrorMessage));
             } else if (!isReturn_status()) {
                 throw new PluginExceptionHandler(errorMessage);

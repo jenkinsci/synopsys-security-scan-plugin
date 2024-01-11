@@ -44,7 +44,7 @@ public class BridgeDownloadManager {
         } catch (Exception e) {
             logger.error(
                     LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE, e.getMessage());
-            throw new PluginExceptionHandler(ErrorCode.BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED, e.getMessage());
+            throw new PluginExceptionHandler(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED, e.getMessage());
         }
     }
 

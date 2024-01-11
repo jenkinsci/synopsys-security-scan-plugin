@@ -10,9 +10,9 @@ public class ErrorCode {
 
     //Plugin specific error codes
     public static int PARAMETER_VALIDATION_FAILED = 31;
-    public static int BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED = 32;
-    public static int BRIDGE_EXECUTABLE_NOT_FOUND = 33;
+    public static int SYNOPSYS_BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED = 32;
+    public static int SYNOPSYS_BRIDGE_EXECUTABLE_NOT_FOUND = 33;
     public static int SCM_TOKEN_NOT_FOUND = 34;
     public static int SCM_URL_VALIDATION_FAILED = 35;
-    public static int UNKNOWN_PLUGIN_ERROR = 36;
+    public static int UNDEFINED_PLUGIN_ERROR = 36;
 }

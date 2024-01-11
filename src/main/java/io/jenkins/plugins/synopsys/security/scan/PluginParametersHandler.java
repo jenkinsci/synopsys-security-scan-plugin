@@ -88,7 +88,7 @@ public class PluginParametersHandler {
             throws PluginExceptionHandler {
         if (isNetworkAirgap && !bridgeDownloadParams.getBridgeDownloadUrl().contains(".zip") && !isBridgeInstalled) {
             logger.error("Synopsys Bridge could not be found in " + bridgeDownloadParams.getBridgeInstallationPath());
-            throw new PluginExceptionHandler(ErrorCode.BRIDGE_EXECUTABLE_NOT_FOUND,
+            throw new PluginExceptionHandler(ErrorCode.SYNOPSYS_BRIDGE_EXECUTABLE_NOT_FOUND,
                     "Synopsys Bridge could not be found in " + bridgeDownloadParams.getBridgeInstallationPath());
         }
 
