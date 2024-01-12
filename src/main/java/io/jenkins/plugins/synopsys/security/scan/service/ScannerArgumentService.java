@@ -317,18 +317,6 @@ public class ScannerArgumentService {
                         (Boolean) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY);
                 sarif.setGroupSCAIssues(reports_sarif_groupSCAIssues);
             }
-            if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_ISSUES_KEY)) {
-                String reports_sarif_issues =
-                        (String) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_ISSUES_KEY);
-                List<String> issues = new ArrayList<>();
-                String[] reports_sarif_issuesInput =
-                        reports_sarif_issues.toUpperCase().split(",");
-
-                for (String input : reports_sarif_issuesInput) {
-                    issues.add(input.trim());
-                }
-                sarif.setIssues(issues);
-            }
             return sarif;
         } else if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
             if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY)) {
@@ -357,18 +345,6 @@ public class ScannerArgumentService {
                 Boolean reports_sarif_groupSCAIssues =
                         (Boolean) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY);
                 sarif.setGroupSCAIssues(reports_sarif_groupSCAIssues);
-            }
-            if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUES_KEY)) {
-                String reports_sarif_issues =
-                        (String) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUES_KEY);
-                List<String> issues = new ArrayList<>();
-                String[] reports_sarif_issuesInput =
-                        reports_sarif_issues.toUpperCase().split(",");
-
-                for (String input : reports_sarif_issuesInput) {
-                    issues.add(input.trim());
-                }
-                sarif.setIssues(issues);
             }
             if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY)) {
                 String reports_sarif_issue_types =
