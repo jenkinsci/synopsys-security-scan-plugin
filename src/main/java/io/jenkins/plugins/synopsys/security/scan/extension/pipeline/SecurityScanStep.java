@@ -72,7 +72,6 @@ public class SecurityScanStep extends Step implements Serializable {
     private Boolean network_airgap;
     private Boolean blackduck_reports_sarif_create;
     private String blackduck_reports_sarif_file_path;
-    private String blackduck_reports_sarif_issues;
     private Boolean blackduck_reports_sarif_groupSCAIssues;
     private String blackduck_reports_sarif_severities;
 
@@ -223,10 +222,6 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public String getBlackduck_reports_sarif_file_path() {
         return blackduck_reports_sarif_file_path;
-    }
-
-    public String getBlackduck_reports_sarif_issues() {
-        return blackduck_reports_sarif_issues;
     }
 
     public Boolean isBlackduck_reports_sarif_groupSCAIssues() {
@@ -416,11 +411,6 @@ public class SecurityScanStep extends Step implements Serializable {
     @DataBoundSetter
     public void setBlackduck_reports_sarif_file_path(String blackduck_reports_sarif_file_path) {
         this.blackduck_reports_sarif_file_path = Util.fixEmptyAndTrim(blackduck_reports_sarif_file_path);
-    }
-
-    @DataBoundSetter
-    public void setBlackduck_reports_sarif_issues(String blackduck_reports_sarif_issues) {
-        this.blackduck_reports_sarif_issues = Util.fixEmptyAndTrim(blackduck_reports_sarif_issues);
     }
 
     @DataBoundSetter

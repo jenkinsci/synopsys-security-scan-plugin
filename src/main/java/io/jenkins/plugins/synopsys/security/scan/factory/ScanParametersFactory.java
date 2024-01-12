@@ -353,12 +353,6 @@ public class ScanParametersFactory {
                     scanStep.getBlackduck_reports_sarif_file_path());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_reports_sarif_issues())) {
-            sarifParameters.put(
-                    ApplicationConstants.BLACKDUCK_REPORTS_SARIF_ISSUES_KEY,
-                    scanStep.getBlackduck_reports_sarif_issues());
-        }
-
         if (scanStep.isBlackduck_reports_sarif_groupSCAIssues() != null) {
             sarifParameters.put(
                     ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY,

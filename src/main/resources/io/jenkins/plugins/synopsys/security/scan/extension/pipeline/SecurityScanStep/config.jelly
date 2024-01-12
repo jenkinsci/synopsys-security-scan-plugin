@@ -34,9 +34,6 @@
             <f:entry field="blackduck_reports_sarif_file_path" title="Black Duck SARIF Report File Path (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="blackduck_reports_sarif_issues" title="Black Duck SARIF Report Issues (Optional)">
-                <f:textbox/>
-            </f:entry>
             <f:entry field="blackduck_reports_sarif_severities" title="Black Duck SARIF Report Severities (Optional)">
                 <f:textbox/>
             </f:entry>

@@ -72,8 +72,6 @@ public class ApplicationConstants {
 
     public static final String BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = "blackduck_reports_sarif_severities";
 
-    public static final String BLACKDUCK_REPORTS_SARIF_ISSUES_KEY = "blackduck_reports_sarif_issues";
-
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
     public static final String GITHUB_TOKEN_KEY = "github_token";
     public static final String GITLAB_TOKEN_KEY = "gitlab_token";
