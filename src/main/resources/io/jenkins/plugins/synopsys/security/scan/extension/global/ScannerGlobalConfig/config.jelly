@@ -28,7 +28,7 @@
             </f:entry>
             <div class="button-container">
                 <div class="flex-1">
-                    <f:validateButton method="testBlackDuckConnection" title="Test Connection" progress="Testing..." with="blackDuckUrl,blackDuckCredentialsId"/>
+                    <f:validateButton method="testBlackDuckConnection" title="Test connection" progress="Testing..." with="blackDuckUrl,blackDuckCredentialsId"/>
                 </div>
                 <f:entry>
                     <button type="button" class="jenkins-button ml-7" onclick="clearTabFieldsAndTestConnectionMessages('BLACKDUCKSection')">Clear</button>
@@ -49,7 +49,7 @@
             </f:entry>
             <div class="button-container">
                 <div class="flex-1">
-                    <f:validateButton method="testCoverityConnection" title="Test Connection" progress="Testing..." with="coverityConnectUrl,coverityCredentialsId"/>
+                    <f:validateButton method="testCoverityConnection" title="Test connection" progress="Testing..." with="coverityConnectUrl,coverityCredentialsId"/>
                 </div>
                 <f:entry>
                     <button type="button" class="jenkins-button ml-7" onclick="clearTabFieldsAndTestConnectionMessages('COVERITYSection')">Clear</button>
@@ -67,7 +67,7 @@
             </f:entry>
             <div class="button-container">
                 <div class="flex-1">
-                    <f:validateButton method="testPolarisConnection" title="Test Connection" progress="Testing..." with="polarisServerUrl,polarisCredentialsId"/>
+                    <f:validateButton method="testPolarisConnection" title="Test connection" progress="Testing..." with="polarisServerUrl,polarisCredentialsId"/>
                 </div>
                 <f:entry>
                     <button type="button" class="jenkins-button ml-7" onclick="clearTabFieldsAndTestConnectionMessages('POLARISSection')">Clear</button>
