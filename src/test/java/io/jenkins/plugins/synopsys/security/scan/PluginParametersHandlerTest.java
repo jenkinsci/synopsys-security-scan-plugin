@@ -1,14 +1,13 @@
 package io.jenkins.plugins.synopsys.security.scan;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
 import java.io.File;
 import java.io.PrintStream;
@@ -50,7 +49,7 @@ public class PluginParametersHandlerTest {
     }
 
     @Test
-    public void initializeScannerInvalidParametersTest() {
+    public void initializeScannerInvalidParametersTest() throws PluginExceptionHandler {
         ScanParametersService mockScanParametersService = Mockito.mock(ScanParametersService.class);
 
         Map<String, Object> scanParameters = new HashMap<>();
@@ -59,11 +58,13 @@ public class PluginParametersHandlerTest {
         Mockito.when(mockScanParametersService.isValidScanParameters(scanParameters))
                 .thenReturn(false);
 
-        assertThrows(PluginExceptionHandler.class, () -> pluginParametersHandler.initializeScanner(scanParameters));
+        int exitCode = pluginParametersHandler.initializeScanner(scanParameters);
+
+        assertEquals(ErrorCode.PARAMETER_VALIDATION_FAILED, exitCode);
     }
 
     @Test
-    public void initializeScannerAirGapFailureTest() {
+    public void initializeScannerAirGapFailureTest() throws PluginExceptionHandler {
         Map<String, Object> scanParameters = new HashMap<>();
         scanParameters.put(ApplicationConstants.PRODUCT_KEY, "BLACKDUCK");
         scanParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
@@ -71,7 +72,9 @@ public class PluginParametersHandlerTest {
         scanParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, true);
         scanParameters.put(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY, "/path/to/bridge");
 
-        assertThrows(PluginExceptionHandler.class, () -> pluginParametersHandler.initializeScanner(scanParameters));
+        int exitCode = pluginParametersHandler.initializeScanner(scanParameters);
+
+        assertEquals(ErrorCode.PARAMETER_VALIDATION_FAILED, exitCode);
     }
 
     @Test
