@@ -26,6 +26,8 @@ import org.kohsuke.stapler.verb.POST;
 public class ScannerGlobalConfig extends GlobalConfiguration implements Serializable {
     private static final long serialVersionUID = -3129542889827231427L;
     private final int CONNECTION_TIMEOUT_IN_SECONDS = 120;
+    private String AUTHORIZATION_FAILURE = "Could not perform the authorization request: ";
+    private String CONNECTION_SUCCESSFUL = "Connection successful.";
 
     private String blackDuckUrl;
 
@@ -294,11 +296,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
                 return FormValidation.error(String.join(" ", validationMessage));
             }
         } catch (Exception e) {
-            return FormValidation.error("Could not perform the authorization request: "
-                    + e.getCause().getMessage());
+            return FormValidation.error(AUTHORIZATION_FAILURE + e.getCause().getMessage());
         }
 
-        return FormValidation.ok("Connection successful.");
+        return FormValidation.ok(CONNECTION_SUCCESSFUL);
     }
 
     private String getValidationMessage(int statusCode) {
@@ -341,11 +342,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
                 return FormValidation.error(String.join(" ", validationMessage));
             }
         } catch (Exception e) {
-            return FormValidation.error("Could not perform the authorization request: "
-                    + e.getCause().getMessage());
+            return FormValidation.error(AUTHORIZATION_FAILURE + e.getCause().getMessage());
         }
 
-        return FormValidation.ok("Connection successful.");
+        return FormValidation.ok(CONNECTION_SUCCESSFUL);
     }
 
     @POST
@@ -377,10 +377,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
                 return FormValidation.error(String.join(" ", validationMessage));
             }
         } catch (Exception e) {
-            return FormValidation.error("Could not perform the authorization request: "
-                    + e.getCause().getCause().getMessage());
+            return FormValidation.error(
+                    AUTHORIZATION_FAILURE + e.getCause().getCause().getMessage());
         }
 
-        return FormValidation.ok("Connection successful.");
+        return FormValidation.ok(CONNECTION_SUCCESSFUL);
     }
 }
