@@ -482,6 +482,7 @@ public class SecurityScanStep extends Step implements Serializable {
             LoggerWrapper logger = new LoggerWrapper(listener);
             int exitCode = 0;
             String undefinedErrorMessage = null;
+            Exception unknownException = new Exception();
 
             logger.println(
                     "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
@@ -496,6 +497,7 @@ public class SecurityScanStep extends Step implements Serializable {
                 } else {
                     exitCode = ErrorCode.UNDEFINED_PLUGIN_ERROR;
                     undefinedErrorMessage = e.getMessage();
+                    unknownException = e;
                 }
             } finally {
                 String errorMessage = ExceptionMessages.getErrorMessage(exitCode, undefinedErrorMessage);
@@ -504,14 +506,15 @@ public class SecurityScanStep extends Step implements Serializable {
                 logger.println(
                         "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
-                handleExitCode(exitCode, errorMessage);
+                handleExitCode(exitCode, errorMessage, unknownException);
             }
 
             return exitCode;
         }
     }
 
-    private void handleExitCode(int exitCode, String errorMessage) throws PluginExceptionHandler, ScannerException {
+    private void handleExitCode(int exitCode, String errorMessage, Exception e)
+            throws PluginExceptionHandler, ScannerException {
         if (exitCode != 0) {
             if (Objects.equals(isReturn_status(), true)) {
                 return;
@@ -519,7 +522,7 @@ public class SecurityScanStep extends Step implements Serializable {
 
             if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
                 // Throw exception with stack trace for undefined errors
-                throw new ScannerException(errorMessage);
+                throw new ScannerException(errorMessage, e);
             }
 
             throw new PluginExceptionHandler(errorMessage);
