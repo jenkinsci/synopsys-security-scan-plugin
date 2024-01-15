@@ -173,7 +173,8 @@ public class PluginParametersHandler {
             if (key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL)
                     || key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION)
                     || key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY)
-                    || key.equals(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY)) {
+                    || key.equals(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY)
+                    || key.equals(ApplicationConstants.NETWORK_AIRGAP_KEY)) {
                 Object value = entry.getValue();
                 logger.info(LOG_DASH + key + " = " + value.toString());
             }
