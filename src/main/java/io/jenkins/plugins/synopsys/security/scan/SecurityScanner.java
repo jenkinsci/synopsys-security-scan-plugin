@@ -94,9 +94,11 @@ public class SecurityScanner {
             }
 
             if (Objects.equals(scanParams.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)) {
+
                 ScanParametersService scanParametersService = new ScanParametersService(listener);
                 Set<String> scanType = scanParametersService.getSynopsysSecurityProducts(scanParams);
                 boolean isBlackDuckScan = scanType.contains(SecurityProduct.BLACKDUCK.name());
+
                 String defaultSarifReportFilePath = isBlackDuckScan
                         ? ApplicationConstants.DEFAULT_BLACKDUCK_SARIF_REPORT_FILE_PATH
                                 + ApplicationConstants.SARIF_REPORT_FILENAME
@@ -106,21 +108,15 @@ public class SecurityScanner {
                         ? (String) scanParams.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)
                         : "";
 
-                UploadReportService uploadReportService = new UploadReportService(
-                        run,
-                        listener,
-                        launcher,
-                        envVars,
-                        new ArtifactArchiver(
-                                customSarifReportFilePath == null
-                                        ? ApplicationConstants.SARIF_REPORT_FILENAME
-                                        : new File(customSarifReportFilePath).getName()));
-                uploadReportService.archiveReports(
-                        workspace.child(
-                                customSarifReportFilePath == null
-                                        ? defaultSarifReportFilePath
-                                        : customSarifReportFilePath),
-                        ReportType.SARIF);
+                String reportFilePath =
+                        customSarifReportFilePath != null ? customSarifReportFilePath : defaultSarifReportFilePath;
+                String reportFileName = customSarifReportFilePath != null
+                        ? new File(customSarifReportFilePath).getName()
+                        : ApplicationConstants.SARIF_REPORT_FILENAME;
+
+                UploadReportService uploadReportService =
+                        new UploadReportService(run, listener, launcher, envVars, new ArtifactArchiver(reportFileName));
+                uploadReportService.archiveReports(workspace.child(reportFilePath), ReportType.SARIF);
             }
         }
 
