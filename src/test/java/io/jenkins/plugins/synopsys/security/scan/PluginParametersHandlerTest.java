@@ -1,6 +1,7 @@
 package io.jenkins.plugins.synopsys.security.scan;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
