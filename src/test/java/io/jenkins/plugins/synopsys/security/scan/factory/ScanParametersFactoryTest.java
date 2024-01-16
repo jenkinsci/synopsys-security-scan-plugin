@@ -174,21 +174,19 @@ public class ScanParametersFactoryTest {
 
     @Test
     public void prepareSarifReportParametersMap() {
-        securityScanStep.setPolaris_reports_sarif_create(true);
-        securityScanStep.setPolaris_reports_sarif_file_path("/fake/path");
-        securityScanStep.setPolaris_reports_sarif_issue_types("SAST");
-        securityScanStep.setPolaris_reports_sarif_severities("CRITICAL");
-        securityScanStep.setPolaris_reports_sarif_groupSCAIssues(true);
+        securityScanStep.setBlackduck_reports_sarif_create(true);
+        securityScanStep.setBlackduck_reports_sarif_file_path("/fake/path");
+        securityScanStep.setBlackduck_reports_sarif_severities("CRITICAL");
+        securityScanStep.setBlackduck_reports_sarif_groupSCAIssues(true);
 
         Map<String, Object> sarifParametersMap =
                 ScanParametersFactory.prepareSarifReportParametersMap(securityScanStep);
 
-        assertEquals(5, sarifParametersMap.size());
-        assertTrue((boolean) sarifParametersMap.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY));
-        assertEquals("/fake/path", sarifParametersMap.get(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY));
-        assertEquals("SAST", sarifParametersMap.get(ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY));
-        assertEquals("CRITICAL", sarifParametersMap.get(ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY));
-        assertTrue((boolean) sarifParametersMap.get(ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY));
+        assertEquals(4, sarifParametersMap.size());
+        assertTrue((boolean) sarifParametersMap.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY));
+        assertEquals("/fake/path", sarifParametersMap.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY));
+        assertEquals("CRITICAL", sarifParametersMap.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY));
+        assertTrue((boolean) sarifParametersMap.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY));
 
         Map<String, Object> emptySarifParametersMap =
                 ScanParametersFactory.prepareSarifReportParametersMap(new SecurityScanStep());

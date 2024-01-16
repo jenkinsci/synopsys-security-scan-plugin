@@ -11,9 +11,11 @@ import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandle
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.BridgeParams;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.report.Sarif;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
@@ -27,9 +29,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -141,6 +146,26 @@ public class ScannerArgumentServiceTest {
 
         scannerArgumentService.setScmObject(bridgeInput, gitlab);
         Mockito.verify(bridgeInput).setGitlab(gitlab);
+    }
+
+    @Test
+    public void prepareSarifObjectTest() {
+        Set<String> securityProducts = new HashSet<>();
+        securityProducts.add(SecurityProduct.BLACKDUCK.name());
+        Map<String, Object> scanParameters = new HashMap<>();
+
+        scanParameters.put(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY, true);
+        scanParameters.put(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY, "/path/to/sarif/file");
+        scanParameters.put(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY, "HIGH,MEDIUM,LOW");
+        scanParameters.put(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY, true);
+
+        Sarif sarifObject = scannerArgumentService.prepareSarifObject(securityProducts, scanParameters);
+
+        assertNotNull(sarifObject);
+        assertTrue(sarifObject.getCreate());
+        assertEquals("/path/to/sarif/file", sarifObject.getFile().getPath());
+        assertEquals(Arrays.asList("HIGH", "MEDIUM", "LOW"), sarifObject.getSeverities());
+        assertTrue(sarifObject.getGroupSCAIssues());
     }
 
     @Test
