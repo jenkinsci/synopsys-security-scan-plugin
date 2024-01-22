@@ -41,7 +41,7 @@ public class PluginParametersHandler {
 
         logMessagesForParameters(scanParameters, scanParametersService.getSynopsysSecurityProducts(scanParameters));
 
-        int exitCode = 31; // Scan parameter validation failure error code
+        int exitCode = ErrorCode.PARAMETER_VALIDATION_FAILED;
 
         if (isValidScanParametersAndBridgeDownload(
                 bridgeDownloadParams, scanParametersService, bridgeDownloadParametersService, scanParameters)) {
