@@ -24,11 +24,13 @@
             <!--        <f:entry field="bridge_blackduck_automation_fixpr" title="Create Fix Pull Requests">-->
             <!--            <f:checkbox/>-->
             <!--        </f:entry>-->
+        </f:section>
 
-            <f:entry field="blackduck_reports_sarif_create" title="Enable Black Duck SARIF Report Generation (Optional)">
+        <f:section title="SARIF Report Options">
+            <f:entry field="blackduck_reports_sarif_create" title="Generate SARIF Report for Polaris Issues (Optional)">
                 <f:checkbox/>
             </f:entry>
-            <f:entry field="blackduck_reports_sarif_groupSCAIssues" title="Enable Black Duck SARIF Report Group SCA Issues (Optional)">
+            <f:entry field="blackduck_reports_sarif_groupSCAIssues" title="Group SCA Issues by Component(Optional)">
                 <f:checkbox/>
             </f:entry>
             <f:entry field="blackduck_reports_sarif_file_path" title="Black Duck SARIF Report File Path (Optional)">
@@ -80,10 +82,13 @@
             <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="polaris_reports_sarif_create" title="Enable Polaris SARIF Report Generation (Optional)">
+        </f:section>
+
+        <f:section title="SARIF Report Options">
+            <f:entry field="polaris_reports_sarif_create" title="Generate SARIF Report for Polaris Issues (Optional)">
                 <f:checkbox/>
             </f:entry>
-            <f:entry field="polaris_reports_sarif_groupSCAIssues" title="Enable Polaris SARIF Report Group SCA Issues (Optional)">
+            <f:entry field="polaris_reports_sarif_groupSCAIssues" title="Group SCA Issues by Component (Optional)">
                 <f:checkbox/>
             </f:entry>
             <f:entry field="polaris_reports_sarif_file_path" title="Polaris SARIF Report File Path (Optional)">
@@ -141,6 +146,15 @@
             }
         }
 
+        function setCheckboxToDefaultTrue(names) {
+            names.forEach(function(name) {
+                var checkbox = document.getElementsByName(name);
+                if (checkbox &amp;&amp; checkbox.length > 0) {
+                    checkbox[0].checked = true;
+                }
+            });
+        }
+
         synopsysSecurityProduct.addEventListener('change', function () {
             hideAllDivs();
             var selectedOption = synopsysSecurityProduct.value;
@@ -148,6 +162,7 @@
                 clearInputFields(coverityDiv);
                 clearInputFields(polarisDiv);
                 showDiv(blackduckDiv);
+                setCheckboxToDefaultTrue(['_.blackduck_reports_sarif_groupSCAIssues'])
             } else if (selectedOption == 'coverity') {
                 clearInputFields(blackduckDiv);
                 clearInputFields(polarisDiv);
@@ -156,6 +171,7 @@
                 clearInputFields(blackduckDiv);
                 clearInputFields(coverityDiv);
                 showDiv(polarisDiv);
+                setCheckboxToDefaultTrue(['_.polaris_reports_sarif_groupSCAIssues'])
             }else if (selectedOption == 'Select') {
                 hideAllDivs();
             }
