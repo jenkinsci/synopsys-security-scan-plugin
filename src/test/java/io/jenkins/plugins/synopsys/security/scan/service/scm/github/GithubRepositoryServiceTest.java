@@ -9,6 +9,7 @@ import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -16,9 +17,9 @@ import org.mockito.Mockito;
 public class GithubRepositoryServiceTest {
     private TaskListener listenerMock;
     private GithubRepositoryService githubRepositoryService;
-    private final String TEST_REPOSITORY_URL_CLOUD = "https://github.com/user/fake-repo";
-    private final String TEST_REPOSITORY_URL_ENTERPRISE = "https://custom.githubserver.com/user/fake-repo";
-    private final String TEST_REPOSITORY_ENTERPRISE_IP = "https://10.0.0.97:8181/user/fake-repo";
+    private final String CLOUD_API_URI = "https://api.github.com";
+    private final String ENTERPRISE_API_URI = "https://custom.githubserver.com/api/v3";
+    private final String ENTERPRISE_API_URI_WITH_IP = "https://10.0.0.97:8181/api/v3";
     private final String TEST_GITHUB_TOKEN = "MSDFSGOIIEGWGWEGFAKEKEY";
     private final Integer TEST_REPOSITORY_PULL_NUMBER = 7;
     private final String TEST_REPOSITORY_NAME = "TEST_REPO";
@@ -45,8 +46,7 @@ public class GithubRepositoryServiceTest {
                 TEST_REPOSITORY_OWNER,
                 TEST_REPOSITORY_PULL_NUMBER,
                 TEST_REPOSITORY_BRANCH_NAME,
-                TEST_REPOSITORY_URL_CLOUD,
-                true);
+                true, CLOUD_API_URI);
 
         assertEquals(
                 githubCloud.getUser().getToken(),
@@ -63,8 +63,8 @@ public class GithubRepositoryServiceTest {
                 TEST_REPOSITORY_OWNER,
                 TEST_REPOSITORY_PULL_NUMBER,
                 TEST_REPOSITORY_BRANCH_NAME,
-                TEST_REPOSITORY_URL_ENTERPRISE,
-                true);
+                true,
+                ENTERPRISE_API_URI);
 
         assertEquals(
                 githubEnterprise.getUser().getToken(),
@@ -81,8 +81,7 @@ public class GithubRepositoryServiceTest {
                 TEST_REPOSITORY_OWNER,
                 TEST_REPOSITORY_PULL_NUMBER,
                 TEST_REPOSITORY_BRANCH_NAME,
-                TEST_REPOSITORY_ENTERPRISE_IP,
-                true);
+                true, ENTERPRISE_API_URI_WITH_IP);
 
         assertEquals(githubEnterpriseIp.getHost().getUrl(), "https://10.0.0.97:8181/");
     }
@@ -99,20 +98,7 @@ public class GithubRepositoryServiceTest {
                         TEST_REPOSITORY_OWNER,
                         TEST_REPOSITORY_PULL_NUMBER,
                         TEST_REPOSITORY_BRANCH_NAME,
-                        TEST_REPOSITORY_URL_CLOUD,
-                        true));
+                        true, CLOUD_API_URI));
     }
 
-    @Test
-    void extractGitHubHostTest() {
-        String githubCloudHost = githubRepositoryService.extractGitHubHost(TEST_REPOSITORY_URL_CLOUD);
-        String githubEnterPriseHost = githubRepositoryService.extractGitHubHost(TEST_REPOSITORY_URL_ENTERPRISE);
-        String githubEnterpriseIpHost = githubRepositoryService.extractGitHubHost(TEST_REPOSITORY_ENTERPRISE_IP);
-        String invalidGithubHost = githubRepositoryService.extractGitHubHost("invalid.url");
-
-        assertEquals(githubCloudHost, "https://github.com/");
-        assertEquals(githubEnterPriseHost, "https://custom.githubserver.com/");
-        assertEquals(githubEnterpriseIpHost, "https://10.0.0.97:8181/");
-        assertEquals(invalidGithubHost, "Invalid Github repository URL");
-    }
 }
