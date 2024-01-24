@@ -31,12 +31,14 @@ public class SCMRepositoryService {
                 : null;
 
         SCMSource scmSource = findSCMSource();
-        if (scmSource instanceof BitbucketSCMSource) {
+        if (Jenkins.getInstance().getPlugin("cloudbees-bitbucket-branch-source") != null
+                && scmSource instanceof BitbucketSCMSource) {
             BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listener);
             BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
             return bitbucketRepositoryService.fetchBitbucketRepositoryDetails(
                     scanParameters, bitbucketSCMSource, projectRepositoryPullNumber, isFixPrOrPrComment);
-        } else if (scmSource instanceof GitHubSCMSource) {
+        } else if (Jenkins.getInstance().getPlugin("github-branch-source") != null
+                && scmSource instanceof GitHubSCMSource) {
             GithubRepositoryService githubRepositoryService = new GithubRepositoryService(listener);
             GitHubSCMSource gitHubSCMSource = (GitHubSCMSource) scmSource;
 
@@ -53,7 +55,8 @@ public class SCMRepositoryService {
                     branchName,
                     repositoryUrl,
                     isFixPrOrPrComment);
-        } else if (scmSource instanceof GitLabSCMSource) {
+        } else if (Jenkins.getInstance().getPlugin("gitlab-branch-source") != null
+                && scmSource instanceof GitLabSCMSource) {
             GitlabRepositoryService gitlabRepositoryService = new GitlabRepositoryService(listener);
             GitLabSCMSource gitLabSCMSource = (GitLabSCMSource) scmSource;
 
