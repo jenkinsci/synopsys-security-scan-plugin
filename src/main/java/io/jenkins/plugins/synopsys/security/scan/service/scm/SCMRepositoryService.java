@@ -43,6 +43,9 @@ public class SCMRepositoryService {
             String repositoryOwner = gitHubSCMSource.getRepoOwner();
             String repositoryName = gitHubSCMSource.getRepository();
             String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
+            String apiUri = gitHubSCMSource.getApiUri();
+
+            listener.getLogger().println("Github apiUri: " + apiUri);
 
             return githubRepositoryService.createGithubObject(
                     scanParameters,
@@ -51,7 +54,7 @@ public class SCMRepositoryService {
                     projectRepositoryPullNumber,
                     branchName,
                     isFixPrOrPrComment,
-                    gitHubSCMSource.getApiUri());
+                    apiUri);
         } else if (scmSource instanceof GitLabSCMSource) {
             GitlabRepositoryService gitlabRepositoryService = new GitlabRepositoryService(listener);
             GitLabSCMSource gitLabSCMSource = (GitLabSCMSource) scmSource;
@@ -60,7 +63,7 @@ public class SCMRepositoryService {
             String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
             String repositoryName = gitLabSCMSource.getProjectPath();
 
-            listener.getLogger().println("repositoryUrl: " + repositoryUrl);
+            listener.getLogger().println("Gitlab repositoryUrl: " + repositoryUrl);
 
             return gitlabRepositoryService.createGitlabObject(
                     scanParameters,
