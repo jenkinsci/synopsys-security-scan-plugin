@@ -43,6 +43,8 @@ public class GitlabRepositoryService {
         gitlab.getRepository().getPull().setNumber(projectRepositoryPullNumber);
 
         String gitlabHostUrl = extractGitlabHost(repositoryUrl);
+        logger.info("gitlabHostUrl: " + gitlabHostUrl);
+
         if (gitlabHostUrl.equals(INVALID_GITLAB_REPO_URL)) {
             throw new PluginExceptionHandler(INVALID_GITLAB_REPO_URL);
         } else {
