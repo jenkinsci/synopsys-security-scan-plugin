@@ -9,7 +9,6 @@ import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -46,7 +45,8 @@ public class GithubRepositoryServiceTest {
                 TEST_REPOSITORY_OWNER,
                 TEST_REPOSITORY_PULL_NUMBER,
                 TEST_REPOSITORY_BRANCH_NAME,
-                true, CLOUD_API_URI);
+                true,
+                CLOUD_API_URI);
 
         assertEquals(
                 githubCloud.getUser().getToken(),
@@ -81,7 +81,8 @@ public class GithubRepositoryServiceTest {
                 TEST_REPOSITORY_OWNER,
                 TEST_REPOSITORY_PULL_NUMBER,
                 TEST_REPOSITORY_BRANCH_NAME,
-                true, ENTERPRISE_API_URI_WITH_IP);
+                true,
+                ENTERPRISE_API_URI_WITH_IP);
 
         assertEquals(githubEnterpriseIp.getHost().getUrl(), "https://10.0.0.97:8181/");
     }
@@ -98,7 +99,7 @@ public class GithubRepositoryServiceTest {
                         TEST_REPOSITORY_OWNER,
                         TEST_REPOSITORY_PULL_NUMBER,
                         TEST_REPOSITORY_BRANCH_NAME,
-                        true, CLOUD_API_URI));
+                        true,
+                        CLOUD_API_URI));
     }
-
 }

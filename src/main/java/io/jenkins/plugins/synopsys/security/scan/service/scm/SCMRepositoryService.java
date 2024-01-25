@@ -85,6 +85,4 @@ public class SCMRepositoryService {
         }
         return null;
     }
-
-
 }

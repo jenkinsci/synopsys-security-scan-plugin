@@ -7,9 +7,8 @@ import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
-import org.apache.commons.lang.StringUtils;
-
 import java.util.Map;
+import org.apache.commons.lang.StringUtils;
 
 public class GithubRepositoryService {
     private final LoggerWrapper logger;
@@ -61,11 +60,12 @@ public class GithubRepositoryService {
     }
 
     public String extractGitHubHost(String githubApiUri) {
-         try {
-             return GITHUB_CLOUD_API_URI.equals(githubApiUri) ? GITHUB_CLOUD_HOST_URL : String.format("%s", StringUtils.removeEnd(githubApiUri, "api/v3"));
-         } catch (Exception e) {
-             return INVALID_GITHUB_REPO_URL;
-         }
+        try {
+            return GITHUB_CLOUD_API_URI.equals(githubApiUri)
+                    ? GITHUB_CLOUD_HOST_URL
+                    : String.format("%s", StringUtils.removeEnd(githubApiUri, "api/v3"));
+        } catch (Exception e) {
+            return INVALID_GITHUB_REPO_URL;
+        }
     }
-
 }
