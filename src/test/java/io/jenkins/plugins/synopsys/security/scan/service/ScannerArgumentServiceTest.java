@@ -296,7 +296,11 @@ public class ScannerArgumentServiceTest {
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, false);
         blackDuckParametersMap.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, true);
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(blackDuckParametersMap, workspace);
+        Map<String, Boolean> installedDependencies = new HashMap<>();
+        installedDependencies.put(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, true);
+
+        List<String> commandLineArgs =
+                scannerArgumentService.getCommandLineArgs(installedDependencies, blackDuckParametersMap, workspace);
 
         if (getOSNameForTest().contains("win")) {
             assertEquals(
@@ -331,7 +335,11 @@ public class ScannerArgumentServiceTest {
         coverityParameters.put(ApplicationConstants.COVERITY_PASSPHRASE_KEY, "fakeUserPassword");
         coverityParameters.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, true);
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(coverityParameters, workspace);
+        Map<String, Boolean> installedDependencies = new HashMap<>();
+        installedDependencies.put(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, true);
+
+        List<String> commandLineArgs =
+                scannerArgumentService.getCommandLineArgs(installedDependencies, coverityParameters, workspace);
 
         if (getOSNameForTest().contains("win")) {
             assertEquals(
@@ -366,7 +374,11 @@ public class ScannerArgumentServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, "Fake-application-name");
         polarisParameters.put(ApplicationConstants.POLARIS_PROJECT_NAME_KEY, "fake-project-name");
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(polarisParameters, workspace);
+        Map<String, Boolean> installedDependencies = new HashMap<>();
+        installedDependencies.put(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, true);
+
+        List<String> commandLineArgs =
+                scannerArgumentService.getCommandLineArgs(installedDependencies, polarisParameters, workspace);
 
         if (getOSNameForTest().contains("win")) {
             assertEquals(
