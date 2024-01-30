@@ -24,19 +24,27 @@ public class SCMRepositoryService {
         this.envVars = envVars;
     }
 
-    public Object fetchSCMRepositoryDetails(Map<String, Object> scanParameters, boolean isFixPrOrPrComment)
+    public Object fetchSCMRepositoryDetails(
+            Map<String, Boolean> installedBranchSourceDependencies,
+            Map<String, Object> scanParameters,
+            boolean isFixPrOrPrComment)
             throws PluginExceptionHandler {
         Integer projectRepositoryPullNumber = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null
                 ? Integer.parseInt(envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY))
                 : null;
 
         SCMSource scmSource = findSCMSource();
-        if (scmSource instanceof BitbucketSCMSource) {
+        if (scmSource instanceof BitbucketSCMSource
+                && installedBranchSourceDependencies.containsKey(
+                        ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME)
+                && installedBranchSourceDependencies.get(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME)) {
             BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listener);
             BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
             return bitbucketRepositoryService.fetchBitbucketRepositoryDetails(
                     scanParameters, bitbucketSCMSource, projectRepositoryPullNumber, isFixPrOrPrComment);
-        } else if (scmSource instanceof GitHubSCMSource) {
+        } else if (scmSource instanceof GitHubSCMSource
+                && installedBranchSourceDependencies.containsKey(ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME)
+                && installedBranchSourceDependencies.get(ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME)) {
             GithubRepositoryService githubRepositoryService = new GithubRepositoryService(listener);
             GitHubSCMSource gitHubSCMSource = (GitHubSCMSource) scmSource;
 
@@ -53,7 +61,9 @@ public class SCMRepositoryService {
                     branchName,
                     isFixPrOrPrComment,
                     apiUri);
-        } else if (scmSource instanceof GitLabSCMSource) {
+        } else if (scmSource instanceof GitLabSCMSource
+                && installedBranchSourceDependencies.containsKey(ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME)
+                && installedBranchSourceDependencies.get(ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME)) {
             GitlabRepositoryService gitlabRepositoryService = new GitlabRepositoryService(listener);
             GitLabSCMSource gitLabSCMSource = (GitLabSCMSource) scmSource;
 

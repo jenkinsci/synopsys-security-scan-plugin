@@ -86,4 +86,8 @@ public class ApplicationConstants {
 
     public static final String BRANCH_NAME = "BRANCH_NAME";
     public static final String GIT_URL = "GIT_URL";
+
+    public static final String BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME = "cloudbees-bitbucket-branch-source";
+    public static final String GITHUB_BRANCH_SOURCE_PLUGIN_NAME = "github-branch-source";
+    public static final String GITLAB_BRANCH_SOURCE_PLUGIN_NAME = "gitlab-branch-source";
 }
