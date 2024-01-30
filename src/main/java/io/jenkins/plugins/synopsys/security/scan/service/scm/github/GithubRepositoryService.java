@@ -45,7 +45,6 @@ public class GithubRepositoryService {
         github.getRepository().getBranch().setName(branchName);
 
         String githubHostUrl = extractGitHubHost(githubApiUri);
-        logger.info("githubHostUrl: " + githubHostUrl);
 
         if (githubHostUrl.equals(INVALID_GITHUB_REPO_URL)) {
             throw new PluginExceptionHandler(INVALID_GITHUB_REPO_URL);
