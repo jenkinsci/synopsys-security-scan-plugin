@@ -45,7 +45,6 @@ public class SCMRepositoryService {
             String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
             String apiUri = gitHubSCMSource.getApiUri();
 
-
             return githubRepositoryService.createGithubObject(
                     scanParameters,
                     repositoryName,
@@ -61,7 +60,6 @@ public class SCMRepositoryService {
             String repositoryUrl = gitLabSCMSource.getHttpRemote();
             String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
             String repositoryName = gitLabSCMSource.getProjectPath();
-
 
             return gitlabRepositoryService.createGitlabObject(
                     scanParameters,
