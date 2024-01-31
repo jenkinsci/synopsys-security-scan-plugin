@@ -1,5 +1,6 @@
 package io.jenkins.plugins.synopsys.security.scan.service.bridge;
 
+import com.fasterxml.jackson.core.Version;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.bridge.BridgeDownloadParameters;
@@ -138,12 +139,21 @@ public class BridgeDownloadParametersService {
         return bridgeDownloadParameters;
     }
 
-    public String getPlatform() {
+    public String getPlatform(String version) {
         String os = Utility.getAgentOs(workspace, listener);
         if (os.contains("win")) {
             return ApplicationConstants.PLATFORM_WINDOWS;
         } else if (os.contains("mac")) {
-            return ApplicationConstants.PLATFORM_MAC;
+            String arch = Utility.getAgentOsArch(workspace, listener);
+            if (version != null && !isVersionCompatibleForMacARM(version)) {
+                return ApplicationConstants.PLATFORM_MACOSX;
+            } else {
+                if (arch.startsWith("arm") || arch.startsWith("aarch")) {
+                    return ApplicationConstants.PLATFORM_MAC_ARM;
+                } else {
+                    return ApplicationConstants.PLATFORM_MACOSX;
+                }
+            }
         } else {
             return ApplicationConstants.PLATFORM_LINUX;
         }
@@ -152,7 +162,7 @@ public class BridgeDownloadParametersService {
     public String getSynopsysBridgeZipFileName() {
         return ApplicationConstants.BRIDGE_BINARY
                 .concat("-")
-                .concat(getPlatform())
+                .concat(getPlatform(null))
                 .concat(".zip");
     }
 
@@ -161,7 +171,31 @@ public class BridgeDownloadParametersService {
                 .concat("-")
                 .concat(version)
                 .concat("-")
-                .concat(getPlatform())
+                .concat(getPlatform(version))
                 .concat(".zip");
+    }
+
+    public boolean isVersionCompatibleForMacARM(String version) {
+        String[] inputVersionSplits = version.split("\\.");
+        String[] minCompatibleArmVersionSplits = ApplicationConstants.MAC_ARM_COMPATIBLE_BRIDGE_VERSION.split("\\.");
+        if (inputVersionSplits.length != 3 && minCompatibleArmVersionSplits.length != 3) {
+            return false;
+        }
+        Version inputVersion = new Version(
+                Integer.parseInt(inputVersionSplits[0]),
+                Integer.parseInt(inputVersionSplits[1]),
+                Integer.parseInt(inputVersionSplits[2]),
+                null,
+                null,
+                null);
+        Version minCompatibleArmVersion = new Version(
+                Integer.parseInt(minCompatibleArmVersionSplits[0]),
+                Integer.parseInt(minCompatibleArmVersionSplits[1]),
+                Integer.parseInt(minCompatibleArmVersionSplits[2]),
+                null,
+                null,
+                null);
+
+        return inputVersion.compareTo(minCompatibleArmVersion) >= 0;
     }
 }

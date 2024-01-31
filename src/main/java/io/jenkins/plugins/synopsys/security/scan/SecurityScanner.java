@@ -10,6 +10,7 @@ import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandle
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.service.ScannerArgumentService;
 import io.jenkins.plugins.synopsys.security.scan.service.diagnostics.DiagnosticsService;
 import java.util.List;
@@ -46,7 +47,8 @@ public class SecurityScanner {
             throws PluginExceptionHandler {
         int scanner = -1;
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeInstallationPath);
+        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(
+                Utility.installedBranchSourceDependcies(), scanParams, bridgeInstallationPath);
 
         logger.info("Executable command line arguments: "
                 + commandLineArgs.stream()

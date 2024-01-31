@@ -12,7 +12,9 @@ public class ApplicationConstants {
     public static final String BRIDGE_ZIP_FILE_FORMAT = "bridge.zip";
     public static final String PLATFORM_LINUX = "linux64";
     public static final String PLATFORM_WINDOWS = "win64";
-    public static final String PLATFORM_MAC = "macosx";
+    public static final String PLATFORM_MAC_ARM = "macos_arm";
+    public static final String PLATFORM_MACOSX = "macosx";
+    public static final String MAC_ARM_COMPATIBLE_BRIDGE_VERSION = "2.1.0";
     public static final String DEFAULT_DIRECTORY_NAME = "synopsys-bridge";
     public static final String BRIDGE_DIAGNOSTICS_DIRECTORY = ".bridge";
     public static final int BRIDGE_DOWNLOAD_MAX_RETRIES = 3;
@@ -84,4 +86,8 @@ public class ApplicationConstants {
 
     public static final String BRANCH_NAME = "BRANCH_NAME";
     public static final String GIT_URL = "GIT_URL";
+
+    public static final String BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME = "cloudbees-bitbucket-branch-source";
+    public static final String GITHUB_BRANCH_SOURCE_PLUGIN_NAME = "github-branch-source";
+    public static final String GITLAB_BRANCH_SOURCE_PLUGIN_NAME = "gitlab-branch-source";
 }
