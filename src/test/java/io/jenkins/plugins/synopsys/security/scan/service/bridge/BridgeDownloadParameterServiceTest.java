@@ -1,6 +1,9 @@
 package io.jenkins.plugins.synopsys.security.scan.service.bridge;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import hudson.FilePath;
 import hudson.model.TaskListener;
@@ -147,6 +150,36 @@ public class BridgeDownloadParameterServiceTest {
         assertNotNull(result.getBridgeDownloadUrl());
         assertNotNull(result.getBridgeDownloadVersion());
         assertNotNull(result.getBridgeInstallationPath());
+    }
+
+    @Test
+    void getPlatformTest() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        String osArch = System.getProperty("os.arch").toLowerCase();
+
+        String platform = bridgeDownloadParametersService.getPlatform(null);
+
+        assertNotNull(platform);
+
+        if (osName.contains("win")) {
+            assertEquals(ApplicationConstants.PLATFORM_WINDOWS, platform);
+        } else if (osName.contains("mac")) {
+            if (osArch.startsWith("arm") || osArch.startsWith("aarch")) {
+                assertEquals(ApplicationConstants.PLATFORM_MAC_ARM, platform);
+            } else {
+                assertEquals(ApplicationConstants.PLATFORM_MACOSX, platform);
+            }
+        } else {
+            assertEquals(ApplicationConstants.PLATFORM_LINUX, platform);
+        }
+    }
+
+    @Test
+    public void isVersionCompatibleForMacARMTest() {
+        assertTrue(bridgeDownloadParametersService.isVersionCompatibleForMacARM("2.1.0"));
+        assertTrue(bridgeDownloadParametersService.isVersionCompatibleForMacARM("2.2.38"));
+        assertFalse(bridgeDownloadParametersService.isVersionCompatibleForMacARM("2.0.0"));
+        assertFalse(bridgeDownloadParametersService.isVersionCompatibleForMacARM("1.2.12"));
     }
 
     public String getHomeDirectory() {

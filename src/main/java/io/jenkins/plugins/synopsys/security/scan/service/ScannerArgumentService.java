@@ -46,13 +46,16 @@ public class ScannerArgumentService {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public List<String> getCommandLineArgs(Map<String, Object> scanParameters, FilePath bridgeInstallationPath)
+    public List<String> getCommandLineArgs(
+            Map<String, Boolean> installedBranchSourceDependencies,
+            Map<String, Object> scanParameters,
+            FilePath bridgeInstallationPath)
             throws PluginExceptionHandler {
         List<String> commandLineArgs = new ArrayList<>();
 
         commandLineArgs.add(getBridgeRunCommand(bridgeInstallationPath));
 
-        commandLineArgs.addAll(getSecurityProductSpecificCommands(scanParameters));
+        commandLineArgs.addAll(getSecurityProductSpecificCommands(installedBranchSourceDependencies, scanParameters));
 
         if (Objects.equals(scanParameters.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
             commandLineArgs.add(BridgeParams.DIAGNOSTICS_OPTION);
@@ -75,7 +78,8 @@ public class ScannerArgumentService {
         }
     }
 
-    private List<String> getSecurityProductSpecificCommands(Map<String, Object> scanParameters)
+    private List<String> getSecurityProductSpecificCommands(
+            Map<String, Boolean> installedBranchSourceDependencies, Map<String, Object> scanParameters)
             throws PluginExceptionHandler {
         ScanParametersService scanParametersService = new ScanParametersService(listener);
         Set<String> securityProducts = scanParametersService.getSynopsysSecurityProducts(scanParameters);
@@ -83,7 +87,8 @@ public class ScannerArgumentService {
         boolean fixPrOrPrComment = isFixPrOrPrCommentValueSet(scanParameters);
 
         SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
-        Object scmObject = scmRepositoryService.fetchSCMRepositoryDetails(scanParameters, fixPrOrPrComment);
+        Object scmObject = scmRepositoryService.fetchSCMRepositoryDetails(
+                installedBranchSourceDependencies, scanParameters, fixPrOrPrComment);
 
         List<String> scanCommands = new ArrayList<>();
 

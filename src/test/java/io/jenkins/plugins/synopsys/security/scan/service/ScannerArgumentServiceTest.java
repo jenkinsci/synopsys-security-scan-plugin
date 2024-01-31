@@ -39,6 +39,7 @@ public class ScannerArgumentServiceTest {
     private ScannerArgumentService scannerArgumentService;
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
     private final EnvVars envVarsMock = Mockito.mock(EnvVars.class);
+    private final String CLOUD_API_URI = "https://api.github.com";
     private FilePath workspace;
     private final String TOKEN = "MDJDSROSVC56FAKEKEY";
 
@@ -214,13 +215,7 @@ public class ScannerArgumentServiceTest {
 
         try {
             Github github = githubRepositoryService.createGithubObject(
-                    scanParametersMap,
-                    "fake-repo",
-                    "fake-owner",
-                    1,
-                    "fake-branch",
-                    "https://github.com/user/fake-repo.git",
-                    true);
+                    scanParametersMap, "fake-repo", "fake-owner", 1, "fake-branch", true, CLOUD_API_URI);
             String inputJsonPath = scannerArgumentService.createBridgeInputJson(
                     coverity, github, true, null, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX);
             Path filePath = Paths.get(inputJsonPath);
@@ -296,7 +291,11 @@ public class ScannerArgumentServiceTest {
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, false);
         blackDuckParametersMap.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, true);
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(blackDuckParametersMap, workspace);
+        Map<String, Boolean> installedDependencies = new HashMap<>();
+        installedDependencies.put(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, true);
+
+        List<String> commandLineArgs =
+                scannerArgumentService.getCommandLineArgs(installedDependencies, blackDuckParametersMap, workspace);
 
         if (getOSNameForTest().contains("win")) {
             assertEquals(
@@ -331,7 +330,11 @@ public class ScannerArgumentServiceTest {
         coverityParameters.put(ApplicationConstants.COVERITY_PASSPHRASE_KEY, "fakeUserPassword");
         coverityParameters.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, true);
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(coverityParameters, workspace);
+        Map<String, Boolean> installedDependencies = new HashMap<>();
+        installedDependencies.put(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, true);
+
+        List<String> commandLineArgs =
+                scannerArgumentService.getCommandLineArgs(installedDependencies, coverityParameters, workspace);
 
         if (getOSNameForTest().contains("win")) {
             assertEquals(
@@ -366,7 +369,11 @@ public class ScannerArgumentServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, "Fake-application-name");
         polarisParameters.put(ApplicationConstants.POLARIS_PROJECT_NAME_KEY, "fake-project-name");
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(polarisParameters, workspace);
+        Map<String, Boolean> installedDependencies = new HashMap<>();
+        installedDependencies.put(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, true);
+
+        List<String> commandLineArgs =
+                scannerArgumentService.getCommandLineArgs(installedDependencies, polarisParameters, workspace);
 
         if (getOSNameForTest().contains("win")) {
             assertEquals(

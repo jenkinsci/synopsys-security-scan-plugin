@@ -1,49 +1,28 @@
-package io.jenkins.plugins.synopsys.security.scan.extension.pipeline;
+package io.jenkins.plugins.synopsys.security.scan.extension.freestyle;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import hudson.EnvVars;
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
-import hudson.Util;
-import hudson.model.Node;
-import hudson.model.Run;
-import hudson.model.TaskListener;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.*;
+import hudson.model.*;
+import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.Builder;
 import hudson.util.ListBoxModel;
-import hudson.util.ListBoxModel.Option;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
-import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
-import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import javax.annotation.Nonnull;
-import org.jenkinsci.plugins.workflow.steps.Step;
-import org.jenkinsci.plugins.workflow.steps.StepContext;
-import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
-import org.jenkinsci.plugins.workflow.steps.StepExecution;
-import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
+import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-public class SecurityScanStep extends Step implements SecurityScan, Serializable {
-    private static final long serialVersionUID = 6294070801130995534L;
-
+public class SecurityScanFreestyle extends Builder implements SecurityScan, SimpleBuildStep {
     private String product;
-
     private String blackduck_url;
     private transient String blackduck_token;
+    private transient String github_token;
+    private transient String gitlab_token;
     private String blackduck_install_directory;
     private Boolean blackduck_scan_full;
     private Boolean blackduckIntelligentScan;
@@ -73,18 +52,15 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     //    private String polaris_branch_parent_name;
 
     private transient String bitbucket_token;
-    private transient String github_token;
-    private transient String gitlab_token;
 
     private String synopsys_bridge_download_url;
     private String synopsys_bridge_download_version;
     private String synopsys_bridge_install_directory;
     private Boolean include_diagnostics;
     private Boolean network_airgap;
-    private Boolean return_status;
 
     @DataBoundConstructor
-    public SecurityScanStep() {
+    public SecurityScanFreestyle() {
         // this block is kept empty intentionally
     }
 
@@ -222,10 +198,6 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public Boolean isNetwork_airgap() {
         return network_airgap;
-    }
-
-    public Boolean isReturn_status() {
-        return return_status;
     }
 
     @DataBoundSetter
@@ -399,11 +371,6 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         this.network_airgap = network_airgap ? true : null;
     }
 
-    @DataBoundSetter
-    public void setReturn_status(Boolean return_status) {
-        this.return_status = return_status ? true : null;
-    }
-
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)
             throws PluginExceptionHandler {
         return ScanParametersFactory.preparePipelineParametersMap(
@@ -411,122 +378,60 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     }
 
     @Override
-    public StepExecution start(StepContext context) throws Exception {
-        return new Execution(context);
+    public void perform(
+            @NonNull Run<?, ?> run,
+            @NonNull FilePath workspace,
+            @NonNull EnvVars env,
+            @NonNull Launcher launcher,
+            @NonNull TaskListener listener) {
+
+        listener.getLogger()
+                .println(
+                        "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+
+        try {
+            ScanParametersFactory.createPipelineCommand(run, listener, env, launcher, null, workspace)
+                    .initializeScanner(getParametersMap(workspace, listener));
+        } catch (Exception e) {
+
+            if (e instanceof PluginExceptionHandler) {
+                throw new RuntimeException(new PluginExceptionHandler("Workflow failed! " + e.getMessage()));
+            } else {
+                throw new RuntimeException(
+                        new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage())));
+            }
+
+        } finally {
+            listener.getLogger()
+                    .println(
+                            "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+        }
     }
 
-    @Extension(optional = true)
-    public static final class DescriptorImpl extends StepDescriptor {
-        @Override
-        public Set<? extends Class<?>> getRequiredContext() {
-            return new HashSet<>(Arrays.asList(
-                    Run.class, TaskListener.class, EnvVars.class, FilePath.class, Launcher.class, Node.class));
-        }
+    @Extension
+    public static class Descriptor extends BuildStepDescriptor<Builder> {
 
-        @Override
-        public String getFunctionName() {
-            return ApplicationConstants.PIPELINE_NAME;
-        }
-
-        @Nonnull
         @Override
         public String getDisplayName() {
-            return ApplicationConstants.DISPLAY_NAME;
+            return "Synopsys Security Scan";
+        }
+
+        @Override
+        public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+            return jobType.isAssignableFrom(FreeStyleProject.class);
         }
 
         @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
         public ListBoxModel doFillProductItems() {
             ListBoxModel items = new ListBoxModel();
-            Map<String, String> customLabels = new HashMap<>();
-
-            items.add(new Option("Select", ""));
-            customLabels.put(SecurityProduct.BLACKDUCK.name().toLowerCase(), "Black Duck");
-            customLabels.put(SecurityProduct.COVERITY.name().toLowerCase(), "Coverity");
-            customLabels.put(SecurityProduct.POLARIS.name().toLowerCase(), "Polaris");
+            items.add(new ListBoxModel.Option("Select", "select"));
 
             for (SecurityProduct product : SecurityProduct.values()) {
+                String label = product.getProductLabel();
                 String value = product.name().toLowerCase();
-                String label = customLabels.getOrDefault(value, product.name());
-                items.add(new Option(label, value));
+                items.add(new ListBoxModel.Option(label, value));
             }
             return items;
-        }
-    }
-
-    public class Execution extends SynchronousNonBlockingStepExecution<Integer> {
-        private static final long serialVersionUID = -2514079516220990421L;
-        private final transient Run<?, ?> run;
-        private final transient Launcher launcher;
-        private final transient Node node;
-
-        @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
-        private final transient TaskListener listener;
-
-        @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
-        private final transient EnvVars envVars;
-
-        @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
-        private final transient FilePath workspace;
-
-        protected Execution(@Nonnull StepContext context) throws InterruptedException, IOException {
-            super(context);
-            run = context.get(Run.class);
-            listener = context.get(TaskListener.class);
-            envVars = context.get(EnvVars.class);
-            workspace = context.get(FilePath.class);
-            launcher = context.get(Launcher.class);
-            node = context.get(Node.class);
-        }
-
-        @Override
-        protected Integer run() throws PluginExceptionHandler, ScannerException {
-            LoggerWrapper logger = new LoggerWrapper(listener);
-            int exitCode = 0;
-            String undefinedErrorMessage = null;
-            Exception unknownException = new Exception();
-
-            logger.println(
-                    "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
-
-            try {
-                exitCode = ScanParametersFactory.createPipelineCommand(
-                                run, listener, envVars, launcher, node, workspace)
-                        .initializeScanner(getParametersMap(workspace, listener));
-            } catch (Exception e) {
-                if (e instanceof PluginExceptionHandler) {
-                    exitCode = ((PluginExceptionHandler) e).getCode();
-                } else {
-                    exitCode = ErrorCode.UNDEFINED_PLUGIN_ERROR;
-                    undefinedErrorMessage = e.getMessage();
-                    unknownException = e;
-                }
-            } finally {
-                String errorMessage = ExceptionMessages.getErrorMessage(exitCode, undefinedErrorMessage);
-                logger.error(errorMessage);
-
-                logger.println(
-                        "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
-
-                handleExitCode(exitCode, errorMessage, unknownException);
-            }
-
-            return exitCode;
-        }
-    }
-
-    private void handleExitCode(int exitCode, String errorMessage, Exception e)
-            throws PluginExceptionHandler, ScannerException {
-        if (exitCode != 0) {
-            if (Objects.equals(isReturn_status(), true)) {
-                return;
-            }
-
-            if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
-                // Throw exception with stack trace for undefined errors
-                throw new ScannerException(errorMessage, e);
-            }
-
-            throw new PluginExceptionHandler(errorMessage);
         }
     }
 }

@@ -11,6 +11,9 @@ import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import jenkins.model.Jenkins;
 
 public class Utility {
 
@@ -41,6 +44,25 @@ public class Utility {
         }
 
         return os;
+    }
+
+    public static String getAgentOsArch(FilePath workspace, TaskListener listener) {
+        String arch = null;
+        LoggerWrapper logger = new LoggerWrapper(listener);
+
+        if (workspace.isRemote()) {
+            try {
+                arch = workspace.act(new OsArchTask());
+            } catch (IOException | InterruptedException e) {
+                logger.error("An exception occurred while fetching OS architecture information for the agent node: "
+                        + e.getMessage());
+                Thread.currentThread().interrupt();
+            }
+        } else {
+            arch = System.getProperty("os.arch").toLowerCase();
+        }
+
+        return arch;
     }
 
     public static void removeFile(String filePath, FilePath workspace, TaskListener listener) {
@@ -157,5 +179,21 @@ public class Utility {
         }
 
         return proxyUrlString;
+    }
+
+    public static Map<String, Boolean> installedBranchSourceDependcies() {
+        Map<String, Boolean> installedBranchSourceDependencies = new HashMap<>();
+
+        if (Jenkins.getInstance().getPlugin(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME) != null) {
+            installedBranchSourceDependencies.put(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, true);
+        }
+        if (Jenkins.getInstance().getPlugin(ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME) != null) {
+            installedBranchSourceDependencies.put(ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME, true);
+        }
+        if (Jenkins.getInstance().getPlugin(ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME) != null) {
+            installedBranchSourceDependencies.put(ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME, true);
+        }
+
+        return installedBranchSourceDependencies;
     }
 }
