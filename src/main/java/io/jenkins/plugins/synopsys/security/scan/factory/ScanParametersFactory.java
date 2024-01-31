@@ -10,8 +10,8 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.PluginParametersHandler;
 import io.jenkins.plugins.synopsys.security.scan.SecurityScanner;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
+import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.global.ScannerGlobalConfig;
-import io.jenkins.plugins.synopsys.security.scan.extension.pipeline.SecurityScanStep;
 import io.jenkins.plugins.synopsys.security.scan.global.*;
 import io.jenkins.plugins.synopsys.security.scan.global.ScanCredentialsHelper;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
@@ -50,30 +50,31 @@ public class ScanParametersFactory {
     }
 
     public static Map<String, Object> preparePipelineParametersMap(
-            SecurityScanStep scanStep, Map<String, Object> parametersMap, TaskListener listener)
+            SecurityScan securityScan, Map<String, Object> parametersMap, TaskListener listener)
             throws PluginExceptionHandler {
-        String product = scanStep.getProduct();
+        String product = securityScan.getProduct();
 
         if (validateProduct(product, listener)) {
             parametersMap.put(
                     ApplicationConstants.PRODUCT_KEY,
-                    scanStep.getProduct().trim().toUpperCase());
+                    securityScan.getProduct().trim().toUpperCase());
 
-            parametersMap.putAll(prepareCoverityParametersMap(scanStep));
-            parametersMap.putAll(preparePolarisParametersMap(scanStep));
-            parametersMap.putAll(prepareBlackDuckParametersMap(scanStep));
+            parametersMap.putAll(prepareCoverityParametersMap(securityScan));
+            parametersMap.putAll(preparePolarisParametersMap(securityScan));
+            parametersMap.putAll(prepareBlackDuckParametersMap(securityScan));
 
-            if (!Utility.isStringNullOrBlank(scanStep.getBitbucket_token())) {
-                parametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, scanStep.getBitbucket_token());
+            if (!Utility.isStringNullOrBlank(securityScan.getBitbucket_token())) {
+                parametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, securityScan.getBitbucket_token());
             }
-            if (!Utility.isStringNullOrBlank(scanStep.getGithub_token())) {
-                parametersMap.put(ApplicationConstants.GITHUB_TOKEN_KEY, scanStep.getGithub_token());
-            }
-            if (!Utility.isStringNullOrBlank(scanStep.getGitlab_token())) {
-                parametersMap.put(ApplicationConstants.GITLAB_TOKEN_KEY, scanStep.getGitlab_token());
+            if (!Utility.isStringNullOrBlank(securityScan.getGitlab_token())) {
+                parametersMap.put(ApplicationConstants.GITLAB_TOKEN_KEY, securityScan.getGitlab_token());
             }
 
-            parametersMap.putAll(prepareBridgeParametersMap(scanStep));
+            if (!Utility.isStringNullOrBlank(securityScan.getGithub_token())) {
+                parametersMap.put(ApplicationConstants.GITHUB_TOKEN_KEY, securityScan.getGithub_token());
+            }
+
+            parametersMap.putAll(prepareBridgeParametersMap(securityScan));
 
             return parametersMap;
         } else {
@@ -171,167 +172,175 @@ public class ScanParametersFactory {
         }
     }
 
-    public static Map<String, Object> prepareBlackDuckParametersMap(SecurityScanStep scanStep) {
+    public static Map<String, Object> prepareBlackDuckParametersMap(SecurityScan securityScan) {
         Map<String, Object> blackDuckParameters = new HashMap<>();
 
-        if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_url())) {
-            blackDuckParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, scanStep.getBlackduck_url());
+        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_url())) {
+            blackDuckParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, securityScan.getBlackduck_url());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_token())) {
-            blackDuckParameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, scanStep.getBlackduck_token());
+        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_token())) {
+            blackDuckParameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, securityScan.getBlackduck_token());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_install_directory())) {
+        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_install_directory())) {
             blackDuckParameters.put(
-                    ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY, scanStep.getBlackduck_install_directory());
+                    ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY,
+                    securityScan.getBlackduck_install_directory());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_scan_failure_severities())) {
+        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_scan_failure_severities())) {
             blackDuckParameters.put(
                     ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY,
-                    scanStep.getBlackduck_scan_failure_severities().toUpperCase());
+                    securityScan.getBlackduck_scan_failure_severities().toUpperCase());
         }
 
-        if (scanStep.isBlackduckIntelligentScan() != null) {
+        if (securityScan.isBlackduckIntelligentScan() != null) {
             blackDuckParameters.put(
-                    ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, scanStep.isBlackduckIntelligentScan());
+                    ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, securityScan.isBlackduckIntelligentScan());
         }
 
-        //        if (scanStep.isBlackduck_automation_fixpr() != null) {
+        //        if (securityScan.isBlackduck_automation_fixpr() != null) {
         //            blackDuckParameters.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY,
-        // scanStep.isBlackduck_automation_fixpr());
+        // securityScan.isBlackduck_automation_fixpr());
         //        }
 
-        if (scanStep.isBlackduck_automation_prcomment() != null) {
+        if (securityScan.isBlackduck_automation_prcomment() != null) {
             blackDuckParameters.put(
                     ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
-                    scanStep.isBlackduck_automation_prcomment());
+                    securityScan.isBlackduck_automation_prcomment());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getBlackduck_download_url())) {
+        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_download_url())) {
             blackDuckParameters.put(
-                    ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY, scanStep.getBlackduck_download_url());
+                    ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY, securityScan.getBlackduck_download_url());
         }
 
         return blackDuckParameters;
     }
 
-    public static Map<String, Object> prepareCoverityParametersMap(SecurityScanStep scanStep) {
+    public static Map<String, Object> prepareCoverityParametersMap(SecurityScan securityScan) {
         Map<String, Object> coverityParameters = new HashMap<>();
 
-        if (!Utility.isStringNullOrBlank(scanStep.getCoverity_url())) {
-            coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, scanStep.getCoverity_url());
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_url())) {
+            coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, securityScan.getCoverity_url());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getCoverity_user())) {
-            coverityParameters.put(ApplicationConstants.COVERITY_USER_KEY, scanStep.getCoverity_user());
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_user())) {
+            coverityParameters.put(ApplicationConstants.COVERITY_USER_KEY, securityScan.getCoverity_user());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getCoverity_passphrase())) {
-            coverityParameters.put(ApplicationConstants.COVERITY_PASSPHRASE_KEY, scanStep.getCoverity_passphrase());
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_passphrase())) {
+            coverityParameters.put(ApplicationConstants.COVERITY_PASSPHRASE_KEY, securityScan.getCoverity_passphrase());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getCoverity_project_name())) {
-            coverityParameters.put(ApplicationConstants.COVERITY_PROJECT_NAME_KEY, scanStep.getCoverity_project_name());
-        }
-
-        if (!Utility.isStringNullOrBlank(scanStep.getCoverity_stream_name())) {
-            coverityParameters.put(ApplicationConstants.COVERITY_STREAM_NAME_KEY, scanStep.getCoverity_stream_name());
-        }
-
-        if (!Utility.isStringNullOrBlank(scanStep.getCoverity_policy_view())) {
-            coverityParameters.put(ApplicationConstants.COVERITY_POLICY_VIEW_KEY, scanStep.getCoverity_policy_view());
-        }
-
-        if (!Utility.isStringNullOrBlank(scanStep.getCoverity_install_directory())) {
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_project_name())) {
             coverityParameters.put(
-                    ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY, scanStep.getCoverity_install_directory());
+                    ApplicationConstants.COVERITY_PROJECT_NAME_KEY, securityScan.getCoverity_project_name());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getCoverity_version())) {
-            coverityParameters.put(ApplicationConstants.COVERITY_VERSION_KEY, scanStep.getCoverity_version());
-        }
-
-        if (scanStep.isCoverity_local() != null) {
-            coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, scanStep.isCoverity_local());
-        }
-
-        if (scanStep.isCoverity_automation_prcomment() != null) {
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_stream_name())) {
             coverityParameters.put(
-                    ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY, scanStep.isCoverity_automation_prcomment());
+                    ApplicationConstants.COVERITY_STREAM_NAME_KEY, securityScan.getCoverity_stream_name());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_policy_view())) {
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_POLICY_VIEW_KEY, securityScan.getCoverity_policy_view());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_install_directory())) {
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY, securityScan.getCoverity_install_directory());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_version())) {
+            coverityParameters.put(ApplicationConstants.COVERITY_VERSION_KEY, securityScan.getCoverity_version());
+        }
+
+        if (securityScan.isCoverity_local() != null) {
+            coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, securityScan.isCoverity_local());
+        }
+
+        if (securityScan.isCoverity_automation_prcomment() != null) {
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
+                    securityScan.isCoverity_automation_prcomment());
         }
 
         return coverityParameters;
     }
 
-    public static Map<String, Object> prepareBridgeParametersMap(SecurityScanStep scanStep) {
+    public static Map<String, Object> prepareBridgeParametersMap(SecurityScan securityScan) {
         Map<String, Object> bridgeParameters = new HashMap<>();
 
-        if (!Utility.isStringNullOrBlank(scanStep.getSynopsys_bridge_download_url())) {
+        if (!Utility.isStringNullOrBlank(securityScan.getSynopsys_bridge_download_url())) {
             bridgeParameters.put(
-                    ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, scanStep.getSynopsys_bridge_download_url());
+                    ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, securityScan.getSynopsys_bridge_download_url());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getSynopsys_bridge_download_version())) {
+        if (!Utility.isStringNullOrBlank(securityScan.getSynopsys_bridge_download_version())) {
             bridgeParameters.put(
                     ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION,
-                    scanStep.getSynopsys_bridge_download_version());
+                    securityScan.getSynopsys_bridge_download_version());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getSynopsys_bridge_install_directory())) {
+        if (!Utility.isStringNullOrBlank(securityScan.getSynopsys_bridge_install_directory())) {
             bridgeParameters.put(
                     ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY,
-                    scanStep.getSynopsys_bridge_install_directory());
+                    securityScan.getSynopsys_bridge_install_directory());
         }
 
-        if (scanStep.isInclude_diagnostics() != null) {
-            bridgeParameters.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, scanStep.isInclude_diagnostics());
+        if (securityScan.isInclude_diagnostics() != null) {
+            bridgeParameters.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, securityScan.isInclude_diagnostics());
         }
 
-        if (scanStep.isNetwork_airgap() != null) {
-            bridgeParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, scanStep.isNetwork_airgap());
+        if (securityScan.isNetwork_airgap() != null) {
+            bridgeParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, securityScan.isNetwork_airgap());
         }
 
         return bridgeParameters;
     }
 
-    public static Map<String, Object> preparePolarisParametersMap(SecurityScanStep scanStep) {
+    public static Map<String, Object> preparePolarisParametersMap(SecurityScan securityScan) {
         Map<String, Object> polarisParametersMap = new HashMap<>();
 
-        if (!Utility.isStringNullOrBlank(scanStep.getPolaris_server_url())) {
-            polarisParametersMap.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, scanStep.getPolaris_server_url());
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_server_url())) {
+            polarisParametersMap.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, securityScan.getPolaris_server_url());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getPolaris_access_token())) {
-            polarisParametersMap.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, scanStep.getPolaris_access_token());
-        }
-
-        if (!Utility.isStringNullOrBlank(scanStep.getPolaris_application_name())) {
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_access_token())) {
             polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, scanStep.getPolaris_application_name());
+                    ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, securityScan.getPolaris_access_token());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getPolaris_project_name())) {
-            polarisParametersMap.put(ApplicationConstants.POLARIS_PROJECT_NAME_KEY, scanStep.getPolaris_project_name());
-        }
-
-        if (!Utility.isStringNullOrBlank(scanStep.getPolaris_assessment_types())) {
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_application_name())) {
             polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, scanStep.getPolaris_assessment_types());
+                    ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, securityScan.getPolaris_application_name());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getPolaris_triage())) {
-            polarisParametersMap.put(ApplicationConstants.POLARIS_TRIAGE_KEY, scanStep.getPolaris_triage());
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_project_name())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_PROJECT_NAME_KEY, securityScan.getPolaris_project_name());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getPolaris_branch_name())) {
-            polarisParametersMap.put(ApplicationConstants.POLARIS_BRANCH_NAME_KEY, scanStep.getPolaris_branch_name());
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_assessment_types())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, securityScan.getPolaris_assessment_types());
         }
 
-        //        if (!Utility.isStringNullOrBlank(scanStep.getBridge_polaris_branch_parent_name())) {
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_triage())) {
+            polarisParametersMap.put(ApplicationConstants.POLARIS_TRIAGE_KEY, securityScan.getPolaris_triage());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_branch_name())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_BRANCH_NAME_KEY, securityScan.getPolaris_branch_name());
+        }
+
+        //        if (!Utility.isStringNullOrBlank(securityScan.getBridge_polaris_branch_parent_name())) {
         //            polarisParametersMap.put(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY,
-        // scanStep.getBridge_polaris_branch_parent_name());
+        // securityScan.getBridge_polaris_branch_parent_name());
         //        }
 
         return polarisParametersMap;
