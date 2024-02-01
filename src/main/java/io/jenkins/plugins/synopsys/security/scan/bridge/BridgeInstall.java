@@ -24,7 +24,7 @@ public class BridgeInstall {
             if (bridgeZipPath != null && bridgeInstallationPath != null) {
                 logger.info("Unzipping Synopsys Bridge zip file from: %s", bridgeZipPath.getRemote());
                 bridgeZipPath.unzip(bridgeInstallationPath);
-                logger.info("Synopsys Bridge installed successfully in: %", bridgeInstallationPath.getRemote());
+                logger.info("Synopsys Bridge installed successfully in: %s", bridgeInstallationPath.getRemote());
             }
         } catch (IOException | InterruptedException e) {
             logger.error("An exception occurred while unzipping Synopsys Bridge zip file: " + e.getMessage());

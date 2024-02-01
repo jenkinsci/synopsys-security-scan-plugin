@@ -44,7 +44,7 @@ public class SecurityScanner {
 
     public int runScanner(Map<String, Object> scanParams, FilePath bridgeInstallationPath)
             throws PluginExceptionHandler {
-        int scanner = -1;
+        int scanner = 0;
 
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(
                 Utility.installedBranchSourceDependcies(), scanParams, bridgeInstallationPath);

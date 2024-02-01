@@ -3,11 +3,12 @@ package io.jenkins.plugins.synopsys.security.scan.service.bridge;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.bridge.BridgeDownloadParameters;
+import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import java.io.File;
 import java.io.PrintStream;
@@ -27,6 +28,24 @@ public class BridgeDownloadParameterServiceTest {
         workspace = new FilePath(new File(getHomeDirectory()));
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
         bridgeDownloadParametersService = new BridgeDownloadParametersService(workspace, listenerMock);
+    }
+
+    @Test
+    void performBridgeDownloadParameterValidationSuccessTest() throws PluginExceptionHandler {
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
+        bridgeDownloadParameters.setBridgeDownloadUrl("https://fake.url.com");
+        bridgeDownloadParameters.setBridgeDownloadVersion("1.2.3");
+
+        assertTrue(bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParameters));
+    }
+
+    @Test
+    void performBridgeDownloadParameterValidationFailureTest() {
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
+        bridgeDownloadParameters.setBridgeDownloadVersion("x.x.x");
+
+        assertThrows(PluginExceptionHandler.class,
+            () -> bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParameters));
     }
 
     @Test

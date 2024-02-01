@@ -41,46 +41,34 @@ public class PluginParametersHandler {
 
         logMessagesForParameters(scanParameters, scanParametersService.getSynopsysSecurityProducts(scanParameters));
 
-        int exitCode = ErrorCode.UNDEFINED_PLUGIN_ERROR;
+        scanParametersService.performScanParameterValidation(scanParameters);
 
-        if (isValidScanParametersAndBridgeDownload(
-                bridgeDownloadParams, scanParametersService, bridgeDownloadParametersService, scanParameters)) {
-            BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener, envVars);
-            boolean isNetworkAirGap = checkNetworkAirgap(scanParameters);
-            boolean isBridgeInstalled =
-                    bridgeDownloadManager.checkIfBridgeInstalled(bridgeDownloadParams.getBridgeInstallationPath());
-            boolean isBridgeDownloadRequired = true;
+        bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams);
 
-            handleNetworkAirgap(isNetworkAirGap, bridgeDownloadParams, isBridgeInstalled);
+        BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener, envVars);
+        boolean isNetworkAirGap = checkNetworkAirgap(scanParameters);
+        boolean isBridgeInstalled =
+            bridgeDownloadManager.checkIfBridgeInstalled(bridgeDownloadParams.getBridgeInstallationPath());
+        boolean isBridgeDownloadRequired = true;
 
-            if (isBridgeInstalled) {
-                isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
-            }
+        handleNetworkAirgap(isNetworkAirGap, bridgeDownloadParams, isBridgeInstalled);
 
-            handleBridgeDownload(
-                    isBridgeDownloadRequired, isNetworkAirGap, bridgeDownloadParams, bridgeDownloadManager);
-
-            FilePath bridgeInstallationPath =
-                    new FilePath(workspace.getChannel(), bridgeDownloadParams.getBridgeInstallationPath());
-
-            exitCode = scanner.runScanner(scanParameters, bridgeInstallationPath);
+        if (isBridgeInstalled) {
+            isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
         }
 
-        return exitCode;
-    }
+        handleBridgeDownload(
+            isBridgeDownloadRequired, isNetworkAirGap, bridgeDownloadParams, bridgeDownloadManager);
 
-    private boolean isValidScanParametersAndBridgeDownload(
-            BridgeDownloadParameters bridgeDownloadParams,
-            ScanParametersService scanParametersService,
-            BridgeDownloadParametersService bridgeDownloadParametersService,
-            Map<String, Object> scanParameters) throws PluginExceptionHandler {
-        return scanParametersService.isValidScanParameters(scanParameters)
-                && bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams);
+        FilePath bridgeInstallationPath =
+            new FilePath(workspace.getChannel(), bridgeDownloadParams.getBridgeInstallationPath());
+
+        return scanner.runScanner(scanParameters, bridgeInstallationPath);
     }
 
     private boolean checkNetworkAirgap(Map<String, Object> scanParameters) {
         return scanParameters.containsKey(ApplicationConstants.NETWORK_AIRGAP_KEY)
-                && ((Boolean) scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY)).equals(true);
+                && scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY).equals(true);
     }
 
     private void handleNetworkAirgap(

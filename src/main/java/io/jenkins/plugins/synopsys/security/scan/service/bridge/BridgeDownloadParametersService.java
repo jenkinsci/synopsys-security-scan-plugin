@@ -108,7 +108,7 @@ public class BridgeDownloadParametersService {
         }
 
         boolean isNetworkAirgap = scanParameters.containsKey(ApplicationConstants.NETWORK_AIRGAP_KEY)
-                && ((Boolean) scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY)).equals(true);
+                && scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY).equals(true);
 
         if (scanParameters.containsKey(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL)) {
             bridgeDownloadParameters.setBridgeDownloadUrl(scanParameters
