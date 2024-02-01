@@ -6,7 +6,6 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
-import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import java.io.IOException;
@@ -24,12 +23,12 @@ public class BridgeDownload {
         this.envVars = envVars;
     }
 
-    public FilePath downloadSynopsysBridge(String bridgeDownloadUrl, String bridgeInstallationPath) throws Exception {
+    public FilePath downloadSynopsysBridge(String bridgeDownloadUrl, String bridgeInstallationPath) throws PluginExceptionHandler {
         FilePath bridgeZipFilePath = null;
         FilePath bridgeInstallationFilePath = new FilePath(workspace.getChannel(), bridgeInstallationPath);
 
         if (!checkIfBridgeUrlExists(bridgeDownloadUrl)) {
-            logger.error(LogMessages.INVALID_SYNOPSYS_BRIDGE_DOWNLOAD_URL, bridgeDownloadUrl);
+            logger.warn("Invalid Synopsys Bridge download URL: %s", bridgeDownloadUrl);
         }
 
         int retryCount = 1;
@@ -44,12 +43,10 @@ public class BridgeDownload {
                     downloadSuccess = true;
                 }
             } catch (InterruptedException e) {
-                logger.error(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_RETRY_INTERRUPTED);
-                throw new PluginExceptionHandler(
-                        ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED,
-                        LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_RETRY_INTERRUPTED);
+                logger.error("Interrupted while waiting to retry Synopsys Bridge download");
+                throw new PluginExceptionHandler(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED);
             } catch (Exception e) {
-                handleDownloadException(e, bridgeDownloadUrl, retryCount);
+                handleDownloadException(bridgeDownloadUrl, retryCount);
                 retryCount++;
             }
         }
@@ -61,15 +58,13 @@ public class BridgeDownload {
         }
 
         if (bridgeZipFilePath == null) {
-            throw new PluginExceptionHandler(
-                    ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED,
-                    LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED);
+            throw new PluginExceptionHandler(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED);
         }
 
         return bridgeZipFilePath;
     }
 
-    private FilePath downloadBridge(String bridgeDownloadUrl, FilePath bridgeInstallationFilePath) throws Exception {
+    private FilePath downloadBridge(String bridgeDownloadUrl, FilePath bridgeInstallationFilePath) throws InterruptedException, IOException {
         FilePath bridgeZipFilePath = bridgeInstallationFilePath.child(ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT);
         HttpURLConnection connection = Utility.getHttpURLConnection(new URL(bridgeDownloadUrl), envVars, logger);
 
@@ -81,17 +76,19 @@ public class BridgeDownload {
         return bridgeZipFilePath;
     }
 
-    private void handleDownloadException(Exception e, String bridgeDownloadUrl, int retryCount) throws Exception {
+    private void handleDownloadException(String bridgeDownloadUrl, int retryCount) throws PluginExceptionHandler {
         int statusCode = getHttpStatusCode(bridgeDownloadUrl);
 
         if (terminateRetry(statusCode)) {
-            logger.error(LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WONT_RETRY, statusCode);
-            throw new PluginExceptionHandler(
-                    ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED,
-                    LogMessages.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WONT_RETRY);
+            logger.error("Synopsys Bridge download failed with status code: %s and plugin won't retry to download", statusCode);
+            throw new PluginExceptionHandler(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WONT_RETRY);
         }
 
-        Thread.sleep(ApplicationConstants.INTERVAL_BETWEEN_CONSECUTIVE_RETRY_ATTEMPTS);
+        try {
+            Thread.sleep(ApplicationConstants.INTERVAL_BETWEEN_CONSECUTIVE_RETRY_ATTEMPTS);
+        } catch (InterruptedException ie) {
+            logger.warn("An exception occurred in between consecutive retry attempts: " + ie.getMessage());
+        }
         logger.warn("Synopsys Bridge download failed and attempt#%s to download again.", retryCount);
     }
 

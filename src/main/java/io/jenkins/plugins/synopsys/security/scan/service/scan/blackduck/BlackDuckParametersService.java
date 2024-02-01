@@ -2,11 +2,13 @@ package io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck;
 
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Download;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class BlackDuckParametersService {
     private final LoggerWrapper logger;
@@ -37,7 +39,7 @@ public class BlackDuckParametersService {
             logger.info("BlackDuck parameters are validated successfully");
             return true;
         } else {
-            logger.error(LogMessages.BLACKDUCK_PARAMETER_VALIDATION_FAILED);
+            logger.error("BlackDuck parameters are not valid");
             logger.error("Invalid BlackDuck parameters: " + invalidParams);
             return false;
         }

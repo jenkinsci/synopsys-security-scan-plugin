@@ -1,13 +1,19 @@
 package io.jenkins.plugins.synopsys.security.scan.extension.freestyle;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import hudson.*;
-import hudson.model.*;
+import hudson.EnvVars;
+import hudson.Extension;
+import hudson.FilePath;
+import hudson.Launcher;
+import hudson.Util;
+import hudson.model.AbstractProject;
+import hudson.model.FreeStyleProject;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
-import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
@@ -58,6 +64,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String synopsys_bridge_install_directory;
     private Boolean include_diagnostics;
     private Boolean network_airgap;
+    private Boolean return_status;
 
     @DataBoundConstructor
     public SecurityScanFreestyle() {
@@ -198,6 +205,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public Boolean isNetwork_airgap() {
         return network_airgap;
+    }
+
+    public Boolean isReturn_status() {
+        return return_status;
     }
 
     @DataBoundSetter
@@ -393,14 +404,12 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
             ScanParametersFactory.createPipelineCommand(run, listener, env, launcher, null, workspace)
                     .initializeScanner(getParametersMap(workspace, listener));
         } catch (Exception e) {
-
             if (e instanceof PluginExceptionHandler) {
-                throw new RuntimeException(new PluginExceptionHandler("Workflow failed! " + e.getMessage()));
-            } else {
                 throw new RuntimeException(
-                        new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage())));
+                    ExceptionMessages.getErrorMessage(((PluginExceptionHandler) e).getCode(), e.getMessage()));
+            } else {
+                throw new RuntimeException(e.getMessage(), e);
             }
-
         } finally {
             listener.getLogger()
                     .println(

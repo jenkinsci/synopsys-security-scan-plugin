@@ -76,14 +76,13 @@ public class ScanParametersFactory {
 
             parametersMap.putAll(prepareBridgeParametersMap(securityScan));
 
-            if (scanStep.isReturn_status() != null) {
-                parametersMap.put(ApplicationConstants.RETURN_STATUS_KEY, scanStep.isReturn_status());
+            if (securityScan.isReturn_status() != null) {
+                parametersMap.put(ApplicationConstants.RETURN_STATUS_KEY, securityScan.isReturn_status());
             }
 
             return parametersMap;
         } else {
-            throw new PluginExceptionHandler(
-                    ErrorCode.PARAMETER_VALIDATION_FAILED, LogMessages.INVALID_SYNOPSYS_SECURITY_PRODUCT);
+            throw new PluginExceptionHandler(ErrorCode.INVALID_SECURITY_PRODUCT);
         }
     }
 
@@ -379,8 +378,8 @@ public class ScanParametersFactory {
                                 || p.equals(SecurityProduct.COVERITY.name()));
 
         if (!isValid) {
-            logger.error(LogMessages.INVALID_SYNOPSYS_SECURITY_PRODUCT);
-            logger.info("Supported Synopsys Security Products: " + Arrays.toString(SecurityProduct.values()));
+            logger.error("Invalid Synopsys Security Product");
+            logger.info("Supported values for Synopsys security products: " + Arrays.toString(SecurityProduct.values()));
         }
 
         return isValid;

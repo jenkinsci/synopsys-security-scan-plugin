@@ -12,6 +12,10 @@ public class PluginExceptionHandler extends Exception {
         super(message);
     }
 
+    public PluginExceptionHandler(int code) {
+        this.code = code;
+    }
+
     public PluginExceptionHandler(int code, String message) {
         super(message);
         this.code = code;

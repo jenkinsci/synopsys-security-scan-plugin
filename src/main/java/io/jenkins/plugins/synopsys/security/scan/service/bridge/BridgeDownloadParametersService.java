@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.Version;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.bridge.BridgeDownloadParameters;
+import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -25,7 +27,8 @@ public class BridgeDownloadParametersService {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public boolean performBridgeDownloadParameterValidation(BridgeDownloadParameters bridgeDownloadParameters) {
+    public boolean performBridgeDownloadParameterValidation(BridgeDownloadParameters bridgeDownloadParameters)
+        throws PluginExceptionHandler {
         boolean validUrl = isValidUrl(bridgeDownloadParameters.getBridgeDownloadUrl());
         boolean validVersion = isValidVersion(bridgeDownloadParameters.getBridgeDownloadVersion());
         boolean validInstallationPath = isValidInstallationPath(bridgeDownloadParameters.getBridgeInstallationPath());
@@ -34,22 +37,22 @@ public class BridgeDownloadParametersService {
             logger.info("Bridge download parameters are validated successfully");
             return true;
         } else {
-            logger.error(LogMessages.INVALID_BRIDGE_DOWNLOAD_PARAMETERS);
-            return false;
+            logger.error("Bridge download parameters are not valid");
+            throw new PluginExceptionHandler(ErrorCode.INVALID_BRIDGE_DOWNLOAD_PARAMETERS);
         }
     }
 
     public boolean isValidUrl(String url) {
         if (url.isEmpty()) {
-            logger.warn(LogMessages.EMPTY_BRIDGE_DOWNLOAD_URL_PROVIDED);
+            logger.warn("The provided Bridge download URL is empty");
             return false;
         }
 
         try {
             new URL(url);
             return true;
-        } catch (Exception e) {
-            logger.warn(LogMessages.INVALID_BRIDGE_DOWNLOAD_URL_PROVIDED, e.getMessage());
+        } catch (MalformedURLException me) {
+            logger.warn("The provided Bridge download URL is not valid: %s", me.getMessage());
             return false;
         }
     }
@@ -60,7 +63,7 @@ public class BridgeDownloadParametersService {
         if (matcher.matches() || version.equals(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION)) {
             return true;
         } else {
-            logger.warn(LogMessages.INVALID_BRIDGE_DOWNLOAD_VERSION_PROVIDED, version);
+            logger.warn("The provided Bridge download version is not valid: %s", version);
             return false;
         }
     }

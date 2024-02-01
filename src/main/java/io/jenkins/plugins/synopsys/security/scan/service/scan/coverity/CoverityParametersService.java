@@ -2,7 +2,6 @@ package io.jenkins.plugins.synopsys.security.scan.service.scan.coverity;
 
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public class CoverityParametersService {
             logger.info("Coverity parameters are validated successfully");
             return true;
         } else {
-            logger.error(LogMessages.COVERITY_PARAMETER_VALIDATION_FAILED);
+            logger.error("Coverity parameters are not valid");
             logger.error("Invalid Coverity parameters: " + invalidParams);
             return false;
         }

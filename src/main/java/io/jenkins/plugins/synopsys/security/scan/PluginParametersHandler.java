@@ -41,7 +41,7 @@ public class PluginParametersHandler {
 
         logMessagesForParameters(scanParameters, scanParametersService.getSynopsysSecurityProducts(scanParameters));
 
-        int exitCode = ErrorCode.PARAMETER_VALIDATION_FAILED;
+        int exitCode = ErrorCode.UNDEFINED_PLUGIN_ERROR;
 
         if (isValidScanParametersAndBridgeDownload(
                 bridgeDownloadParams, scanParametersService, bridgeDownloadParametersService, scanParameters)) {
@@ -73,7 +73,7 @@ public class PluginParametersHandler {
             BridgeDownloadParameters bridgeDownloadParams,
             ScanParametersService scanParametersService,
             BridgeDownloadParametersService bridgeDownloadParametersService,
-            Map<String, Object> scanParameters) {
+            Map<String, Object> scanParameters) throws PluginExceptionHandler {
         return scanParametersService.isValidScanParameters(scanParameters)
                 && bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams);
     }
@@ -88,9 +88,7 @@ public class PluginParametersHandler {
             throws PluginExceptionHandler {
         if (isNetworkAirgap && !bridgeDownloadParams.getBridgeDownloadUrl().contains(".zip") && !isBridgeInstalled) {
             logger.error("Synopsys Bridge could not be found in " + bridgeDownloadParams.getBridgeInstallationPath());
-            throw new PluginExceptionHandler(
-                    ErrorCode.SYNOPSYS_BRIDGE_EXECUTABLE_NOT_FOUND,
-                    "Synopsys Bridge could not be found in " + bridgeDownloadParams.getBridgeInstallationPath());
+            throw new PluginExceptionHandler(ErrorCode.SYNOPSYS_BRIDGE_NOT_FOUND_IN_PROVIDED_PATH);
         }
 
         if (isNetworkAirgap) {

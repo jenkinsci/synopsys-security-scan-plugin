@@ -15,15 +15,20 @@ public class ExceptionMessages {
         exitCodeToMessage.put(ErrorCode.BRIDGE_BUILD_BREAK, "The config option 'bridge.break' has been set to true");
         exitCodeToMessage.put(ErrorCode.BRIDGE_STARTUP_FAILED, "Bridge initialization failed");
 
-        exitCodeToMessage.put(ErrorCode.PARAMETER_VALIDATION_FAILED, "Scan parameter validation failed");
-        exitCodeToMessage.put(
-                ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_OR_INSTALLATION_FAILED,
-                "Synopsys bridge download or installation failed");
-        exitCodeToMessage.put(
-                ErrorCode.SYNOPSYS_BRIDGE_EXECUTABLE_NOT_FOUND,
-                "Synopsys bridge executable not found in installation path");
-        exitCodeToMessage.put(ErrorCode.SCM_TOKEN_NOT_FOUND, "SCM token not found");
-        exitCodeToMessage.put(ErrorCode.SCM_URL_VALIDATION_FAILED, "SCM URL validation failed");
+        exitCodeToMessage.put(ErrorCode.INVALID_SECURITY_PRODUCT, "Invalid Synopsys Security Product");
+        exitCodeToMessage.put(ErrorCode.INVALID_BLACKDUCK_PARAMETERS, "Invalid BlackDuck parameters");
+        exitCodeToMessage.put(ErrorCode.INVALID_COVERITY_PARAMETERS, "Invalid Coverity parameters");
+        exitCodeToMessage.put(ErrorCode.INVALID_POLARIS_PARAMETERS, "Invalid Polaris parameters");
+        exitCodeToMessage.put(ErrorCode.INVALID_BRIDGE_DOWNLOAD_PARAMETERS, "Bridge download parameters are not valid");
+        exitCodeToMessage.put(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED, "Synopsys Bridge download failed");
+        exitCodeToMessage.put(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WONT_RETRY, "Synopsys Bridge download failed and will not retry to download");
+        exitCodeToMessage.put(ErrorCode.SYNOPSYS_BRIDGE_UNZIPPING_FAILED, "Synopsys Bridge unzipping failed");
+        exitCodeToMessage.put(ErrorCode.SYNOPSYS_BRIDGE_NOT_FOUND_IN_PROVIDED_PATH, "Synopsys Bridge could not be found in provided path");
+        exitCodeToMessage.put(ErrorCode.NO_BITBUCKET_TOKEN_FOUND, "No Bitbucket token found");
+        exitCodeToMessage.put(ErrorCode.NO_GITHUB_TOKEN_FOUND, "No GitHub token found");
+        exitCodeToMessage.put(ErrorCode.NO_GITLAB_TOKEN_FOUND, "No GitLab token found");
+        exitCodeToMessage.put(ErrorCode.INVALID_GITHUB_URL, "Invalid GitHub repository URL");
+        exitCodeToMessage.put(ErrorCode.INVALID_GITLAB_URL, "Invalid GitLab repository URL");
         exitCodeToMessage.put(ErrorCode.UNDEFINED_PLUGIN_ERROR, "Undefined plugin error");
 
         return exitCodeToMessage;

@@ -68,4 +68,6 @@ public interface SecurityScan {
     public Boolean isInclude_diagnostics();
 
     public Boolean isNetwork_airgap();
+
+    public Boolean isReturn_status();
 }
