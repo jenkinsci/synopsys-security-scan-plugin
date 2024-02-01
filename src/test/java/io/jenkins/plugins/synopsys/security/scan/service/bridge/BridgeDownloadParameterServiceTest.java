@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.bridge.BridgeDownloadParameters;
@@ -44,8 +45,10 @@ public class BridgeDownloadParameterServiceTest {
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
         bridgeDownloadParameters.setBridgeDownloadVersion("x.x.x");
 
-        assertThrows(PluginExceptionHandler.class,
-            () -> bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParameters));
+        assertThrows(
+                PluginExceptionHandler.class,
+                () -> bridgeDownloadParametersService.performBridgeDownloadParameterValidation(
+                        bridgeDownloadParameters));
     }
 
     @Test

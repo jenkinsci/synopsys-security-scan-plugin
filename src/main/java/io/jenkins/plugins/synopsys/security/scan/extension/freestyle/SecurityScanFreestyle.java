@@ -411,7 +411,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         } catch (Exception e) {
             if (e instanceof PluginExceptionHandler) {
                 throw new RuntimeException(
-                    ExceptionMessages.getErrorMessage(((PluginExceptionHandler) e).getCode(), e.getMessage()));
+                        ExceptionMessages.getErrorMessage(((PluginExceptionHandler) e).getCode(), e.getMessage()));
             } else {
                 throw new RuntimeException(e.getMessage(), e);
             }

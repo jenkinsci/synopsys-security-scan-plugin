@@ -379,7 +379,8 @@ public class ScanParametersFactory {
 
         if (!isValid) {
             logger.error("Invalid Synopsys Security Product");
-            logger.info("Supported values for Synopsys security products: " + Arrays.toString(SecurityProduct.values()));
+            logger.info(
+                    "Supported values for Synopsys security products: " + Arrays.toString(SecurityProduct.values()));
         }
 
         return isValid;

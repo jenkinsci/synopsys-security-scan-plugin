@@ -40,7 +40,8 @@ public class BridgeDownloadManager {
 
         FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl, bridgeInstallationPath);
 
-        bridgeInstall.installSynopsysBridge(bridgeZipPath, new FilePath(workspace.getChannel(), bridgeInstallationPath));
+        bridgeInstall.installSynopsysBridge(
+                bridgeZipPath, new FilePath(workspace.getChannel(), bridgeInstallationPath));
     }
 
     public boolean isSynopsysBridgeDownloadRequired(BridgeDownloadParameters bridgeDownloadParameters) {

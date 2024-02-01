@@ -23,7 +23,8 @@ public class BridgeDownload {
         this.envVars = envVars;
     }
 
-    public FilePath downloadSynopsysBridge(String bridgeDownloadUrl, String bridgeInstallationPath) throws PluginExceptionHandler {
+    public FilePath downloadSynopsysBridge(String bridgeDownloadUrl, String bridgeInstallationPath)
+            throws PluginExceptionHandler {
         FilePath bridgeZipFilePath = null;
         FilePath bridgeInstallationFilePath = new FilePath(workspace.getChannel(), bridgeInstallationPath);
 
@@ -64,7 +65,8 @@ public class BridgeDownload {
         return bridgeZipFilePath;
     }
 
-    private FilePath downloadBridge(String bridgeDownloadUrl, FilePath bridgeInstallationFilePath) throws InterruptedException, IOException {
+    private FilePath downloadBridge(String bridgeDownloadUrl, FilePath bridgeInstallationFilePath)
+            throws InterruptedException, IOException {
         FilePath bridgeZipFilePath = bridgeInstallationFilePath.child(ApplicationConstants.BRIDGE_ZIP_FILE_FORMAT);
         HttpURLConnection connection = Utility.getHttpURLConnection(new URL(bridgeDownloadUrl), envVars, logger);
 
@@ -80,7 +82,9 @@ public class BridgeDownload {
         int statusCode = getHttpStatusCode(bridgeDownloadUrl);
 
         if (terminateRetry(statusCode)) {
-            logger.error("Synopsys Bridge download failed with status code: %s and plugin won't retry to download", statusCode);
+            logger.error(
+                    "Synopsys Bridge download failed with status code: %s and plugin won't retry to download",
+                    statusCode);
             throw new PluginExceptionHandler(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WONT_RETRY);
         }
 

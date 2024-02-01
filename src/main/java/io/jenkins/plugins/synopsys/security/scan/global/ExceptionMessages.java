@@ -21,9 +21,13 @@ public class ExceptionMessages {
         exitCodeToMessage.put(ErrorCode.INVALID_POLARIS_PARAMETERS, "Invalid Polaris parameters");
         exitCodeToMessage.put(ErrorCode.INVALID_BRIDGE_DOWNLOAD_PARAMETERS, "Bridge download parameters are not valid");
         exitCodeToMessage.put(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED, "Synopsys Bridge download failed");
-        exitCodeToMessage.put(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WONT_RETRY, "Synopsys Bridge download failed and will not retry to download");
+        exitCodeToMessage.put(
+                ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED_AND_WONT_RETRY,
+                "Synopsys Bridge download failed and will not retry to download");
         exitCodeToMessage.put(ErrorCode.SYNOPSYS_BRIDGE_UNZIPPING_FAILED, "Synopsys Bridge unzipping failed");
-        exitCodeToMessage.put(ErrorCode.SYNOPSYS_BRIDGE_NOT_FOUND_IN_PROVIDED_PATH, "Synopsys Bridge could not be found in provided path");
+        exitCodeToMessage.put(
+                ErrorCode.SYNOPSYS_BRIDGE_NOT_FOUND_IN_PROVIDED_PATH,
+                "Synopsys Bridge could not be found in provided path");
         exitCodeToMessage.put(ErrorCode.NO_BITBUCKET_TOKEN_FOUND, "No Bitbucket token found");
         exitCodeToMessage.put(ErrorCode.NO_GITHUB_TOKEN_FOUND, "No GitHub token found");
         exitCodeToMessage.put(ErrorCode.NO_GITLAB_TOKEN_FOUND, "No GitLab token found");

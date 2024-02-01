@@ -28,7 +28,7 @@ public class BridgeDownloadParametersService {
     }
 
     public boolean performBridgeDownloadParameterValidation(BridgeDownloadParameters bridgeDownloadParameters)
-        throws PluginExceptionHandler {
+            throws PluginExceptionHandler {
         boolean validUrl = isValidUrl(bridgeDownloadParameters.getBridgeDownloadUrl());
         boolean validVersion = isValidVersion(bridgeDownloadParameters.getBridgeDownloadVersion());
         boolean validInstallationPath = isValidInstallationPath(bridgeDownloadParameters.getBridgeInstallationPath());

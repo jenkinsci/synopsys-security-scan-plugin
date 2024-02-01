@@ -48,7 +48,7 @@ public class PluginParametersHandler {
         BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener, envVars);
         boolean isNetworkAirGap = checkNetworkAirgap(scanParameters);
         boolean isBridgeInstalled =
-            bridgeDownloadManager.checkIfBridgeInstalled(bridgeDownloadParams.getBridgeInstallationPath());
+                bridgeDownloadManager.checkIfBridgeInstalled(bridgeDownloadParams.getBridgeInstallationPath());
         boolean isBridgeDownloadRequired = true;
 
         handleNetworkAirgap(isNetworkAirGap, bridgeDownloadParams, isBridgeInstalled);
@@ -57,11 +57,10 @@ public class PluginParametersHandler {
             isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
         }
 
-        handleBridgeDownload(
-            isBridgeDownloadRequired, isNetworkAirGap, bridgeDownloadParams, bridgeDownloadManager);
+        handleBridgeDownload(isBridgeDownloadRequired, isNetworkAirGap, bridgeDownloadParams, bridgeDownloadManager);
 
         FilePath bridgeInstallationPath =
-            new FilePath(workspace.getChannel(), bridgeDownloadParams.getBridgeInstallationPath());
+                new FilePath(workspace.getChannel(), bridgeDownloadParams.getBridgeInstallationPath());
 
         return scanner.runScanner(scanParameters, bridgeInstallationPath);
     }

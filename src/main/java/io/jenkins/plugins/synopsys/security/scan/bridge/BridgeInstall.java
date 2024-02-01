@@ -19,7 +19,8 @@ public class BridgeInstall {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public void installSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeInstallationPath) throws PluginExceptionHandler {
+    public void installSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeInstallationPath)
+            throws PluginExceptionHandler {
         try {
             if (bridgeZipPath != null && bridgeInstallationPath != null) {
                 logger.info("Unzipping Synopsys Bridge zip file from: %s", bridgeZipPath.getRemote());

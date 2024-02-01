@@ -20,8 +20,7 @@ public class ScanParametersService {
         this.listener = listener;
     }
 
-    public boolean performScanParameterValidation(Map<String, Object> scanParameters)
-        throws PluginExceptionHandler {
+    public boolean performScanParameterValidation(Map<String, Object> scanParameters) throws PluginExceptionHandler {
         Set<String> securityProducts = getSynopsysSecurityProducts(scanParameters);
 
         if (securityProducts.contains(SecurityProduct.BLACKDUCK.name())) {
