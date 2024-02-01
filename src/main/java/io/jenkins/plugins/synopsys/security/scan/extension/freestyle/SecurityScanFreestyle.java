@@ -382,6 +382,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         this.network_airgap = network_airgap ? true : null;
     }
 
+    @DataBoundSetter
+    public void setReturn_status(Boolean return_status) {
+        this.return_status = return_status ? true : null;
+    }
+
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)
             throws PluginExceptionHandler {
         return ScanParametersFactory.preparePipelineParametersMap(
