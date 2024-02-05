@@ -496,14 +496,17 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         public Boolean verifyRequiredPlugins(TaskListener listener, EnvVars envVars) {
             String jobType = Utility.jenkinsJobType(envVars);
             SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
-            SCMSource scmSource = scmRepositoryService.findSCMSource();
 
             if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
                 return true;
             }
 
             Map<String, Boolean> installedBranchSourceDependencies = Utility.installedBranchSourceDependencies();
+            if (installedBranchSourceDependencies.size() == 0) {
+                return false;
+            }
 
+            SCMSource scmSource = scmRepositoryService.findSCMSource();
             return ((installedBranchSourceDependencies.getOrDefault(
                                     ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, false)
                             && scmSource instanceof BitbucketSCMSource)
