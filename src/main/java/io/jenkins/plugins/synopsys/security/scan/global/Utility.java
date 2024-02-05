@@ -3,6 +3,7 @@ package io.jenkins.plugins.synopsys.security.scan.global;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
+import hudson.model.TopLevelItem;
 import java.io.IOException;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
@@ -181,7 +182,7 @@ public class Utility {
         return proxyUrlString;
     }
 
-    public static Map<String, Boolean> installedBranchSourceDependcies() {
+    public static Map<String, Boolean> installedBranchSourceDependencies() {
         Map<String, Boolean> installedBranchSourceDependencies = new HashMap<>();
 
         if (Jenkins.getInstance().getPlugin(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME) != null) {
@@ -195,5 +196,20 @@ public class Utility {
         }
 
         return installedBranchSourceDependencies;
+    }
+
+    public static String jenkinsJobType(EnvVars envVars) {
+        Jenkins jenkins = Jenkins.getInstance();
+
+        String jobName = envVars.get(ApplicationConstants.ENV_JOB_NAME_KEY);
+        String finalJobName = jobName.contains("/") ? jobName.substring(0, jobName.indexOf('/')) : jobName;
+
+        TopLevelItem job = jenkins.getItem(finalJobName);
+
+        if (job != null) {
+            return job.getClass().getSimpleName();
+        } else {
+            return "UnknownJobType";
+        }
     }
 }

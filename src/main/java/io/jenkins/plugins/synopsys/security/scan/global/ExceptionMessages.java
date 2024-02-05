@@ -22,6 +22,9 @@ public class ExceptionMessages {
         exitCodeToMessage.put(3, "Workflow failed! Exit Code: 3 Failed to shutdown the Bridge");
         exitCodeToMessage.put(8, "Workflow failed! Exit Code: 8 The config option bridge.break has been set to true");
         exitCodeToMessage.put(9, "Workflow failed! Exit Code: 9 Bridge initialization failed");
+        exitCodeToMessage.put(
+                10,
+                "Workflow failed! Exit Code: 10 Please install necessary 'Branch Source Plugin' in your jenkins instance");
 
         return exitCodeToMessage;
     }
