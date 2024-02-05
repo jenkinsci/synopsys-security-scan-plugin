@@ -80,11 +80,11 @@
                <c:select/>
             </f:entry>
 
-            <f:entry field="githubCredentialsId" title="Github Token (Optional)">
+            <f:entry field="githubCredentialsId" title="GitHub Token (Optional)">
                 <c:select/>
             </f:entry>
 
-            <f:entry field="gitlabCredentialsId" title="Gitlab Token (Optional)">
+            <f:entry field="gitlabCredentialsId" title="GitLab Token (Optional)">
                 <c:select/>
             </f:entry>
 
