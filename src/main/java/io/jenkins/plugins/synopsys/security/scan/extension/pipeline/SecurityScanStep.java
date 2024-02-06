@@ -1,12 +1,12 @@
 package io.jenkins.plugins.synopsys.security.scan.extension.pipeline;
 
+import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.*;
-import hudson.model.Node;
-import hudson.model.Run;
-import hudson.model.TaskListener;
+import hudson.model.*;
 import hudson.util.ListBoxModel;
 import hudson.util.ListBoxModel.Option;
+import io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
@@ -14,11 +14,15 @@ import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
+import io.jenkins.plugins.synopsys.security.scan.service.scm.SCMRepositoryService;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 import javax.annotation.Nonnull;
+import jenkins.scm.api.SCMSource;
+import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
@@ -463,24 +467,55 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             LoggerWrapper logger = new LoggerWrapper(listener);
             int result;
 
-            logger.println(
-                    "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
-
-            try {
-                result = ScanParametersFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
-                        .initializeScanner(getParametersMap(workspace, listener));
-            } catch (Exception e) {
-                if (e instanceof PluginExceptionHandler) {
-                    throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
-                } else {
-                    throw new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
-                }
-            } finally {
+            if (verifyRequiredPlugins(listener, envVars)) {
                 logger.println(
-                        "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+                        "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+
+                try {
+                    result = ScanParametersFactory.createPipelineCommand(
+                                    run, listener, envVars, launcher, node, workspace)
+                            .initializeScanner(getParametersMap(workspace, listener));
+                } catch (Exception e) {
+                    if (e instanceof PluginExceptionHandler) {
+                        throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
+                    } else {
+                        throw new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
+                    }
+                } finally {
+                    logger.println(
+                            "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+                }
+
+                return result;
+            } else {
+                throw new PluginExceptionHandler(
+                        ExceptionMessages.bridgeErrorMessages().get(10));
+            }
+        }
+
+        public Boolean verifyRequiredPlugins(TaskListener listener, EnvVars envVars) {
+            String jobType = Utility.jenkinsJobType(envVars);
+            SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
+
+            if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
+                return true;
             }
 
-            return result;
+            Map<String, Boolean> installedBranchSourceDependencies = Utility.installedBranchSourceDependencies();
+            if (installedBranchSourceDependencies.isEmpty()) {
+                return false;
+            }
+
+            SCMSource scmSource = scmRepositoryService.findSCMSource();
+            return ((installedBranchSourceDependencies.getOrDefault(
+                                    ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, false)
+                            && scmSource instanceof BitbucketSCMSource)
+                    || (installedBranchSourceDependencies.getOrDefault(
+                                    ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME, false)
+                            && scmSource instanceof GitHubSCMSource)
+                    || (installedBranchSourceDependencies.getOrDefault(
+                                    ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME, false)
+                            && scmSource instanceof GitLabSCMSource));
         }
     }
 }

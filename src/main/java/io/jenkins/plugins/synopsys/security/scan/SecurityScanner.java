@@ -48,7 +48,7 @@ public class SecurityScanner {
         int scanner = -1;
 
         List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(
-                Utility.installedBranchSourceDependcies(), scanParams, bridgeInstallationPath);
+                Utility.installedBranchSourceDependencies(), scanParams, bridgeInstallationPath);
 
         logger.info("Executable command line arguments: "
                 + commandLineArgs.stream()
