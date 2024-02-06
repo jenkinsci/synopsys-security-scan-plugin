@@ -1,5 +1,6 @@
 package io.jenkins.plugins.synopsys.security.scan.service.scan;
 
+import hudson.EnvVars;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
@@ -13,9 +14,11 @@ import java.util.stream.Collectors;
 
 public class ScanParametersService {
     private final TaskListener listener;
+    private final EnvVars envVars;
 
-    public ScanParametersService(TaskListener listener) {
+    public ScanParametersService(TaskListener listener, EnvVars envVars) {
         this.listener = listener;
+        this.envVars = envVars;
     }
 
     public boolean isValidScanParameters(Map<String, Object> scanParameters) {
@@ -30,7 +33,7 @@ public class ScanParametersService {
             isValidBlackDuckParameters = blackDuckParametersService.isValidBlackDuckParameters(scanParameters);
         }
         if (securityProducts.contains(SecurityProduct.COVERITY.name())) {
-            CoverityParametersService coverityParametersService = new CoverityParametersService(listener);
+            CoverityParametersService coverityParametersService = new CoverityParametersService(listener, envVars);
             isValidCoverityParameters = coverityParametersService.isValidCoverityParameters(scanParameters);
         }
         if (securityProducts.contains(SecurityProduct.POLARIS.name())) {

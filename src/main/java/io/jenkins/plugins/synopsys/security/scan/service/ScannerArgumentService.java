@@ -81,14 +81,19 @@ public class ScannerArgumentService {
     private List<String> getSecurityProductSpecificCommands(
             Map<String, Boolean> installedBranchSourceDependencies, Map<String, Object> scanParameters)
             throws PluginExceptionHandler {
-        ScanParametersService scanParametersService = new ScanParametersService(listener);
+        ScanParametersService scanParametersService = new ScanParametersService(listener, envVars);
         Set<String> securityProducts = scanParametersService.getSynopsysSecurityProducts(scanParameters);
 
         boolean fixPrOrPrComment = isFixPrOrPrCommentValueSet(scanParameters);
 
         SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
-        Object scmObject = scmRepositoryService.fetchSCMRepositoryDetails(
-                installedBranchSourceDependencies, scanParameters, fixPrOrPrComment);
+        Object scmObject = null;
+
+        String jobType = Utility.jenkinsJobType(envVars);
+        if (jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
+            scmObject = scmRepositoryService.fetchSCMRepositoryDetails(
+                    installedBranchSourceDependencies, scanParameters, fixPrOrPrComment);
+        }
 
         List<String> scanCommands = new ArrayList<>();
 
@@ -114,7 +119,7 @@ public class ScannerArgumentService {
                     ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX));
         }
         if (securityProducts.contains(SecurityProduct.COVERITY.name())) {
-            CoverityParametersService coverityParametersService = new CoverityParametersService(listener);
+            CoverityParametersService coverityParametersService = new CoverityParametersService(listener, envVars);
             Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(scanParameters);
 
             scanCommands.add(BridgeParams.STAGE_OPTION);
@@ -185,7 +190,9 @@ public class ScannerArgumentService {
             bridgeInput.setBlackDuck((BlackDuck) scanObject);
         } else if (scanObject instanceof Coverity) {
             Coverity coverity = (Coverity) scanObject;
-            setCoverityProjectNameAndStreamName(coverity, scmObject);
+            if (scmObject != null) {
+                setCoverityProjectNameAndStreamName(coverity, scmObject);
+            }
             bridgeInput.setCoverity(coverity);
         } else if (scanObject instanceof Polaris) {
             bridgeInput.setPolaris((Polaris) scanObject);
@@ -196,10 +203,12 @@ public class ScannerArgumentService {
         String repositoryName = getRepositoryName(scmObject);
         String branchName = envVars.get(ApplicationConstants.ENV_BRANCH_NAME_KEY);
 
-        if (Utility.isStringNullOrBlank(coverity.getConnect().getProject().getName())) {
+        if (Utility.isStringNullOrBlank(coverity.getConnect().getProject().getName()) && repositoryName != null) {
             coverity.getConnect().getProject().setName(repositoryName);
         }
-        if (Utility.isStringNullOrBlank(coverity.getConnect().getStream().getName())) {
+        if (Utility.isStringNullOrBlank(coverity.getConnect().getStream().getName())
+                && repositoryName != null
+                && branchName != null) {
             coverity.getConnect().getStream().setName(repositoryName.concat("-").concat(branchName));
         }
     }
@@ -216,7 +225,7 @@ public class ScannerArgumentService {
             return gitlab.getRepository().getName();
         }
 
-        return "";
+        return null;
     }
 
     public void setScmObject(BridgeInput bridgeInput, Object scmObject) {

@@ -199,12 +199,13 @@ public class Utility {
     }
 
     public static String jenkinsJobType(EnvVars envVars) {
-        Jenkins jenkins = Jenkins.getInstance();
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
 
         String jobName = envVars.get(ApplicationConstants.ENV_JOB_NAME_KEY);
-        String finalJobName = jobName.contains("/") ? jobName.substring(0, jobName.indexOf('/')) : jobName;
+        String finalJobName =
+                jobName != null ? jobName.contains("/") ? jobName.substring(0, jobName.indexOf('/')) : jobName : null;
 
-        TopLevelItem job = jenkins.getItem(finalJobName);
+        TopLevelItem job = jenkins != null ? jenkins.getItem(finalJobName) : null;
 
         if (job != null) {
             return job.getClass().getSimpleName();
