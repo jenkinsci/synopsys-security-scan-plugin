@@ -485,11 +485,12 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             String undefinedErrorMessage = null;
             Exception unknownException = new Exception();
 
-            if (verifyRequiredPlugins(listener, envVars)) {
-                logger.println(
-                        "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+            logger.println(
+                    "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
             try {
+                verifyRequiredPlugins(logger, envVars);
+
                 exitCode = ScanParametersFactory.createPipelineCommand(
                                 run, listener, envVars, launcher, node, workspace)
                         .initializeScanner(getParametersMap(workspace, listener));
@@ -513,50 +514,45 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
             return exitCode;
         }
-    }
 
-    private void handleExitCode(int exitCode, String errorMessage, Exception e)
-            throws PluginExceptionHandler, ScannerException {
-        if (exitCode != 0) {
-            if (Objects.equals(isReturn_status(), true)) {
-                return;
-            }
+        private void handleExitCode(int exitCode, String errorMessage, Exception e)
+                throws PluginExceptionHandler, ScannerException {
+            if (exitCode != 0) {
+                if (Objects.equals(isReturn_status(), true)) {
+                    return;
+                }
 
-            if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
-                // Throw exception with stack trace for undefined errors
-                throw new ScannerException(errorMessage, e);
-            }
-
-                return result;
+                if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
+                    // Throw exception with stack trace for undefined errors
+                    throw new ScannerException(errorMessage, e);
+                }
             } else {
-                throw new PluginExceptionHandler(
-                        ExceptionMessages.bridgeErrorMessages().get(10));
+                throw new PluginExceptionHandler(errorMessage);
             }
         }
 
-        public Boolean verifyRequiredPlugins(TaskListener listener, EnvVars envVars) {
+        public void verifyRequiredPlugins(LoggerWrapper logger, EnvVars envVars) throws PluginExceptionHandler {
             String jobType = Utility.jenkinsJobType(envVars);
             SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
-
-            if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
-                return true;
-            }
-
             Map<String, Boolean> installedBranchSourceDependencies = Utility.installedBranchSourceDependencies();
-            if (installedBranchSourceDependencies.isEmpty()) {
-                return false;
-            }
 
-            SCMSource scmSource = scmRepositoryService.findSCMSource();
-            return ((installedBranchSourceDependencies.getOrDefault(
-                                    ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, false)
-                            && scmSource instanceof BitbucketSCMSource)
-                    || (installedBranchSourceDependencies.getOrDefault(
-                                    ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME, false)
-                            && scmSource instanceof GitHubSCMSource)
-                    || (installedBranchSourceDependencies.getOrDefault(
-                                    ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME, false)
-                            && scmSource instanceof GitLabSCMSource));
+            if (jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)
+                    && !installedBranchSourceDependencies.isEmpty()) {
+                SCMSource scmSource = scmRepositoryService.findSCMSource();
+                if (!((installedBranchSourceDependencies.getOrDefault(
+                                        ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, false)
+                                && scmSource instanceof BitbucketSCMSource)
+                        || (installedBranchSourceDependencies.getOrDefault(
+                                        ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME, false)
+                                && scmSource instanceof GitHubSCMSource)
+                        || (installedBranchSourceDependencies.getOrDefault(
+                                        ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME, false)
+                                && scmSource instanceof GitLabSCMSource))) {
+                    logger.error("Necessary 'Branch Source Plugin' is not installed in Jenkins instance. "
+                            + "Please install necessary 'Branch Source Plugin' in your jenkins instance");
+                    throw new PluginExceptionHandler(ErrorCode.REQUIRED_BRANCH_SOURCE_PLUGIN_NOT_INSTALLED);
+                }
+            }
         }
     }
 }

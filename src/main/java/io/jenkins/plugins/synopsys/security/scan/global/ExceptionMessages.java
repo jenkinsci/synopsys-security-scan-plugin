@@ -34,6 +34,9 @@ public class ExceptionMessages {
         exitCodeToMessage.put(ErrorCode.INVALID_GITHUB_URL, "Invalid GitHub repository URL");
         exitCodeToMessage.put(ErrorCode.INVALID_GITLAB_URL, "Invalid GitLab repository URL");
         exitCodeToMessage.put(ErrorCode.UNDEFINED_PLUGIN_ERROR, "Undefined plugin error");
+        exitCodeToMessage.put(
+                ErrorCode.REQUIRED_BRANCH_SOURCE_PLUGIN_NOT_INSTALLED,
+                "Necessary 'Branch Source Plugin' is not installed in Jenkins instance");
 
         return exitCodeToMessage;
     }
