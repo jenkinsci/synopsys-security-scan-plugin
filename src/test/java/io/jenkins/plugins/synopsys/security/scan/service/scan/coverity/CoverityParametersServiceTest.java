@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import hudson.EnvVars;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
@@ -17,13 +18,14 @@ import org.mockito.Mockito;
 public class CoverityParametersServiceTest {
     private CoverityParametersService coverityParametersService;
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
+    private final EnvVars envVarsMock = Mockito.mock(EnvVars.class);
     private final String TEST_COVERITY_URL = "https://fake.coverity.url";
     private final String TEST_COVERITY_USER_NAME = "fake-user";
     private final String TEST_COVERITY_USER_PASSWORD = "fakeUserPassword";
 
     @BeforeEach
     void setUp() {
-        coverityParametersService = new CoverityParametersService(listenerMock);
+        coverityParametersService = new CoverityParametersService(listenerMock, envVarsMock);
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 
@@ -46,6 +48,8 @@ public class CoverityParametersServiceTest {
         coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, TEST_COVERITY_URL);
         coverityParameters.put(ApplicationConstants.COVERITY_USER_KEY, TEST_COVERITY_USER_NAME);
         coverityParameters.put(ApplicationConstants.COVERITY_PASSPHRASE_KEY, TEST_COVERITY_USER_PASSWORD);
+        coverityParameters.put(ApplicationConstants.COVERITY_PROJECT_NAME_KEY, "fake-repo");
+        coverityParameters.put(ApplicationConstants.COVERITY_STREAM_NAME_KEY, "fake-repo-branch");
 
         assertTrue(coverityParametersService.isValidCoverityParameters(coverityParameters));
     }
