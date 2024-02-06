@@ -502,7 +502,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             }
 
             Map<String, Boolean> installedBranchSourceDependencies = Utility.installedBranchSourceDependencies();
-            if (installedBranchSourceDependencies.size() == 0) {
+            if (installedBranchSourceDependencies.isEmpty()) {
                 return false;
             }
 
