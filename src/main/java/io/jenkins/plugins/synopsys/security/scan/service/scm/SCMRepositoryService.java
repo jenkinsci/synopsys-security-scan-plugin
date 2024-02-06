@@ -84,6 +84,10 @@ public class SCMRepositoryService {
 
     public SCMSource findSCMSource() {
         String jobName = envVars.get(ApplicationConstants.ENV_JOB_NAME_KEY);
+        String branchName = envVars.get(ApplicationConstants.ENV_BRANCH_NAME_KEY);
+        if (branchName != null) {
+            jobName = jobName.substring(0, jobName.indexOf("/"));
+        }
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         SCMSourceOwner owner = jenkins != null ? jenkins.getItemByFullName(jobName, SCMSourceOwner.class) : null;
         if (owner != null) {
