@@ -1,16 +1,12 @@
 package io.jenkins.plugins.synopsys.security.scan.extension.pipeline;
 
+import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import hudson.EnvVars;
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
-import hudson.Util;
-import hudson.model.Node;
-import hudson.model.Run;
-import hudson.model.TaskListener;
+import hudson.*;
+import hudson.model.*;
 import hudson.util.ListBoxModel;
 import hudson.util.ListBoxModel.Option;
+import io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
@@ -19,7 +15,9 @@ import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
+import io.jenkins.plugins.synopsys.security.scan.service.scm.SCMRepositoryService;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -29,6 +27,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import jenkins.scm.api.SCMSource;
+import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
@@ -485,8 +485,9 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             String undefinedErrorMessage = null;
             Exception unknownException = new Exception();
 
-            logger.println(
-                    "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+            if (verifyRequiredPlugins(listener, envVars)) {
+                logger.println(
+                        "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
             try {
                 exitCode = ScanParametersFactory.createPipelineCommand(
@@ -526,7 +527,36 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
                 throw new ScannerException(errorMessage, e);
             }
 
-            throw new PluginExceptionHandler(errorMessage);
+                return result;
+            } else {
+                throw new PluginExceptionHandler(
+                        ExceptionMessages.bridgeErrorMessages().get(10));
+            }
+        }
+
+        public Boolean verifyRequiredPlugins(TaskListener listener, EnvVars envVars) {
+            String jobType = Utility.jenkinsJobType(envVars);
+            SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
+
+            if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
+                return true;
+            }
+
+            Map<String, Boolean> installedBranchSourceDependencies = Utility.installedBranchSourceDependencies();
+            if (installedBranchSourceDependencies.isEmpty()) {
+                return false;
+            }
+
+            SCMSource scmSource = scmRepositoryService.findSCMSource();
+            return ((installedBranchSourceDependencies.getOrDefault(
+                                    ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, false)
+                            && scmSource instanceof BitbucketSCMSource)
+                    || (installedBranchSourceDependencies.getOrDefault(
+                                    ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME, false)
+                            && scmSource instanceof GitHubSCMSource)
+                    || (installedBranchSourceDependencies.getOrDefault(
+                                    ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME, false)
+                            && scmSource instanceof GitLabSCMSource));
         }
     }
 }

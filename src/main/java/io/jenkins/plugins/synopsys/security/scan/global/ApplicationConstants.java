@@ -91,4 +91,6 @@ public class ApplicationConstants {
     public static final String BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME = "cloudbees-bitbucket-branch-source";
     public static final String GITHUB_BRANCH_SOURCE_PLUGIN_NAME = "github-branch-source";
     public static final String GITLAB_BRANCH_SOURCE_PLUGIN_NAME = "gitlab-branch-source";
+
+    public static final String MULTIBRANCH_JOB_TYPE_NAME = "WorkflowMultiBranchProject";
 }
