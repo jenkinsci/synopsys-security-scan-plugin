@@ -203,7 +203,7 @@ public class ScannerArgumentServiceTest {
         String jsonStringForPrComment = "{\"data\":{\"coverity\":{\"connect\":{\"url\":\"https://fake.coverity.url\","
                 + "\"user\":{\"name\":\"fake-user\",\"password\":\"fakeUserPassword\"},"
                 + "\"project\":{\"name\":\"fake-repo\"},\"stream\":{\"name\":\"fake-repo-fake-branch\"},"
-                + "\"policy\":{}},\"install\":{},\"automation\":{},\"local\":false},"
+                + "\"policy\":{}},\"install\":{},\"automation\":{}},"
                 + "\"github\":{\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"name\":\"fake-repo\""
                 + ",\"owner\":{\"name\":\"fake-owner\"},\"pull\":{\"number\":1},\"branch\":{\"name\":"
                 + "\"fake-branch\"}},\"host\":{\"url\":\"\"}}}}";
