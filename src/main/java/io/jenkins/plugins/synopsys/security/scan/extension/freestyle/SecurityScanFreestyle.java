@@ -424,7 +424,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
             }
         } finally {
             String errorMessage = ExceptionMessages.getErrorMessage(exitCode, undefinedErrorMessage);
-            logger.error(errorMessage);
+            logger.info(errorMessage);
             logger.info(
                     "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
