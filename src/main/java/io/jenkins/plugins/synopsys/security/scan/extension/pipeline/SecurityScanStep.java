@@ -526,7 +526,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
                     // Throw exception with stack trace for undefined errors
                     throw new ScannerException(errorMessage, e);
                 }
-            } else {
+
                 throw new PluginExceptionHandler(errorMessage);
             }
         }
