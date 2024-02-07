@@ -549,7 +549,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
                                         ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME, false)
                                 && scmSource instanceof GitLabSCMSource))) {
                     logger.error("Necessary 'Branch Source Plugin' is not installed in Jenkins instance. "
-                            + "Please install necessary 'Branch Source Plugin' in your jenkins instance");
+                            + "Please install necessary 'Branch Source Plugin' in your Jenkins instance");
                     throw new PluginExceptionHandler(ErrorCode.REQUIRED_BRANCH_SOURCE_PLUGIN_NOT_INSTALLED);
                 }
             }
