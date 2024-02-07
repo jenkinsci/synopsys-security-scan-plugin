@@ -504,7 +504,9 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
                 }
             } finally {
                 String errorMessage = ExceptionMessages.getErrorMessage(exitCode, undefinedErrorMessage);
-                logger.error(errorMessage);
+                if (errorMessage != null) {
+                    logger.info(errorMessage);
+                }
 
                 logger.println(
                         "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
@@ -526,7 +528,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
                     // Throw exception with stack trace for undefined errors
                     throw new ScannerException(errorMessage, e);
                 }
-            } else {
+
                 throw new PluginExceptionHandler(errorMessage);
             }
         }
@@ -536,8 +538,12 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
             Map<String, Boolean> installedBranchSourceDependencies = Utility.installedBranchSourceDependencies();
 
-            if (jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)
-                    && !installedBranchSourceDependencies.isEmpty()) {
+            if (jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
+                if (installedBranchSourceDependencies.isEmpty()) {
+                    logger.error("Necessary 'Branch Source Plugin' is not installed in Jenkins instance. "
+                            + "Please install necessary 'Branch Source Plugin' in your Jenkins instance");
+                    throw new PluginExceptionHandler(ErrorCode.REQUIRED_BRANCH_SOURCE_PLUGIN_NOT_INSTALLED);
+                }
                 SCMSource scmSource = scmRepositoryService.findSCMSource();
                 if (!((installedBranchSourceDependencies.getOrDefault(
                                         ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, false)

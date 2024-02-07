@@ -35,13 +35,13 @@ public class ScanParametersService {
         if (securityProducts.contains(SecurityProduct.COVERITY.name())) {
             CoverityParametersService coverityParametersService = new CoverityParametersService(listener, envVars);
             if (!coverityParametersService.isValidCoverityParameters(scanParameters)) {
-                throw new PluginExceptionHandler(ErrorCode.INVALID_BLACKDUCK_PARAMETERS);
+                throw new PluginExceptionHandler(ErrorCode.INVALID_COVERITY_PARAMETERS);
             }
         }
         if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
             if (!polarisParametersService.isValidPolarisParameters(scanParameters)) {
-                throw new PluginExceptionHandler(ErrorCode.INVALID_BLACKDUCK_PARAMETERS);
+                throw new PluginExceptionHandler(ErrorCode.INVALID_POLARIS_PARAMETERS);
             }
         }
 

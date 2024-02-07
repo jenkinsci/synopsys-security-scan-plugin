@@ -2,6 +2,7 @@ package io.jenkins.plugins.synopsys.security.scan.global;
 
 public class ErrorCode {
     // Bridge specific error codes
+    public static final int SCAN_SUCCESSFUL = 0;
     public static final int BRIDGE_UNDEFINED_ERROR = 1;
     public static final int BRIDGE_ADAPTER_ERROR = 2;
     public static final int BRIDGE_SHUTDOWN_FAILED = 3;
