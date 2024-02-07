@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import hudson.FilePath;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -46,7 +47,7 @@ public class BridgeInstallTest {
             assertTrue(bridgeInstallationPath.child("demo-bridge-LICENSE.txt").exists());
 
             cleanupBridgeInstallationPath(bridgeInstallationPath);
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException | PluginExceptionHandler e) {
             System.out.println("Exception occurred during testing for installSynopsysBridge method. " + e.getMessage());
         }
     }

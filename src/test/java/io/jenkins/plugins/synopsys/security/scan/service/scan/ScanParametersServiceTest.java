@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import hudson.EnvVars;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -25,27 +26,28 @@ public class ScanParametersServiceTest {
     }
 
     @Test
-    void validParametersForBlackDuckTest() {
+    void performScanParameterValidationSuccessForBlackDuckTest() throws PluginExceptionHandler {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ApplicationConstants.PRODUCT_KEY, "blackduck");
         parameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         parameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
-        assertTrue(scanParametersService.isValidScanParameters(parameters));
+        assertTrue(scanParametersService.performScanParameterValidation(parameters));
     }
 
     @Test
-    void invalidParametersForBlackDuckAndPolarisTest() {
+    void performScanParameterValidationFailureForBlackDuckAndPolarisTest() {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ApplicationConstants.PRODUCT_KEY, "blackduck, polaris");
         parameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         parameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
-        assertFalse(scanParametersService.isValidScanParameters(parameters));
+        assertThrows(
+                PluginExceptionHandler.class, () -> scanParametersService.performScanParameterValidation(parameters));
     }
 
     @Test
-    void validParametersForBlackDuckAndPolarisTest() {
+    void performScanParameterValidationSuccessForBlackDuckAndPolarisTest() throws PluginExceptionHandler {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ApplicationConstants.PRODUCT_KEY, "blackduck, polaris");
 
@@ -59,7 +61,7 @@ public class ScanParametersServiceTest {
         parameters.put(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, "SCA, SAST");
         parameters.put(ApplicationConstants.POLARIS_BRANCH_NAME_KEY, "test-branch");
 
-        assertTrue(scanParametersService.isValidScanParameters(parameters));
+        assertTrue(scanParametersService.performScanParameterValidation(parameters));
     }
 
     @Test

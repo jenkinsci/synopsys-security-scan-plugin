@@ -2,8 +2,9 @@ package io.jenkins.plugins.synopsys.security.scan.bridge;
 
 import hudson.FilePath;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.HomeDirectoryTask;
-import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import java.io.IOException;
@@ -18,18 +19,26 @@ public class BridgeInstall {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public void installSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeInstallationPath) {
+    public void installSynopsysBridge(FilePath bridgeZipPath, FilePath bridgeInstallationPath)
+            throws PluginExceptionHandler {
         try {
             if (bridgeZipPath != null && bridgeInstallationPath != null) {
+                logger.info("Unzipping Synopsys Bridge zip file from: %s", bridgeZipPath.getRemote());
                 bridgeZipPath.unzip(bridgeInstallationPath);
-                bridgeZipPath.delete();
-                logger.info(
-                        "Synopsys Bridge zip path: %s and bridge installation path: %s",
-                        bridgeZipPath.getRemote(), bridgeInstallationPath.getRemote());
+                logger.info("Synopsys Bridge installed successfully in: %s", bridgeInstallationPath.getRemote());
             }
-        } catch (Exception e) {
+        } catch (IOException | InterruptedException e) {
             logger.error("An exception occurred while unzipping Synopsys Bridge zip file: " + e.getMessage());
-            Thread.currentThread().interrupt();
+            throw new PluginExceptionHandler(ErrorCode.SYNOPSYS_BRIDGE_UNZIPPING_FAILED);
+        }
+
+        // Deleting the bridge zip file after unzipping
+        try {
+            if (bridgeZipPath != null) {
+                bridgeZipPath.delete();
+            }
+        } catch (IOException | InterruptedException e) {
+            logger.warn("An exception occurred while deleting Synopsys Bridge zip file: " + e.getMessage());
         }
     }
 
@@ -50,7 +59,7 @@ public class BridgeInstall {
         try {
             defaultInstallationPath = workspace.act(new HomeDirectoryTask(separator));
         } catch (IOException | InterruptedException e) {
-            logger.error(LogMessages.FAILED_TO_FETCH_PLUGINS_DEFAULT_INSTALLATION_PATH, e.getMessage());
+            logger.error("Failed to fetch plugin's default installation path: %s", e.getMessage());
             Thread.currentThread().interrupt();
         }
 

@@ -5,11 +5,13 @@ import hudson.FilePath;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import java.io.IOException;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,15 +38,10 @@ public class BridgeDownloadManager {
 
         bridgeInstall.verifyAndCreateInstallationPath(bridgeInstallationPath);
 
-        try {
-            FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl, bridgeInstallationPath);
-            bridgeInstall.installSynopsysBridge(
-                    bridgeZipPath, new FilePath(workspace.getChannel(), bridgeInstallationPath));
-        } catch (Exception e) {
-            logger.error(
-                    LogMessages.EXCEPTION_OCCURRED_WHILE_DOWNLOADING_OR_INSTALLING_SYNOPSYS_BRIDGE, e.getMessage());
-            throw new PluginExceptionHandler(e.getMessage());
-        }
+        FilePath bridgeZipPath = bridgeDownload.downloadSynopsysBridge(bridgeDownloadUrl, bridgeInstallationPath);
+
+        bridgeInstall.installSynopsysBridge(
+                bridgeZipPath, new FilePath(workspace.getChannel(), bridgeInstallationPath));
     }
 
     public boolean isSynopsysBridgeDownloadRequired(BridgeDownloadParameters bridgeDownloadParameters) {

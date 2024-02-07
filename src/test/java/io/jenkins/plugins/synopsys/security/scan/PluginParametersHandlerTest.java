@@ -7,9 +7,7 @@ import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
-import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -38,7 +36,7 @@ public class PluginParametersHandlerTest {
     }
 
     @Test
-    public void initializeScannerValidParametersTest() throws PluginExceptionHandler, ScannerException {
+    public void initializeScannerValidParametersTest() throws PluginExceptionHandler {
         Map<String, Object> scanParameters = new HashMap<>();
         scanParameters.put(ApplicationConstants.PRODUCT_KEY, "BLACKDUCK");
         scanParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
@@ -51,13 +49,8 @@ public class PluginParametersHandlerTest {
 
     @Test
     public void initializeScannerInvalidParametersTest() {
-        ScanParametersService mockScanParametersService = Mockito.mock(ScanParametersService.class);
-
         Map<String, Object> scanParameters = new HashMap<>();
         scanParameters.put(ApplicationConstants.PRODUCT_KEY, "BLACKDUCK");
-
-        Mockito.when(mockScanParametersService.isValidScanParameters(scanParameters))
-                .thenReturn(false);
 
         assertThrows(PluginExceptionHandler.class, () -> pluginParametersHandler.initializeScanner(scanParameters));
     }
@@ -75,7 +68,7 @@ public class PluginParametersHandlerTest {
     }
 
     @Test
-    public void initializeScannerAirGapSuccessTest() throws PluginExceptionHandler, ScannerException {
+    public void initializeScannerAirGapSuccessTest() throws PluginExceptionHandler {
         Map<String, Object> scanParameters = new HashMap<>();
         scanParameters.put(ApplicationConstants.PRODUCT_KEY, "BLACKDUCK");
         scanParameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
