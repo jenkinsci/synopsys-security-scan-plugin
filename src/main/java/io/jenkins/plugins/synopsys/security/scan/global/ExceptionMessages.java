@@ -9,6 +9,8 @@ public class ExceptionMessages {
     public static Map<Integer, String> getExitCodeToMessageMap() {
         Map<Integer, String> exitCodeToMessage = new HashMap<>();
 
+        exitCodeToMessage.put(ErrorCode.SCAN_SUCCESSFUL, "Synopsys Security Scan execution is successful");
+
         exitCodeToMessage.put(ErrorCode.BRIDGE_UNDEFINED_ERROR, "Undefined error, check error logs");
         exitCodeToMessage.put(ErrorCode.BRIDGE_ADAPTER_ERROR, "Error from adapter");
         exitCodeToMessage.put(ErrorCode.BRIDGE_SHUTDOWN_FAILED, "Failed to shutdown the Bridge");
@@ -42,18 +44,18 @@ public class ExceptionMessages {
     }
 
     public static String getErrorMessage(int exitCode, String undefinedErrorMessage) {
-        String errorMessage;
+        String errorMessage = null;
         Map<Integer, String> exitCodeToMessage = ExceptionMessages.getExitCodeToMessageMap();
         if (exitCodeToMessage.containsKey(exitCode)) {
-            if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
+            if (exitCode == ErrorCode.SCAN_SUCCESSFUL) {
+                errorMessage = exitCodeToMessage.get(exitCode);
+            } else if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
                 errorMessage = "Workflow failed! Exit code " + exitCode
                         + ": " + exitCodeToMessage.get(exitCode) + " - "
                         + undefinedErrorMessage;
             } else {
                 errorMessage = "Workflow failed! Exit code " + exitCode + ": " + exitCodeToMessage.get(exitCode);
             }
-        } else {
-            errorMessage = "Synopsys Security Scan failed! Reason: " + undefinedErrorMessage;
         }
         return errorMessage;
     }

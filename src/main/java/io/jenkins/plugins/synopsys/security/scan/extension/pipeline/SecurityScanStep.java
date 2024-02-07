@@ -504,7 +504,9 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
                 }
             } finally {
                 String errorMessage = ExceptionMessages.getErrorMessage(exitCode, undefinedErrorMessage);
-                logger.error(errorMessage);
+                if (errorMessage != null) {
+                    logger.info(errorMessage);
+                }
 
                 logger.println(
                         "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
