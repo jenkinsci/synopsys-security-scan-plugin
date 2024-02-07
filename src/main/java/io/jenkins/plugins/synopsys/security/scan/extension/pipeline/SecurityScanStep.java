@@ -538,8 +538,12 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
             Map<String, Boolean> installedBranchSourceDependencies = Utility.installedBranchSourceDependencies();
 
-            if (jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)
-                    && !installedBranchSourceDependencies.isEmpty()) {
+            if (jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
+                if (installedBranchSourceDependencies.isEmpty()) {
+                    logger.error("Necessary 'Branch Source Plugin' is not installed in Jenkins instance. "
+                            + "Please install necessary 'Branch Source Plugin' in your Jenkins instance");
+                    throw new PluginExceptionHandler(ErrorCode.REQUIRED_BRANCH_SOURCE_PLUGIN_NOT_INSTALLED);
+                }
                 SCMSource scmSource = scmRepositoryService.findSCMSource();
                 if (!((installedBranchSourceDependencies.getOrDefault(
                                         ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, false)
