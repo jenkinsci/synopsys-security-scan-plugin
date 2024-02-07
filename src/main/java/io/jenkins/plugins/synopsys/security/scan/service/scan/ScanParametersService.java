@@ -34,7 +34,7 @@ public class ScanParametersService {
         }
         if (securityProducts.contains(SecurityProduct.COVERITY.name())) {
             CoverityParametersService coverityParametersService = new CoverityParametersService(listener, envVars);
-            if (!coverityParametersService.isValidCoverityParameters(scanParameters, envVars)) {
+            if (!coverityParametersService.isValidCoverityParameters(scanParameters)) {
                 throw new PluginExceptionHandler(ErrorCode.INVALID_BLACKDUCK_PARAMETERS);
             }
         }
