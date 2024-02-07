@@ -1,5 +1,6 @@
 package io.jenkins.plugins.synopsys.security.scan.service.scan;
 
+import hudson.EnvVars;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
@@ -15,9 +16,11 @@ import java.util.stream.Collectors;
 
 public class ScanParametersService {
     private final TaskListener listener;
+    private final EnvVars envVars;
 
-    public ScanParametersService(TaskListener listener) {
+    public ScanParametersService(TaskListener listener, EnvVars envVars) {
         this.listener = listener;
+        this.envVars = envVars;
     }
 
     public boolean performScanParameterValidation(Map<String, Object> scanParameters) throws PluginExceptionHandler {
@@ -30,8 +33,8 @@ public class ScanParametersService {
             }
         }
         if (securityProducts.contains(SecurityProduct.COVERITY.name())) {
-            CoverityParametersService coverityParametersService = new CoverityParametersService(listener);
-            if (!coverityParametersService.isValidCoverityParameters(scanParameters)) {
+            CoverityParametersService coverityParametersService = new CoverityParametersService(listener, envVars);
+            if (!coverityParametersService.isValidCoverityParameters(scanParameters, envVars)) {
                 throw new PluginExceptionHandler(ErrorCode.INVALID_BLACKDUCK_PARAMETERS);
             }
         }

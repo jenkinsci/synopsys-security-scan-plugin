@@ -2,6 +2,7 @@ package io.jenkins.plugins.synopsys.security.scan.service.scan;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import hudson.EnvVars;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
@@ -16,10 +17,11 @@ import org.mockito.Mockito;
 public class ScanParametersServiceTest {
     private ScanParametersService scanParametersService;
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
+    private final EnvVars envVarsMock = Mockito.mock(EnvVars.class);
 
     @BeforeEach
     void setUp() {
-        scanParametersService = new ScanParametersService(listenerMock);
+        scanParametersService = new ScanParametersService(listenerMock, envVarsMock);
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 

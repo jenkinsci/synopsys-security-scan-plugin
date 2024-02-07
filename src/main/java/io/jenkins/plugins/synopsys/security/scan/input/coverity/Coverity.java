@@ -17,7 +17,7 @@ public class Coverity {
     private String version;
 
     @JsonProperty("local")
-    private boolean local;
+    private Boolean local;
 
     public Coverity() {
         connect = new Connect();
@@ -57,11 +57,11 @@ public class Coverity {
         this.version = version;
     }
 
-    public boolean isLocal() {
+    public Boolean isLocal() {
         return local;
     }
 
-    public void setLocal(boolean local) {
+    public void setLocal(Boolean local) {
         this.local = local;
     }
 }

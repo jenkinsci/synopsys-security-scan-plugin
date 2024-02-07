@@ -93,4 +93,5 @@ public class ApplicationConstants {
     public static final String GITLAB_BRANCH_SOURCE_PLUGIN_NAME = "gitlab-branch-source";
 
     public static final String MULTIBRANCH_JOB_TYPE_NAME = "WorkflowMultiBranchProject";
+    public static final String FREESTYLE_JOB_TYPE_NAME = "FreeStyleProject";
 }

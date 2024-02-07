@@ -5,13 +5,14 @@ import io.jenkins.plugins.synopsys.security.scan.global.ScanCredentialsHelper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.util.Timeout;
 
 public class AuthenticationSupport {
     private final ScanCredentialsHelper scanCredentialsHelper = new ScanCredentialsHelper();
@@ -82,9 +83,10 @@ public class AuthenticationSupport {
 
     public RequestConfig getRequestConfig(int timeoutInSeconds) {
         return RequestConfig.custom()
-                .setConnectTimeout(timeoutInSeconds * 1000)
-                .setConnectionRequestTimeout(timeoutInSeconds * 1000)
-                .setSocketTimeout(timeoutInSeconds * 1000)
+                .setConnectTimeout(Timeout.ofSeconds(timeoutInSeconds))
+                .setResponseTimeout(Timeout.ofSeconds(timeoutInSeconds))
+                .setConnectionRequestTimeout(Timeout.ofSeconds(timeoutInSeconds))
+                .setConnectionKeepAlive(Timeout.ofSeconds(timeoutInSeconds))
                 .build();
     }
 }

@@ -32,7 +32,7 @@ public class PluginParametersHandler {
     }
 
     public int initializeScanner(Map<String, Object> scanParameters) throws PluginExceptionHandler {
-        ScanParametersService scanParametersService = new ScanParametersService(listener);
+        ScanParametersService scanParametersService = new ScanParametersService(listener, envVars);
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listener);
         BridgeDownloadParametersService bridgeDownloadParametersService =
                 new BridgeDownloadParametersService(workspace, listener);
