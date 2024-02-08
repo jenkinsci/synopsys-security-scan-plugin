@@ -25,6 +25,19 @@ public class CoverityParametersService {
             return false;
         }
 
+        List<String> invalidParams = getInvalidCoverityParamsForAllJobTypes(coverityParameters);
+
+        if (invalidParams.isEmpty()) {
+            logger.info("Coverity parameters are validated successfully");
+            return true;
+        } else {
+            logger.error("Coverity parameters are not valid");
+            logger.error("Invalid Coverity parameters: " + invalidParams);
+            return false;
+        }
+    }
+
+    private List<String> getInvalidCoverityParamsForAllJobTypes(Map<String, Object> coverityParameters) {
         List<String> invalidParams = new ArrayList<>();
 
         Arrays.asList(
@@ -41,9 +54,16 @@ public class CoverityParametersService {
                     }
                 });
 
+        invalidParams.addAll(getInvalidMandatoryParamsForFreeStyleAndPipeline(coverityParameters));
+
+        return invalidParams;
+    }
+
+    private List<String> getInvalidMandatoryParamsForFreeStyleAndPipeline(Map<String, Object> coverityParameters) {
+        List<String> invalidParamsForPipelineOrFreeStyle = new ArrayList<>();
+
         String jobType = Utility.jenkinsJobType(envVars);
         if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
-            List<String> invalidParamsForPipelineOrFreeStyle = new ArrayList<>();
             Arrays.asList(ApplicationConstants.COVERITY_PROJECT_NAME_KEY, ApplicationConstants.COVERITY_STREAM_NAME_KEY)
                     .forEach(key -> {
                         boolean isKeyValid = coverityParameters.containsKey(key)
@@ -60,18 +80,10 @@ public class CoverityParametersService {
                                 ? "FreeStyle"
                                 : "Pipeline")
                         + " job type");
-                invalidParams.addAll(invalidParamsForPipelineOrFreeStyle);
             }
         }
 
-        if (invalidParams.isEmpty()) {
-            logger.info("Coverity parameters are validated successfully");
-            return true;
-        } else {
-            logger.error("Coverity parameters are not valid");
-            logger.error("Invalid Coverity parameters: " + invalidParams);
-            return false;
-        }
+        return invalidParamsForPipelineOrFreeStyle;
     }
 
     public Coverity prepareCoverityObjectForBridge(Map<String, Object> coverityParameters) {
