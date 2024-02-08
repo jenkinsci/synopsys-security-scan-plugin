@@ -29,6 +29,7 @@ public class BridgeInstall {
             }
         } catch (IOException | InterruptedException e) {
             logger.error("An exception occurred while unzipping Synopsys Bridge zip file: " + e.getMessage());
+            Thread.currentThread().interrupt();
             throw new PluginExceptionHandler(ErrorCode.SYNOPSYS_BRIDGE_UNZIPPING_FAILED);
         }
 
@@ -39,6 +40,7 @@ public class BridgeInstall {
             }
         } catch (IOException | InterruptedException e) {
             logger.warn("An exception occurred while deleting Synopsys Bridge zip file: " + e.getMessage());
+            Thread.currentThread().interrupt();
         }
     }
 

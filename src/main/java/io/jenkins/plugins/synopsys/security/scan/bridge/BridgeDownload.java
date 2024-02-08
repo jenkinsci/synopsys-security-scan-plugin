@@ -45,6 +45,7 @@ public class BridgeDownload {
                 }
             } catch (InterruptedException e) {
                 logger.error("Interrupted while waiting to retry Synopsys Bridge download");
+                Thread.currentThread().interrupt();
                 throw new PluginExceptionHandler(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED);
             } catch (Exception e) {
                 handleDownloadException(bridgeDownloadUrl, retryCount);
@@ -92,6 +93,7 @@ public class BridgeDownload {
             Thread.sleep(ApplicationConstants.INTERVAL_BETWEEN_CONSECUTIVE_RETRY_ATTEMPTS);
         } catch (InterruptedException ie) {
             logger.warn("An exception occurred in between consecutive retry attempts: " + ie.getMessage());
+            Thread.currentThread().interrupt();
         }
         logger.warn("Synopsys Bridge download failed and attempt#%s to download again.", retryCount);
     }
