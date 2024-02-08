@@ -503,21 +503,21 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
                     unknownException = e;
                 }
             } finally {
-                String errorMessage = ExceptionMessages.getErrorMessage(exitCode, undefinedErrorMessage);
-                if (errorMessage != null) {
-                    logger.info(errorMessage);
+                String exitMessage = ExceptionMessages.getErrorMessage(exitCode, undefinedErrorMessage);
+                if (exitMessage != null) {
+                    logger.info(exitMessage);
                 }
 
                 logger.println(
                         "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
-                handleExitCode(exitCode, errorMessage, unknownException);
+                handleExitCode(exitCode, exitMessage, unknownException);
             }
 
             return exitCode;
         }
 
-        private void handleExitCode(int exitCode, String errorMessage, Exception e)
+        private void handleExitCode(int exitCode, String exitMessage, Exception e)
                 throws PluginExceptionHandler, ScannerException {
             if (exitCode != 0) {
                 if (Objects.equals(isReturn_status(), true)) {
@@ -526,10 +526,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
                 if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
                     // Throw exception with stack trace for undefined errors
-                    throw new ScannerException(errorMessage, e);
+                    throw new ScannerException(exitMessage, e);
                 }
 
-                throw new PluginExceptionHandler(errorMessage);
+                throw new PluginExceptionHandler(exitMessage);
             }
         }
 
