@@ -92,6 +92,9 @@
         <f:entry field="network_airgap" title="Network Airgap (Optional)">
             <f:checkbox/>
         </f:entry>
+        <f:entry field="return_status" title="Return Status Code (Optional)">
+            <f:checkbox/>
+        </f:entry>
     </f:section>
 
     <script type="text/javascript">

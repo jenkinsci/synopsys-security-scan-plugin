@@ -6,7 +6,7 @@ import com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketRepository;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
@@ -30,8 +30,8 @@ public class BitbucketRepositoryService {
 
         String bitbucketToken = (String) scanParameters.get(ApplicationConstants.BITBUCKET_TOKEN_KEY);
         if (Utility.isStringNullOrBlank(bitbucketToken) && isFixPrOrPrComment) {
-            logger.error(LogMessages.NO_BITBUCKET_TOKEN_FOUND);
-            throw new PluginExceptionHandler(LogMessages.NO_BITBUCKET_TOKEN_FOUND);
+            logger.error("PrComment is set true but no Bitbucket token found!");
+            throw new PluginExceptionHandler(ErrorCode.NO_BITBUCKET_TOKEN_FOUND);
         }
 
         BitbucketApi bitbucketApiFromSCMSource = bitbucketSCMSource.buildBitbucketClient(

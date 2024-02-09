@@ -1,9 +1,10 @@
 package io.jenkins.plugins.synopsys.security.scan.service.scan.coverity;
 
+import hudson.EnvVars;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,9 +13,11 @@ import java.util.Map;
 
 public class CoverityParametersService {
     private final LoggerWrapper logger;
+    private final EnvVars envVars;
 
-    public CoverityParametersService(TaskListener listener) {
+    public CoverityParametersService(TaskListener listener, EnvVars envVars) {
         this.logger = new LoggerWrapper(listener);
+        this.envVars = envVars;
     }
 
     public boolean isValidCoverityParameters(Map<String, Object> coverityParameters) {
@@ -22,6 +25,19 @@ public class CoverityParametersService {
             return false;
         }
 
+        List<String> invalidParams = getInvalidCoverityParamsForAllJobTypes(coverityParameters);
+
+        if (invalidParams.isEmpty()) {
+            logger.info("Coverity parameters are validated successfully");
+            return true;
+        } else {
+            logger.error("Coverity parameters are not valid");
+            logger.error("Invalid Coverity parameters: " + invalidParams);
+            return false;
+        }
+    }
+
+    private List<String> getInvalidCoverityParamsForAllJobTypes(Map<String, Object> coverityParameters) {
         List<String> invalidParams = new ArrayList<>();
 
         Arrays.asList(
@@ -38,14 +54,36 @@ public class CoverityParametersService {
                     }
                 });
 
-        if (invalidParams.isEmpty()) {
-            logger.info("Coverity parameters are validated successfully");
-            return true;
-        } else {
-            logger.error(LogMessages.COVERITY_PARAMETER_VALIDATION_FAILED);
-            logger.error("Invalid Coverity parameters: " + invalidParams);
-            return false;
+        invalidParams.addAll(getInvalidMandatoryParamsForFreeStyleAndPipeline(coverityParameters));
+
+        return invalidParams;
+    }
+
+    private List<String> getInvalidMandatoryParamsForFreeStyleAndPipeline(Map<String, Object> coverityParameters) {
+        List<String> invalidParamsForPipelineOrFreeStyle = new ArrayList<>();
+
+        String jobType = Utility.jenkinsJobType(envVars);
+        if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
+            Arrays.asList(ApplicationConstants.COVERITY_PROJECT_NAME_KEY, ApplicationConstants.COVERITY_STREAM_NAME_KEY)
+                    .forEach(key -> {
+                        boolean isKeyValid = coverityParameters.containsKey(key)
+                                && coverityParameters.get(key) != null
+                                && !coverityParameters.get(key).toString().isEmpty();
+
+                        if (!isKeyValid) {
+                            invalidParamsForPipelineOrFreeStyle.add(key);
+                        }
+                    });
+            if (!invalidParamsForPipelineOrFreeStyle.isEmpty()) {
+                logger.error(invalidParamsForPipelineOrFreeStyle + " is mandatory parameter for "
+                        + (jobType.equalsIgnoreCase(ApplicationConstants.FREESTYLE_JOB_TYPE_NAME)
+                                ? "FreeStyle"
+                                : "Pipeline")
+                        + " job type");
+            }
         }
+
+        return invalidParamsForPipelineOrFreeStyle;
     }
 
     public Coverity prepareCoverityObjectForBridge(Map<String, Object> coverityParameters) {

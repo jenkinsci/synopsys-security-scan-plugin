@@ -65,6 +65,7 @@ public class ApplicationConstants {
     public static final String INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
 
     public static final String NETWORK_AIRGAP_KEY = "network_airgap";
+    public static final String RETURN_STATUS_KEY = "return_status";
 
     public static final String BLACKDUCK_REPORTS_SARIF_CREATE_KEY = "blackduck_reports_sarif_create";
 
@@ -101,4 +102,7 @@ public class ApplicationConstants {
     public static final String BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME = "cloudbees-bitbucket-branch-source";
     public static final String GITHUB_BRANCH_SOURCE_PLUGIN_NAME = "github-branch-source";
     public static final String GITLAB_BRANCH_SOURCE_PLUGIN_NAME = "gitlab-branch-source";
+
+    public static final String MULTIBRANCH_JOB_TYPE_NAME = "WorkflowMultiBranchProject";
+    public static final String FREESTYLE_JOB_TYPE_NAME = "FreeStyleProject";
 }

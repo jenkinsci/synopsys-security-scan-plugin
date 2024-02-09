@@ -6,9 +6,8 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.bridge.BridgeDownloadManager;
 import io.jenkins.plugins.synopsys.security.scan.bridge.BridgeDownloadParameters;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
-import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.service.bridge.BridgeDownloadParametersService;
@@ -32,8 +31,8 @@ public class PluginParametersHandler {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public int initializeScanner(Map<String, Object> scanParameters) throws PluginExceptionHandler, ScannerException {
-        ScanParametersService scanParametersService = new ScanParametersService(listener);
+    public int initializeScanner(Map<String, Object> scanParameters) throws PluginExceptionHandler {
+        ScanParametersService scanParametersService = new ScanParametersService(listener, envVars);
         BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listener);
         BridgeDownloadParametersService bridgeDownloadParametersService =
                 new BridgeDownloadParametersService(workspace, listener);
@@ -42,47 +41,33 @@ public class PluginParametersHandler {
 
         logMessagesForParameters(scanParameters, scanParametersService.getSynopsysSecurityProducts(scanParameters));
 
-        int exitCode = -1;
+        scanParametersService.performScanParameterValidation(scanParameters);
 
-        if (isValidScanParametersAndBridgeDownload(
-                bridgeDownloadParams, scanParametersService, bridgeDownloadParametersService, scanParameters)) {
-            BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener, envVars);
-            boolean isNetworkAirGap = checkNetworkAirgap(scanParameters);
-            boolean isBridgeInstalled =
-                    bridgeDownloadManager.checkIfBridgeInstalled(bridgeDownloadParams.getBridgeInstallationPath());
-            boolean isBridgeDownloadRequired = true;
+        bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams);
 
-            handleNetworkAirgap(isNetworkAirGap, bridgeDownloadParams, isBridgeInstalled);
+        BridgeDownloadManager bridgeDownloadManager = new BridgeDownloadManager(workspace, listener, envVars);
+        boolean isNetworkAirGap = checkNetworkAirgap(scanParameters);
+        boolean isBridgeInstalled =
+                bridgeDownloadManager.checkIfBridgeInstalled(bridgeDownloadParams.getBridgeInstallationPath());
+        boolean isBridgeDownloadRequired = true;
 
-            if (isBridgeInstalled) {
-                isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
-            }
+        handleNetworkAirgap(isNetworkAirGap, bridgeDownloadParams, isBridgeInstalled);
 
-            handleBridgeDownload(
-                    isBridgeDownloadRequired, isNetworkAirGap, bridgeDownloadParams, bridgeDownloadManager);
-
-            FilePath bridgeInstallationPath =
-                    new FilePath(workspace.getChannel(), bridgeDownloadParams.getBridgeInstallationPath());
-
-            exitCode = runScanner(scanParameters, bridgeInstallationPath);
+        if (isBridgeInstalled) {
+            isBridgeDownloadRequired = bridgeDownloadManager.isSynopsysBridgeDownloadRequired(bridgeDownloadParams);
         }
 
-        handleExitCode(exitCode);
-        return exitCode;
-    }
+        handleBridgeDownload(isBridgeDownloadRequired, isNetworkAirGap, bridgeDownloadParams, bridgeDownloadManager);
 
-    private boolean isValidScanParametersAndBridgeDownload(
-            BridgeDownloadParameters bridgeDownloadParams,
-            ScanParametersService scanParametersService,
-            BridgeDownloadParametersService bridgeDownloadParametersService,
-            Map<String, Object> scanParameters) {
-        return scanParametersService.isValidScanParameters(scanParameters)
-                && bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams);
+        FilePath bridgeInstallationPath =
+                new FilePath(workspace.getChannel(), bridgeDownloadParams.getBridgeInstallationPath());
+
+        return scanner.runScanner(scanParameters, bridgeInstallationPath);
     }
 
     private boolean checkNetworkAirgap(Map<String, Object> scanParameters) {
         return scanParameters.containsKey(ApplicationConstants.NETWORK_AIRGAP_KEY)
-                && ((Boolean) scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY)).equals(true);
+                && scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY).equals(true);
     }
 
     private void handleNetworkAirgap(
@@ -90,8 +75,7 @@ public class PluginParametersHandler {
             throws PluginExceptionHandler {
         if (isNetworkAirgap && !bridgeDownloadParams.getBridgeDownloadUrl().contains(".zip") && !isBridgeInstalled) {
             logger.error("Synopsys Bridge could not be found in " + bridgeDownloadParams.getBridgeInstallationPath());
-            throw new PluginExceptionHandler(
-                    "Synopsys Bridge could not be found in " + bridgeDownloadParams.getBridgeInstallationPath());
+            throw new PluginExceptionHandler(ErrorCode.SYNOPSYS_BRIDGE_NOT_FOUND_IN_PROVIDED_PATH);
         }
 
         if (isNetworkAirgap) {
@@ -116,26 +100,6 @@ public class PluginParametersHandler {
             logger.info("Bridge download is not required. Found installed in: "
                     + bridgeDownloadParams.getBridgeInstallationPath());
             logger.println(LogMessages.DASHES);
-        }
-    }
-
-    private int runScanner(Map<String, Object> scanParameters, FilePath bridgeInstallationPath)
-            throws PluginExceptionHandler, ScannerException {
-        try {
-            return scanner.runScanner(scanParameters, bridgeInstallationPath);
-        } catch (PluginExceptionHandler e) {
-            throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
-        } catch (Exception e) {
-            throw new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
-        }
-    }
-
-    private void handleExitCode(int exitCode) throws PluginExceptionHandler {
-        if (exitCode != 0) {
-            Map<Integer, String> exitCodeToMessage = ExceptionMessages.bridgeErrorMessages();
-            logger.error(
-                    exitCodeToMessage.getOrDefault(exitCode, ExceptionMessages.scannerFailedWithExitCode(exitCode)));
-            throw new PluginExceptionHandler("Workflow failed!");
         }
     }
 
@@ -174,6 +138,8 @@ public class PluginParametersHandler {
                     || key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION)
                     || key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY)
                     || key.equals(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY)
+                    || key.equals(ApplicationConstants.NETWORK_AIRGAP_KEY)
+                    || key.equals(ApplicationConstants.RETURN_STATUS_KEY)
                     || key.contains("reports_sarif")) {
                 Object value = entry.getValue();
                 logger.info(LOG_DASH + key + " = " + value.toString());

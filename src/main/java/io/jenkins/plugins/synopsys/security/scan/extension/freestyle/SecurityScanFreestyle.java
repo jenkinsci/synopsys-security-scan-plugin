@@ -1,8 +1,15 @@
 package io.jenkins.plugins.synopsys.security.scan.extension.freestyle;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import hudson.*;
-import hudson.model.*;
+import hudson.EnvVars;
+import hudson.Extension;
+import hudson.FilePath;
+import hudson.Launcher;
+import hudson.Util;
+import hudson.model.AbstractProject;
+import hudson.model.FreeStyleProject;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.ListBoxModel;
@@ -10,7 +17,9 @@ import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandle
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
+import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import java.util.Map;
 import jenkins.tasks.SimpleBuildStep;
@@ -62,6 +71,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String synopsys_bridge_install_directory;
     private Boolean include_diagnostics;
     private Boolean network_airgap;
+    private Boolean return_status;
 
     @DataBoundConstructor
     public SecurityScanFreestyle() {
@@ -218,6 +228,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public Boolean isNetwork_airgap() {
         return network_airgap;
+    }
+
+    public Boolean isReturn_status() {
+        return return_status;
     }
 
     @DataBoundSetter
@@ -411,6 +425,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         this.network_airgap = network_airgap ? true : null;
     }
 
+    @DataBoundSetter
+    public void setReturn_status(Boolean return_status) {
+        this.return_status = return_status ? true : null;
+    }
+
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)
             throws PluginExceptionHandler {
         return ScanParametersFactory.preparePipelineParametersMap(
@@ -424,27 +443,46 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
             @NonNull EnvVars env,
             @NonNull Launcher launcher,
             @NonNull TaskListener listener) {
+        int exitCode = 0;
+        String undefinedErrorMessage = null;
+        Exception unknownException = new Exception();
+        LoggerWrapper logger = new LoggerWrapper(listener);
 
-        listener.getLogger()
-                .println(
-                        "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+        logger.info(
+                "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
         try {
-            ScanParametersFactory.createPipelineCommand(run, listener, env, launcher, null, workspace)
+            exitCode = ScanParametersFactory.createPipelineCommand(run, listener, env, launcher, null, workspace)
                     .initializeScanner(getParametersMap(workspace, listener));
         } catch (Exception e) {
-
             if (e instanceof PluginExceptionHandler) {
-                throw new RuntimeException(new PluginExceptionHandler("Workflow failed! " + e.getMessage()));
+                exitCode = ((PluginExceptionHandler) e).getCode();
             } else {
-                throw new RuntimeException(
-                        new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage())));
+                exitCode = ErrorCode.UNDEFINED_PLUGIN_ERROR;
+                undefinedErrorMessage = e.getMessage();
+                unknownException = e;
+            }
+        } finally {
+            String exitMessage = ExceptionMessages.getErrorMessage(exitCode, undefinedErrorMessage);
+            if (exitMessage != null) {
+                logger.info(exitMessage);
             }
 
-        } finally {
-            listener.getLogger()
-                    .println(
-                            "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+            logger.info(
+                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+
+            handleExitCode(exitCode, exitMessage, unknownException);
+        }
+    }
+
+    private void handleExitCode(int exitCode, String exitMessage, Exception e) {
+        if (exitCode != 0) {
+            if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
+                // Throw exception with stack trace for undefined errors
+                throw new RuntimeException(new ScannerException(exitMessage, e));
+            }
+
+            throw new RuntimeException(new PluginExceptionHandler(exitMessage));
         }
     }
 

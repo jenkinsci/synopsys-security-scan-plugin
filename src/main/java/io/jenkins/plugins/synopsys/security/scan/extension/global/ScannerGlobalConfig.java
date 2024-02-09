@@ -13,10 +13,12 @@ import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import jenkins.model.GlobalConfiguration;
 import jenkins.model.Jenkins;
-import org.apache.http.HttpResponse;
-import org.apache.http.impl.EnglishReasonPhraseCatalog;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.impl.EnglishReasonPhraseCatalog;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -289,14 +291,14 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
             HttpResponse response = authenticationSupport.attemptBlackDuckAuthentication(
                     blackDuckUrl, blackDuckCredentialsId, CONNECTION_TIMEOUT_IN_SECONDS);
 
-            if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
-                String validationMessage =
-                        getValidationMessage(response.getStatusLine().getStatusCode());
+            if (response.getCode() != HttpURLConnection.HTTP_OK) {
+                String validationMessage = getValidationMessage(response.getCode());
 
                 return FormValidation.error(String.join(" ", validationMessage));
             }
         } catch (Exception e) {
-            return FormValidation.error(AUTHORIZATION_FAILURE + e.getCause().getMessage());
+            return FormValidation.error(AUTHORIZATION_FAILURE
+                    + getFormattedExceptionMessage(e.getCause().getMessage()));
         }
 
         return FormValidation.ok(CONNECTION_SUCCESSFUL);
@@ -335,14 +337,14 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
             HttpResponse response = authenticationSupport.attemptPolarisAuthentication(
                     polarisServerUrl, polarisCredentialsId, CONNECTION_TIMEOUT_IN_SECONDS);
 
-            if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
-                String validationMessage =
-                        getValidationMessage(response.getStatusLine().getStatusCode());
+            if (response.getCode() != HttpURLConnection.HTTP_OK) {
+                String validationMessage = getValidationMessage(response.getCode());
 
                 return FormValidation.error(String.join(" ", validationMessage));
             }
         } catch (Exception e) {
-            return FormValidation.error(AUTHORIZATION_FAILURE + e.getCause().getMessage());
+            return FormValidation.error(AUTHORIZATION_FAILURE
+                    + getFormattedExceptionMessage(e.getCause().getMessage()));
         }
 
         return FormValidation.ok(CONNECTION_SUCCESSFUL);
@@ -370,17 +372,26 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
             HttpResponse response = authenticationSupport.attemptCoverityAuthentication(
                     coverityConnectUrl, coverityCredentialsId, CONNECTION_TIMEOUT_IN_SECONDS);
 
-            if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
-                String validationMessage =
-                        getValidationMessage(response.getStatusLine().getStatusCode());
+            if (response.getCode() != HttpURLConnection.HTTP_OK) {
+                String validationMessage = getValidationMessage(response.getCode());
 
                 return FormValidation.error(String.join(" ", validationMessage));
             }
         } catch (Exception e) {
-            return FormValidation.error(
-                    AUTHORIZATION_FAILURE + e.getCause().getCause().getMessage());
+            return FormValidation.error(AUTHORIZATION_FAILURE
+                    + getFormattedExceptionMessage(e.getCause().getMessage()));
         }
 
         return FormValidation.ok(CONNECTION_SUCCESSFUL);
+    }
+
+    private String getFormattedExceptionMessage(String message) {
+        Pattern pattern = Pattern.compile("failed: (.*)");
+        Matcher matcher = pattern.matcher(message);
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            return message;
+        }
     }
 }

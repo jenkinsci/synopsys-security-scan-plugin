@@ -76,4 +76,6 @@ public interface SecurityScan {
     public Boolean isBlackduck_reports_sarif_groupSCAIssues();
 
     public String getBlackduck_reports_sarif_severities();
+
+    public Boolean isReturn_status();
 }

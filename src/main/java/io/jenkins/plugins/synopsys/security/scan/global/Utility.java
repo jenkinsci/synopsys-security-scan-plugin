@@ -3,6 +3,7 @@ package io.jenkins.plugins.synopsys.security.scan.global;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
+import hudson.model.TopLevelItem;
 import java.io.IOException;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
@@ -181,19 +182,38 @@ public class Utility {
         return proxyUrlString;
     }
 
-    public static Map<String, Boolean> installedBranchSourceDependcies() {
+    public static Map<String, Boolean> installedBranchSourceDependencies() {
         Map<String, Boolean> installedBranchSourceDependencies = new HashMap<>();
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
 
-        if (Jenkins.getInstance().getPlugin(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME) != null) {
-            installedBranchSourceDependencies.put(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, true);
-        }
-        if (Jenkins.getInstance().getPlugin(ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME) != null) {
-            installedBranchSourceDependencies.put(ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME, true);
-        }
-        if (Jenkins.getInstance().getPlugin(ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME) != null) {
-            installedBranchSourceDependencies.put(ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME, true);
+        if (jenkins != null) {
+            if (jenkins.getPlugin(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME) != null) {
+                installedBranchSourceDependencies.put(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, true);
+            }
+            if (jenkins.getPlugin(ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME) != null) {
+                installedBranchSourceDependencies.put(ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME, true);
+            }
+            if (jenkins.getPlugin(ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME) != null) {
+                installedBranchSourceDependencies.put(ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME, true);
+            }
         }
 
         return installedBranchSourceDependencies;
+    }
+
+    public static String jenkinsJobType(EnvVars envVars) {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+
+        String jobName = envVars.get(ApplicationConstants.ENV_JOB_NAME_KEY);
+        String finalJobName =
+                jobName != null ? jobName.contains("/") ? jobName.substring(0, jobName.indexOf('/')) : jobName : null;
+
+        TopLevelItem job = jenkins != null ? jenkins.getItem(finalJobName) : null;
+
+        if (job != null) {
+            return job.getClass().getSimpleName();
+        } else {
+            return "UnknownJobType";
+        }
     }
 }
