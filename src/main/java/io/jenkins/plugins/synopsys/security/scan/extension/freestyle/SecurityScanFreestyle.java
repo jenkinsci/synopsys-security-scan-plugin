@@ -63,6 +63,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String polaris_triage;
     private String polaris_branch_name;
     //    private String polaris_branch_parent_name;
+    private Boolean polaris_reports_sarif_create;
+    private String polaris_reports_sarif_file_path;
+    private String polaris_reports_sarif_issue_types;
+    private Boolean polaris_reports_sarif_groupSCAIssues;
+    private String polaris_reports_sarif_severities;
 
     private transient String bitbucket_token;
 
@@ -198,6 +203,26 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         return polaris_branch_name;
     }
 
+    public Boolean isPolaris_reports_sarif_create() {
+        return polaris_reports_sarif_create;
+    }
+
+    public String getPolaris_reports_sarif_file_path() {
+        return polaris_reports_sarif_file_path;
+    }
+
+    public Boolean isPolaris_reports_sarif_groupSCAIssues() {
+        return polaris_reports_sarif_groupSCAIssues;
+    }
+
+    public String getPolaris_reports_sarif_severities() {
+        return polaris_reports_sarif_severities;
+    }
+
+    public String getPolaris_reports_sarif_issue_types() {
+        return polaris_reports_sarif_issue_types;
+    }
+
     public String getBitbucket_token() {
         return bitbucket_token;
     }
@@ -233,6 +258,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     public Boolean isReturn_status() {
         return return_status;
     }
+
 
     @DataBoundSetter
     public void setProduct(String product) {
@@ -383,6 +409,31 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setPolaris_branch_name(String polaris_branch_name) {
         this.polaris_branch_name = Util.fixEmptyAndTrim(polaris_branch_name);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_reports_sarif_create(Boolean polaris_reports_sarif_create) {
+        this.polaris_reports_sarif_create = polaris_reports_sarif_create ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setPolaris_reports_sarif_file_path(String polaris_reports_sarif_file_path) {
+        this.polaris_reports_sarif_file_path = Util.fixEmptyAndTrim(polaris_reports_sarif_file_path);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_reports_sarif_groupSCAIssues(Boolean polaris_reports_sarif_groupSCAIssues) {
+        this.polaris_reports_sarif_groupSCAIssues = polaris_reports_sarif_groupSCAIssues ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setPolaris_reports_sarif_severities(String polaris_reports_sarif_severities) {
+        this.polaris_reports_sarif_severities = Util.fixEmptyAndTrim(polaris_reports_sarif_severities);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_reports_sarif_issue_types(String polaris_reports_sarif_issue_types) {
+        this.polaris_reports_sarif_issue_types = Util.fixEmptyAndTrim(polaris_reports_sarif_issue_types);
     }
 
     @DataBoundSetter

@@ -378,33 +378,33 @@ public class ScanParametersFactory {
                     securityScan.getBlackduck_reports_sarif_severities());
         }
 
-        if (scanStep.isPolaris_reports_sarif_create() != null) {
+        if (securityScan.isPolaris_reports_sarif_create() != null) {
             sarifParameters.put(
-                    ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY, scanStep.isPolaris_reports_sarif_create());
+                    ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY, securityScan.isPolaris_reports_sarif_create());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getPolaris_reports_sarif_file_path())) {
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_reports_sarif_file_path())) {
             sarifParameters.put(
                     ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY,
-                    scanStep.getPolaris_reports_sarif_file_path());
+                    securityScan.getPolaris_reports_sarif_file_path());
         }
 
-        if (scanStep.isPolaris_reports_sarif_groupSCAIssues() != null) {
+        if (securityScan.isPolaris_reports_sarif_groupSCAIssues() != null) {
             sarifParameters.put(
                     ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY,
-                    scanStep.isPolaris_reports_sarif_groupSCAIssues());
+                    securityScan.isPolaris_reports_sarif_groupSCAIssues());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getPolaris_reports_sarif_severities())) {
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_reports_sarif_severities())) {
             sarifParameters.put(
                     ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY,
-                    scanStep.getPolaris_reports_sarif_severities());
+                    securityScan.getPolaris_reports_sarif_severities());
         }
 
-        if (!Utility.isStringNullOrBlank(scanStep.getPolaris_reports_sarif_issue_types())) {
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_reports_sarif_issue_types())) {
             sarifParameters.put(
                     ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY,
-                    scanStep.getPolaris_reports_sarif_issue_types());
+                    securityScan.getPolaris_reports_sarif_issue_types());
         }
 
         return sarifParameters;
