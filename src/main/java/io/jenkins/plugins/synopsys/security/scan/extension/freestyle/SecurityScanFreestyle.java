@@ -259,7 +259,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         return return_status;
     }
 
-
     @DataBoundSetter
     public void setProduct(String product) {
         this.product = product;

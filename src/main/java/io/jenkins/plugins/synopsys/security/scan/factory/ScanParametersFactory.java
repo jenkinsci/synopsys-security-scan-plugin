@@ -380,7 +380,8 @@ public class ScanParametersFactory {
 
         if (securityScan.isPolaris_reports_sarif_create() != null) {
             sarifParameters.put(
-                    ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY, securityScan.isPolaris_reports_sarif_create());
+                    ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY,
+                    securityScan.isPolaris_reports_sarif_create());
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getPolaris_reports_sarif_file_path())) {

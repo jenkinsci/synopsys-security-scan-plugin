@@ -88,5 +88,4 @@ public interface SecurityScan {
     public String getPolaris_reports_sarif_severities();
 
     public String getPolaris_reports_sarif_issue_types();
-
 }
