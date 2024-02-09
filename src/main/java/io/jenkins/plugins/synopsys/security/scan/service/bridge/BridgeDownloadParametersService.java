@@ -1,13 +1,16 @@
 package io.jenkins.plugins.synopsys.security.scan.service.bridge;
 
+import com.fasterxml.jackson.core.Version;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.bridge.BridgeDownloadParameters;
+import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -24,7 +27,8 @@ public class BridgeDownloadParametersService {
         this.logger = new LoggerWrapper(listener);
     }
 
-    public boolean performBridgeDownloadParameterValidation(BridgeDownloadParameters bridgeDownloadParameters) {
+    public boolean performBridgeDownloadParameterValidation(BridgeDownloadParameters bridgeDownloadParameters)
+            throws PluginExceptionHandler {
         boolean validUrl = isValidUrl(bridgeDownloadParameters.getBridgeDownloadUrl());
         boolean validVersion = isValidVersion(bridgeDownloadParameters.getBridgeDownloadVersion());
         boolean validInstallationPath = isValidInstallationPath(bridgeDownloadParameters.getBridgeInstallationPath());
@@ -33,22 +37,22 @@ public class BridgeDownloadParametersService {
             logger.info("Bridge download parameters are validated successfully");
             return true;
         } else {
-            logger.error(LogMessages.INVALID_BRIDGE_DOWNLOAD_PARAMETERS);
-            return false;
+            logger.error("Bridge download parameters are not valid");
+            throw new PluginExceptionHandler(ErrorCode.INVALID_BRIDGE_DOWNLOAD_PARAMETERS);
         }
     }
 
     public boolean isValidUrl(String url) {
         if (url.isEmpty()) {
-            logger.warn(LogMessages.EMPTY_BRIDGE_DOWNLOAD_URL_PROVIDED);
+            logger.warn("The provided Bridge download URL is empty");
             return false;
         }
 
         try {
             new URL(url);
             return true;
-        } catch (Exception e) {
-            logger.warn(LogMessages.INVALID_BRIDGE_DOWNLOAD_URL_PROVIDED, e.getMessage());
+        } catch (MalformedURLException me) {
+            logger.warn("The provided Bridge download URL is not valid: %s", me.getMessage());
             return false;
         }
     }
@@ -59,7 +63,7 @@ public class BridgeDownloadParametersService {
         if (matcher.matches() || version.equals(ApplicationConstants.SYNOPSYS_BRIDGE_LATEST_VERSION)) {
             return true;
         } else {
-            logger.warn(LogMessages.INVALID_BRIDGE_DOWNLOAD_VERSION_PROVIDED, version);
+            logger.warn("The provided Bridge download version is not valid: %s", version);
             return false;
         }
     }
@@ -104,7 +108,7 @@ public class BridgeDownloadParametersService {
         }
 
         boolean isNetworkAirgap = scanParameters.containsKey(ApplicationConstants.NETWORK_AIRGAP_KEY)
-                && ((Boolean) scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY)).equals(true);
+                && scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY).equals(true);
 
         if (scanParameters.containsKey(ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL)) {
             bridgeDownloadParameters.setBridgeDownloadUrl(scanParameters
@@ -138,12 +142,21 @@ public class BridgeDownloadParametersService {
         return bridgeDownloadParameters;
     }
 
-    public String getPlatform() {
+    public String getPlatform(String version) {
         String os = Utility.getAgentOs(workspace, listener);
         if (os.contains("win")) {
             return ApplicationConstants.PLATFORM_WINDOWS;
         } else if (os.contains("mac")) {
-            return ApplicationConstants.PLATFORM_MAC;
+            String arch = Utility.getAgentOsArch(workspace, listener);
+            if (version != null && !isVersionCompatibleForMacARM(version)) {
+                return ApplicationConstants.PLATFORM_MACOSX;
+            } else {
+                if (arch.startsWith("arm") || arch.startsWith("aarch")) {
+                    return ApplicationConstants.PLATFORM_MAC_ARM;
+                } else {
+                    return ApplicationConstants.PLATFORM_MACOSX;
+                }
+            }
         } else {
             return ApplicationConstants.PLATFORM_LINUX;
         }
@@ -152,7 +165,7 @@ public class BridgeDownloadParametersService {
     public String getSynopsysBridgeZipFileName() {
         return ApplicationConstants.BRIDGE_BINARY
                 .concat("-")
-                .concat(getPlatform())
+                .concat(getPlatform(null))
                 .concat(".zip");
     }
 
@@ -161,7 +174,31 @@ public class BridgeDownloadParametersService {
                 .concat("-")
                 .concat(version)
                 .concat("-")
-                .concat(getPlatform())
+                .concat(getPlatform(version))
                 .concat(".zip");
+    }
+
+    public boolean isVersionCompatibleForMacARM(String version) {
+        String[] inputVersionSplits = version.split("\\.");
+        String[] minCompatibleArmVersionSplits = ApplicationConstants.MAC_ARM_COMPATIBLE_BRIDGE_VERSION.split("\\.");
+        if (inputVersionSplits.length != 3 && minCompatibleArmVersionSplits.length != 3) {
+            return false;
+        }
+        Version inputVersion = new Version(
+                Integer.parseInt(inputVersionSplits[0]),
+                Integer.parseInt(inputVersionSplits[1]),
+                Integer.parseInt(inputVersionSplits[2]),
+                null,
+                null,
+                null);
+        Version minCompatibleArmVersion = new Version(
+                Integer.parseInt(minCompatibleArmVersionSplits[0]),
+                Integer.parseInt(minCompatibleArmVersionSplits[1]),
+                Integer.parseInt(minCompatibleArmVersionSplits[2]),
+                null,
+                null,
+                null);
+
+        return inputVersion.compareTo(minCompatibleArmVersion) >= 0;
     }
 }

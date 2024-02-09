@@ -9,11 +9,7 @@ import hudson.model.TaskListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.Authenticator;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.PasswordAuthentication;
-import java.net.URL;
+import java.net.*;
 import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,6 +52,13 @@ public class UtilityTest {
         String os = Utility.getAgentOs(workspace, listenerMock);
 
         assertEquals(System.getProperty("os.name").toLowerCase(), os);
+    }
+
+    @Test
+    public void getAgentOsArchTest() {
+        String arch = Utility.getAgentOsArch(workspace, listenerMock);
+
+        assertEquals(System.getProperty("os.arch").toLowerCase(), arch);
     }
 
     @Test

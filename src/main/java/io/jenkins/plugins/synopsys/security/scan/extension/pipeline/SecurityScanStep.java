@@ -1,23 +1,34 @@
 package io.jenkins.plugins.synopsys.security.scan.extension.pipeline;
 
+import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.*;
-import hudson.model.Node;
-import hudson.model.Run;
-import hudson.model.TaskListener;
+import hudson.model.*;
 import hudson.util.ListBoxModel;
 import hudson.util.ListBoxModel.Option;
+import io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
+import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
+import io.jenkins.plugins.synopsys.security.scan.service.scm.SCMRepositoryService;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Nonnull;
+import jenkins.scm.api.SCMSource;
+import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
@@ -26,7 +37,7 @@ import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-public class SecurityScanStep extends Step implements Serializable {
+public class SecurityScanStep extends Step implements SecurityScan, Serializable {
     private static final long serialVersionUID = 6294070801130995534L;
 
     private String product;
@@ -74,6 +85,7 @@ public class SecurityScanStep extends Step implements Serializable {
     private String blackduck_reports_sarif_file_path;
     private Boolean blackduck_reports_sarif_groupSCAIssues;
     private String blackduck_reports_sarif_severities;
+    private Boolean return_status;
     private Boolean polaris_reports_sarif_create;
     private String polaris_reports_sarif_file_path;
     private String polaris_reports_sarif_issue_types;
@@ -219,6 +231,10 @@ public class SecurityScanStep extends Step implements Serializable {
 
     public Boolean isNetwork_airgap() {
         return network_airgap;
+    }
+
+    public Boolean isReturn_status() {
+        return return_status;
     }
 
     public Boolean isBlackduck_reports_sarif_create() {
@@ -429,6 +445,11 @@ public class SecurityScanStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
+    public void setReturn_status(Boolean return_status) {
+        this.return_status = return_status ? true : null;
+    }
+
+    @DataBoundSetter
     public void setBlackduck_reports_sarif_create(Boolean blackduck_reports_sarif_create) {
         this.blackduck_reports_sarif_create = blackduck_reports_sarif_create ? true : null;
     }
@@ -550,26 +571,84 @@ public class SecurityScanStep extends Step implements Serializable {
         @Override
         protected Integer run() throws PluginExceptionHandler, ScannerException {
             LoggerWrapper logger = new LoggerWrapper(listener);
-            int result;
+            int exitCode = 0;
+            String undefinedErrorMessage = null;
+            Exception unknownException = new Exception();
 
             logger.println(
                     "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
             try {
-                result = ScanParametersFactory.createPipelineCommand(run, listener, envVars, launcher, node, workspace)
+                verifyRequiredPlugins(logger, envVars);
+
+                exitCode = ScanParametersFactory.createPipelineCommand(
+                                run, listener, envVars, launcher, node, workspace)
                         .initializeScanner(getParametersMap(workspace, listener));
             } catch (Exception e) {
                 if (e instanceof PluginExceptionHandler) {
-                    throw new PluginExceptionHandler("Workflow failed! " + e.getMessage());
+                    exitCode = ((PluginExceptionHandler) e).getCode();
                 } else {
-                    throw new ScannerException(ExceptionMessages.scannerFailureMessage(e.getMessage()));
+                    exitCode = ErrorCode.UNDEFINED_PLUGIN_ERROR;
+                    undefinedErrorMessage = e.getMessage();
+                    unknownException = e;
                 }
             } finally {
+                String exitMessage = ExceptionMessages.getErrorMessage(exitCode, undefinedErrorMessage);
+                if (exitMessage != null) {
+                    logger.info(exitMessage);
+                }
+
                 logger.println(
                         "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+
+                handleExitCode(exitCode, exitMessage, unknownException);
             }
 
-            return result;
+            return exitCode;
+        }
+
+        private void handleExitCode(int exitCode, String exitMessage, Exception e)
+                throws PluginExceptionHandler, ScannerException {
+            if (exitCode != 0) {
+                if (Objects.equals(isReturn_status(), true)) {
+                    return;
+                }
+
+                if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
+                    // Throw exception with stack trace for undefined errors
+                    throw new ScannerException(exitMessage, e);
+                }
+
+                throw new PluginExceptionHandler(exitMessage);
+            }
+        }
+
+        public void verifyRequiredPlugins(LoggerWrapper logger, EnvVars envVars) throws PluginExceptionHandler {
+            String jobType = Utility.jenkinsJobType(envVars);
+            SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
+            Map<String, Boolean> installedBranchSourceDependencies = Utility.installedBranchSourceDependencies();
+
+            if (jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
+                if (installedBranchSourceDependencies.isEmpty()) {
+                    logger.error("Necessary 'Branch Source Plugin' is not installed in Jenkins instance. "
+                            + "Please install necessary 'Branch Source Plugin' in your Jenkins instance");
+                    throw new PluginExceptionHandler(ErrorCode.REQUIRED_BRANCH_SOURCE_PLUGIN_NOT_INSTALLED);
+                }
+                SCMSource scmSource = scmRepositoryService.findSCMSource();
+                if (!((installedBranchSourceDependencies.getOrDefault(
+                                        ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, false)
+                                && scmSource instanceof BitbucketSCMSource)
+                        || (installedBranchSourceDependencies.getOrDefault(
+                                        ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME, false)
+                                && scmSource instanceof GitHubSCMSource)
+                        || (installedBranchSourceDependencies.getOrDefault(
+                                        ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME, false)
+                                && scmSource instanceof GitLabSCMSource))) {
+                    logger.error("Necessary 'Branch Source Plugin' is not installed in Jenkins instance. "
+                            + "Please install necessary 'Branch Source Plugin' in your Jenkins instance");
+                    throw new PluginExceptionHandler(ErrorCode.REQUIRED_BRANCH_SOURCE_PLUGIN_NOT_INSTALLED);
+                }
+            }
         }
     }
 }

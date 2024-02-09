@@ -1,10 +1,15 @@
 package io.jenkins.plugins.synopsys.security.scan.service.bridge;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.bridge.BridgeDownloadParameters;
+import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import java.io.File;
 import java.io.PrintStream;
@@ -24,6 +29,26 @@ public class BridgeDownloadParameterServiceTest {
         workspace = new FilePath(new File(getHomeDirectory()));
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
         bridgeDownloadParametersService = new BridgeDownloadParametersService(workspace, listenerMock);
+    }
+
+    @Test
+    void performBridgeDownloadParameterValidationSuccessTest() throws PluginExceptionHandler {
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
+        bridgeDownloadParameters.setBridgeDownloadUrl("https://fake.url.com");
+        bridgeDownloadParameters.setBridgeDownloadVersion("1.2.3");
+
+        assertTrue(bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParameters));
+    }
+
+    @Test
+    void performBridgeDownloadParameterValidationFailureTest() {
+        BridgeDownloadParameters bridgeDownloadParameters = new BridgeDownloadParameters(workspace, listenerMock);
+        bridgeDownloadParameters.setBridgeDownloadVersion("x.x.x");
+
+        assertThrows(
+                PluginExceptionHandler.class,
+                () -> bridgeDownloadParametersService.performBridgeDownloadParameterValidation(
+                        bridgeDownloadParameters));
     }
 
     @Test
@@ -147,6 +172,36 @@ public class BridgeDownloadParameterServiceTest {
         assertNotNull(result.getBridgeDownloadUrl());
         assertNotNull(result.getBridgeDownloadVersion());
         assertNotNull(result.getBridgeInstallationPath());
+    }
+
+    @Test
+    void getPlatformTest() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        String osArch = System.getProperty("os.arch").toLowerCase();
+
+        String platform = bridgeDownloadParametersService.getPlatform(null);
+
+        assertNotNull(platform);
+
+        if (osName.contains("win")) {
+            assertEquals(ApplicationConstants.PLATFORM_WINDOWS, platform);
+        } else if (osName.contains("mac")) {
+            if (osArch.startsWith("arm") || osArch.startsWith("aarch")) {
+                assertEquals(ApplicationConstants.PLATFORM_MAC_ARM, platform);
+            } else {
+                assertEquals(ApplicationConstants.PLATFORM_MACOSX, platform);
+            }
+        } else {
+            assertEquals(ApplicationConstants.PLATFORM_LINUX, platform);
+        }
+    }
+
+    @Test
+    public void isVersionCompatibleForMacARMTest() {
+        assertTrue(bridgeDownloadParametersService.isVersionCompatibleForMacARM("2.1.0"));
+        assertTrue(bridgeDownloadParametersService.isVersionCompatibleForMacARM("2.2.38"));
+        assertFalse(bridgeDownloadParametersService.isVersionCompatibleForMacARM("2.0.0"));
+        assertFalse(bridgeDownloadParametersService.isVersionCompatibleForMacARM("1.2.12"));
     }
 
     public String getHomeDirectory() {

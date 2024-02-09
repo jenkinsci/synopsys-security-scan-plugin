@@ -24,26 +24,33 @@ public class SCMRepositoryService {
         this.envVars = envVars;
     }
 
-    public Object fetchSCMRepositoryDetails(Map<String, Object> scanParameters, boolean isFixPrOrPrComment)
+    public Object fetchSCMRepositoryDetails(
+            Map<String, Boolean> installedBranchSourceDependencies,
+            Map<String, Object> scanParameters,
+            boolean isFixPrOrPrComment)
             throws PluginExceptionHandler {
         Integer projectRepositoryPullNumber = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null
                 ? Integer.parseInt(envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY))
                 : null;
 
         SCMSource scmSource = findSCMSource();
-        if (scmSource instanceof BitbucketSCMSource) {
+        if (installedBranchSourceDependencies.getOrDefault(
+                        ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, false)
+                && scmSource instanceof BitbucketSCMSource) {
             BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listener);
             BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
             return bitbucketRepositoryService.fetchBitbucketRepositoryDetails(
                     scanParameters, bitbucketSCMSource, projectRepositoryPullNumber, isFixPrOrPrComment);
-        } else if (scmSource instanceof GitHubSCMSource) {
+        } else if (installedBranchSourceDependencies.getOrDefault(
+                        ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME, false)
+                && scmSource instanceof GitHubSCMSource) {
             GithubRepositoryService githubRepositoryService = new GithubRepositoryService(listener);
             GitHubSCMSource gitHubSCMSource = (GitHubSCMSource) scmSource;
 
             String repositoryOwner = gitHubSCMSource.getRepoOwner();
             String repositoryName = gitHubSCMSource.getRepository();
             String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
-            String repositoryUrl = envVars.get(ApplicationConstants.GIT_URL);
+            String apiUri = gitHubSCMSource.getApiUri();
 
             return githubRepositoryService.createGithubObject(
                     scanParameters,
@@ -51,13 +58,15 @@ public class SCMRepositoryService {
                     repositoryOwner,
                     projectRepositoryPullNumber,
                     branchName,
-                    repositoryUrl,
-                    isFixPrOrPrComment);
-        } else if (scmSource instanceof GitLabSCMSource) {
+                    isFixPrOrPrComment,
+                    apiUri);
+        } else if (installedBranchSourceDependencies.getOrDefault(
+                        ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME, false)
+                && scmSource instanceof GitLabSCMSource) {
             GitlabRepositoryService gitlabRepositoryService = new GitlabRepositoryService(listener);
             GitLabSCMSource gitLabSCMSource = (GitLabSCMSource) scmSource;
 
-            String repositoryUrl = envVars.get(ApplicationConstants.GIT_URL);
+            String repositoryUrl = gitLabSCMSource.getHttpRemote();
             String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
             String repositoryName = gitLabSCMSource.getProjectPath();
 
@@ -73,8 +82,9 @@ public class SCMRepositoryService {
     }
 
     public SCMSource findSCMSource() {
-        String jobName = envVars.get(ApplicationConstants.ENV_JOB_NAME_KEY)
-                .substring(0, envVars.get(ApplicationConstants.ENV_JOB_NAME_KEY).indexOf("/"));
+        String jobName = envVars.get(ApplicationConstants.ENV_JOB_NAME_KEY);
+        jobName = jobName.substring(0, jobName.indexOf("/"));
+
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         SCMSourceOwner owner = jenkins != null ? jenkins.getItemByFullName(jobName, SCMSourceOwner.class) : null;
         if (owner != null) {

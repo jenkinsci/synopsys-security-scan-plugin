@@ -8,8 +8,8 @@ import hudson.model.TaskListener;
 import hudson.tasks.ArtifactArchiver;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.ReportType;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.ScannerArgumentService;
@@ -49,9 +49,10 @@ public class SecurityScanner {
 
     public int runScanner(Map<String, Object> scanParams, FilePath bridgeInstallationPath)
             throws PluginExceptionHandler {
-        int scanner = -1;
+        int scanner = 0;
 
-        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(scanParams, bridgeInstallationPath);
+        List<String> commandLineArgs = scannerArgumentService.getCommandLineArgs(
+                Utility.installedBranchSourceDependencies(), scanParams, bridgeInstallationPath);
 
         logger.info("Executable command line arguments: "
                 + commandLineArgs.stream()
@@ -73,7 +74,7 @@ public class SecurityScanner {
                     .quiet(true)
                     .join();
         } catch (Exception e) {
-            logger.error(LogMessages.EXCEPTION_OCCURRED_WHILE_INVOKING_SYNOPSYS_BRIDGE, e.getMessage());
+            logger.error("An exception occurred while invoking synopsys-bridge from the plugin: %s", e.getMessage());
             Thread.currentThread().interrupt();
         } finally {
             logger.println(
@@ -95,7 +96,7 @@ public class SecurityScanner {
 
             if (Objects.equals(scanParams.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
                     || Objects.equals(scanParams.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true)) {
-                ScanParametersService scanParametersService = new ScanParametersService(listener);
+                ScanParametersService scanParametersService = new ScanParametersService(listener, envVars);
                 Set<String> scanType = scanParametersService.getSynopsysSecurityProducts(scanParams);
                 boolean isBlackDuckScan = scanType.contains(SecurityProduct.BLACKDUCK.name());
                 boolean isPolarisDuckScan = scanType.contains(SecurityProduct.POLARIS.name());

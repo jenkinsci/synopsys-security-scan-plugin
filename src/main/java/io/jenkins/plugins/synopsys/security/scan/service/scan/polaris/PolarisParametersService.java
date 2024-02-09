@@ -2,7 +2,6 @@ package io.jenkins.plugins.synopsys.security.scan.service.scan.polaris;
 
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class PolarisParametersService {
             logger.info("Polaris parameters are validated successfully");
             return true;
         } else {
-            logger.error(LogMessages.POLARIS_PARAMETER_VALIDATION_FAILED);
+            logger.error("Polaris parameters are not valid");
             logger.error("Invalid Polaris parameters: " + invalidParams);
             return false;
         }

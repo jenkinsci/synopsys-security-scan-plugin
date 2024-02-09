@@ -1,7 +1,10 @@
 package io.jenkins.plugins.synopsys.security.scan.service.scan;
 
+import hudson.EnvVars;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck.BlackDuckParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.coverity.CoverityParametersService;
@@ -13,32 +16,36 @@ import java.util.stream.Collectors;
 
 public class ScanParametersService {
     private final TaskListener listener;
+    private final EnvVars envVars;
 
-    public ScanParametersService(TaskListener listener) {
+    public ScanParametersService(TaskListener listener, EnvVars envVars) {
         this.listener = listener;
+        this.envVars = envVars;
     }
 
-    public boolean isValidScanParameters(Map<String, Object> scanParameters) {
+    public boolean performScanParameterValidation(Map<String, Object> scanParameters) throws PluginExceptionHandler {
         Set<String> securityProducts = getSynopsysSecurityProducts(scanParameters);
-
-        boolean isValidBlackDuckParameters = true;
-        boolean isValidCoverityParameters = true;
-        boolean isValidPolarisParameters = true;
 
         if (securityProducts.contains(SecurityProduct.BLACKDUCK.name())) {
             BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
-            isValidBlackDuckParameters = blackDuckParametersService.isValidBlackDuckParameters(scanParameters);
+            if (!blackDuckParametersService.isValidBlackDuckParameters(scanParameters)) {
+                throw new PluginExceptionHandler(ErrorCode.INVALID_BLACKDUCK_PARAMETERS);
+            }
         }
         if (securityProducts.contains(SecurityProduct.COVERITY.name())) {
-            CoverityParametersService coverityParametersService = new CoverityParametersService(listener);
-            isValidCoverityParameters = coverityParametersService.isValidCoverityParameters(scanParameters);
+            CoverityParametersService coverityParametersService = new CoverityParametersService(listener, envVars);
+            if (!coverityParametersService.isValidCoverityParameters(scanParameters)) {
+                throw new PluginExceptionHandler(ErrorCode.INVALID_COVERITY_PARAMETERS);
+            }
         }
         if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
-            isValidPolarisParameters = polarisParametersService.isValidPolarisParameters(scanParameters);
+            if (!polarisParametersService.isValidPolarisParameters(scanParameters)) {
+                throw new PluginExceptionHandler(ErrorCode.INVALID_POLARIS_PARAMETERS);
+            }
         }
 
-        return isValidBlackDuckParameters && isValidCoverityParameters && isValidPolarisParameters;
+        return true;
     }
 
     public Set<String> getSynopsysSecurityProducts(Map<String, Object> scanParameters) {
