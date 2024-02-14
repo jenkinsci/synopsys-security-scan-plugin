@@ -53,6 +53,8 @@ public interface SecurityScan {
 
     public String getPolaris_branch_name();
 
+    public String getPolaris_test_sca_type();
+
     public String getBitbucket_token();
 
     public String getGithub_token();

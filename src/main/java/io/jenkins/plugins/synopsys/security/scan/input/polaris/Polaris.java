@@ -25,11 +25,15 @@ public class Polaris {
     @JsonProperty("branch")
     private Branch branch;
 
+    @JsonProperty("test")
+    private Test test;
+
     public Polaris() {
         applicationName = new ApplicationName();
         projectName = new ProjectName();
         assessmentTypes = new AssessmentTypes();
         branch = new Branch();
+        test = new Test();
     }
 
     public String getAccessToken() {
@@ -86,5 +90,13 @@ public class Polaris {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+    public Test getTest() {
+        return test;
+    }
+
+    public void setTest(Test test) {
+        this.test = test;
     }
 }

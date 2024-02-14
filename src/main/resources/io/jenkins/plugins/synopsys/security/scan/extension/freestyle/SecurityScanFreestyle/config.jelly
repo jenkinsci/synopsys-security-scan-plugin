@@ -67,6 +67,9 @@
             <f:entry field="polaris_branch_name" title="Polaris Branch Name (Mandatory)">
                 <f:textbox/>
             </f:entry>
+            <f:entry field="polaris_test_sca_type" title="Polaris Test SCA Type (Optional)">
+                <f:textbox/>
+            </f:entry>
         </f:section>
     </div>
 

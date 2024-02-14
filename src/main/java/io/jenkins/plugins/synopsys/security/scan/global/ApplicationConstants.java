@@ -57,6 +57,7 @@ public class ApplicationConstants {
     public static final String POLARIS_ASSESSMENT_TYPES_KEY = "polaris_assessment_types";
     public static final String POLARIS_TRIAGE_KEY = "polaris_triage";
     public static final String POLARIS_BRANCH_NAME_KEY = "polaris_branch_name";
+    public static final String POLARIS_TEST_SCA_TYPE_KEY = "polaris_test_sca_type";
     public static final String POLARIS_BRANCH_PARENT_NAME_KEY = "polaris_branch_parent_name";
 
     public static final String INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
