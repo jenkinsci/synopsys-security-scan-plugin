@@ -19,7 +19,7 @@ public class Scan {
 
     public void setFull(Boolean full) {
         this.full = full;
-    }l
+    }
 
     public Failure getFailure() {
         return failure;
