@@ -29,10 +29,10 @@
 
     <div id="coverity" style="display: none;">
         <f:section title="Coverity Parameters">
-            <f:entry field="coverity_project_name" title="Coverity Project Name (Mandatory)">
+            <f:entry field="coverity_project_name" title="Coverity Project Name">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="coverity_stream_name" title="Coverity Stream Name (Mandatory)">
+            <f:entry field="coverity_stream_name" title="Coverity Stream Name">
                 <f:textbox/>
             </f:entry>
             <f:entry field="coverity_policy_view" title="Coverity Policy View (Optional)">
