@@ -16,14 +16,8 @@
                 <f:textbox/>
             </f:entry>
             <f:entry field="blackduck_scan_full" title="Black Duck Full Scan (Optional)">
-                <f:checkbox/>
+                <f:checkbox checked="${instance.isBlackduck_scan_full() == true}"/>
             </f:entry>
-<!--            <f:entry field="blackduck_automation_prcomment" title="Add Comments to Pull Requests (Optional)">-->
-<!--                <f:checkbox/>-->
-<!--            </f:entry>-->
-            <!--        <f:entry field="bridge_blackduck_automation_fixpr" title="Create Fix Pull Requests">-->
-            <!--            <f:checkbox/>-->
-            <!--        </f:entry>-->
         </f:section>
     </div>
 
@@ -41,11 +35,8 @@
             <f:entry field="coverity_version" title="Coverity Version Number (Optional)">
                 <f:textbox/>
             </f:entry>
-<!--            <f:entry field="coverity_automation_prcomment" title="Add Comments to Pull Requests (Optional)">-->
-<!--                <f:checkbox/>-->
-<!--            </f:entry>-->
             <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
-                <f:checkbox/>
+                <f:checkbox checked="${instance.isCoverity_local() == true}"/>
             </f:entry>
         </f:section>
     </div>
@@ -72,10 +63,10 @@
 
     <f:section title="Additional Options">
         <f:entry field="include_diagnostics" title="Include Diagnostics (Optional)">
-            <f:checkbox/>
+            <f:checkbox checked="${instance.isInclude_diagnostics() == true}"/>
         </f:entry>
         <f:entry field="network_airgap" title="Network Airgap (Optional)">
-            <f:checkbox/>
+            <f:checkbox checked="${instance.isNetwork_airgap() == true}"/>
         </f:entry>
     </f:section>
 
