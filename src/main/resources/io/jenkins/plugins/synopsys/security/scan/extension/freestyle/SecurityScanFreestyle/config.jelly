@@ -89,13 +89,9 @@
 
         if(selectedOption &amp;&amp; selectedOption !== 'select') {
             document.getElementById(selectedOption).style.display = 'block';
-            if (selectedOption === 'coverity') {
                 validateProductField();
                 validateCoverityFields();
-            } else if (selectedOption === 'polaris') {
-                validateProductField();
                 validatePolarisFields();
-            }
         }
 
         function hideAllDivs(blackduckDiv, coverityDiv, polarisDiv) {
@@ -208,8 +204,6 @@
             var polarisProjectName = document.querySelector('input[name="_.polaris_project_name"]')?.value;
             var polarisAssessmentTypes = document.querySelector('input[name="_.polaris_assessment_types"]')?.value;
             var polarisBranchName = document.querySelector('input[name="_.polaris_branch_name"]')?.value;
-
-
             var errorPolarisApplicationNameDiv = document.getElementById("error_polaris_application_name");
             var errorPolarisProjectNameDiv = document.getElementById("error_polaris_project_name");
             var errorPolarisAssessmentTypesDiv = document.getElementById("error_polaris_assessment_types");
