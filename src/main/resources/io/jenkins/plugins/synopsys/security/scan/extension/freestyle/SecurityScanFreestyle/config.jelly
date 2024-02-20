@@ -165,8 +165,11 @@
                 validateProductField();
                 validatePolarisFields();
             }else if (selectedOption === 'select') {
-                validateProductField();
                 hideAllDivs(blackduckDiv, coverityDiv, polarisDiv);
+                clearInputFields(blackduckDiv);
+                clearInputFields(coverityDiv);
+                clearInputFields(polarisDiv);
+                validateProductField();
             }
 
         });
