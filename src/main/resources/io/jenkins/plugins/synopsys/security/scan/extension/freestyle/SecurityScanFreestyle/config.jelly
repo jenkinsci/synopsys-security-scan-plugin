@@ -4,7 +4,7 @@
     <div id="product">
         <f:entry field="product" title="Select Security Product">
             <f:select/>
-            <div id="error_product_name" style="display: block;" class="error">No Product is selected!</div>
+            <div id="error_product_name" style="display: block;" class="error error-margin" >No Product is selected!</div>
         </f:entry>
     </div>
 
@@ -26,11 +26,11 @@
         <f:section title="Coverity Parameters">
             <f:entry field="coverity_project_name" title="Coverity Project Name">
                 <f:textbox/>
-                <div id="error_coverity_project_name" style="display: block;" class="error">Coverity Project Name is missing</div>
+                <div id="error_coverity_project_name" style="display: block;" class="error error-margin">Coverity Project Name is missing</div>
             </f:entry>
             <f:entry field="coverity_stream_name" title="Coverity Stream Name">
                 <f:textbox/>
-                <div id="error_coverity_stream_name" style="display: block;" class="error">Coverity Stream Name is missing</div>
+                <div id="error_coverity_stream_name" style="display: block;" class="error error-margin">Coverity Stream Name is missing</div>
             </f:entry>
             <f:entry field="coverity_policy_view" title="Coverity Policy View (Optional)">
                 <f:textbox/>
@@ -48,19 +48,19 @@
         <f:section title="Polaris Parameters">
             <f:entry field="polaris_application_name" title="Polaris Application Name (Mandatory)">
                 <f:textbox/>
-                <div id="error_polaris_application_name" style="display: block;" class="error">Polaris Application Name is missing</div>
+                <div id="error_polaris_application_name" style="display: block;" class="error error-margin">Polaris Application Name is missing</div>
             </f:entry>
             <f:entry field="polaris_project_name" title="Polaris Project Name (Mandatory)">
                 <f:textbox/>
-                <div id="error_polaris_project_name" style="display: block;" class="error">Polaris Project Name is missing</div>
+                <div id="error_polaris_project_name" style="display: block;" class="error error-margin">Polaris Project Name is missing</div>
             </f:entry>
             <f:entry field="polaris_assessment_types" title="Polaris Assessment Types (Mandatory)">
                 <f:textbox/>
-                <div id="error_polaris_assessment_types" style="display: block;" class="error">Polaris Assessment Types are missing</div>
+                <div id="error_polaris_assessment_types" style="display: block;" class="error error-margin">Polaris Assessment Types are missing</div>
             </f:entry>
             <f:entry field="polaris_branch_name" title="Polaris Branch Name (Mandatory)">
                 <f:textbox/>
-                <div id="error_polaris_branch_name" style="display: block;" class="error">Polaris Branch Name is missing</div>
+                <div id="error_polaris_branch_name" style="display: block;" class="error error-margin">Polaris Branch Name is missing</div>
             </f:entry>
             <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
                 <f:textbox/>
@@ -76,6 +76,12 @@
             <f:checkbox checked="${instance.isNetwork_airgap() == true}"/>
         </f:entry>
     </f:section>
+
+    <style>
+        .error-margin {
+            margin-top: 4px;
+        }
+    </style>
 
     <script type="text/javascript">
 
