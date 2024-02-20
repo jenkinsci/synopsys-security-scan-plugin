@@ -4,6 +4,7 @@
     <div id="product">
         <f:entry field="product" title="Select Security Product">
             <f:select/>
+            <div id="error_product_name" style="display: block;" class="error">No Product is selected!</div>
         </f:entry>
     </div>
 
@@ -18,9 +19,9 @@
             <f:entry field="blackduck_scan_full" title="Black Duck Full Scan (Optional)">
                 <f:checkbox/>
             </f:entry>
-<!--            <f:entry field="blackduck_automation_prcomment" title="Add Comments to Pull Requests (Optional)">-->
-<!--                <f:checkbox/>-->
-<!--            </f:entry>-->
+            <!--            <f:entry field="blackduck_automation_prcomment" title="Add Comments to Pull Requests (Optional)">-->
+            <!--                <f:checkbox/>-->
+            <!--            </f:entry>-->
             <!--        <f:entry field="bridge_blackduck_automation_fixpr" title="Create Fix Pull Requests">-->
             <!--            <f:checkbox/>-->
             <!--        </f:entry>-->
@@ -31,9 +32,11 @@
         <f:section title="Coverity Parameters">
             <f:entry field="coverity_project_name" title="Coverity Project Name (Mandatory)">
                 <f:textbox/>
+                <div id="error_coverity_project_name" style="display: block;" class="error">Coverity Project Name is missing</div>
             </f:entry>
-            <f:entry field="coverity_stream_name" title="Coverity Stream Name (Mandatory)">
+            <f:entry field="coverity_stream_name"  title="Coverity Stream Name (Mandatory)">
                 <f:textbox/>
+                <div id="error_coverity_stream_name" style="display: block;" class="error">Coverity Stream Name is missing</div>
             </f:entry>
             <f:entry field="coverity_policy_view" title="Coverity Policy View (Optional)">
                 <f:textbox/>
@@ -41,9 +44,9 @@
             <f:entry field="coverity_version" title="Coverity Version Number (Optional)">
                 <f:textbox/>
             </f:entry>
-<!--            <f:entry field="coverity_automation_prcomment" title="Add Comments to Pull Requests (Optional)">-->
-<!--                <f:checkbox/>-->
-<!--            </f:entry>-->
+            <!--            <f:entry field="coverity_automation_prcomment" title="Add Comments to Pull Requests (Optional)">-->
+            <!--                <f:checkbox/>-->
+            <!--            </f:entry>-->
             <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
                 <f:checkbox/>
             </f:entry>
@@ -54,18 +57,22 @@
         <f:section title="Polaris Parameters">
             <f:entry field="polaris_application_name" title="Polaris Application Name (Mandatory)">
                 <f:textbox/>
+                <div id="error_polaris_application_name" style="display: block;" class="error">Polaris Application Name is missing</div>
             </f:entry>
             <f:entry field="polaris_project_name" title="Polaris Project Name (Mandatory)">
                 <f:textbox/>
+                <div id="error_polaris_project_name" style="display: block;" class="error">Polaris Project Name is missing</div>
             </f:entry>
             <f:entry field="polaris_assessment_types" title="Polaris Assessment Types (Mandatory)">
                 <f:textbox/>
+                <div id="error_polaris_assessment_types" style="display: block;" class="error">Polaris Assessment Types are missing</div>
             </f:entry>
             <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="polaris_branch_name" title="Polaris Branch Name (Mandatory)">
                 <f:textbox/>
+                <div id="error_polaris_branch_name" style="display: block;" class="error">Polaris Branch Name is missing</div>
             </f:entry>
         </f:section>
     </div>
@@ -85,6 +92,13 @@
 
         if(selectedOption &amp;&amp; selectedOption !== 'select') {
             document.getElementById(selectedOption).style.display = 'block';
+            if (selectedOption === 'coverity') {
+                validateProductField();
+                validateCoverityFields();
+            } else if (selectedOption === 'polaris') {
+                validateProductField();
+                validatePolarisFields();
+            }
         }
 
         function hideAllDivs(blackduckDiv, coverityDiv, polarisDiv) {
@@ -136,23 +150,96 @@
                 clearInputFields(polarisDiv);
                 hideAParticularDiv(coverityDiv);
                 showDiv(blackduckDiv);
+                validateProductField()
             } else if (selectedOption === 'coverity') {
                 clearInputFields(blackduckDiv);
                 hideAParticularDiv(blackduckDiv);
                 clearInputFields(polarisDiv);
                 hideAParticularDiv(polarisDiv);
                 showDiv(coverityDiv);
+                validateProductField()
+                validateCoverityFields();
             } else if (selectedOption === 'polaris') {
                 clearInputFields(blackduckDiv);
                 hideAParticularDiv(blackduckDiv);
                 clearInputFields(coverityDiv);
                 hideAParticularDiv(coverityDiv);
                 showDiv(polarisDiv);
+                validatePolarisFields();
+                validateProductField()
             }else if (selectedOption === 'select') {
+                validateProductField();
                 hideAllDivs(blackduckDiv, coverityDiv, polarisDiv);
             }
 
         });
+
+        function validateProductField() {
+            var errorProductDiv = document.getElementById("error_product_name");
+            var selectedOption = document.querySelector('select[name="_.product"]')?.value;
+            if(selectedOption === 'select') {
+                errorProductDiv.style.display = "block";
+            } else {
+                errorProductDiv.style.display = "none";
+            }
+        }
+
+        function validateCoverityFields() {
+            var coverityProjectName = document.querySelector('input[name="_.coverity_project_name"]')?.value;
+            var coverityStreamName = document.querySelector('input[name="_.coverity_stream_name"]')?.value;
+            var errorCoverityProjectNameDiv = document.getElementById("error_coverity_project_name");
+            var errorCoverityStreamNameDiv = document.getElementById("error_coverity_stream_name");
+
+            if (!coverityProjectName) {
+                errorCoverityProjectNameDiv.style.display = "block";
+            } else {
+                errorCoverityProjectNameDiv.style.display = "none";
+            }
+
+            if (!coverityStreamName) {
+                errorCoverityStreamNameDiv.style.display = "block";
+            } else {
+                errorCoverityStreamNameDiv.style.display = "none";
+            }
+        }
+
+        function validatePolarisFields() {
+            var polarisApplicationName = document.querySelector('input[name="_.polaris_application_name"]')?.value;
+            var polarisProjectName = document.querySelector('input[name="_.polaris_project_name"]')?.value;
+            var polarisAssessmentTypes = document.querySelector('input[name="_.polaris_assessment_types"]')?.value;
+            var polarisBranchName = document.querySelector('input[name="_.polaris_branch_name"]')?.value;
+
+
+            var errorPolarisApplicationNameDiv = document.getElementById("error_polaris_application_name");
+            var errorPolarisProjectNameDiv = document.getElementById("error_polaris_project_name");
+            var errorPolarisAssessmentTypesDiv = document.getElementById("error_polaris_assessment_types");
+            var errorPolarisBranchNameDiv = document.getElementById("error_polaris_branch_name");
+
+            if (!polarisApplicationName) {
+                errorPolarisApplicationNameDiv.style.display = "block";
+            } else {
+                errorPolarisApplicationNameDiv.style.display = "none";
+            }
+
+            if (!polarisProjectName) {
+                errorPolarisProjectNameDiv.style.display = "block";
+            } else {
+                errorPolarisProjectNameDiv.style.display = "none";
+            }
+
+            if (!polarisAssessmentTypes) {
+                errorPolarisAssessmentTypesDiv.style.display = "block";
+            } else {
+                errorPolarisAssessmentTypesDiv.style.display = "none";
+            }
+
+            if (!polarisBranchName) {
+                errorPolarisBranchNameDiv.style.display = "block";
+            } else {
+                errorPolarisBranchNameDiv.style.display = "none";
+            }
+
+        }
 
 
     </script>
