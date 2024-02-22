@@ -82,10 +82,10 @@
         </f:section>
         <f:section title="SARIF Report Options">
             <f:entry field="polaris_reports_sarif_create" title="Generate SARIF Report for Polaris Issues (Optional)">
-                <f:checkbox/>
+                <f:checkbox checked="${instance.isPolaris_reports_sarif_create() == true}"/>
             </f:entry>
             <f:entry field="polaris_reports_sarif_groupSCAIssues" title="Group SCA Issues by Component (Optional)">
-                <f:checkbox/>
+                <f:checkbox checked="${instance.isPolaris_reports_sarif_groupSCAIssues() == true}"/>
             </f:entry>
             <f:entry field="polaris_reports_sarif_file_path" title="Polaris SARIF Report File Path (Optional)">
                 <f:textbox/>
