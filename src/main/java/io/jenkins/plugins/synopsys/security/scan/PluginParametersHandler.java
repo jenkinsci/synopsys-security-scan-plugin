@@ -139,8 +139,7 @@ public class PluginParametersHandler {
                     || key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY)
                     || key.equals(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY)
                     || key.equals(ApplicationConstants.NETWORK_AIRGAP_KEY)
-                    || key.equals(ApplicationConstants.RETURN_STATUS_KEY)
-                    || key.contains("reports_sarif")) {
+                    || key.equals(ApplicationConstants.RETURN_STATUS_KEY)) {
                 Object value = entry.getValue();
                 logger.info(LOG_DASH + key + " = " + value.toString());
             }
