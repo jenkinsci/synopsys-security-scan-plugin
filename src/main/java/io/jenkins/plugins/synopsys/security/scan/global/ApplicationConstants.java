@@ -41,6 +41,10 @@ public class ApplicationConstants {
     public static final String BLACKDUCK_AUTOMATION_FIXPR_KEY = "blackduck_automation_fixpr";
     public static final String BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "blackduck_automation_prcomment";
     public static final String BLACKDUCK_DOWNLOAD_URL_KEY = "blackduck_download_url";
+    public static final String BLACKDUCK_REPORTS_SARIF_CREATE_KEY = "blackduck_reports_sarif_create";
+    public static final String BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = "blackduck_reports_sarif_file_path";
+    public static final String BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY = "blackduck_reports_sarif_groupSCAIssues";
+    public static final String BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = "blackduck_reports_sarif_severities";
 
     public static final String COVERITY_URL_KEY = "coverity_url";
     public static final String COVERITY_USER_KEY = "coverity_user";
@@ -61,30 +65,15 @@ public class ApplicationConstants {
     public static final String POLARIS_TRIAGE_KEY = "polaris_triage";
     public static final String POLARIS_BRANCH_NAME_KEY = "polaris_branch_name";
     public static final String POLARIS_BRANCH_PARENT_NAME_KEY = "polaris_branch_parent_name";
-
-    public static final String INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
-
-    public static final String NETWORK_AIRGAP_KEY = "network_airgap";
-    public static final String RETURN_STATUS_KEY = "return_status";
-
-    public static final String BLACKDUCK_REPORTS_SARIF_CREATE_KEY = "blackduck_reports_sarif_create";
-
-    public static final String BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = "blackduck_reports_sarif_file_path";
-
-    public static final String BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY = "blackduck_reports_sarif_groupSCAIssues";
-
-    public static final String BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = "blackduck_reports_sarif_severities";
-
     public static final String POLARIS_REPORTS_SARIF_CREATE_KEY = "polaris_reports_sarif_create";
-
     public static final String POLARIS_REPORTS_SARIF_FILE_PATH_KEY = "polaris_reports_sarif_file_path";
-
     public static final String POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY = "polaris_reports_sarif_groupSCAIssues";
-
     public static final String POLARIS_REPORTS_SARIF_SEVERITIES_KEY = "polaris_reports_sarif_severities";
-
     public static final String POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY = "polaris_reports_sarif_issue_types";
 
+    public static final String INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
+    public static final String NETWORK_AIRGAP_KEY = "network_airgap";
+    public static final String RETURN_STATUS_KEY = "return_status";
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
     public static final String GITHUB_TOKEN_KEY = "github_token";
     public static final String GITLAB_TOKEN_KEY = "gitlab_token";

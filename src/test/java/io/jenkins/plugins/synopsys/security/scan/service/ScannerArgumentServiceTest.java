@@ -150,7 +150,7 @@ public class ScannerArgumentServiceTest {
     }
 
     @Test
-    public void prepareSarifObjectTest() {
+    public void prepareBlackduckSarifObjectTest() {
         Set<String> securityProducts = new HashSet<>();
         securityProducts.add(SecurityProduct.BLACKDUCK.name());
         Map<String, Object> scanParameters = new HashMap<>();
@@ -166,6 +166,28 @@ public class ScannerArgumentServiceTest {
         assertTrue(sarifObject.getCreate());
         assertEquals("/path/to/sarif/file", sarifObject.getFile().getPath());
         assertEquals(Arrays.asList("HIGH", "MEDIUM", "LOW"), sarifObject.getSeverities());
+        assertTrue(sarifObject.getGroupSCAIssues());
+    }
+
+    @Test
+    public void preparePolarisSarifObjectTest() {
+        Set<String> securityProducts = new HashSet<>();
+        securityProducts.add(SecurityProduct.POLARIS.name());
+        Map<String, Object> scanParameters = new HashMap<>();
+
+        scanParameters.put(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY, true);
+        scanParameters.put(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY, "/path/to/sarif/file");
+        scanParameters.put(ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY, "HIGH,MEDIUM,LOW");
+        scanParameters.put(ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY, true);
+        scanParameters.put(ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY, "SCA");
+
+        Sarif sarifObject = scannerArgumentService.prepareSarifObject(securityProducts, scanParameters);
+
+        assertNotNull(sarifObject);
+        assertTrue(sarifObject.getCreate());
+        assertEquals("/path/to/sarif/file", sarifObject.getFile().getPath());
+        assertEquals(Arrays.asList("HIGH", "MEDIUM", "LOW"), sarifObject.getSeverities());
+        assertEquals(Arrays.asList("SCA"), sarifObject.getIssue().getTypes());
         assertTrue(sarifObject.getGroupSCAIssues());
     }
 

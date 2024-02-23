@@ -19,9 +19,6 @@ public class Sarif {
     @JsonProperty("groupSCAIssues")
     private Boolean groupSCAIssues;
 
-    @JsonProperty("issues")
-    private List<String> issues;
-
     public Sarif() {
         this.issue = new Issue();
         this.file = new File();
@@ -65,13 +62,5 @@ public class Sarif {
 
     public void setSeverities(List<String> severities) {
         this.severities = severities;
-    }
-
-    public List<String> getIssues() {
-        return issues;
-    }
-
-    public void setIssues(List<String> issues) {
-        this.issues = issues;
     }
 }

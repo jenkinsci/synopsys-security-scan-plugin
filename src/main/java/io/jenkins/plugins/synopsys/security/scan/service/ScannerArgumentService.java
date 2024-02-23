@@ -357,7 +357,7 @@ public class ScannerArgumentService {
             }
             if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY)) {
                 Boolean reports_sarif_groupSCAIssues =
-                        (Boolean) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY);
+                        (Boolean) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY);
                 sarif.setGroupSCAIssues(reports_sarif_groupSCAIssues);
             }
             if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY)) {
