@@ -16,6 +16,7 @@ import io.jenkins.plugins.synopsys.security.scan.input.NetworkAirGap;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
+import io.jenkins.plugins.synopsys.security.scan.input.report.Sarif;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
@@ -98,10 +99,17 @@ public class ScannerArgumentService {
         List<String> scanCommands = new ArrayList<>();
 
         NetworkAirGap networkAirGap = null;
+        Sarif sarif = null;
         if (scanParameters.containsKey(ApplicationConstants.NETWORK_AIRGAP_KEY)) {
             Boolean isNetworkAirgap = (Boolean) scanParameters.get(ApplicationConstants.NETWORK_AIRGAP_KEY);
             networkAirGap = new NetworkAirGap();
             networkAirGap.setAirgap(isNetworkAirgap);
+        }
+
+        if ((scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY)
+                        || scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY))
+                && envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) == null) {
+            sarif = prepareSarifObject(securityProducts, scanParameters);
         }
 
         if (securityProducts.contains(SecurityProduct.BLACKDUCK.name())) {
@@ -116,6 +124,7 @@ public class ScannerArgumentService {
                     scmObject,
                     fixPrOrPrComment,
                     networkAirGap,
+                    sarif,
                     ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX));
         }
         if (securityProducts.contains(SecurityProduct.COVERITY.name())) {
@@ -130,6 +139,7 @@ public class ScannerArgumentService {
                     scmObject,
                     fixPrOrPrComment,
                     networkAirGap,
+                    sarif,
                     ApplicationConstants.COVERITY_INPUT_JSON_PREFIX));
         }
         if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
@@ -144,6 +154,7 @@ public class ScannerArgumentService {
                     scmObject,
                     fixPrOrPrComment,
                     networkAirGap,
+                    sarif,
                     ApplicationConstants.POLARIS_INPUT_JSON_PREFIX));
         }
 
@@ -155,10 +166,11 @@ public class ScannerArgumentService {
             Object scmObject,
             boolean fixPrOrPrComment,
             NetworkAirGap networkAirGap,
+            Sarif sarif,
             String jsonPrefix) {
         BridgeInput bridgeInput = new BridgeInput();
 
-        setScanObject(bridgeInput, scanObject, scmObject);
+        setScanObject(bridgeInput, scanObject, scmObject, sarif);
 
         if (fixPrOrPrComment) {
             setScmObject(bridgeInput, scmObject);
@@ -185,9 +197,14 @@ public class ScannerArgumentService {
         return jsonPath;
     }
 
-    private void setScanObject(BridgeInput bridgeInput, Object scanObject, Object scmObject) {
+    private void setScanObject(BridgeInput bridgeInput, Object scanObject, Object scmObject, Sarif sarifObject) {
+
         if (scanObject instanceof BlackDuck) {
-            bridgeInput.setBlackDuck((BlackDuck) scanObject);
+            BlackDuck blackDuck = (BlackDuck) scanObject;
+            if (sarifObject != null) {
+                blackDuck.getReports().setSarif(sarifObject);
+            }
+            bridgeInput.setBlackDuck(blackDuck);
         } else if (scanObject instanceof Coverity) {
             Coverity coverity = (Coverity) scanObject;
             if (scmObject != null) {
@@ -195,7 +212,11 @@ public class ScannerArgumentService {
             }
             bridgeInput.setCoverity(coverity);
         } else if (scanObject instanceof Polaris) {
-            bridgeInput.setPolaris((Polaris) scanObject);
+            Polaris polaris = (Polaris) scanObject;
+            if (sarifObject != null) {
+                polaris.getReports().setSarif(sarifObject);
+            }
+            bridgeInput.setPolaris(polaris);
         }
     }
 
@@ -278,5 +299,82 @@ public class ScannerArgumentService {
                 Utility.removeFile(arg, workspace, listener);
             }
         }
+    }
+
+    public Sarif prepareSarifObject(Set<String> securityProducts, Map<String, Object> scanParameters) {
+        Sarif sarif = new Sarif();
+        if (securityProducts.contains(SecurityProduct.BLACKDUCK.name())) {
+            if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY)) {
+                Boolean isReports_sarif_create =
+                        (Boolean) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY);
+                sarif.setCreate(isReports_sarif_create);
+            }
+            if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)) {
+                String reports_sarif_file_path =
+                        (String) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY);
+                sarif.getFile().setPath(reports_sarif_file_path);
+            }
+            if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY)) {
+                String reports_sarif_severities =
+                        (String) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY);
+                List<String> severities = new ArrayList<>();
+                String[] reports_sarif_severitiesInput =
+                        reports_sarif_severities.toUpperCase().split(",");
+
+                for (String input : reports_sarif_severitiesInput) {
+                    severities.add(input.trim());
+                }
+                sarif.setSeverities(severities);
+            }
+            if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY)) {
+                Boolean reports_sarif_groupSCAIssues =
+                        (Boolean) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY);
+                sarif.setGroupSCAIssues(reports_sarif_groupSCAIssues);
+            }
+            return sarif;
+        } else if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
+            if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY)) {
+                Boolean isReports_sarif_create =
+                        (Boolean) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY);
+                sarif.setCreate(isReports_sarif_create);
+            }
+            if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY)) {
+                String reports_sarif_file_path =
+                        (String) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY);
+                sarif.getFile().setPath(reports_sarif_file_path);
+            }
+            if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY)) {
+                String reports_sarif_severities =
+                        (String) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY);
+                List<String> severities = new ArrayList<>();
+                String[] reports_sarif_severitiesInput =
+                        reports_sarif_severities.toUpperCase().split(",");
+
+                for (String input : reports_sarif_severitiesInput) {
+                    severities.add(input.trim());
+                }
+                sarif.setSeverities(severities);
+            }
+            if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY)) {
+                Boolean reports_sarif_groupSCAIssues =
+                        (Boolean) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY);
+                sarif.setGroupSCAIssues(reports_sarif_groupSCAIssues);
+            }
+            if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY)) {
+                String reports_sarif_issue_types =
+                        (String) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY);
+                List<String> issueTypes = new ArrayList<>();
+                String[] reports_sarif_issue_typesInput =
+                        reports_sarif_issue_types.toUpperCase().split(",");
+
+                for (String input : reports_sarif_issue_typesInput) {
+                    issueTypes.add(input.trim());
+                }
+                sarif.getIssue().setTypes(issueTypes);
+            }
+            return sarif;
+        }
+
+        return null;
     }
 }

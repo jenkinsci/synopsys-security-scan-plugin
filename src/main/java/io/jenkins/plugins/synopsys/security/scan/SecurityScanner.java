@@ -10,11 +10,16 @@ import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandle
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.ReportType;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.ScannerArgumentService;
-import io.jenkins.plugins.synopsys.security.scan.service.diagnostics.DiagnosticsService;
+import io.jenkins.plugins.synopsys.security.scan.service.diagnostics.UploadReportService;
+import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SecurityScanner {
@@ -79,14 +84,45 @@ public class SecurityScanner {
             scannerArgumentService.removeTemporaryInputJson(commandLineArgs);
 
             if (Objects.equals(scanParams.get(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY), true)) {
-                DiagnosticsService diagnosticsService = new DiagnosticsService(
+                UploadReportService uploadReportService = new UploadReportService(
                         run,
                         listener,
                         launcher,
                         envVars,
                         new ArtifactArchiver(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL));
-                diagnosticsService.archiveDiagnostics(
-                        workspace.child(ApplicationConstants.BRIDGE_DIAGNOSTICS_DIRECTORY));
+                uploadReportService.archiveReports(
+                        workspace.child(ApplicationConstants.BRIDGE_REPORT_DIRECTORY), ReportType.DIAGNOSTIC);
+            }
+
+            if (Objects.equals(scanParams.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
+                    || Objects.equals(scanParams.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true)) {
+                ScanParametersService scanParametersService = new ScanParametersService(listener, envVars);
+                Set<String> scanType = scanParametersService.getSynopsysSecurityProducts(scanParams);
+                boolean isBlackDuckScan = scanType.contains(SecurityProduct.BLACKDUCK.name());
+                boolean isPolarisDuckScan = scanType.contains(SecurityProduct.POLARIS.name());
+                String defaultSarifReportFilePath = isBlackDuckScan
+                        ? ApplicationConstants.DEFAULT_BLACKDUCK_SARIF_REPORT_FILE_PATH.concat(
+                                ApplicationConstants.SARIF_REPORT_FILENAME)
+                        : isPolarisDuckScan
+                                ? ApplicationConstants.DEFAULT_POLARIS_SARIF_REPORT_FILE_PATH.concat(
+                                        ApplicationConstants.SARIF_REPORT_FILENAME)
+                                : "";
+
+                String customSarifReportFilePath = isBlackDuckScan
+                        ? (String) scanParams.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)
+                        : isPolarisDuckScan
+                                ? (String) scanParams.get(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY)
+                                : "";
+
+                String reportFilePath =
+                        customSarifReportFilePath != null ? customSarifReportFilePath : defaultSarifReportFilePath;
+                String reportFileName = customSarifReportFilePath != null
+                        ? new File(customSarifReportFilePath).getName()
+                        : ApplicationConstants.SARIF_REPORT_FILENAME;
+
+                UploadReportService uploadReportService =
+                        new UploadReportService(run, listener, launcher, envVars, new ArtifactArchiver(reportFileName));
+                uploadReportService.archiveReports(workspace.child(reportFilePath), ReportType.SARIF);
             }
         }
 

@@ -62,6 +62,7 @@ public class ScanParametersFactory {
             parametersMap.putAll(prepareCoverityParametersMap(securityScan));
             parametersMap.putAll(preparePolarisParametersMap(securityScan));
             parametersMap.putAll(prepareBlackDuckParametersMap(securityScan));
+            parametersMap.putAll(prepareSarifReportParametersMap(securityScan));
 
             if (!Utility.isStringNullOrBlank(securityScan.getBitbucket_token())) {
                 parametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, securityScan.getBitbucket_token());
@@ -348,6 +349,66 @@ public class ScanParametersFactory {
         //        }
 
         return polarisParametersMap;
+    }
+
+    public static Map<String, Object> prepareSarifReportParametersMap(SecurityScan securityScan) {
+        Map<String, Object> sarifParameters = new HashMap<>();
+
+        if (securityScan.isBlackduck_reports_sarif_create() != null) {
+            sarifParameters.put(
+                    ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY,
+                    securityScan.isBlackduck_reports_sarif_create());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_reports_sarif_file_path())) {
+            sarifParameters.put(
+                    ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY,
+                    securityScan.getBlackduck_reports_sarif_file_path());
+        }
+
+        if (securityScan.isBlackduck_reports_sarif_groupSCAIssues() != null) {
+            sarifParameters.put(
+                    ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY,
+                    securityScan.isBlackduck_reports_sarif_groupSCAIssues());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_reports_sarif_severities())) {
+            sarifParameters.put(
+                    ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY,
+                    securityScan.getBlackduck_reports_sarif_severities());
+        }
+
+        if (securityScan.isPolaris_reports_sarif_create() != null) {
+            sarifParameters.put(
+                    ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY,
+                    securityScan.isPolaris_reports_sarif_create());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_reports_sarif_file_path())) {
+            sarifParameters.put(
+                    ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY,
+                    securityScan.getPolaris_reports_sarif_file_path());
+        }
+
+        if (securityScan.isPolaris_reports_sarif_groupSCAIssues() != null) {
+            sarifParameters.put(
+                    ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY,
+                    securityScan.isPolaris_reports_sarif_groupSCAIssues());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_reports_sarif_severities())) {
+            sarifParameters.put(
+                    ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY,
+                    securityScan.getPolaris_reports_sarif_severities());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_reports_sarif_issue_types())) {
+            sarifParameters.put(
+                    ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY,
+                    securityScan.getPolaris_reports_sarif_issue_types());
+        }
+
+        return sarifParameters;
     }
 
     public static String getSynopsysBridgeDownloadUrlBasedOnAgentOS(

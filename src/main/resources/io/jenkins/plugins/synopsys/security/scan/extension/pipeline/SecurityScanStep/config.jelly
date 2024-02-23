@@ -25,14 +25,29 @@
             <!--            <f:checkbox/>-->
             <!--        </f:entry>-->
         </f:section>
+
+        <f:section title="SARIF Report Options">
+            <f:entry field="blackduck_reports_sarif_create" title="Generate SARIF Report for Black Duck Issues (Optional)">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="blackduck_reports_sarif_groupSCAIssues" title="Group SCA Issues by Component (Optional)">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="blackduck_reports_sarif_file_path" title="Black Duck SARIF Report File Path (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="blackduck_reports_sarif_severities" title="Black Duck SARIF Report Severities (Optional)">
+                <f:textbox/>
+            </f:entry>
+        </f:section>
     </div>
 
     <div id="coverity" style="display: none;">
         <f:section title="Coverity Parameters">
-            <f:entry field="coverity_project_name" title="Coverity Project Name (Optional)">
+            <f:entry field="coverity_project_name" title="Coverity Project Name">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="coverity_stream_name" title="Coverity Stream Name (Optional)">
+            <f:entry field="coverity_stream_name" title="Coverity Stream Name">
                 <f:textbox/>
             </f:entry>
             <f:entry field="coverity_policy_view" title="Coverity Policy View (Optional)">
@@ -65,6 +80,24 @@
                 <f:textbox/>
             </f:entry>
             <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
+                <f:textbox/>
+            </f:entry>
+        </f:section>
+
+        <f:section title="SARIF Report Options">
+            <f:entry field="polaris_reports_sarif_create" title="Generate SARIF Report for Polaris Issues (Optional)">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="polaris_reports_sarif_groupSCAIssues" title="Group SCA Issues by Component (Optional)">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="polaris_reports_sarif_file_path" title="Polaris SARIF Report File Path (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_reports_sarif_issue_types" title="Polaris SARIF Report Issue Types (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_reports_sarif_severities" title="Polaris SARIF Report Severities (Optional)">
                 <f:textbox/>
             </f:entry>
         </f:section>
@@ -116,6 +149,15 @@
             }
         }
 
+        function setCheckboxToDefaultTrue(names) {
+            names.forEach(function(name) {
+                var checkbox = document.getElementsByName(name);
+                if (checkbox &amp;&amp; checkbox.length > 0) {
+                    checkbox[0].checked = true;
+                }
+            });
+        }
+
         synopsysSecurityProduct.addEventListener('change', function () {
             hideAllDivs();
             var selectedOption = synopsysSecurityProduct.value;
@@ -123,6 +165,7 @@
                 clearInputFields(coverityDiv);
                 clearInputFields(polarisDiv);
                 showDiv(blackduckDiv);
+                setCheckboxToDefaultTrue(['_.blackduck_reports_sarif_groupSCAIssues'])
             } else if (selectedOption == 'coverity') {
                 clearInputFields(blackduckDiv);
                 clearInputFields(polarisDiv);
@@ -131,6 +174,7 @@
                 clearInputFields(blackduckDiv);
                 clearInputFields(coverityDiv);
                 showDiv(polarisDiv);
+                setCheckboxToDefaultTrue(['_.polaris_reports_sarif_groupSCAIssues'])
             }else if (selectedOption == 'Select') {
                 hideAllDivs();
             }
