@@ -29,6 +29,7 @@
     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
     <revision>1.2.0</revision>
     <changelist>-SIGQA3</changelist>
+    <maven.compiler.release>17</maven.compiler.release>
     <jenkins.version>2.401.3</jenkins.version>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
     <spotless.check.skip>false</spotless.check.skip>
@@ -44,21 +45,21 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!--<dependency>
+      <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-core</artifactId>
-        <version>5.8.5</version>
+        <version>6.2.2</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-crypto</artifactId>
-        <version>5.8.5</version>
+        <version>6.2.2</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-web</artifactId>
-        <version>5.8.5</version>
-      </dependency>-->
+        <version>6.2.2</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
