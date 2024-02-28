@@ -28,7 +28,7 @@
   <properties>
     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
     <revision>1.2.0</revision>
-    <changelist>-SIGQA3</changelist>
+    <changelist>-SIGQA4</changelist>
     <maven.compiler.release>17</maven.compiler.release>
     <jenkins.version>2.401.3</jenkins.version>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
@@ -53,11 +53,6 @@
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-crypto</artifactId>
-        <version>6.2.2</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-web</artifactId>
         <version>6.2.2</version>
       </dependency>
     </dependencies>
