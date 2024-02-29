@@ -45,8 +45,9 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
-      <!--    The below transitive dependencies have high vulnerabilities from spring-security-web. -->
+      <!--    The transitive dependencies listed below have high vulnerabilities from spring-security-web (6.2.2) -->
+      <!--    To resolve this issue, these dependencies are added as a direct dependency.   -->
+      <!--    In the future, if the Spring team resolves these vulnerabilities, we can remove these libraries.  -->
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-aop</artifactId>
