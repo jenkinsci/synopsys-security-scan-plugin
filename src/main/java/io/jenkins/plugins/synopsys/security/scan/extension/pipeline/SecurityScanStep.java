@@ -450,7 +450,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     @DataBoundSetter
     public void setReturn_status(Boolean return_status) {
-        this.return_status = return_status ? true : null;
+        this.return_status = return_status;
     }
 
     @DataBoundSetter
