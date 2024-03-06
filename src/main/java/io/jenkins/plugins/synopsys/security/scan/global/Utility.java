@@ -4,6 +4,7 @@ import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import hudson.model.TopLevelItem;
+import java.io.File;
 import java.io.IOException;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
@@ -215,5 +216,35 @@ public class Utility {
         } else {
             return "UnknownJobType";
         }
+    }
+
+    public static String getDefaultSarifReportFilePath(boolean isBlackDuckScan, boolean isPolarisDuckScan) {
+        return isBlackDuckScan
+                ? ApplicationConstants.DEFAULT_BLACKDUCK_SARIF_REPORT_FILE_PATH.concat(
+                        ApplicationConstants.SARIF_REPORT_FILENAME)
+                : isPolarisDuckScan
+                        ? ApplicationConstants.DEFAULT_POLARIS_SARIF_REPORT_FILE_PATH.concat(
+                                ApplicationConstants.SARIF_REPORT_FILENAME)
+                        : "";
+    }
+
+    public static String getCustomSarifReportFilePath(
+            Map<String, Object> scanParams, boolean isBlackDuckScan, boolean isPolarisDuckScan) {
+        return isBlackDuckScan
+                ? (String) scanParams.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)
+                : isPolarisDuckScan
+                        ? (String) scanParams.get(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY)
+                        : "";
+    }
+
+    public static String determineSARIFReportFilePath(
+            String customSarifReportFilePath, String defaultSarifReportFilePath) {
+        return customSarifReportFilePath != null ? customSarifReportFilePath : defaultSarifReportFilePath;
+    }
+
+    public static String determineSARIFReportFileName(String customSarifReportFilePath) {
+        return customSarifReportFilePath != null
+                ? new File(customSarifReportFilePath).getName()
+                : ApplicationConstants.SARIF_REPORT_FILENAME;
     }
 }

@@ -303,78 +303,87 @@ public class ScannerArgumentService {
 
     public Sarif prepareSarifObject(Set<String> securityProducts, Map<String, Object> scanParameters) {
         Sarif sarif = new Sarif();
+
         if (securityProducts.contains(SecurityProduct.BLACKDUCK.name())) {
-            if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY)) {
-                Boolean isReports_sarif_create =
-                        (Boolean) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY);
-                sarif.setCreate(isReports_sarif_create);
-            }
-            if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)) {
-                String reports_sarif_file_path =
-                        (String) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY);
-                sarif.getFile().setPath(reports_sarif_file_path);
-            }
-            if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY)) {
-                String reports_sarif_severities =
-                        (String) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY);
-                List<String> severities = new ArrayList<>();
-                String[] reports_sarif_severitiesInput =
-                        reports_sarif_severities.toUpperCase().split(",");
-
-                for (String input : reports_sarif_severitiesInput) {
-                    severities.add(input.trim());
-                }
-                sarif.setSeverities(severities);
-            }
-            if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY)) {
-                Boolean reports_sarif_groupSCAIssues =
-                        (Boolean) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY);
-                sarif.setGroupSCAIssues(reports_sarif_groupSCAIssues);
-            }
+            handleBlackDuck(scanParameters, sarif);
             return sarif;
+
         } else if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
-            if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY)) {
-                Boolean isReports_sarif_create =
-                        (Boolean) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY);
-                sarif.setCreate(isReports_sarif_create);
-            }
-            if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY)) {
-                String reports_sarif_file_path =
-                        (String) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY);
-                sarif.getFile().setPath(reports_sarif_file_path);
-            }
-            if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY)) {
-                String reports_sarif_severities =
-                        (String) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY);
-                List<String> severities = new ArrayList<>();
-                String[] reports_sarif_severitiesInput =
-                        reports_sarif_severities.toUpperCase().split(",");
-
-                for (String input : reports_sarif_severitiesInput) {
-                    severities.add(input.trim());
-                }
-                sarif.setSeverities(severities);
-            }
-            if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY)) {
-                Boolean reports_sarif_groupSCAIssues =
-                        (Boolean) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY);
-                sarif.setGroupSCAIssues(reports_sarif_groupSCAIssues);
-            }
-            if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY)) {
-                String reports_sarif_issue_types =
-                        (String) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY);
-                List<String> issueTypes = new ArrayList<>();
-                String[] reports_sarif_issue_typesInput =
-                        reports_sarif_issue_types.toUpperCase().split(",");
-
-                for (String input : reports_sarif_issue_typesInput) {
-                    issueTypes.add(input.trim());
-                }
-                sarif.getIssue().setTypes(issueTypes);
-            }
+            handlePolaris(scanParameters, sarif);
             return sarif;
         }
-
         return null;
+    }
+
+    private void handleBlackDuck(Map<String, Object> scanParameters, Sarif sarif) {
+        if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY)) {
+            Boolean isReports_sarif_create =
+                    (Boolean) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY);
+            sarif.setCreate(isReports_sarif_create);
+        }
+        if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)) {
+            String reports_sarif_file_path =
+                    (String) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY);
+            sarif.getFile().setPath(reports_sarif_file_path);
+        }
+        if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY)) {
+            String reports_sarif_severities =
+                    (String) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY);
+            List<String> severities = new ArrayList<>();
+            String[] reports_sarif_severitiesInput =
+                    reports_sarif_severities.toUpperCase().split(",");
+
+            addArrayElementsToList(reports_sarif_severitiesInput, severities);
+            sarif.setSeverities(severities);
+        }
+        if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY)) {
+            Boolean reports_sarif_groupSCAIssues =
+                    (Boolean) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY);
+            sarif.setGroupSCAIssues(reports_sarif_groupSCAIssues);
+        }
+    }
+
+    private void handlePolaris(Map<String, Object> scanParameters, Sarif sarif) {
+        if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY)) {
+            Boolean isReports_sarif_create =
+                    (Boolean) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY);
+            sarif.setCreate(isReports_sarif_create);
+        }
+        if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY)) {
+            String reports_sarif_file_path =
+                    (String) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY);
+            sarif.getFile().setPath(reports_sarif_file_path);
+        }
+        if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY)) {
+            String reports_sarif_severities =
+                    (String) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY);
+            List<String> severities = new ArrayList<>();
+            String[] reports_sarif_severitiesInput =
+                    reports_sarif_severities.toUpperCase().split(",");
+
+            addArrayElementsToList(reports_sarif_severitiesInput, severities);
+            sarif.setSeverities(severities);
+        }
+        if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY)) {
+            Boolean reports_sarif_groupSCAIssues =
+                    (Boolean) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY);
+            sarif.setGroupSCAIssues(reports_sarif_groupSCAIssues);
+        }
+        if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY)) {
+            String reports_sarif_issue_types =
+                    (String) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY);
+            List<String> issueTypes = new ArrayList<>();
+            String[] reports_sarif_issue_typesInput =
+                    reports_sarif_issue_types.toUpperCase().split(",");
+
+            addArrayElementsToList(reports_sarif_issue_typesInput, issueTypes);
+            sarif.getIssue().setTypes(issueTypes);
+        }
+    }
+
+    private void addArrayElementsToList(String[] array, List<String> list) {
+        for (String item : array) {
+            list.add(item.trim());
+        }
     }
 }
