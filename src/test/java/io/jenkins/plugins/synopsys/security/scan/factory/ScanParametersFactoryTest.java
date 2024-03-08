@@ -1,8 +1,10 @@
 package io.jenkins.plugins.synopsys.security.scan.factory;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
@@ -33,7 +35,7 @@ public class ScanParametersFactoryTest {
     }
 
     @Test
-    public void preparePipelineParametersMapTest() throws AbortException, PluginExceptionHandler {
+    public void preparePipelineParametersMapTest() throws PluginExceptionHandler {
         Map<String, Object> globalConfigValues = new HashMap<>();
 
         securityScanStep.setProduct("BLACKDUCK");
@@ -47,7 +49,7 @@ public class ScanParametersFactoryTest {
         Map<String, Object> result =
                 ScanParametersFactory.preparePipelineParametersMap(securityScanStep, globalConfigValues, listenerMock);
 
-        assertEquals(7, result.size());
+        assertEquals(8, result.size());
         assertEquals("BLACKDUCK", result.get(ApplicationConstants.PRODUCT_KEY));
         assertEquals("fake-blackduck-token", result.get(ApplicationConstants.BLACKDUCK_TOKEN_KEY));
         assertEquals("/fake/path", result.get(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY));

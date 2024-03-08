@@ -51,6 +51,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     //    private Boolean blackduck_automation_fixpr;
     private Boolean blackduck_automation_prcomment;
     private String blackduck_download_url;
+    private Boolean blackduck_reports_sarif_create;
+    private String blackduck_reports_sarif_file_path;
+    private Boolean blackduck_reports_sarif_groupSCAIssues;
+    private String blackduck_reports_sarif_severities;
 
     private String coverity_url;
     private String coverity_user;
@@ -71,6 +75,11 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String polaris_triage;
     private String polaris_branch_name;
     //    private String polaris_branch_parent_name;
+    private Boolean polaris_reports_sarif_create;
+    private String polaris_reports_sarif_file_path;
+    private String polaris_reports_sarif_issue_types;
+    private Boolean polaris_reports_sarif_groupSCAIssues;
+    private String polaris_reports_sarif_severities;
 
     private transient String bitbucket_token;
     private transient String github_token;
@@ -81,16 +90,11 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String synopsys_bridge_install_directory;
     private Boolean include_diagnostics;
     private Boolean network_airgap;
-    private Boolean blackduck_reports_sarif_create;
-    private String blackduck_reports_sarif_file_path;
-    private Boolean blackduck_reports_sarif_groupSCAIssues;
-    private String blackduck_reports_sarif_severities;
-    private Boolean return_status;
-    private Boolean polaris_reports_sarif_create;
-    private String polaris_reports_sarif_file_path;
-    private String polaris_reports_sarif_issue_types;
-    private Boolean polaris_reports_sarif_groupSCAIssues;
-    private String polaris_reports_sarif_severities;
+    /*
+    By default the plugin will always return a status code even if there is error.
+    Therefore, the stage won't be failed in case of non-zero status code.
+     */
+    private Boolean return_status = true;
 
     @DataBoundConstructor
     public SecurityScanStep() {
@@ -446,7 +450,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     @DataBoundSetter
     public void setReturn_status(Boolean return_status) {
-        this.return_status = return_status ? true : null;
+        this.return_status = return_status;
     }
 
     @DataBoundSetter
