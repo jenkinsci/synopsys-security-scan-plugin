@@ -1,6 +1,7 @@
 package io.jenkins.plugins.synopsys.security.scan.input.blackduck;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
 
 public class BlackDuck {
     @JsonProperty("url")
@@ -22,10 +23,14 @@ public class BlackDuck {
     @JsonProperty("download")
     private Download download;
 
+    @JsonProperty("reports")
+    private Reports reports;
+
     public BlackDuck() {
         scan = new Scan();
         automation = new Automation();
         install = new Install();
+        reports = new Reports();
     }
 
     public String getUrl() {
@@ -74,5 +79,13 @@ public class BlackDuck {
 
     public void setDownload(final Download download) {
         this.download = download;
+    }
+
+    public Reports getReports() {
+        return reports;
+    }
+
+    public void setReports(Reports reports) {
+        this.reports = reports;
     }
 }
