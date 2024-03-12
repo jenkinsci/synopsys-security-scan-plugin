@@ -352,7 +352,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     @DataBoundSetter
     public void setPolaris_test_sca_type(String polaris_test_sca_type) {
-        this.polaris_test_sca_type = polaris_test_sca_type;
+        this.polaris_test_sca_type = Util.fixEmptyAndTrim(polaris_test_sca_type);
     }
 
     @DataBoundSetter
