@@ -11,9 +11,11 @@ import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandle
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.BridgeParams;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.report.Sarif;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
@@ -27,9 +29,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -65,7 +70,7 @@ public class ScannerArgumentServiceTest {
         blackDuck.setToken(TOKEN);
 
         String inputJsonPath = scannerArgumentService.createBridgeInputJson(
-                blackDuck, bitBucket, false, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
+                blackDuck, bitBucket, false, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
         Path filePath = Paths.get(inputJsonPath);
 
         assertTrue(
@@ -89,11 +94,10 @@ public class ScannerArgumentServiceTest {
 
         try {
             String jsonStringNonPrCommentOrFixPr =
-                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":"
-                            + "\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{}}}}";
+                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{},\"reports\":{\"sarif\":{\"issue\":{},\"file\":{}}}}}}";
 
             String inputJsonPathForNonFixPr = scannerArgumentService.createBridgeInputJson(
-                    blackDuck, bitbucketObject, false, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
+                    blackDuck, bitbucketObject, false, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
             Path filePath = Paths.get(inputJsonPathForNonFixPr);
 
             String actualJsonString = new String(Files.readAllBytes(filePath));
@@ -110,13 +114,9 @@ public class ScannerArgumentServiceTest {
 
         try {
             String jsonStringForPrComment =
-                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\""
-                            + ",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{}},\"bitbucket\": { \"api\": "
-                            + "{ \"url\": \"https://bitbucket.org\", \"token\": \"MDJDSROSVC56FAKEKEY\" }, \"project\": "
-                            + "{ \"repository\": { \"pull\": { \"number\": 12 }, \"name\": \"test\" }, "
-                            + "\"key\": \"abc\" } }}}";
+                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{},\"reports\":{\"sarif\":{\"issue\":{},\"file\":{}}}},\"bitbucket\":{\"api\":{\"url\":\"https://bitbucket.org\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\"},\"key\":\"abc\"}}}}";
             String inputJsonPathForPrComment = scannerArgumentService.createBridgeInputJson(
-                    blackDuck, bitbucketObject, true, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
+                    blackDuck, bitbucketObject, true, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
             Path filePath = Paths.get(inputJsonPathForPrComment);
 
             JsonNode expectedJsonNode = objectMapper.readTree(jsonStringForPrComment);
@@ -147,6 +147,48 @@ public class ScannerArgumentServiceTest {
 
         scannerArgumentService.setScmObject(bridgeInput, gitlab);
         Mockito.verify(bridgeInput).setGitlab(gitlab);
+    }
+
+    @Test
+    public void prepareBlackduckSarifObjectTest() {
+        Set<String> securityProducts = new HashSet<>();
+        securityProducts.add(SecurityProduct.BLACKDUCK.name());
+        Map<String, Object> scanParameters = new HashMap<>();
+
+        scanParameters.put(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY, true);
+        scanParameters.put(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY, "/path/to/sarif/file");
+        scanParameters.put(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY, "HIGH,MEDIUM,LOW");
+        scanParameters.put(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY, true);
+
+        Sarif sarifObject = scannerArgumentService.prepareSarifObject(securityProducts, scanParameters);
+
+        assertNotNull(sarifObject);
+        assertTrue(sarifObject.getCreate());
+        assertEquals("/path/to/sarif/file", sarifObject.getFile().getPath());
+        assertEquals(Arrays.asList("HIGH", "MEDIUM", "LOW"), sarifObject.getSeverities());
+        assertTrue(sarifObject.getGroupSCAIssues());
+    }
+
+    @Test
+    public void preparePolarisSarifObjectTest() {
+        Set<String> securityProducts = new HashSet<>();
+        securityProducts.add(SecurityProduct.POLARIS.name());
+        Map<String, Object> scanParameters = new HashMap<>();
+
+        scanParameters.put(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY, true);
+        scanParameters.put(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY, "/path/to/sarif/file");
+        scanParameters.put(ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY, "HIGH,MEDIUM,LOW");
+        scanParameters.put(ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY, true);
+        scanParameters.put(ApplicationConstants.POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY, "SCA");
+
+        Sarif sarifObject = scannerArgumentService.prepareSarifObject(securityProducts, scanParameters);
+
+        assertNotNull(sarifObject);
+        assertTrue(sarifObject.getCreate());
+        assertEquals("/path/to/sarif/file", sarifObject.getFile().getPath());
+        assertEquals(Arrays.asList("HIGH", "MEDIUM", "LOW"), sarifObject.getSeverities());
+        assertEquals(Arrays.asList("SCA"), sarifObject.getIssue().getTypes());
+        assertTrue(sarifObject.getGroupSCAIssues());
     }
 
     @Test
@@ -181,7 +223,7 @@ public class ScannerArgumentServiceTest {
         coverity.getConnect().getUser().setPassword("fakeUserPassword");
 
         String inputJsonPath = scannerArgumentService.createBridgeInputJson(
-                coverity, bitBucket, false, null, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX);
+                coverity, bitBucket, false, null, null, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX);
         Path filePath = Paths.get(inputJsonPath);
 
         assertTrue(
@@ -217,7 +259,7 @@ public class ScannerArgumentServiceTest {
             Github github = githubRepositoryService.createGithubObject(
                     scanParametersMap, "fake-repo", "fake-owner", 1, "fake-branch", true, CLOUD_API_URI);
             String inputJsonPath = scannerArgumentService.createBridgeInputJson(
-                    coverity, github, true, null, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX);
+                    coverity, github, true, null, null, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX);
             Path filePath = Paths.get(inputJsonPath);
 
             assertTrue(
@@ -251,11 +293,8 @@ public class ScannerArgumentServiceTest {
         blackDuck.setToken(TOKEN);
         blackDuck.getAutomation().setPrComment(true);
 
-        String jsonStringForPrComment = "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\","
-                + "\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},"
-                + "\"automation\":{\"prComment\":true}},\"gitlab\":{\"api\":{\"url\":\"\"},"
-                + "\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"branch\":{\"name\":\"fake-gitlab-branch\"},"
-                + "\"pull\":{\"number\":12},\"name\":\"fake-group/fake-gitlab-repo\"}}}}";
+        String jsonStringForPrComment =
+                "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{\"prComment\":true},\"reports\":{\"sarif\":{\"issue\":{},\"file\":{}}}},\"gitlab\":{\"api\":{\"url\":\"\"},\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"branch\":{\"name\":\"fake-gitlab-branch\"},\"pull\":{\"number\":12},\"name\":\"fake-group/fake-gitlab-repo\"}}}}";
 
         try {
             Gitlab gitlabObject = gitlabRepositoryService.createGitlabObject(
@@ -266,7 +305,7 @@ public class ScannerArgumentServiceTest {
                     "https://gitlab.com/fake-group/fake-gitlab-repo.git",
                     true);
             String inputJsonPathForGitlabPrComment = scannerArgumentService.createBridgeInputJson(
-                    blackDuck, gitlabObject, true, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
+                    blackDuck, gitlabObject, true, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
 
             JsonNode expectedJsonNode = objectMapper.readTree(jsonStringForPrComment);
 

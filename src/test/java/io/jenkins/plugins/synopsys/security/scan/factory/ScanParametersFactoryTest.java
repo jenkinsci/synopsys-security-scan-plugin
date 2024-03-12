@@ -1,8 +1,10 @@
 package io.jenkins.plugins.synopsys.security.scan.factory;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import hudson.AbortException;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.TaskListener;
@@ -33,7 +35,7 @@ public class ScanParametersFactoryTest {
     }
 
     @Test
-    public void preparePipelineParametersMapTest() throws AbortException, PluginExceptionHandler {
+    public void preparePipelineParametersMapTest() throws PluginExceptionHandler {
         Map<String, Object> globalConfigValues = new HashMap<>();
 
         securityScanStep.setProduct("BLACKDUCK");
@@ -47,7 +49,7 @@ public class ScanParametersFactoryTest {
         Map<String, Object> result =
                 ScanParametersFactory.preparePipelineParametersMap(securityScanStep, globalConfigValues, listenerMock);
 
-        assertEquals(7, result.size());
+        assertEquals(8, result.size());
         assertEquals("BLACKDUCK", result.get(ApplicationConstants.PRODUCT_KEY));
         assertEquals("fake-blackduck-token", result.get(ApplicationConstants.BLACKDUCK_TOKEN_KEY));
         assertEquals("/fake/path", result.get(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY));
@@ -170,6 +172,28 @@ public class ScanParametersFactoryTest {
         assertEquals("fake-access-token", polarisParametersMap.get(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY));
         assertEquals("test", polarisParametersMap.get(ApplicationConstants.POLARIS_BRANCH_NAME_KEY));
         assertEquals("REQUIRED", polarisParametersMap.get(ApplicationConstants.POLARIS_TRIAGE_KEY));
+    }
+
+    @Test
+    public void prepareSarifReportParametersMap() {
+        securityScanStep.setBlackduck_reports_sarif_create(true);
+        securityScanStep.setBlackduck_reports_sarif_file_path("/fake/path");
+        securityScanStep.setBlackduck_reports_sarif_severities("CRITICAL");
+        securityScanStep.setBlackduck_reports_sarif_groupSCAIssues(true);
+
+        Map<String, Object> sarifParametersMap =
+                ScanParametersFactory.prepareSarifReportParametersMap(securityScanStep);
+
+        assertEquals(4, sarifParametersMap.size());
+        assertTrue((boolean) sarifParametersMap.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY));
+        assertEquals("/fake/path", sarifParametersMap.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY));
+        assertEquals("CRITICAL", sarifParametersMap.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY));
+        assertTrue((boolean) sarifParametersMap.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY));
+
+        Map<String, Object> emptySarifParametersMap =
+                ScanParametersFactory.prepareSarifReportParametersMap(new SecurityScanStep());
+
+        assertEquals(0, emptySarifParametersMap.size());
     }
 
     @Test

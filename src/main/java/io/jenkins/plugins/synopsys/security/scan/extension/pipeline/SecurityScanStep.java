@@ -51,6 +51,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     //    private Boolean blackduck_automation_fixpr;
     private Boolean blackduck_automation_prcomment;
     private String blackduck_download_url;
+    private Boolean blackduck_reports_sarif_create;
+    private String blackduck_reports_sarif_file_path;
+    private Boolean blackduck_reports_sarif_groupSCAIssues;
+    private String blackduck_reports_sarif_severities;
 
     private String coverity_url;
     private String coverity_user;
@@ -72,6 +76,11 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String polaris_test_sca_type;
     private String polaris_branch_name;
     //    private String polaris_branch_parent_name;
+    private Boolean polaris_reports_sarif_create;
+    private String polaris_reports_sarif_file_path;
+    private String polaris_reports_sarif_issue_types;
+    private Boolean polaris_reports_sarif_groupSCAIssues;
+    private String polaris_reports_sarif_severities;
 
     private transient String bitbucket_token;
     private transient String github_token;
@@ -82,7 +91,11 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String synopsys_bridge_install_directory;
     private Boolean include_diagnostics;
     private Boolean network_airgap;
-    private Boolean return_status;
+    /*
+    By default the plugin will always return a status code even if there is error.
+    Therefore, the stage won't be failed in case of non-zero status code.
+     */
+    private Boolean return_status = true;
 
     @DataBoundConstructor
     public SecurityScanStep() {
@@ -231,6 +244,42 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public Boolean isReturn_status() {
         return return_status;
+    }
+
+    public Boolean isBlackduck_reports_sarif_create() {
+        return blackduck_reports_sarif_create;
+    }
+
+    public String getBlackduck_reports_sarif_file_path() {
+        return blackduck_reports_sarif_file_path;
+    }
+
+    public Boolean isBlackduck_reports_sarif_groupSCAIssues() {
+        return blackduck_reports_sarif_groupSCAIssues;
+    }
+
+    public String getBlackduck_reports_sarif_severities() {
+        return blackduck_reports_sarif_severities;
+    }
+
+    public Boolean isPolaris_reports_sarif_create() {
+        return polaris_reports_sarif_create;
+    }
+
+    public String getPolaris_reports_sarif_file_path() {
+        return polaris_reports_sarif_file_path;
+    }
+
+    public Boolean isPolaris_reports_sarif_groupSCAIssues() {
+        return polaris_reports_sarif_groupSCAIssues;
+    }
+
+    public String getPolaris_reports_sarif_severities() {
+        return polaris_reports_sarif_severities;
+    }
+
+    public String getPolaris_reports_sarif_issue_types() {
+        return polaris_reports_sarif_issue_types;
     }
 
     @DataBoundSetter
@@ -411,7 +460,52 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     @DataBoundSetter
     public void setReturn_status(Boolean return_status) {
-        this.return_status = return_status ? true : null;
+        this.return_status = return_status;
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_reports_sarif_create(Boolean blackduck_reports_sarif_create) {
+        this.blackduck_reports_sarif_create = blackduck_reports_sarif_create ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_reports_sarif_file_path(String blackduck_reports_sarif_file_path) {
+        this.blackduck_reports_sarif_file_path = Util.fixEmptyAndTrim(blackduck_reports_sarif_file_path);
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_reports_sarif_groupSCAIssues(Boolean blackduck_reports_sarif_groupSCAIssues) {
+        this.blackduck_reports_sarif_groupSCAIssues = blackduck_reports_sarif_groupSCAIssues ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_reports_sarif_severities(String blackduck_reports_sarif_severities) {
+        this.blackduck_reports_sarif_severities = Util.fixEmptyAndTrim(blackduck_reports_sarif_severities);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_reports_sarif_create(Boolean polaris_reports_sarif_create) {
+        this.polaris_reports_sarif_create = polaris_reports_sarif_create ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setPolaris_reports_sarif_file_path(String polaris_reports_sarif_file_path) {
+        this.polaris_reports_sarif_file_path = Util.fixEmptyAndTrim(polaris_reports_sarif_file_path);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_reports_sarif_groupSCAIssues(Boolean polaris_reports_sarif_groupSCAIssues) {
+        this.polaris_reports_sarif_groupSCAIssues = polaris_reports_sarif_groupSCAIssues ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setPolaris_reports_sarif_severities(String polaris_reports_sarif_severities) {
+        this.polaris_reports_sarif_severities = Util.fixEmptyAndTrim(polaris_reports_sarif_severities);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_reports_sarif_issue_types(String polaris_reports_sarif_issue_types) {
+        this.polaris_reports_sarif_issue_types = Util.fixEmptyAndTrim(polaris_reports_sarif_issue_types);
     }
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)

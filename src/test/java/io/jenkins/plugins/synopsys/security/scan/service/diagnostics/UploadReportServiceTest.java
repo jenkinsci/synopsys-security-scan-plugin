@@ -11,6 +11,7 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.ArtifactArchiver;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.ReportType;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -19,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class DiagnosticsServiceTest {
+public class UploadReportServiceTest {
     @Mock
     private Run<?, ?> runMock;
 
@@ -35,15 +36,15 @@ public class DiagnosticsServiceTest {
     @Mock
     private ArtifactArchiver artifactArchiverMock;
 
-    private DiagnosticsService diagnosticsService;
+    private UploadReportService uploadReportService;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         when(listenerMock.getLogger()).thenReturn(mock(PrintStream.class));
         when(artifactArchiverMock.getArtifacts()).thenReturn(ApplicationConstants.ALL_FILES_WILDCARD_SYMBOL);
-        diagnosticsService =
-                spy(new DiagnosticsService(runMock, listenerMock, launcherMock, envVarsMock, artifactArchiverMock));
+        uploadReportService =
+                spy(new UploadReportService(runMock, listenerMock, launcherMock, envVarsMock, artifactArchiverMock));
     }
 
     @Test
@@ -59,12 +60,12 @@ public class DiagnosticsServiceTest {
                     .when(artifactArchiverMock)
                     .perform(eq(runMock), eq(diagnosticsPath), eq(envVarsMock), eq(launcherMock), eq(listenerMock));
 
-            diagnosticsService.archiveDiagnostics(diagnosticsPath);
+            uploadReportService.archiveReports(diagnosticsPath, ReportType.DIAGNOSTIC);
             verify(artifactArchiverMock).perform(runMock, diagnosticsPath, envVarsMock, launcherMock, listenerMock);
 
             diagnosticsPath.deleteRecursive();
         } catch (IOException | InterruptedException e) {
-            System.out.println("Exception occurred during testing for archiveDiagnostics method: " + e.getMessage());
+            System.out.println("Exception occurred during testing for archiveReports method: " + e.getMessage());
         }
     }
 
@@ -76,10 +77,10 @@ public class DiagnosticsServiceTest {
         try {
             assertFalse(diagnosticsPath.exists());
 
-            diagnosticsService.archiveDiagnostics(diagnosticsPath);
+            uploadReportService.archiveReports(diagnosticsPath, ReportType.DIAGNOSTIC);
             verify(artifactArchiverMock, never()).perform(any(), any(), any(), any(), any());
         } catch (IOException | InterruptedException e) {
-            System.out.println("Exception occurred during testing for archiveDiagnostics method: " + e.getMessage());
+            System.out.println("Exception occurred during testing for archiveReports method: " + e.getMessage());
         }
     }
 }

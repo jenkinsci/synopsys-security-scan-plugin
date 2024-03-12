@@ -1,6 +1,7 @@
 package io.jenkins.plugins.synopsys.security.scan.input.polaris;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
 
 public class Polaris {
     @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
@@ -28,12 +29,16 @@ public class Polaris {
     @JsonProperty("test")
     private Test test;
 
+    @JsonProperty("reports")
+    private Reports reports;
+
     public Polaris() {
         applicationName = new ApplicationName();
         projectName = new ProjectName();
         assessmentTypes = new AssessmentTypes();
         branch = new Branch();
         test = new Test();
+        reports = new Reports();
     }
 
     public String getAccessToken() {
@@ -98,5 +103,13 @@ public class Polaris {
 
     public void setTest(Test test) {
         this.test = test;
+    }
+
+    public Reports getReports() {
+        return reports;
+    }
+
+    public void setReports(Reports reports) {
+        this.reports = reports;
     }
 }
