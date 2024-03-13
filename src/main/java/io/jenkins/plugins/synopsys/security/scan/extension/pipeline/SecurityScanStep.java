@@ -415,7 +415,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     @DataBoundSetter
     public void setPolaris_test_sca_type(String polaris_test_sca_type) {
-        this.polaris_test_sca_type = polaris_test_sca_type;
+        this.polaris_test_sca_type = Util.fixEmptyAndTrim(polaris_test_sca_type);
     }
 
     @DataBoundSetter
