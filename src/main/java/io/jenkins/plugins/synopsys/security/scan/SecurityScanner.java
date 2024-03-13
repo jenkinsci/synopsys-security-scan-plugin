@@ -93,8 +93,10 @@ public class SecurityScanner {
                         workspace.child(ApplicationConstants.BRIDGE_REPORT_DIRECTORY), ReportType.DIAGNOSTIC);
             }
 
-            if (Objects.equals(scanParams.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
-                    || Objects.equals(scanParams.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true)) {
+            if ((Objects.equals(scanParams.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
+                            || Objects.equals(
+                                    scanParams.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true))
+                    && envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) == null) {
                 ScanParametersService scanParametersService = new ScanParametersService(listener, envVars);
                 Set<String> scanType = scanParametersService.getSynopsysSecurityProducts(scanParams);
                 boolean isBlackDuckScan = scanType.contains(SecurityProduct.BLACKDUCK.name());
