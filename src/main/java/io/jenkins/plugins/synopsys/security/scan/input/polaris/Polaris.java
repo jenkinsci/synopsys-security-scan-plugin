@@ -37,7 +37,6 @@ public class Polaris {
         projectName = new ProjectName();
         assessmentTypes = new AssessmentTypes();
         branch = new Branch();
-        test = new Test();
         reports = new Reports();
     }
 
