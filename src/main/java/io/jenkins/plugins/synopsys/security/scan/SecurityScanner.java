@@ -93,24 +93,28 @@ public class SecurityScanner {
                         workspace.child(ApplicationConstants.BRIDGE_REPORT_DIRECTORY), ReportType.DIAGNOSTIC);
             }
 
-            if ((Objects.equals(scanParams.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
-                            || Objects.equals(
-                                    scanParams.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true))
-                    && envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) == null) {
-                ScanParametersService scanParametersService = new ScanParametersService(listener, envVars);
-                Set<String> scanType = scanParametersService.getSynopsysSecurityProducts(scanParams);
-                boolean isBlackDuckScan = scanType.contains(SecurityProduct.BLACKDUCK.name());
-                boolean isPolarisDuckScan = scanType.contains(SecurityProduct.POLARIS.name());
-                String defaultSarifReportFilePath =
-                        Utility.getDefaultSarifReportFilePath(isBlackDuckScan, isPolarisDuckScan);
-                String customSarifReportFilePath =
-                        Utility.getCustomSarifReportFilePath(scanParams, isBlackDuckScan, isPolarisDuckScan);
-                String reportFilePath =
-                        Utility.determineSARIFReportFilePath(customSarifReportFilePath, defaultSarifReportFilePath);
-                String reportFileName = Utility.determineSARIFReportFileName(customSarifReportFilePath);
-                UploadReportService uploadReportService =
-                        new UploadReportService(run, listener, launcher, envVars, new ArtifactArchiver(reportFileName));
-                uploadReportService.archiveReports(workspace.child(reportFilePath), ReportType.SARIF);
+            if (Objects.equals(scanParams.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
+                    || Objects.equals(scanParams.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true)) {
+
+                if (envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) == null) {
+                    ScanParametersService scanParametersService = new ScanParametersService(listener, envVars);
+                    Set<String> scanType = scanParametersService.getSynopsysSecurityProducts(scanParams);
+                    boolean isBlackDuckScan = scanType.contains(SecurityProduct.BLACKDUCK.name());
+                    boolean isPolarisDuckScan = scanType.contains(SecurityProduct.POLARIS.name());
+                    String defaultSarifReportFilePath =
+                            Utility.getDefaultSarifReportFilePath(isBlackDuckScan, isPolarisDuckScan);
+                    String customSarifReportFilePath =
+                            Utility.getCustomSarifReportFilePath(scanParams, isBlackDuckScan, isPolarisDuckScan);
+                    String reportFilePath =
+                            Utility.determineSARIFReportFilePath(customSarifReportFilePath, defaultSarifReportFilePath);
+                    String reportFileName = Utility.determineSARIFReportFileName(customSarifReportFilePath);
+                    UploadReportService uploadReportService = new UploadReportService(
+                            run, listener, launcher, envVars, new ArtifactArchiver(reportFileName));
+                    uploadReportService.archiveReports(workspace.child(reportFilePath), ReportType.SARIF);
+                } else {
+                    logger.warn(
+                            "SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans");
+                }
             }
         }
 
