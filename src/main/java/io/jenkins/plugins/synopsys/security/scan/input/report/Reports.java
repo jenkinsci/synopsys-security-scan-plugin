@@ -7,7 +7,6 @@ public class Reports {
     private Sarif sarif;
 
     public Reports() {
-        this.sarif = new Sarif();
     }
 
     public Sarif getSarif() {

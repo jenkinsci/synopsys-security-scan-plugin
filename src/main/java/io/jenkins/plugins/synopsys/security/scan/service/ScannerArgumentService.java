@@ -16,6 +16,9 @@ import io.jenkins.plugins.synopsys.security.scan.input.NetworkAirGap;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
+import io.jenkins.plugins.synopsys.security.scan.input.report.File;
+import io.jenkins.plugins.synopsys.security.scan.input.report.Issue;
+import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Sarif;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
@@ -214,6 +217,7 @@ public class ScannerArgumentService {
         } else if (scanObject instanceof Polaris) {
             Polaris polaris = (Polaris) scanObject;
             if (sarifObject != null) {
+                polaris.setReports(new Reports());
                 polaris.getReports().setSarif(sarifObject);
             }
             bridgeInput.setPolaris(polaris);
@@ -352,7 +356,10 @@ public class ScannerArgumentService {
         if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY)) {
             String reports_sarif_file_path =
                     (String) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY);
-            sarif.getFile().setPath(reports_sarif_file_path);
+            if(reports_sarif_file_path != null) {
+                sarif.setFile(new File());
+                sarif.getFile().setPath(reports_sarif_file_path);
+            }
         }
         if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY)) {
             String reports_sarif_severities =
@@ -362,7 +369,9 @@ public class ScannerArgumentService {
                     reports_sarif_severities.toUpperCase().split(",");
 
             addArrayElementsToList(reports_sarif_severitiesInput, severities);
-            sarif.setSeverities(severities);
+            if(!severities.isEmpty()) {
+                sarif.setSeverities(severities);
+            }
         }
         if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY)) {
             Boolean reports_sarif_groupSCAIssues =
@@ -377,7 +386,10 @@ public class ScannerArgumentService {
                     reports_sarif_issue_types.toUpperCase().split(",");
 
             addArrayElementsToList(reports_sarif_issue_typesInput, issueTypes);
-            sarif.getIssue().setTypes(issueTypes);
+            if(!issueTypes.isEmpty()) {
+                sarif.setIssue(new Issue());
+                sarif.getIssue().setTypes(issueTypes);
+            }
         }
     }
 

@@ -37,7 +37,6 @@ public class Polaris {
         projectName = new ProjectName();
         assessmentTypes = new AssessmentTypes();
         branch = new Branch();
-        reports = new Reports();
     }
 
     public String getAccessToken() {
