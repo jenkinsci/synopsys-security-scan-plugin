@@ -101,6 +101,7 @@ public class SecurityScanner {
                     Set<String> scanType = scanParametersService.getSynopsysSecurityProducts(scanParams);
                     boolean isBlackDuckScan = scanType.contains(SecurityProduct.BLACKDUCK.name());
                     boolean isPolarisDuckScan = scanType.contains(SecurityProduct.POLARIS.name());
+
                     String defaultSarifReportFilePath =
                             Utility.getDefaultSarifReportFilePath(isBlackDuckScan, isPolarisDuckScan);
                     String customSarifReportFilePath =
@@ -108,6 +109,7 @@ public class SecurityScanner {
                     String reportFilePath =
                             Utility.determineSARIFReportFilePath(customSarifReportFilePath, defaultSarifReportFilePath);
                     String reportFileName = Utility.determineSARIFReportFileName(customSarifReportFilePath);
+
                     UploadReportService uploadReportService = new UploadReportService(
                             run, listener, launcher, envVars, new ArtifactArchiver(reportFileName));
                     uploadReportService.archiveReports(workspace.child(reportFilePath), ReportType.SARIF);
