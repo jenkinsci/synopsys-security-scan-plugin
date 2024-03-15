@@ -113,9 +113,6 @@ public class SecurityScanner {
                     UploadReportService uploadReportService = new UploadReportService(
                             run, listener, launcher, envVars, new ArtifactArchiver(reportFileName));
                     uploadReportService.archiveReports(workspace.child(reportFilePath), ReportType.SARIF);
-                } else {
-                    logger.warn(
-                            "SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans");
                 }
             }
         }
