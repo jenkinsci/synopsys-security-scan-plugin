@@ -77,6 +77,8 @@ public interface SecurityScan {
 
     public String getBlackduck_reports_sarif_severities();
 
+    public Boolean isBlackduck_reports_sarif_groupSCAIssues_temporary();
+
     public Boolean isReturn_status();
 
     public Boolean isPolaris_reports_sarif_create();
@@ -88,4 +90,6 @@ public interface SecurityScan {
     public String getPolaris_reports_sarif_severities();
 
     public String getPolaris_reports_sarif_issue_types();
+
+    public Boolean isPolaris_reports_sarif_groupSCAIssues_temporary();
 }
