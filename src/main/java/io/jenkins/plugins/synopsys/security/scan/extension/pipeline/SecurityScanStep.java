@@ -75,6 +75,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String polaris_project_name;
     private String polaris_assessment_types;
     private String polaris_triage;
+    private String polaris_test_sca_type;
     private String polaris_branch_name;
     //    private String polaris_branch_parent_name;
     private Boolean polaris_reports_sarif_create;
@@ -201,6 +202,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public String getPolaris_triage() {
         return polaris_triage;
+    }
+
+    public String getPolaris_test_sca_type() {
+        return polaris_test_sca_type;
     }
 
     public String getPolaris_branch_name() {
@@ -416,6 +421,11 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setPolaris_branch_name(String polaris_branch_name) {
         this.polaris_branch_name = Util.fixEmptyAndTrim(polaris_branch_name);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_test_sca_type(String polaris_test_sca_type) {
+        this.polaris_test_sca_type = Util.fixEmptyAndTrim(polaris_test_sca_type);
     }
 
     @DataBoundSetter

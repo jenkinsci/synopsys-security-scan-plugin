@@ -26,6 +26,9 @@ public class Polaris {
     @JsonProperty("branch")
     private Branch branch;
 
+    @JsonProperty("test")
+    private Test test;
+
     @JsonProperty("reports")
     private Reports reports;
 
@@ -34,6 +37,7 @@ public class Polaris {
         projectName = new ProjectName();
         assessmentTypes = new AssessmentTypes();
         branch = new Branch();
+        test = new Test();
         reports = new Reports();
     }
 
@@ -91,6 +95,14 @@ public class Polaris {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+    public Test getTest() {
+        return test;
+    }
+
+    public void setTest(Test test) {
+        this.test = test;
     }
 
     public Reports getReports() {

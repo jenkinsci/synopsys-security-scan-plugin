@@ -63,6 +63,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String polaris_assessment_types;
     private String polaris_triage;
     private String polaris_branch_name;
+    private String polaris_test_sca_type;
     //    private String polaris_branch_parent_name;
     private Boolean polaris_reports_sarif_create;
     private String polaris_reports_sarif_file_path;
@@ -207,6 +208,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public String getPolaris_branch_name() {
         return polaris_branch_name;
+    }
+
+    public String getPolaris_test_sca_type() {
+        return polaris_test_sca_type;
     }
 
     public Boolean isPolaris_reports_sarif_create() {
@@ -419,6 +424,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setPolaris_branch_name(String polaris_branch_name) {
         this.polaris_branch_name = Util.fixEmptyAndTrim(polaris_branch_name);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_test_sca_type(String polaris_test_sca_type) {
+        this.polaris_test_sca_type = Util.fixEmptyAndTrim(polaris_test_sca_type);
     }
 
     @DataBoundSetter
