@@ -343,6 +343,11 @@ public class ScanParametersFactory {
                     ApplicationConstants.POLARIS_BRANCH_NAME_KEY, securityScan.getPolaris_branch_name());
         }
 
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_test_sca_type())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY, securityScan.getPolaris_test_sca_type());
+        }
+
         //        if (!Utility.isStringNullOrBlank(securityScan.getBridge_polaris_branch_parent_name())) {
         //            polarisParametersMap.put(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY,
         // securityScan.getBridge_polaris_branch_parent_name());
@@ -366,10 +371,10 @@ public class ScanParametersFactory {
                     securityScan.getBlackduck_reports_sarif_file_path());
         }
 
-        if (securityScan.isBlackduck_reports_sarif_groupSCAIssues() != null) {
+        if (securityScan.isBlackduck_reports_sarif_groupSCAIssues_temporary() != null) {
             sarifParameters.put(
                     ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY,
-                    securityScan.isBlackduck_reports_sarif_groupSCAIssues());
+                    securityScan.isBlackduck_reports_sarif_groupSCAIssues_temporary());
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_reports_sarif_severities())) {
@@ -390,10 +395,10 @@ public class ScanParametersFactory {
                     securityScan.getPolaris_reports_sarif_file_path());
         }
 
-        if (securityScan.isPolaris_reports_sarif_groupSCAIssues() != null) {
+        if (securityScan.isPolaris_reports_sarif_groupSCAIssues_temporary() != null) {
             sarifParameters.put(
                     ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY,
-                    securityScan.isPolaris_reports_sarif_groupSCAIssues());
+                    securityScan.isPolaris_reports_sarif_groupSCAIssues_temporary());
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getPolaris_reports_sarif_severities())) {
