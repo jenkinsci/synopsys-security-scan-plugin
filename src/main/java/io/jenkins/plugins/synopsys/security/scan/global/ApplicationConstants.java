@@ -30,6 +30,7 @@ public class ApplicationConstants {
     public static final String NOT_AVAILABLE = "NA";
     public static final String ENV_JOB_NAME_KEY = "JOB_NAME";
     public static final String ENV_CHANGE_ID_KEY = "CHANGE_ID";
+    public static final String ENV_CHANGE_TARGET_KEY = "CHANGE_TARGET";
     public static final String ENV_BRANCH_NAME_KEY = "BRANCH_NAME";
 
     public static final String PRODUCT_KEY = "product";

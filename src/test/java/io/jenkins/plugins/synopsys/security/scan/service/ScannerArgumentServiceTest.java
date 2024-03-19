@@ -59,6 +59,7 @@ public class ScannerArgumentServiceTest {
         Mockito.doReturn("fake-branch").when(envVarsMock).get(ApplicationConstants.ENV_BRANCH_NAME_KEY);
         Mockito.doReturn("fake-job/branch").when(envVarsMock).get(ApplicationConstants.ENV_JOB_NAME_KEY);
         Mockito.doReturn("0").when(envVarsMock).get(ApplicationConstants.ENV_CHANGE_ID_KEY);
+        Mockito.doReturn("fake-main").when(envVarsMock).get(ApplicationConstants.ENV_CHANGE_TARGET_KEY);
 
         scannerArgumentService = new ScannerArgumentService(listenerMock, envVarsMock, workspace);
     }
@@ -244,7 +245,7 @@ public class ScannerArgumentServiceTest {
 
         String jsonStringForPrComment = "{\"data\":{\"coverity\":{\"connect\":{\"url\":\"https://fake.coverity.url\","
                 + "\"user\":{\"name\":\"fake-user\",\"password\":\"fakeUserPassword\"},"
-                + "\"project\":{\"name\":\"fake-repo\"},\"stream\":{\"name\":\"fake-repo-fake-branch\"},"
+                + "\"project\":{\"name\":\"fake-repo\"},\"stream\":{\"name\":\"fake-repo-fake-main\"},"
                 + "\"policy\":{}},\"install\":{},\"automation\":{}},"
                 + "\"github\":{\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"name\":\"fake-repo\""
                 + ",\"owner\":{\"name\":\"fake-owner\"},\"pull\":{\"number\":1},\"branch\":{\"name\":"

@@ -216,6 +216,9 @@ public class ScannerArgumentService {
             if (sarifObject != null) {
                 polaris.getReports().setSarif(sarifObject);
             }
+            if (scmObject != null) {
+                setPolarisApplicationNameAndProjectName(polaris, scmObject);
+            }
             bridgeInput.setPolaris(polaris);
         }
     }
@@ -223,14 +226,31 @@ public class ScannerArgumentService {
     private void setCoverityProjectNameAndStreamName(Coverity coverity, Object scmObject) {
         String repositoryName = getRepositoryName(scmObject);
         String branchName = envVars.get(ApplicationConstants.ENV_BRANCH_NAME_KEY);
+        String targetBranchName = envVars.get(ApplicationConstants.ENV_CHANGE_TARGET_KEY);
+        boolean isPullRequest = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null ? true : false;
 
         if (Utility.isStringNullOrBlank(coverity.getConnect().getProject().getName()) && repositoryName != null) {
             coverity.getConnect().getProject().setName(repositoryName);
         }
+
+        String defaultStreamName = isPullRequest ? targetBranchName : branchName;
+
         if (Utility.isStringNullOrBlank(coverity.getConnect().getStream().getName())
                 && repositoryName != null
-                && branchName != null) {
-            coverity.getConnect().getStream().setName(repositoryName.concat("-").concat(branchName));
+                && defaultStreamName != null) {
+            coverity.getConnect().getStream().setName(repositoryName.concat("-").concat(defaultStreamName));
+        }
+    }
+
+    private void setPolarisApplicationNameAndProjectName(Polaris polaris, Object scmObject) {
+        String repositoryName = getRepositoryName(scmObject);
+
+        if (Utility.isStringNullOrBlank(polaris.getProjectName().getName()) && repositoryName != null) {
+            polaris.getProjectName().setName(repositoryName);
+        }
+
+        if (Utility.isStringNullOrBlank(polaris.getApplicationName().getName()) && repositoryName != null) {
+            polaris.getApplicationName().setName(repositoryName);
         }
     }
 
