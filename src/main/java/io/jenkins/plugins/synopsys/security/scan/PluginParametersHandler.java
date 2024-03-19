@@ -22,7 +22,6 @@ public class PluginParametersHandler {
     private final TaskListener listener;
     private final EnvVars envVars;
     private final LoggerWrapper logger;
-    private final String LOG_DASH = " --- ";
 
     public PluginParametersHandler(
             SecurityScanner scanner, FilePath workspace, EnvVars envVars, TaskListener listener) {
@@ -122,7 +121,7 @@ public class PluginParametersHandler {
     }
 
     private void logMessagesForProductParameters(Map<String, Object> scanParameters, Set<String> securityProducts) {
-        logger.info(LOG_DASH + ApplicationConstants.PRODUCT_KEY + " = " + securityProducts.toString());
+        logger.info(LogMessages.LOG_DASH + ApplicationConstants.PRODUCT_KEY + " = " + securityProducts.toString());
 
         for (String product : securityProducts) {
             String securityProduct = product.toLowerCase();
@@ -137,7 +136,7 @@ public class PluginParametersHandler {
                             || key.equals(ApplicationConstants.COVERITY_PASSPHRASE_KEY)) {
                         value = LogMessages.ASTERISKS;
                     }
-                    logger.info(LOG_DASH + key + " = " + value.toString());
+                    logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
                 }
             }
 
@@ -157,7 +156,7 @@ public class PluginParametersHandler {
                     || key.equals(ApplicationConstants.NETWORK_AIRGAP_KEY)
                     || key.equals(ApplicationConstants.RETURN_STATUS_KEY)) {
                 Object value = entry.getValue();
-                logger.info(LOG_DASH + key + " = " + value.toString());
+                logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
             }
         }
     }
