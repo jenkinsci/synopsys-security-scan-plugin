@@ -67,10 +67,10 @@
 
     <div id="polaris" style="display: none;">
         <f:section title="Polaris Parameters">
-            <f:entry field="polaris_application_name" title="Polaris Application Name (Mandatory)">
+            <f:entry field="polaris_application_name" title="Polaris Application Name (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="polaris_project_name" title="Polaris Project Name (Mandatory)">
+            <f:entry field="polaris_project_name" title="Polaris Project Name (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="polaris_assessment_types" title="Polaris Assessment Types (Mandatory)">
