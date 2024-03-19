@@ -105,11 +105,23 @@ public class PluginParametersHandler {
     }
 
     public void logMessagesForParameters(Map<String, Object> scanParameters, Set<String> securityProducts) {
-        final String LOG_DASH = " --- ";
-
         logger.println("-------------------------- Parameter Validation Initiated --------------------------");
 
-        logger.info(LOG_DASH + ApplicationConstants.PRODUCT_KEY + " = " + securityProducts.toString());
+        logMessagesForProductParameters(scanParameters, securityProducts);
+
+        logMessagesForBridgeParameters(scanParameters);
+
+        if ((Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
+                        || Objects.equals(
+                                scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true))
+                && envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null) {
+            logger.warn(
+                    "SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans");
+        }
+    }
+
+    private void logMessagesForProductParameters(Map<String, Object> scanParameters, Set<String> securityProducts) {
+        logger.info(LogMessages.LOG_DASH + ApplicationConstants.PRODUCT_KEY + " = " + securityProducts.toString());
 
         for (String product : securityProducts) {
             String securityProduct = product.toLowerCase();
@@ -124,13 +136,15 @@ public class PluginParametersHandler {
                             || key.equals(ApplicationConstants.COVERITY_PASSPHRASE_KEY)) {
                         value = LogMessages.ASTERISKS;
                     }
-                    logger.info(LOG_DASH + key + " = " + value.toString());
+                    logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
                 }
             }
 
             logger.println(LogMessages.DASHES);
         }
+    }
 
+    private void logMessagesForBridgeParameters(Map<String, Object> scanParameters) {
         logger.info("Parameters for bridge:");
 
         for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
@@ -142,16 +156,8 @@ public class PluginParametersHandler {
                     || key.equals(ApplicationConstants.NETWORK_AIRGAP_KEY)
                     || key.equals(ApplicationConstants.RETURN_STATUS_KEY)) {
                 Object value = entry.getValue();
-                logger.info(LOG_DASH + key + " = " + value.toString());
+                logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
             }
-        }
-
-        if ((Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
-                        || Objects.equals(
-                                scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true))
-                && envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null) {
-            logger.warn(
-                    "SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans");
         }
     }
 }
