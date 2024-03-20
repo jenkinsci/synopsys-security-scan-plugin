@@ -69,12 +69,14 @@ public class BitbucketRepositoryService {
         bitbucket.getApi().setUrl(serverUrl);
         bitbucket.getApi().setToken(bitbucketToken);
 
-        Pull pull = new Pull();
-        pull.setNumber(projectRepositoryPullNumber);
-
         Repository repository = new Repository();
         repository.setName(repositoryName);
-        repository.setPull(pull);
+
+        if(projectRepositoryPullNumber != null) {
+            Pull pull = new Pull();
+            pull.setNumber(projectRepositoryPullNumber);
+            repository.setPull(pull);
+        }
 
         bitbucket.getProject().setKey(projectKey);
         bitbucket.getProject().setRepository(repository);

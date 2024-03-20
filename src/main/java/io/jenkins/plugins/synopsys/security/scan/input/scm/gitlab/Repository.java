@@ -16,7 +16,6 @@ public class Repository {
 
     public Repository() {
         branch = new Branch();
-        pull = new Pull();
     }
 
     public Branch getBranch() {

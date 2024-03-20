@@ -11,7 +11,6 @@ public class Repository {
     private String name;
 
     public Repository() {
-        pull = new Pull();
     }
 
     public String getName() {
