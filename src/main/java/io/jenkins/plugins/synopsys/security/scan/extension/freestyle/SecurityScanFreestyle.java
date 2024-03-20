@@ -43,6 +43,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String blackduck_reports_sarif_file_path;
     private Boolean blackduck_reports_sarif_groupSCAIssues;
     private String blackduck_reports_sarif_severities;
+    private Boolean blackduck_reports_sarif_groupSCAIssues_temporary;
 
     private String coverity_url;
     private String coverity_user;
@@ -69,6 +70,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String polaris_reports_sarif_issue_types;
     private Boolean polaris_reports_sarif_groupSCAIssues;
     private String polaris_reports_sarif_severities;
+    private Boolean polaris_reports_sarif_groupSCAIssues_temporary;
 
     private transient String bitbucket_token;
 
@@ -134,6 +136,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public String getBlackduck_reports_sarif_severities() {
         return blackduck_reports_sarif_severities;
+    }
+
+    public Boolean isBlackduck_reports_sarif_groupSCAIssues_temporary() {
+        return blackduck_reports_sarif_groupSCAIssues_temporary;
     }
 
     public String getCoverity_url() {
@@ -226,6 +232,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public String getPolaris_reports_sarif_issue_types() {
         return polaris_reports_sarif_issue_types;
+    }
+
+    public Boolean isPolaris_reports_sarif_groupSCAIssues_temporary() {
+        return polaris_reports_sarif_groupSCAIssues_temporary;
     }
 
     public String getBitbucket_token() {
@@ -322,7 +332,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     @DataBoundSetter
     public void setBlackduck_reports_sarif_groupSCAIssues(Boolean blackduck_reports_sarif_groupSCAIssues) {
-        this.blackduck_reports_sarif_groupSCAIssues = blackduck_reports_sarif_groupSCAIssues ? true : null;
+        this.blackduck_reports_sarif_groupSCAIssues = this.blackduck_reports_sarif_groupSCAIssues_temporary =
+                blackduck_reports_sarif_groupSCAIssues ? true : false;
     }
 
     @DataBoundSetter
@@ -432,7 +443,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     @DataBoundSetter
     public void setPolaris_reports_sarif_groupSCAIssues(Boolean polaris_reports_sarif_groupSCAIssues) {
-        this.polaris_reports_sarif_groupSCAIssues = polaris_reports_sarif_groupSCAIssues ? true : null;
+        this.polaris_reports_sarif_groupSCAIssues = this.polaris_reports_sarif_groupSCAIssues_temporary =
+                polaris_reports_sarif_groupSCAIssues ? true : false;
     }
 
     @DataBoundSetter

@@ -53,8 +53,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String blackduck_download_url;
     private Boolean blackduck_reports_sarif_create;
     private String blackduck_reports_sarif_file_path;
+
     private Boolean blackduck_reports_sarif_groupSCAIssues;
     private String blackduck_reports_sarif_severities;
+    private Boolean blackduck_reports_sarif_groupSCAIssues_temporary;
 
     private String coverity_url;
     private String coverity_user;
@@ -81,7 +83,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String polaris_reports_sarif_issue_types;
     private Boolean polaris_reports_sarif_groupSCAIssues;
     private String polaris_reports_sarif_severities;
-
+    private Boolean polaris_reports_sarif_groupSCAIssues_temporary;
     private transient String bitbucket_token;
     private transient String github_token;
     private transient String gitlab_token;
@@ -262,6 +264,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return blackduck_reports_sarif_severities;
     }
 
+    public Boolean isBlackduck_reports_sarif_groupSCAIssues_temporary() {
+        return blackduck_reports_sarif_groupSCAIssues_temporary;
+    }
+
     public Boolean isPolaris_reports_sarif_create() {
         return polaris_reports_sarif_create;
     }
@@ -280,6 +286,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public String getPolaris_reports_sarif_issue_types() {
         return polaris_reports_sarif_issue_types;
+    }
+
+    public Boolean isPolaris_reports_sarif_groupSCAIssues_temporary() {
+        return polaris_reports_sarif_groupSCAIssues_temporary;
     }
 
     @DataBoundSetter
@@ -476,6 +486,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setBlackduck_reports_sarif_groupSCAIssues(Boolean blackduck_reports_sarif_groupSCAIssues) {
         this.blackduck_reports_sarif_groupSCAIssues = blackduck_reports_sarif_groupSCAIssues ? true : null;
+        this.blackduck_reports_sarif_groupSCAIssues_temporary = blackduck_reports_sarif_groupSCAIssues ? true : false;
     }
 
     @DataBoundSetter
@@ -496,6 +507,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setPolaris_reports_sarif_groupSCAIssues(Boolean polaris_reports_sarif_groupSCAIssues) {
         this.polaris_reports_sarif_groupSCAIssues = polaris_reports_sarif_groupSCAIssues ? true : null;
+        this.polaris_reports_sarif_groupSCAIssues_temporary = polaris_reports_sarif_groupSCAIssues ? true : false;
     }
 
     @DataBoundSetter

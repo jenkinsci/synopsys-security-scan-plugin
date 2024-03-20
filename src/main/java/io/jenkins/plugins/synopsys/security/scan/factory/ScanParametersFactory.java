@@ -371,10 +371,10 @@ public class ScanParametersFactory {
                     securityScan.getBlackduck_reports_sarif_file_path());
         }
 
-        if (securityScan.isBlackduck_reports_sarif_groupSCAIssues() != null) {
+        if (securityScan.isBlackduck_reports_sarif_groupSCAIssues_temporary() != null) {
             sarifParameters.put(
                     ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY,
-                    securityScan.isBlackduck_reports_sarif_groupSCAIssues());
+                    securityScan.isBlackduck_reports_sarif_groupSCAIssues_temporary());
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_reports_sarif_severities())) {
@@ -395,10 +395,10 @@ public class ScanParametersFactory {
                     securityScan.getPolaris_reports_sarif_file_path());
         }
 
-        if (securityScan.isPolaris_reports_sarif_groupSCAIssues() != null) {
+        if (securityScan.isPolaris_reports_sarif_groupSCAIssues_temporary() != null) {
             sarifParameters.put(
                     ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY,
-                    securityScan.isPolaris_reports_sarif_groupSCAIssues());
+                    securityScan.isPolaris_reports_sarif_groupSCAIssues_temporary());
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getPolaris_reports_sarif_severities())) {
