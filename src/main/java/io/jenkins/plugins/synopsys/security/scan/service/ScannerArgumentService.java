@@ -205,6 +205,7 @@ public class ScannerArgumentService {
         if (scanObject instanceof BlackDuck) {
             BlackDuck blackDuck = (BlackDuck) scanObject;
             if (sarifObject != null) {
+                blackDuck.setReports(new Reports());
                 blackDuck.getReports().setSarif(sarifObject);
             }
             bridgeInput.setBlackDuck(blackDuck);
@@ -328,7 +329,11 @@ public class ScannerArgumentService {
         if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)) {
             String reports_sarif_file_path =
                     (String) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY);
-            sarif.getFile().setPath(reports_sarif_file_path);
+            if(reports_sarif_file_path != null) {
+                sarif.setFile(new File());
+                sarif.getFile().setPath(reports_sarif_file_path);
+            }
+
         }
         if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY)) {
             String reports_sarif_severities =
@@ -338,7 +343,10 @@ public class ScannerArgumentService {
                     reports_sarif_severities.toUpperCase().split(",");
 
             addArrayElementsToList(reports_sarif_severitiesInput, severities);
-            sarif.setSeverities(severities);
+            if(!severities.isEmpty()) {
+                sarif.setSeverities(severities);
+            }
+
         }
         if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY)) {
             Boolean reports_sarif_groupSCAIssues =

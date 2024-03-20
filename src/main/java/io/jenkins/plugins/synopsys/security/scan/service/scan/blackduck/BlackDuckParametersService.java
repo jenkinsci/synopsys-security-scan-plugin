@@ -3,8 +3,8 @@ package io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
-import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
-import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Download;
+import io.jenkins.plugins.synopsys.security.scan.input.blackduck.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +47,7 @@ public class BlackDuckParametersService {
 
     public BlackDuck prepareBlackDuckObjectForBridge(Map<String, Object> blackDuckParameters) {
         BlackDuck blackDuck = new BlackDuck();
+        Scan scan = new Scan();
 
         for (Map.Entry<String, Object> entry : blackDuckParameters.entrySet()) {
             String key = entry.getKey();
@@ -63,10 +64,10 @@ public class BlackDuckParametersService {
                     setInstallDirectory(blackDuck, value);
                     break;
                 case ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY:
-                    setScanFull(blackDuck, value);
+                    setScanFull(blackDuck, value, scan);
                     break;
                 case ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY:
-                    setScanFailureSeverities(blackDuck, value);
+                    setScanFailureSeverities(blackDuck, value, scan);
                     break;
                 case ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY:
                     setAutomationFixpr(blackDuck, value);
@@ -86,16 +87,21 @@ public class BlackDuckParametersService {
     }
 
     private void setInstallDirectory(BlackDuck blackDuck, String value) {
-        blackDuck.getInstall().setDirectory(value);
+        if(value != null) {
+            blackDuck.setInstall(new Install());
+            blackDuck.getInstall().setDirectory(value);
+        }
+
     }
 
-    private void setScanFull(BlackDuck blackDuck, String value) {
+    private void setScanFull(BlackDuck blackDuck, String value, Scan scan) {
         if (isBoolean(value)) {
+            blackDuck.setScan(scan);
             blackDuck.getScan().setFull(Boolean.parseBoolean(value));
         }
     }
 
-    private void setScanFailureSeverities(BlackDuck blackDuck, String value) {
+    private void setScanFailureSeverities(BlackDuck blackDuck, String value, Scan scan) {
         if (!value.isEmpty()) {
             List<String> failureSeverities = new ArrayList<>();
             String[] failureSeveritiesInput = value.toUpperCase().split(",");
@@ -103,26 +109,35 @@ public class BlackDuckParametersService {
             for (String input : failureSeveritiesInput) {
                 failureSeverities.add(input.trim());
             }
-            blackDuck.getScan().getFailure().setSeverities(failureSeverities);
+            if(!failureSeverities.isEmpty()) {
+                blackDuck.setScan(scan);
+                blackDuck.getScan().setFailure(new Failure());
+                blackDuck.getScan().getFailure().setSeverities(failureSeverities);
+            }
+
         }
     }
 
     private void setAutomationFixpr(BlackDuck blackDuck, String value) {
         if (isBoolean(value)) {
+            blackDuck.setAutomation(new Automation());
             blackDuck.getAutomation().setFixpr(Boolean.parseBoolean(value));
         }
     }
 
     private void setAutomationPrComment(BlackDuck blackDuck, String value) {
         if (isBoolean(value)) {
+            blackDuck.setAutomation(new Automation());
             blackDuck.getAutomation().setPrComment(Boolean.parseBoolean(value));
         }
     }
 
     private void setDownloadUrl(BlackDuck blackDuck, String value) {
-        Download download = new Download();
-        download.setUrl(value);
-        blackDuck.setDownload(download);
+        if(value != null) {
+            Download download = new Download();
+            download.setUrl(value);
+            blackDuck.setDownload(download);
+        }
     }
 
     private boolean isBoolean(String value) {

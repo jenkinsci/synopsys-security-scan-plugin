@@ -10,7 +10,6 @@ public class Scan {
     private Failure failure;
 
     public Scan() {
-        failure = new Failure();
     }
 
     public Boolean getFull() {
