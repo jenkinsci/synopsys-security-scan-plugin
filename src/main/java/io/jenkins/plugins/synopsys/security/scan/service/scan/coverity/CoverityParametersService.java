@@ -5,7 +5,9 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
-import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Install;
+import io.jenkins.plugins.synopsys.security.scan.input.coverity.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -110,13 +112,20 @@ public class CoverityParametersService {
                     coverity.getConnect().getStream().setName(value);
                     break;
                 case ApplicationConstants.COVERITY_POLICY_VIEW_KEY:
-                    coverity.getConnect().getPolicy().setView(value);
+                    if(!value.isBlank()) {
+                        coverity.getConnect().setPolicy(new Policy());
+                        coverity.getConnect().getPolicy().setView(value);
+                    }
                     break;
                 case ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY:
-                    coverity.getInstall().setDirectory(value);
+                    if(!value.isBlank()) {
+                        coverity.setInstall(new Install());
+                        coverity.getInstall().setDirectory(value);
+                    }
                     break;
                 case ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY:
                     if (value.equals("true") || value.equals("false")) {
+                        coverity.setAutomation(new Automation());
                         coverity.getAutomation().setPrComment(Boolean.parseBoolean(value));
                     }
                     break;

@@ -22,7 +22,6 @@ public class Connect {
         user = new User();
         project = new Project();
         stream = new Stream();
-        policy = new Policy();
     }
 
     public String getUrl() {
