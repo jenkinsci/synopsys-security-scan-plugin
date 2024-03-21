@@ -10,8 +10,7 @@ public class Repository {
     @JsonProperty("name")
     private String name;
 
-    public Repository() {
-    }
+    public Repository() {}
 
     public String getName() {
         return name;

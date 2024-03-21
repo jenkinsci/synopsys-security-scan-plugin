@@ -7,7 +7,6 @@ import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Install;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -112,13 +111,13 @@ public class CoverityParametersService {
                     coverity.getConnect().getStream().setName(value);
                     break;
                 case ApplicationConstants.COVERITY_POLICY_VIEW_KEY:
-                    if(!value.isBlank()) {
+                    if (!value.isBlank()) {
                         coverity.getConnect().setPolicy(new Policy());
                         coverity.getConnect().getPolicy().setView(value);
                     }
                     break;
                 case ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY:
-                    if(!value.isBlank()) {
+                    if (!value.isBlank()) {
                         coverity.setInstall(new Install());
                         coverity.getInstall().setDirectory(value);
                     }

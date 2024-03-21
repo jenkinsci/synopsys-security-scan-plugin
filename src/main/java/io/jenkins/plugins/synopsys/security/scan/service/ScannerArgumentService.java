@@ -329,11 +329,10 @@ public class ScannerArgumentService {
         if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)) {
             String reports_sarif_file_path =
                     (String) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY);
-            if(reports_sarif_file_path != null) {
+            if (reports_sarif_file_path != null) {
                 sarif.setFile(new File());
                 sarif.getFile().setPath(reports_sarif_file_path);
             }
-
         }
         if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY)) {
             String reports_sarif_severities =
@@ -343,10 +342,9 @@ public class ScannerArgumentService {
                     reports_sarif_severities.toUpperCase().split(",");
 
             addArrayElementsToList(reports_sarif_severitiesInput, severities);
-            if(!severities.isEmpty()) {
+            if (!severities.isEmpty()) {
                 sarif.setSeverities(severities);
             }
-
         }
         if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY)) {
             Boolean reports_sarif_groupSCAIssues =
@@ -364,7 +362,7 @@ public class ScannerArgumentService {
         if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY)) {
             String reports_sarif_file_path =
                     (String) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY);
-            if(reports_sarif_file_path != null) {
+            if (reports_sarif_file_path != null) {
                 sarif.setFile(new File());
                 sarif.getFile().setPath(reports_sarif_file_path);
             }
@@ -377,7 +375,7 @@ public class ScannerArgumentService {
                     reports_sarif_severities.toUpperCase().split(",");
 
             addArrayElementsToList(reports_sarif_severitiesInput, severities);
-            if(!severities.isEmpty()) {
+            if (!severities.isEmpty()) {
                 sarif.setSeverities(severities);
             }
         }
@@ -394,7 +392,7 @@ public class ScannerArgumentService {
                     reports_sarif_issue_types.toUpperCase().split(",");
 
             addArrayElementsToList(reports_sarif_issue_typesInput, issueTypes);
-            if(!issueTypes.isEmpty()) {
+            if (!issueTypes.isEmpty()) {
                 sarif.setIssue(new Issue());
                 sarif.getIssue().setTypes(issueTypes);
             }

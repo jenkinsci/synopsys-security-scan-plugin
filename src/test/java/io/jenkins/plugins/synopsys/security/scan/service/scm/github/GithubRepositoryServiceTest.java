@@ -9,8 +9,6 @@ import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Host;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

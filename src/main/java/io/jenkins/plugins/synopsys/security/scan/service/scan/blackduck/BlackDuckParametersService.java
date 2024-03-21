@@ -4,7 +4,6 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -88,11 +87,10 @@ public class BlackDuckParametersService {
     }
 
     private void setInstallDirectory(BlackDuck blackDuck, String value) {
-        if(value != null) {
+        if (value != null) {
             blackDuck.setInstall(new Install());
             blackDuck.getInstall().setDirectory(value);
         }
-
     }
 
     private void setScanFull(BlackDuck blackDuck, String value, Scan scan) {
@@ -110,12 +108,11 @@ public class BlackDuckParametersService {
             for (String input : failureSeveritiesInput) {
                 failureSeverities.add(input.trim());
             }
-            if(!failureSeverities.isEmpty()) {
+            if (!failureSeverities.isEmpty()) {
                 blackDuck.setScan(scan);
                 blackDuck.getScan().setFailure(new Failure());
                 blackDuck.getScan().getFailure().setSeverities(failureSeverities);
             }
-
         }
     }
 
@@ -134,7 +131,7 @@ public class BlackDuckParametersService {
     }
 
     private void setDownloadUrl(BlackDuck blackDuck, String value) {
-        if(value != null) {
+        if (value != null) {
             Download download = new Download();
             download.setUrl(value);
             blackDuck.setDownload(download);

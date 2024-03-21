@@ -72,7 +72,7 @@ public class BitbucketRepositoryService {
         Repository repository = new Repository();
         repository.setName(repositoryName);
 
-        if(projectRepositoryPullNumber != null) {
+        if (projectRepositoryPullNumber != null) {
             Pull pull = new Pull();
             pull.setNumber(projectRepositoryPullNumber);
             repository.setPull(pull);

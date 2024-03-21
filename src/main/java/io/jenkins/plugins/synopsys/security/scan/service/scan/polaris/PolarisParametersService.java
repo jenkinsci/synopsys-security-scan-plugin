@@ -5,7 +5,6 @@ import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -93,7 +92,7 @@ public class PolarisParametersService {
                     }
                     break;
                 case ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY:
-                    if(!value.isEmpty()) {
+                    if (!value.isEmpty()) {
                         polaris.setTest(new Test());
                         polaris.getTest().getSca().setType(value);
                     }

@@ -8,9 +8,8 @@ import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.common.Pull;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
-import java.util.Map;
-
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Host;
+import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 public class GithubRepositoryService {
@@ -45,7 +44,7 @@ public class GithubRepositoryService {
         github.getRepository().setName(repositoryName);
         github.getRepository().getOwner().setName(repositoryOwner);
 
-        if(projectRepositoryPullNumber != null) {
+        if (projectRepositoryPullNumber != null) {
             Pull pull = new Pull();
             pull.setNumber(projectRepositoryPullNumber);
             github.getRepository().setPull(pull);
