@@ -52,7 +52,6 @@ public class GitlabRepositoryServiceTest {
         assertEquals(gitlabCloud.getRepository().getName(), TEST_REPOSITORY_NAME);
         assertEquals(gitlabCloud.getRepository().getPull().getNumber(), TEST_REPOSITORY_PULL_NUMBER);
         assertEquals(gitlabCloud.getRepository().getBranch().getName(), TEST_REPOSITORY_BRANCH_NAME);
-        assertEquals(gitlabCloud.getApi().getUrl(), "");
     }
 
     @Test

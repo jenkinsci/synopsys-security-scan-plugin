@@ -48,6 +48,7 @@ public class BlackDuckParametersService {
     public BlackDuck prepareBlackDuckObjectForBridge(Map<String, Object> blackDuckParameters) {
         BlackDuck blackDuck = new BlackDuck();
         Scan scan = new Scan();
+        Automation automation = new Automation();
 
         for (Map.Entry<String, Object> entry : blackDuckParameters.entrySet()) {
             String key = entry.getKey();
@@ -70,10 +71,10 @@ public class BlackDuckParametersService {
                     setScanFailureSeverities(blackDuck, value, scan);
                     break;
                 case ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY:
-                    setAutomationFixpr(blackDuck, value);
+                    setAutomationFixpr(blackDuck, value, automation);
                     break;
                 case ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY:
-                    setAutomationPrComment(blackDuck, value);
+                    setAutomationPrComment(blackDuck, value, automation);
                     break;
                 case ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY:
                     setDownloadUrl(blackDuck, value);
@@ -118,16 +119,16 @@ public class BlackDuckParametersService {
         }
     }
 
-    private void setAutomationFixpr(BlackDuck blackDuck, String value) {
+    private void setAutomationFixpr(BlackDuck blackDuck, String value, Automation automation) {
         if (isBoolean(value)) {
-            blackDuck.setAutomation(new Automation());
+            blackDuck.setAutomation(automation);
             blackDuck.getAutomation().setFixpr(Boolean.parseBoolean(value));
         }
     }
 
-    private void setAutomationPrComment(BlackDuck blackDuck, String value) {
+    private void setAutomationPrComment(BlackDuck blackDuck, String value, Automation automation) {
         if (isBoolean(value)) {
-            blackDuck.setAutomation(new Automation());
+            blackDuck.setAutomation(automation);
             blackDuck.getAutomation().setPrComment(Boolean.parseBoolean(value));
         }
     }
