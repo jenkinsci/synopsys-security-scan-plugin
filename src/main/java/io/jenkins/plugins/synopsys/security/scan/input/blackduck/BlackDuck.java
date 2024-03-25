@@ -26,7 +26,6 @@ public class BlackDuck {
     @JsonProperty("reports")
     private Reports reports;
 
-
     public String getUrl() {
         return url;
     }

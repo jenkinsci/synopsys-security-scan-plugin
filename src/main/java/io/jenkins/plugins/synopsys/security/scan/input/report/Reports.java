@@ -6,7 +6,6 @@ public class Reports {
     @JsonProperty("sarif")
     private Sarif sarif;
 
-
     public Sarif getSarif() {
         return sarif;
     }
