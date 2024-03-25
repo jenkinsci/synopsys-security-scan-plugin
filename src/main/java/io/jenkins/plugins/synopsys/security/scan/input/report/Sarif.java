@@ -19,7 +19,6 @@ public class Sarif {
     @JsonProperty("groupSCAIssues")
     private Boolean groupSCAIssues;
 
-    public Sarif() {}
 
     public Issue getIssue() {
         return issue;

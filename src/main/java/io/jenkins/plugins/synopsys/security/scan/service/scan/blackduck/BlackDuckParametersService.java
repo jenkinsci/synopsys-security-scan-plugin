@@ -88,15 +88,16 @@ public class BlackDuckParametersService {
 
     private void setInstallDirectory(BlackDuck blackDuck, String value) {
         if (value != null) {
-            blackDuck.setInstall(new Install());
-            blackDuck.getInstall().setDirectory(value);
+            Install install = new Install();
+            install.setDirectory(value);
+            blackDuck.setInstall(install);
         }
     }
 
     private void setScanFull(BlackDuck blackDuck, String value, Scan scan) {
         if (isBoolean(value)) {
+            scan.setFull(Boolean.parseBoolean(value));
             blackDuck.setScan(scan);
-            blackDuck.getScan().setFull(Boolean.parseBoolean(value));
         }
     }
 
@@ -109,24 +110,25 @@ public class BlackDuckParametersService {
                 failureSeverities.add(input.trim());
             }
             if (!failureSeverities.isEmpty()) {
+                Failure failure = new Failure();
+                failure.setSeverities(failureSeverities);
+                scan.setFailure(failure);
                 blackDuck.setScan(scan);
-                blackDuck.getScan().setFailure(new Failure());
-                blackDuck.getScan().getFailure().setSeverities(failureSeverities);
             }
         }
     }
 
     private void setAutomationFixpr(BlackDuck blackDuck, String value, Automation automation) {
         if (isBoolean(value)) {
+            automation.setFixpr(Boolean.parseBoolean(value));
             blackDuck.setAutomation(automation);
-            blackDuck.getAutomation().setFixpr(Boolean.parseBoolean(value));
         }
     }
 
     private void setAutomationPrComment(BlackDuck blackDuck, String value, Automation automation) {
         if (isBoolean(value)) {
+            automation.setPrComment(Boolean.parseBoolean(value));
             blackDuck.setAutomation(automation);
-            blackDuck.getAutomation().setPrComment(Boolean.parseBoolean(value));
         }
     }
 

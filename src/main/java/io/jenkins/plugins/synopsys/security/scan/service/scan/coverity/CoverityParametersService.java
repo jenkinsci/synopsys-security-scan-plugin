@@ -112,20 +112,23 @@ public class CoverityParametersService {
                     break;
                 case ApplicationConstants.COVERITY_POLICY_VIEW_KEY:
                     if (!value.isBlank()) {
-                        coverity.getConnect().setPolicy(new Policy());
-                        coverity.getConnect().getPolicy().setView(value);
+                        Policy policy = new Policy();
+                        policy.setView(value);
+                        coverity.getConnect().setPolicy(policy);
                     }
                     break;
                 case ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY:
                     if (!value.isBlank()) {
-                        coverity.setInstall(new Install());
-                        coverity.getInstall().setDirectory(value);
+                        Install install = new Install();
+                        install.setDirectory(value);
+                        coverity.setInstall(install);
                     }
                     break;
                 case ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY:
                     if (value.equals("true") || value.equals("false")) {
-                        coverity.setAutomation(new Automation());
-                        coverity.getAutomation().setPrComment(Boolean.parseBoolean(value));
+                        Automation automation = new Automation();
+                        automation.setPrComment(Boolean.parseBoolean(value));
+                        coverity.setAutomation(automation);
                     }
                     break;
                 case ApplicationConstants.COVERITY_VERSION_KEY:

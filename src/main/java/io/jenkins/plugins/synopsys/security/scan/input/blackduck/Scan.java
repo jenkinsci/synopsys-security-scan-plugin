@@ -9,7 +9,6 @@ public class Scan {
     @JsonProperty("failure")
     private Failure failure;
 
-    public Scan() {}
 
     public Boolean getFull() {
         return full;

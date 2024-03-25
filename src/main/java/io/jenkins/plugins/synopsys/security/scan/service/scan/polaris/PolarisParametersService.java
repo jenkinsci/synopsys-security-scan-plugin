@@ -93,8 +93,9 @@ public class PolarisParametersService {
                     break;
                 case ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY:
                     if (!value.isEmpty()) {
-                        polaris.setTest(new Test());
-                        polaris.getTest().getSca().setType(value);
+                        Test test = new Test();
+                        test.getSca().setType(value);
+                        polaris.setTest(test);
                     }
                     break;
                 default:
