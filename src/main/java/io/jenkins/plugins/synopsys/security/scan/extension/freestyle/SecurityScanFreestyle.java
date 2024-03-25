@@ -332,8 +332,12 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     @DataBoundSetter
     public void setBlackduck_reports_sarif_groupSCAIssues(Boolean blackduck_reports_sarif_groupSCAIssues) {
-        this.blackduck_reports_sarif_groupSCAIssues = this.blackduck_reports_sarif_groupSCAIssues_temporary =
-                blackduck_reports_sarif_groupSCAIssues ? true : false;
+        if (blackduck_reports_sarif_create != null) {
+            this.blackduck_reports_sarif_groupSCAIssues = this.blackduck_reports_sarif_groupSCAIssues_temporary
+                    = blackduck_reports_sarif_groupSCAIssues;
+        } else {
+            this.blackduck_reports_sarif_groupSCAIssues = null;
+        }
     }
 
     @DataBoundSetter
@@ -443,8 +447,12 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     @DataBoundSetter
     public void setPolaris_reports_sarif_groupSCAIssues(Boolean polaris_reports_sarif_groupSCAIssues) {
-        this.polaris_reports_sarif_groupSCAIssues = this.polaris_reports_sarif_groupSCAIssues_temporary =
-                polaris_reports_sarif_groupSCAIssues ? true : false;
+        if (polaris_reports_sarif_create != null) {
+            this.polaris_reports_sarif_groupSCAIssues = this.polaris_reports_sarif_groupSCAIssues_temporary
+                    = polaris_reports_sarif_groupSCAIssues;
+        } else {
+            this.polaris_reports_sarif_groupSCAIssues = null;
+        }
     }
 
     @DataBoundSetter
