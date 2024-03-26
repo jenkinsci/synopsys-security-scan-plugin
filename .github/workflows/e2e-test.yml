@@ -1,0 +1,468 @@
+name: "Synopsys Intelligent Security Scan"
+on:
+  workflow_dispatch:
+   inputs:
+      hpi_name:
+        description: 'Name of hpi file'
+        required: true
+        type: string
+
+jobs:
+  delivery_stages:
+
+     runs-on: [ linux ]
+
+     steps:
+      
+      - name: unit testing
+        run: |
+          echo "unit testing stage"
+      - name: build
+        run: |
+          echo "build stage"
+      - name: pop
+        run: |
+          echo "Pop stage"
+      - name: install-plugin
+        run: |
+          sudo apt-get update
+          sudo apt-get install -qqy awscli jq openjdk-11-jdk
+          curl -O https://integrations-cloudbees.cloudops.synopsys.com/test-qa-controller/jnlpJars/jenkins-cli.jar
+          ls -al
+          chmod +x jenkins-cli.jar
+          export JENKINS_USER_ID=${{secrets.JENKINS_USER_ID}}
+          export JENKINS_API_TOKEN=${{secrets.JENKINS_API_TOKEN}}
+          ls -al
+          echo "java -jar jenkins-cli.jar -s https://integrations-cloudbees.cloudops.synopsys.com/test-qa-controller install-plugin https://e2e-integrations-test.s3.amazonaws.com/e2e-artifacts/${{ github.event.inputs.hpi_name }}"
+          java -jar jenkins-cli.jar -s https://integrations-cloudbees.cloudops.synopsys.com/test-qa-controller install-plugin "https://e2e-integrations-test.s3.amazonaws.com/e2e-artifacts/${{ github.event.inputs.hpi_name }}"
+          java -jar jenkins-cli.jar -s https://integrations-cloudbees.cloudops.synopsys.com/test-qa-controller safe-restart
+          status=0
+          while [[ "$status" != "200" ]];
+          do
+              status=$(curl  -u $JENKINS_USER_ID:$JENKINS_API_TOKEN -w "%{http_code}" https://integrations-cloudbees.cloudops.synopsys.com/test-qa-controller/crumbIssuer/api/json -s -o /dev/null)
+              echo $status
+              sleep 5
+          done
+  
+  e2e_linux_free_style_executions:
+    
+      needs: delivery_stages         
+      runs-on: [ linux ]
+
+      steps:
+
+      - name: install
+        run: |
+          sudo apt-get update
+          sudo apt-get install -qqy awscli jq openjdk-11-jdk
+            
+      - name: download e2e artifacts
+        run: |
+          aws s3 cp --recursive s3://e2e-integrations-test/e2e-artifacts/integrations/xml-data integrations/xml-data --no-progress
+          ls -al
+          aws s3 cp s3://e2e-integrations-test/e2e-artifacts/test-integrations-0.0.1-SNAPSHOT.jar test-integrations-0.0.1-SNAPSHOT.jar --no-progress
+          ls -al
+          pwd
+      
+      
+      - name: e2e_tests_linux
+        run: |
+          echo "product=integrations" >> /tmp/test.properties
+          echo "product.name=integrations" >> /tmp/test.properties
+          echo "ci=jenkins" >> /tmp/test.properties
+          echo "scm=github" >> /tmp/test.properties
+          echo "runner=linux" >> /tmp/test.properties
+          echo "runner.os=linux" >> /tmp/test.properties
+          echo "pipeline=true" >> /tmp/test.properties
+          echo "cloud.storage=S3" >> /tmp/test.properties
+          echo "jenkins.project.type=freestyle" >> /tmp/test.properties
+          echo "jenkins.username=${{secrets.JENKINS_USER_ID}}" >> /tmp/test.properties
+          echo "jenkins.url=https://integrations-cloudbees.cloudops.synopsys.com/test-qa-controller" >> /tmp/test.properties
+          echo "jenkins.token=${{secrets.JENKINS_API_TOKEN}}" >> /tmp/test.properties
+          chmod 755 test-integrations-0.0.1-SNAPSHOT.jar
+          pwd  && ls -la
+          cat /tmp/test.properties
+          java -enableassertions -DPropertyManager.file=/tmp/test.properties -jar test-integrations-0.0.1-SNAPSHOT.jar -testjar test-integrations-0.0.1-SNAPSHOT.jar  -xmlpathinjar com/synopsys/test/integrations/cases/suites/deployment/testng-scm-deployment.xml
+      
+      - name: Archive results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-output
+          path: test-output
+          
+  e2e_mac_free_style_executions:
+    
+      needs: delivery_stages         
+      runs-on: [ linux ]
+
+      steps:
+
+      - name: install
+        run: |
+          sudo apt-get update
+          sudo apt-get install -qqy awscli jq openjdk-11-jdk
+            
+      - name: download e2e artifacts
+        run: |
+          aws s3 cp --recursive s3://e2e-integrations-test/e2e-artifacts/integrations/xml-data integrations/xml-data --no-progress
+          ls -al
+          aws s3 cp s3://e2e-integrations-test/e2e-artifacts/test-integrations-0.0.1-SNAPSHOT.jar test-integrations-0.0.1-SNAPSHOT.jar --no-progress
+          ls -al
+          pwd
+      
+      
+      - name: e2e_tests_mac
+        run: |
+          echo "product=integrations" >> /tmp/test.properties
+          echo "product.name=integrations" >> /tmp/test.properties
+          echo "ci=jenkins" >> /tmp/test.properties
+          echo "scm=github" >> /tmp/test.properties
+          echo "runner=macos" >> /tmp/test.properties
+          echo "runner.os=macos" >> /tmp/test.properties
+          echo "pipeline=true" >> /tmp/test.properties
+          echo "cloud.storage=S3" >> /tmp/test.properties
+          echo "jenkins.project.type=freestyle" >> /tmp/test.properties
+          echo "jenkins.username=${{secrets.JENKINS_USER_ID}}" >> /tmp/test.properties
+          echo "jenkins.url=https://integrations-cloudbees.cloudops.synopsys.com/test-qa-controller" >> /tmp/test.properties
+          echo "jenkins.token=${{secrets.JENKINS_API_TOKEN}}" >> /tmp/test.properties
+          chmod 755 test-integrations-0.0.1-SNAPSHOT.jar
+          pwd  && ls -la
+          cat /tmp/test.properties
+          java -enableassertions -DPropertyManager.file=/tmp/test.properties -jar test-integrations-0.0.1-SNAPSHOT.jar -testjar test-integrations-0.0.1-SNAPSHOT.jar  -xmlpathinjar com/synopsys/test/integrations/cases/suites/deployment/testng-scm-deployment.xml
+      
+      - name: Archive results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-output
+          path: test-output
+  
+  e2e_windows_free_style_executions:
+    
+      needs: delivery_stages         
+      runs-on: [ linux ]
+
+      steps:
+
+      - name: install
+        run: |
+          sudo apt-get update
+          sudo apt-get install -qqy awscli jq openjdk-11-jdk
+            
+      - name: download e2e artifacts
+        run: |
+          aws s3 cp --recursive s3://e2e-integrations-test/e2e-artifacts/integrations/xml-data integrations/xml-data --no-progress
+          ls -al
+          aws s3 cp s3://e2e-integrations-test/e2e-artifacts/test-integrations-0.0.1-SNAPSHOT.jar test-integrations-0.0.1-SNAPSHOT.jar --no-progress
+          ls -al
+          pwd
+      
+      
+      - name: e2e_tests_windows
+        run: |
+          echo "product=integrations" >> /tmp/test.properties
+          echo "product.name=integrations" >> /tmp/test.properties
+          echo "ci=jenkins" >> /tmp/test.properties
+          echo "scm=github" >> /tmp/test.properties
+          echo "runner=windows" >> /tmp/test.properties
+          echo "runner.os=windows" >> /tmp/test.properties
+          echo "pipeline=true" >> /tmp/test.properties
+          echo "cloud.storage=S3" >> /tmp/test.properties
+          echo "jenkins.project.type=freestyle" >> /tmp/test.properties
+          echo "jenkins.username=${{secrets.JENKINS_USER_ID}}" >> /tmp/test.properties
+          echo "jenkins.url=https://integrations-cloudbees.cloudops.synopsys.com/test-qa-controller" >> /tmp/test.properties
+          echo "jenkins.token=${{secrets.JENKINS_API_TOKEN}}" >> /tmp/test.properties
+          chmod 755 test-integrations-0.0.1-SNAPSHOT.jar
+          pwd  && ls -la
+          cat /tmp/test.properties
+          java -enableassertions -DPropertyManager.file=/tmp/test.properties -jar test-integrations-0.0.1-SNAPSHOT.jar -testjar test-integrations-0.0.1-SNAPSHOT.jar  -xmlpathinjar com/synopsys/test/integrations/cases/suites/deployment/testng-scm-deployment.xml
+      
+      - name: Archive results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-output
+          path: test-output
+
+  e2e_linux_scripted_executions:
+    
+      needs: delivery_stages         
+      runs-on: [ linux ]
+
+      steps:
+
+      - name: install
+        run: |
+          sudo apt-get update
+          sudo apt-get install -qqy awscli jq openjdk-11-jdk
+            
+      - name: download e2e artifacts
+        run: |
+          aws s3 cp --recursive s3://e2e-integrations-test/e2e-artifacts/integrations/xml-data integrations/xml-data --no-progress
+          ls -al
+          aws s3 cp s3://e2e-integrations-test/e2e-artifacts/test-integrations-0.0.1-SNAPSHOT.jar test-integrations-0.0.1-SNAPSHOT.jar --no-progress
+          ls -al
+          pwd
+      
+      
+      - name: e2e_tests_linux
+        run: |
+          echo "product=integrations" >> /tmp/test.properties
+          echo "product.name=integrations" >> /tmp/test.properties
+          echo "ci=jenkins" >> /tmp/test.properties
+          echo "scm=github" >> /tmp/test.properties
+          echo "runner=linux" >> /tmp/test.properties
+          echo "runner.os=linux" >> /tmp/test.properties
+          echo "pipeline=true" >> /tmp/test.properties
+          echo "cloud.storage=S3" >> /tmp/test.properties
+          echo "jenkins.project.type=scripted" >> /tmp/test.properties
+          echo "jenkins.username=${{secrets.JENKINS_USER_ID}}" >> /tmp/test.properties
+          echo "jenkins.url=https://integrations-cloudbees.cloudops.synopsys.com/test-qa-controller" >> /tmp/test.properties
+          echo "jenkins.token=${{secrets.JENKINS_API_TOKEN}}" >> /tmp/test.properties
+          chmod 755 test-integrations-0.0.1-SNAPSHOT.jar
+          pwd  && ls -la
+          cat /tmp/test.properties
+          java -enableassertions -DPropertyManager.file=/tmp/test.properties -jar test-integrations-0.0.1-SNAPSHOT.jar -testjar test-integrations-0.0.1-SNAPSHOT.jar  -xmlpathinjar com/synopsys/test/integrations/cases/suites/deployment/testng-scm-deployment.xml
+      
+      - name: Archive results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-output
+          path: test-output
+          
+  e2e_mac_scripted_executions:
+    
+      needs: delivery_stages         
+      runs-on: [ linux ]
+
+      steps:
+
+      - name: install
+        run: |
+          sudo apt-get update
+          sudo apt-get install -qqy awscli jq openjdk-11-jdk
+            
+      - name: download e2e artifacts
+        run: |
+          aws s3 cp --recursive s3://e2e-integrations-test/e2e-artifacts/integrations/xml-data integrations/xml-data --no-progress
+          ls -al
+          aws s3 cp s3://e2e-integrations-test/e2e-artifacts/test-integrations-0.0.1-SNAPSHOT.jar test-integrations-0.0.1-SNAPSHOT.jar --no-progress
+          ls -al
+          pwd
+      
+      
+      - name: e2e_tests_mac
+        run: |
+          echo "product=integrations" >> /tmp/test.properties
+          echo "product.name=integrations" >> /tmp/test.properties
+          echo "ci=jenkins" >> /tmp/test.properties
+          echo "scm=github" >> /tmp/test.properties
+          echo "runner=macos" >> /tmp/test.properties
+          echo "runner.os=macos" >> /tmp/test.properties
+          echo "pipeline=true" >> /tmp/test.properties
+          echo "cloud.storage=S3" >> /tmp/test.properties
+          echo "jenkins.project.type=scripted" >> /tmp/test.properties
+          echo "jenkins.username=${{secrets.JENKINS_USER_ID}}" >> /tmp/test.properties
+          echo "jenkins.url=https://integrations-cloudbees.cloudops.synopsys.com/test-qa-controller" >> /tmp/test.properties
+          echo "jenkins.token=${{secrets.JENKINS_API_TOKEN}}" >> /tmp/test.properties
+          chmod 755 test-integrations-0.0.1-SNAPSHOT.jar
+          pwd  && ls -la
+          cat /tmp/test.properties
+          java -enableassertions -DPropertyManager.file=/tmp/test.properties -jar test-integrations-0.0.1-SNAPSHOT.jar -testjar test-integrations-0.0.1-SNAPSHOT.jar  -xmlpathinjar com/synopsys/test/integrations/cases/suites/deployment/testng-scm-deployment.xml
+      
+      - name: Archive results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-output
+          path: test-output
+  
+  e2e_windows_scripted_executions:
+    
+      needs: delivery_stages         
+      runs-on: [ linux ]
+
+      steps:
+
+      - name: install
+        run: |
+          sudo apt-get update
+          sudo apt-get install -qqy awscli jq openjdk-11-jdk
+            
+      - name: download e2e artifacts
+        run: |
+          aws s3 cp --recursive s3://e2e-integrations-test/e2e-artifacts/integrations/xml-data integrations/xml-data --no-progress
+          ls -al
+          aws s3 cp s3://e2e-integrations-test/e2e-artifacts/test-integrations-0.0.1-SNAPSHOT.jar test-integrations-0.0.1-SNAPSHOT.jar --no-progress
+          ls -al
+          pwd
+      
+      
+      - name: e2e_tests_windows
+        run: |
+          echo "product=integrations" >> /tmp/test.properties
+          echo "product.name=integrations" >> /tmp/test.properties
+          echo "ci=jenkins" >> /tmp/test.properties
+          echo "scm=github" >> /tmp/test.properties
+          echo "runner=windows" >> /tmp/test.properties
+          echo "runner.os=windows" >> /tmp/test.properties
+          echo "pipeline=true" >> /tmp/test.properties
+          echo "cloud.storage=S3" >> /tmp/test.properties
+          echo "jenkins.project.type=scripted" >> /tmp/test.properties
+          echo "jenkins.username=${{secrets.JENKINS_USER_ID}}" >> /tmp/test.properties
+          echo "jenkins.url=https://integrations-cloudbees.cloudops.synopsys.com/test-qa-controller" >> /tmp/test.properties
+          echo "jenkins.token=${{secrets.JENKINS_API_TOKEN}}" >> /tmp/test.properties
+          chmod 755 test-integrations-0.0.1-SNAPSHOT.jar
+          pwd  && ls -la
+          cat /tmp/test.properties
+          java -enableassertions -DPropertyManager.file=/tmp/test.properties -jar test-integrations-0.0.1-SNAPSHOT.jar -testjar test-integrations-0.0.1-SNAPSHOT.jar  -xmlpathinjar com/synopsys/test/integrations/cases/suites/deployment/testng-scm-deployment.xml
+      
+      - name: Archive results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-output
+          path: test-output
+
+  e2e_linux_declarative_executions:
+    
+      needs: delivery_stages         
+      runs-on: [ linux ]
+
+      steps:
+
+      - name: install
+        run: |
+          sudo apt-get update
+          sudo apt-get install -qqy awscli jq openjdk-11-jdk
+            
+      - name: download e2e artifacts
+        run: |
+          aws s3 cp --recursive s3://e2e-integrations-test/e2e-artifacts/integrations/xml-data integrations/xml-data --no-progress
+          ls -al
+          aws s3 cp s3://e2e-integrations-test/e2e-artifacts/test-integrations-0.0.1-SNAPSHOT.jar test-integrations-0.0.1-SNAPSHOT.jar --no-progress
+          ls -al
+          pwd
+      
+      
+      - name: e2e_tests_linux
+        run: |
+          echo "product=integrations" >> /tmp/test.properties
+          echo "product.name=integrations" >> /tmp/test.properties
+          echo "ci=jenkins" >> /tmp/test.properties
+          echo "scm=github" >> /tmp/test.properties
+          echo "runner=linux" >> /tmp/test.properties
+          echo "runner.os=linux" >> /tmp/test.properties
+          echo "pipeline=true" >> /tmp/test.properties
+          echo "cloud.storage=S3" >> /tmp/test.properties
+          echo "jenkins.project.type=declarative" >> /tmp/test.properties
+          echo "jenkins.username=${{secrets.JENKINS_USER_ID}}" >> /tmp/test.properties
+          echo "jenkins.url=https://integrations-cloudbees.cloudops.synopsys.com/test-qa-controller" >> /tmp/test.properties
+          echo "jenkins.token=${{secrets.JENKINS_API_TOKEN}}" >> /tmp/test.properties
+          chmod 755 test-integrations-0.0.1-SNAPSHOT.jar
+          pwd  && ls -la
+          cat /tmp/test.properties
+          java -enableassertions -DPropertyManager.file=/tmp/test.properties -jar test-integrations-0.0.1-SNAPSHOT.jar -testjar test-integrations-0.0.1-SNAPSHOT.jar  -xmlpathinjar com/synopsys/test/integrations/cases/suites/deployment/testng-scm-deployment.xml
+      
+      - name: Archive results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-output
+          path: test-output
+          
+  e2e_mac_declarative_executions:
+    
+      needs: delivery_stages         
+      runs-on: [ linux ]
+
+      steps:
+
+      - name: install
+        run: |
+          sudo apt-get update
+          sudo apt-get install -qqy awscli jq openjdk-11-jdk
+            
+      - name: download e2e artifacts
+        run: |
+          aws s3 cp --recursive s3://e2e-integrations-test/e2e-artifacts/integrations/xml-data integrations/xml-data --no-progress
+          ls -al
+          aws s3 cp s3://e2e-integrations-test/e2e-artifacts/test-integrations-0.0.1-SNAPSHOT.jar test-integrations-0.0.1-SNAPSHOT.jar --no-progress
+          ls -al
+          pwd
+      
+      
+      - name: e2e_tests_mac
+        run: |
+          echo "product=integrations" >> /tmp/test.properties
+          echo "product.name=integrations" >> /tmp/test.properties
+          echo "ci=jenkins" >> /tmp/test.properties
+          echo "scm=github" >> /tmp/test.properties
+          echo "runner=macos" >> /tmp/test.properties
+          echo "runner.os=macos" >> /tmp/test.properties
+          echo "pipeline=true" >> /tmp/test.properties
+          echo "cloud.storage=S3" >> /tmp/test.properties
+          echo "jenkins.project.type=declarative" >> /tmp/test.properties
+          echo "jenkins.username=${{secrets.JENKINS_USER_ID}}" >> /tmp/test.properties
+          echo "jenkins.url=https://integrations-cloudbees.cloudops.synopsys.com/test-qa-controller" >> /tmp/test.properties
+          echo "jenkins.token=${{secrets.JENKINS_API_TOKEN}}" >> /tmp/test.properties
+          chmod 755 test-integrations-0.0.1-SNAPSHOT.jar
+          pwd  && ls -la
+          cat /tmp/test.properties
+          java -enableassertions -DPropertyManager.file=/tmp/test.properties -jar test-integrations-0.0.1-SNAPSHOT.jar -testjar test-integrations-0.0.1-SNAPSHOT.jar  -xmlpathinjar com/synopsys/test/integrations/cases/suites/deployment/testng-scm-deployment.xml
+      
+      - name: Archive results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-output
+          path: test-output
+  
+  e2e_windows_declarative_executions:
+    
+      needs: delivery_stages         
+      runs-on: [ linux ]
+
+      steps:
+
+      - name: install
+        run: |
+          sudo apt-get update
+          sudo apt-get install -qqy awscli jq openjdk-11-jdk
+            
+      - name: download e2e artifacts
+        run: |
+          aws s3 cp --recursive s3://e2e-integrations-test/e2e-artifacts/integrations/xml-data integrations/xml-data --no-progress
+          ls -al
+          aws s3 cp s3://e2e-integrations-test/e2e-artifacts/test-integrations-0.0.1-SNAPSHOT.jar test-integrations-0.0.1-SNAPSHOT.jar --no-progress
+          ls -al
+          pwd
+      
+      
+      - name: e2e_tests_windows
+        run: |
+          echo "product=integrations" >> /tmp/test.properties
+          echo "product.name=integrations" >> /tmp/test.properties
+          echo "ci=jenkins" >> /tmp/test.properties
+          echo "scm=github" >> /tmp/test.properties
+          echo "runner=windows" >> /tmp/test.properties
+          echo "runner.os=windows" >> /tmp/test.properties
+          echo "pipeline=true" >> /tmp/test.properties
+          echo "cloud.storage=S3" >> /tmp/test.properties
+          echo "jenkins.project.type=declarative" >> /tmp/test.properties
+          echo "jenkins.username=${{secrets.JENKINS_USER_ID}}" >> /tmp/test.properties
+          echo "jenkins.url=https://integrations-cloudbees.cloudops.synopsys.com/test-qa-controller" >> /tmp/test.properties
+          echo "jenkins.token=${{secrets.JENKINS_API_TOKEN}}" >> /tmp/test.properties
+          chmod 755 test-integrations-0.0.1-SNAPSHOT.jar
+          pwd  && ls -la
+          cat /tmp/test.properties
+          java -enableassertions -DPropertyManager.file=/tmp/test.properties -jar test-integrations-0.0.1-SNAPSHOT.jar -testjar test-integrations-0.0.1-SNAPSHOT.jar  -xmlpathinjar com/synopsys/test/integrations/cases/suites/deployment/testng-scm-deployment.xml
+      
+      - name: Archive results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-output
+          path: test-output
