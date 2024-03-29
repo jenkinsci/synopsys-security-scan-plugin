@@ -24,6 +24,7 @@ public class GithubRepositoryServiceTest {
     private final String TEST_REPOSITORY_NAME = "TEST_REPO";
     private final String TEST_REPOSITORY_OWNER = "TEST_OWNER";
     private final String TEST_REPOSITORY_BRANCH_NAME = "TEST_BRANCH";
+    private final String TEST_REPOSITORY_PARENT_BRANCH_NAME = "TEST_PARENT_BRANCH";
     private Map<String, Object> scanParametersMap;
 
     @BeforeEach
@@ -45,6 +46,7 @@ public class GithubRepositoryServiceTest {
                 TEST_REPOSITORY_OWNER,
                 TEST_REPOSITORY_PULL_NUMBER,
                 TEST_REPOSITORY_BRANCH_NAME,
+                TEST_REPOSITORY_PARENT_BRANCH_NAME,
                 true,
                 CLOUD_API_URI);
 
@@ -62,6 +64,7 @@ public class GithubRepositoryServiceTest {
                 TEST_REPOSITORY_OWNER,
                 TEST_REPOSITORY_PULL_NUMBER,
                 TEST_REPOSITORY_BRANCH_NAME,
+                TEST_REPOSITORY_PARENT_BRANCH_NAME,
                 true,
                 ENTERPRISE_API_URI);
 
@@ -80,6 +83,7 @@ public class GithubRepositoryServiceTest {
                 TEST_REPOSITORY_OWNER,
                 TEST_REPOSITORY_PULL_NUMBER,
                 TEST_REPOSITORY_BRANCH_NAME,
+                TEST_REPOSITORY_PARENT_BRANCH_NAME,
                 true,
                 ENTERPRISE_API_URI_WITH_IP);
 
@@ -98,6 +102,7 @@ public class GithubRepositoryServiceTest {
                         TEST_REPOSITORY_OWNER,
                         TEST_REPOSITORY_PULL_NUMBER,
                         TEST_REPOSITORY_BRANCH_NAME,
+                        TEST_REPOSITORY_PARENT_BRANCH_NAME,
                         true,
                         CLOUD_API_URI));
     }
