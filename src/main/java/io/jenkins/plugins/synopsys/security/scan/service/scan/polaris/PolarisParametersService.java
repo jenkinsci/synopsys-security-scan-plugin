@@ -76,9 +76,23 @@ public class PolarisParametersService {
                 case ApplicationConstants.POLARIS_BRANCH_NAME_KEY:
                     polaris.getBranch().setName(value);
                     break;
-                    //                case ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY:
-                    //                    polaris.getBranch().getParent().setName(value);
-                    //                    break;
+                case ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY:
+                    polaris.getPrcomment().setEnabled(Boolean.parseBoolean(value));
+                    break;
+                case ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY:
+                    polaris.getBranch().getParent().setName(value);
+                    break;
+                case ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY:
+                    if (!value.isEmpty()) {
+                        List<String> prCommentSeverities = new ArrayList<>();
+                        String[] prCommentSeveritiesInput = value.toUpperCase().split(",");
+
+                        for (String input : prCommentSeveritiesInput) {
+                            prCommentSeverities.add(input.trim());
+                        }
+                        polaris.getPrcomment().setSeverities(prCommentSeverities);
+                    }
+                    break;
                 case ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY:
                     if (!value.isEmpty()) {
                         List<String> assessmentTypes = new ArrayList<>();

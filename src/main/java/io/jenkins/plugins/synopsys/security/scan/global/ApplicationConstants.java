@@ -64,6 +64,8 @@ public class ApplicationConstants {
     public static final String POLARIS_ASSESSMENT_TYPES_KEY = "polaris_assessment_types";
     public static final String POLARIS_TRIAGE_KEY = "polaris_triage";
     public static final String POLARIS_BRANCH_NAME_KEY = "polaris_branch_name";
+    public static final String POLARIS_PRCOMMENT_ENABLED_KEY = "polaris_prComment_enabled";
+    public static final String POLARIS_PRCOMMENT_SEVERITIES_KEY = "polaris_prComment_severities";
     public static final String POLARIS_TEST_SCA_TYPE_KEY = "polaris_test_sca_type";
     public static final String POLARIS_BRANCH_PARENT_NAME_KEY = "polaris_branch_parent_name";
     public static final String POLARIS_REPORTS_SARIF_CREATE_KEY = "polaris_reports_sarif_create";
@@ -97,6 +99,7 @@ public class ApplicationConstants {
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
 
     public static final String BRANCH_NAME = "BRANCH_NAME";
+    public static final String PARENT_BRANCH_NAME = "CHANGE_TARGET";
     public static final String GIT_URL = "GIT_URL";
 
     public static final String BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME = "cloudbees-bitbucket-branch-source";

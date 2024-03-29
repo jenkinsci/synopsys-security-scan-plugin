@@ -25,6 +25,7 @@ public class GitlabRepositoryService {
             String repositoryName,
             Integer projectRepositoryPullNumber,
             String branchName,
+            String parentbranchName,
             String repositoryUrl,
             boolean isFixPrOrPrComment)
             throws PluginExceptionHandler {
@@ -40,6 +41,8 @@ public class GitlabRepositoryService {
         gitlab.getUser().setToken(gitlabToken);
         gitlab.getRepository().setName(repositoryName);
         gitlab.getRepository().getBranch().setName(branchName);
+        gitlab.getRepository().getBranch().getParent().setName(parentbranchName);
+
         gitlab.getRepository().getPull().setNumber(projectRepositoryPullNumber);
 
         String gitlabHostUrl = extractGitlabHost(repositoryUrl);

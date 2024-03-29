@@ -50,6 +50,7 @@ public class SCMRepositoryService {
             String repositoryOwner = gitHubSCMSource.getRepoOwner();
             String repositoryName = gitHubSCMSource.getRepository();
             String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
+            String parentBranchName = envVars.get(ApplicationConstants.PARENT_BRANCH_NAME);
             String apiUri = gitHubSCMSource.getApiUri();
 
             return githubRepositoryService.createGithubObject(
@@ -58,6 +59,7 @@ public class SCMRepositoryService {
                     repositoryOwner,
                     projectRepositoryPullNumber,
                     branchName,
+                    parentBranchName,
                     isFixPrOrPrComment,
                     apiUri);
         } else if (installedBranchSourceDependencies.getOrDefault(
@@ -68,6 +70,7 @@ public class SCMRepositoryService {
 
             String repositoryUrl = gitLabSCMSource.getHttpRemote();
             String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
+            String parentBranchName = envVars.get(ApplicationConstants.PARENT_BRANCH_NAME);
             String repositoryName = gitLabSCMSource.getProjectPath();
 
             return gitlabRepositoryService.createGitlabObject(
@@ -75,6 +78,7 @@ public class SCMRepositoryService {
                     repositoryName,
                     projectRepositoryPullNumber,
                     branchName,
+                    parentBranchName,
                     repositoryUrl,
                     isFixPrOrPrComment);
         }

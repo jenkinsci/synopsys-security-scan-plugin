@@ -289,6 +289,9 @@ public class ScannerArgumentService {
         } else if (scanParameters.containsKey(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY)
                 && Objects.equals(scanParameters.get(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY), true)) {
             return true;
+        } else if (scanParameters.containsKey(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY)
+                && Objects.equals(scanParameters.get(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY), true)) {
+            return true;
         }
         return false;
     }

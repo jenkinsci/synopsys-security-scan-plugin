@@ -63,6 +63,9 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String polaris_assessment_types;
     private String polaris_triage;
     private String polaris_branch_name;
+    private String polaris_branch_parent_name;
+    private Boolean polaris_prComment_enabled;
+    private String polaris_prComment_severities;
     private String polaris_test_sca_type;
     //    private String polaris_branch_parent_name;
     private Boolean polaris_reports_sarif_create;
@@ -208,6 +211,18 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public String getPolaris_branch_name() {
         return polaris_branch_name;
+    }
+
+    public String getPolaris_branch_parent_name() {
+        return polaris_branch_parent_name;
+    }
+
+    public Boolean isPolaris_prComment_enabled() {
+        return polaris_prComment_enabled;
+    }
+
+    public String getPolaris_prComment_severities() {
+        return polaris_prComment_severities;
     }
 
     public String getPolaris_test_sca_type() {
@@ -424,6 +439,21 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setPolaris_branch_name(String polaris_branch_name) {
         this.polaris_branch_name = Util.fixEmptyAndTrim(polaris_branch_name);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_branch_parent_name(String polaris_branch_parent_name) {
+        this.polaris_branch_parent_name = polaris_branch_parent_name;
+    }
+
+    @DataBoundSetter
+    public void setPolaris_prComment_enabled(Boolean polaris_prComment_enabled) {
+        this.polaris_prComment_enabled = polaris_prComment_enabled ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setPolaris_prComment_severities(String polaris_prComment_severities) {
+        this.polaris_prComment_severities = polaris_prComment_severities;
     }
 
     @DataBoundSetter
