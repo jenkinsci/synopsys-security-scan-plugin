@@ -17,6 +17,8 @@ public interface SecurityScan {
 
     public Boolean isBlackduck_automation_prcomment();
 
+    public Boolean isBlackduck_prComment_enabled();
+
     public String getBlackduck_download_url();
 
     public String getCoverity_url();
@@ -34,6 +36,8 @@ public interface SecurityScan {
     public String getCoverity_install_directory();
 
     public Boolean isCoverity_automation_prcomment();
+
+    public Boolean isCoverity_prComment_enabled();
 
     public String getCoverity_version();
 

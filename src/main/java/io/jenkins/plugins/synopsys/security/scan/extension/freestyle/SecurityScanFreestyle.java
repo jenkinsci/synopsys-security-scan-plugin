@@ -38,6 +38,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String blackduck_scan_failure_severities;
     //    private Boolean blackduck_automation_fixpr;
     private Boolean blackduck_automation_prcomment;
+    private Boolean blackduck_prComment_enabled;
     private String blackduck_download_url;
     private Boolean blackduck_reports_sarif_create;
     private String blackduck_reports_sarif_file_path;
@@ -53,6 +54,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String coverity_policy_view;
     private String coverity_install_directory;
     private Boolean coverity_automation_prcomment;
+    private Boolean coverity_prComment_enabled;
     private String coverity_version;
     private Boolean coverity_local;
 
@@ -118,6 +120,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         return blackduck_automation_prcomment;
     }
 
+    public Boolean isBlackduck_prComment_enabled() {
+        return blackduck_prComment_enabled;
+    }
+
     public String getBlackduck_download_url() {
         return blackduck_download_url;
     }
@@ -172,6 +178,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public Boolean isCoverity_automation_prcomment() {
         return coverity_automation_prcomment;
+    }
+
+    public Boolean isCoverity_prComment_enabled() {
+        return coverity_prComment_enabled;
     }
 
     public String getCoverity_version() {
@@ -316,6 +326,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     }
 
     @DataBoundSetter
+    public void setBlackduck_prComment_enabled(Boolean blackduck_prComment_enabled) {
+        this.blackduck_prComment_enabled = blackduck_prComment_enabled ? true : null;
+    }
+
+    @DataBoundSetter
     public void setBlackduck_download_url(String blackduck_download_url) {
         this.blackduck_download_url = Util.fixEmptyAndTrim(blackduck_download_url);
     }
@@ -379,6 +394,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setCoverity_automation_prcomment(Boolean coverity_automation_prcomment) {
         this.coverity_automation_prcomment = coverity_automation_prcomment ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_prComment_enabled(Boolean coverity_prComment_enabled) {
+        this.coverity_prComment_enabled = coverity_prComment_enabled ? true : null;
     }
 
     @DataBoundSetter

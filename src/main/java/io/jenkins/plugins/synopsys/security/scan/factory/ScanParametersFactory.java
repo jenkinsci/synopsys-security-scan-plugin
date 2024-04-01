@@ -210,7 +210,13 @@ public class ScanParametersFactory {
         // securityScan.isBlackduck_automation_fixpr());
         //        }
 
-        if (securityScan.isBlackduck_automation_prcomment() != null) {
+        if (securityScan.isBlackduck_prComment_enabled() != null) {
+            blackDuckParameters.put(
+                    ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
+                    securityScan.isBlackduck_prComment_enabled());
+            blackDuckParameters.put(
+                    ApplicationConstants.BLACKDUCK_PRCOMMENT_ENABLED_KEY, securityScan.isBlackduck_prComment_enabled());
+        } else if (securityScan.isBlackduck_automation_prcomment() != null) {
             blackDuckParameters.put(
                     ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
                     securityScan.isBlackduck_automation_prcomment());
@@ -267,7 +273,13 @@ public class ScanParametersFactory {
             coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, securityScan.isCoverity_local());
         }
 
-        if (securityScan.isCoverity_automation_prcomment() != null) {
+        if (securityScan.isCoverity_prComment_enabled() != null) {
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
+                    securityScan.isCoverity_prComment_enabled());
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_PRCOMMENT_ENABLED_KEY, securityScan.isCoverity_prComment_enabled());
+        } else if (securityScan.isCoverity_automation_prcomment() != null) {
             coverityParameters.put(
                     ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
                     securityScan.isCoverity_automation_prcomment());

@@ -126,8 +126,8 @@ public class PluginParametersHandler {
         for (String product : securityProducts) {
             String securityProduct = product.toLowerCase();
             logger.info("Parameters for %s:", securityProduct);
-
-            for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
+            Map<String, Object> filteredParameters = filterParameter(scanParameters);
+            for (Map.Entry<String, Object> entry : filteredParameters.entrySet()) {
                 String key = entry.getKey();
                 if (key.contains(securityProduct)) {
                     Object value = entry.getValue();
@@ -159,5 +159,24 @@ public class PluginParametersHandler {
                 logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
             }
         }
+    }
+
+    public static Map<String, Object> filterParameter(Map<String, Object> scanParameters) {
+        boolean blackduckPrCommentEnabled =
+                scanParameters.containsKey(ApplicationConstants.BLACKDUCK_PRCOMMENT_ENABLED_KEY);
+        boolean blackduckAutomationPrComment =
+                scanParameters.containsKey(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY);
+        boolean coverityPrCommentEnabled =
+                scanParameters.containsKey(ApplicationConstants.COVERITY_PRCOMMENT_ENABLED_KEY);
+        boolean coverityAutomationPrComment =
+                scanParameters.containsKey(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY);
+
+        if (blackduckPrCommentEnabled && blackduckAutomationPrComment) {
+            scanParameters.remove(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY);
+        } else if (coverityPrCommentEnabled && coverityAutomationPrComment) {
+            scanParameters.remove(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY);
+        }
+
+        return scanParameters;
     }
 }
