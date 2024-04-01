@@ -7,11 +7,8 @@ public class Branch {
     private String name;
 
     @JsonProperty("parent")
-    private Parent parent;
+    private String parent;
 
-    public Branch() {
-        parent = new Parent();
-    }
 
     public String getName() {
         return name;
@@ -21,11 +18,11 @@ public class Branch {
         this.name = name;
     }
 
-    public Parent getParent() {
+    public String getParent() {
         return parent;
     }
 
-    public void setParent(Parent parent) {
+    public void setParent(String parent) {
         this.parent = parent;
     }
 }

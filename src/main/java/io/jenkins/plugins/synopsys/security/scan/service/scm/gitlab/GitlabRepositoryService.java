@@ -43,7 +43,7 @@ public class GitlabRepositoryService {
         gitlab.getUser().setToken(gitlabToken);
         gitlab.getRepository().setName(repositoryName);
         gitlab.getRepository().getBranch().setName(branchName);
-        gitlab.getRepository().getBranch().getParent().setName(parentbranchName);
+        gitlab.getRepository().getBranch().setParent(parentbranchName);
 
         if (projectRepositoryPullNumber != null) {
             Pull pull = new Pull();
