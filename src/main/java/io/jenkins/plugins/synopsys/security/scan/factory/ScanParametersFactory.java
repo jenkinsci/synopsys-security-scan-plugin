@@ -360,7 +360,8 @@ public class ScanParametersFactory {
 
         if (!Utility.isStringNullOrBlank(securityScan.getPolaris_prComment_severities())) {
             polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY, securityScan.getPolaris_prComment_severities());
+                    ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY,
+                    securityScan.getPolaris_prComment_severities());
         }
 
         return polarisParametersMap;

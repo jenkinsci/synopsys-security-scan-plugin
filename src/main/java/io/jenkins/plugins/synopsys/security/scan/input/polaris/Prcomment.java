@@ -1,12 +1,12 @@
 package io.jenkins.plugins.synopsys.security.scan.input.polaris;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 public class Prcomment {
     @JsonProperty("enabled")
     private Boolean enabled;
+
     @JsonProperty("severities")
     private List<String> severities;
 

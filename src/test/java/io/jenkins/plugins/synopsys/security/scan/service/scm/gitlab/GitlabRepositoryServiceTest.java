@@ -43,6 +43,7 @@ public class GitlabRepositoryServiceTest {
                 TEST_REPOSITORY_NAME,
                 TEST_REPOSITORY_PULL_NUMBER,
                 TEST_REPOSITORY_BRANCH_NAME,
+                null,
                 TEST_REPOSITORY_URL_CLOUD,
                 true);
 
@@ -63,6 +64,7 @@ public class GitlabRepositoryServiceTest {
                 TEST_REPOSITORY_NAME,
                 TEST_REPOSITORY_PULL_NUMBER,
                 TEST_REPOSITORY_BRANCH_NAME,
+                null,
                 TEST_REPOSITORY_URL_ENTERPRISE,
                 true);
 
@@ -86,6 +88,7 @@ public class GitlabRepositoryServiceTest {
                         TEST_REPOSITORY_NAME,
                         TEST_REPOSITORY_PULL_NUMBER,
                         TEST_REPOSITORY_BRANCH_NAME,
+                        null,
                         TEST_REPOSITORY_URL_CLOUD,
                         true));
     }

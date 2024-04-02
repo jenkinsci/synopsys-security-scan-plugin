@@ -6,6 +6,7 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.bitbucket.BitbucketRepositoryService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.github.GithubRepositoryService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.gitlab.GitlabRepositoryService;
@@ -32,6 +33,11 @@ public class SCMRepositoryService {
         Integer projectRepositoryPullNumber = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null
                 ? Integer.parseInt(envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY))
                 : null;
+
+        LoggerWrapper logger = new LoggerWrapper(listener);
+        if (isFixPrOrPrComment && projectRepositoryPullNumber == null) {
+            logger.warn("Prcomment is set true but it is not a pull request scan!");
+        }
 
         SCMSource scmSource = findSCMSource();
         if (installedBranchSourceDependencies.getOrDefault(
