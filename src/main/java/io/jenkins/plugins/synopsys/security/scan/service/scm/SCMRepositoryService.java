@@ -36,7 +36,8 @@ public class SCMRepositoryService {
 
         LoggerWrapper logger = new LoggerWrapper(listener);
         if (isFixPrOrPrComment && projectRepositoryPullNumber == null) {
-            logger.warn("Prcomment is set true but it is not a pull request scan!");
+            logger.warn("PRComment is set true but this is not a pull request scan");
+            return null;
         }
 
         SCMSource scmSource = findSCMSource();
