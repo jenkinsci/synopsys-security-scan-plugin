@@ -51,6 +51,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     //    private Boolean blackduck_automation_fixpr;
     private Boolean blackduck_automation_prcomment;
     private Boolean blackduck_prComment_enabled;
+    private Boolean blackduck_prComment_enabled_temporary;
     private String blackduck_download_url;
     private Boolean blackduck_reports_sarif_create;
     private String blackduck_reports_sarif_file_path;
@@ -67,6 +68,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String coverity_install_directory;
     private Boolean coverity_automation_prcomment;
     private Boolean coverity_prComment_enabled;
+    private Boolean coverity_prComment_enabled_temporary;
     private String coverity_version;
     private Boolean coverity_local;
 
@@ -141,6 +143,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return blackduck_prComment_enabled;
     }
 
+    public Boolean isBlackduck_prComment_enabled_temporary() {
+        return blackduck_prComment_enabled_temporary;
+    }
+
     public String getBlackduck_download_url() {
         return blackduck_download_url;
     }
@@ -179,6 +185,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public Boolean isCoverity_prComment_enabled() {
         return coverity_prComment_enabled;
+    }
+
+    public Boolean isCoverity_prComment_enabled_temporary() {
+        return coverity_prComment_enabled_temporary;
     }
 
     public String getCoverity_version() {
@@ -345,6 +355,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setBlackduck_prComment_enabled(Boolean blackduck_prComment_enabled) {
         this.blackduck_prComment_enabled = blackduck_prComment_enabled ? true : null;
+        this.blackduck_prComment_enabled_temporary = blackduck_prComment_enabled ? true : false;
     }
 
     @DataBoundSetter
@@ -395,6 +406,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setCoverity_prComment_enabled(Boolean coverity_prComment_enabled) {
         this.coverity_prComment_enabled = coverity_prComment_enabled ? true : null;
+        this.coverity_prComment_enabled_temporary = coverity_prComment_enabled ? true : false;
     }
 
     @DataBoundSetter

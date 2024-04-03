@@ -210,12 +210,12 @@ public class ScanParametersFactory {
         // securityScan.isBlackduck_automation_fixpr());
         //        }
 
-        if (securityScan.isBlackduck_prComment_enabled() != null) {
+        if (securityScan.isBlackduck_prComment_enabled_temporary() != null) {
             blackDuckParameters.put(
                     ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
-                    securityScan.isBlackduck_prComment_enabled());
+                    securityScan.isBlackduck_prComment_enabled_temporary());
             blackDuckParameters.put(
-                    ApplicationConstants.BLACKDUCK_PRCOMMENT_ENABLED_KEY, securityScan.isBlackduck_prComment_enabled());
+                    ApplicationConstants.BLACKDUCK_PRCOMMENT_ENABLED_KEY, securityScan.isBlackduck_prComment_enabled_temporary());
         } else if (securityScan.isBlackduck_automation_prcomment() != null) {
             blackDuckParameters.put(
                     ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
@@ -273,12 +273,12 @@ public class ScanParametersFactory {
             coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, securityScan.isCoverity_local());
         }
 
-        if (securityScan.isCoverity_prComment_enabled() != null) {
+        if (securityScan.isCoverity_prComment_enabled_temporary() != null) {
             coverityParameters.put(
                     ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
-                    securityScan.isCoverity_prComment_enabled());
+                    securityScan.isCoverity_prComment_enabled_temporary());
             coverityParameters.put(
-                    ApplicationConstants.COVERITY_PRCOMMENT_ENABLED_KEY, securityScan.isCoverity_prComment_enabled());
+                    ApplicationConstants.COVERITY_PRCOMMENT_ENABLED_KEY, securityScan.isCoverity_prComment_enabled_temporary());
         } else if (securityScan.isCoverity_automation_prcomment() != null) {
             coverityParameters.put(
                     ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
