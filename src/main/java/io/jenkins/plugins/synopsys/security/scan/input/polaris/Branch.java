@@ -9,10 +9,6 @@ public class Branch {
     @JsonProperty("parent")
     private Parent parent;
 
-    public Branch() {
-        parent = new Parent();
-    }
-
     public String getName() {
         return name;
     }

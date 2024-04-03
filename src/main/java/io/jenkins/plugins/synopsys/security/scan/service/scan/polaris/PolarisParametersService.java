@@ -4,6 +4,7 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Automation;
+import io.jenkins.plugins.synopsys.security.scan.input.polaris.Parent;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Prcomment;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Test;
@@ -43,6 +44,8 @@ public class PolarisParametersService {
                     }
                 });
 
+        validatePrcommentRelatedParamsForPolaris(polarisParameters, invalidParams);
+                
         if (invalidParams.isEmpty()) {
             logger.info("Polaris parameters are validated successfully");
             return true;
@@ -52,6 +55,27 @@ public class PolarisParametersService {
             return false;
         }
     }
+
+    public void validatePrcommentRelatedParamsForPolaris(Map<String, Object> polarisParameters, List<String> invalidParams) {
+        if (!isPrCommentEnabled(polarisParameters)) {
+            return;
+        }
+        if (!isValidParentBranchNameKey(polarisParameters)) {
+            invalidParams.add(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY);
+        }
+    }
+
+    private boolean isPrCommentEnabled(Map<String, Object> polarisParameters) {
+        return polarisParameters.containsKey(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY)
+                && Boolean.TRUE.equals(polarisParameters.get(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY));
+    }
+
+    private boolean isValidParentBranchNameKey(Map<String, Object> polarisParameters) {
+        return polarisParameters.containsKey(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY)
+                && polarisParameters.get(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY) != null
+                && !polarisParameters.get(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY).toString().isEmpty();
+    }
+
 
     public Polaris preparePolarisObjectForBridge(Map<String, Object> polarisParameters) {
         Polaris polaris = new Polaris();
@@ -87,7 +111,11 @@ public class PolarisParametersService {
                     }
                     break;
                 case ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY:
-                    polaris.getBranch().getParent().setName(value);
+                    if(!value.isEmpty()) {
+                        Parent parent = new Parent();
+                        polaris.getBranch().setParent(parent);
+                        polaris.getBranch().getParent().setName(value);
+                    }
                     break;
                 case ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY:
                     if (!value.isEmpty()) {
