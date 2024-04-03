@@ -3,7 +3,9 @@ package io.jenkins.plugins.synopsys.security.scan.service.scan.polaris;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.input.coverity.Automation;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
+import io.jenkins.plugins.synopsys.security.scan.input.polaris.Prcomment;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,7 +80,11 @@ public class PolarisParametersService {
                     polaris.getBranch().setName(value);
                     break;
                 case ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY:
-                    polaris.getPrcomment().setEnabled(Boolean.parseBoolean(value));
+                    if (value.equals("true") || value.equals("false")) {
+                        Prcomment prcomment = new Prcomment();
+                        prcomment.setEnabled(Boolean.parseBoolean(value));
+                        polaris.setPrcomment(prcomment);
+                    }
                     break;
                 case ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY:
                     polaris.getBranch().getParent().setName(value);
