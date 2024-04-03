@@ -12,6 +12,7 @@ import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.service.bridge.BridgeDownloadParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -107,13 +108,15 @@ public class PluginParametersHandler {
     public void logMessagesForParameters(Map<String, Object> scanParameters, Set<String> securityProducts) {
         logger.println("-------------------------- Parameter Validation Initiated --------------------------");
 
-        logMessagesForProductParameters(scanParameters, securityProducts);
+        Map<String, Object> parametersCopy = new HashMap<>(scanParameters);
 
-        logMessagesForBridgeParameters(scanParameters);
+        logMessagesForProductParameters(parametersCopy, securityProducts);
 
-        if ((Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
+        logMessagesForBridgeParameters(parametersCopy);
+
+        if ((Objects.equals(parametersCopy.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
                         || Objects.equals(
-                                scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true))
+                                parametersCopy.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true))
                 && envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null) {
             logger.warn(
                     "SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans");
