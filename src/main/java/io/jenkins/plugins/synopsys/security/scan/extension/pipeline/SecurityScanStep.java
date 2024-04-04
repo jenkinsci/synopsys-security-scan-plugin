@@ -449,7 +449,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     @DataBoundSetter
     public void setPolaris_prComment_severities(String polaris_prComment_severities) {
-        this.polaris_prComment_severities = polaris_prComment_severities;
+        this.polaris_prComment_severities = Util.fixEmptyAndTrim(polaris_prComment_severities);
     }
 
     @DataBoundSetter
