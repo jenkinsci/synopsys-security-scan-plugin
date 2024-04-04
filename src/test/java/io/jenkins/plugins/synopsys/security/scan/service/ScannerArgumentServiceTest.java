@@ -46,6 +46,8 @@ public class ScannerArgumentServiceTest {
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
     private final EnvVars envVarsMock = Mockito.mock(EnvVars.class);
     private final String CLOUD_API_URI = "https://api.github.com";
+    private final String TEST_REPOSITORY_BRANCH_NAME = "TEST_BRANCH";
+    private final String TEST_REPOSITORY_PARENT_BRANCH_NAME = "TEST_PARENT_BRANCH";
     private FilePath workspace;
     private final String TOKEN = "MDJDSROSVC56FAKEKEY";
 
@@ -91,7 +93,7 @@ public class ScannerArgumentServiceTest {
         blackDuck.setToken(TOKEN);
 
         Bitbucket bitbucketObject =
-                BitbucketRepositoryService.createBitbucketObject("https://bitbucket.org", TOKEN, 12, "test", "abc");
+                BitbucketRepositoryService.createBitbucketObject("https://bitbucket.org", TOKEN, 12, "test", "abc", TEST_REPOSITORY_BRANCH_NAME, TEST_REPOSITORY_PARENT_BRANCH_NAME);
 
         try {
             String jsonStringNonPrCommentOrFixPr =

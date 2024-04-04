@@ -46,8 +46,10 @@ public class SCMRepositoryService {
                 && scmSource instanceof BitbucketSCMSource) {
             BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listener);
             BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
+            String branchName = envVars.get(ApplicationConstants.BRANCH_NAME);
+            String parentBranchName = envVars.get(ApplicationConstants.PARENT_BRANCH_NAME);
             return bitbucketRepositoryService.fetchBitbucketRepositoryDetails(
-                    scanParameters, bitbucketSCMSource, projectRepositoryPullNumber, isFixPrOrPrComment);
+                    scanParameters, bitbucketSCMSource, projectRepositoryPullNumber, isFixPrOrPrComment, branchName, parentBranchName);
         } else if (installedBranchSourceDependencies.getOrDefault(
                         ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME, false)
                 && scmSource instanceof GitHubSCMSource) {
