@@ -92,8 +92,14 @@ public class ScannerArgumentServiceTest {
         blackDuck.setUrl("https://fake.blackduck.url");
         blackDuck.setToken(TOKEN);
 
-        Bitbucket bitbucketObject =
-                BitbucketRepositoryService.createBitbucketObject("https://bitbucket.org", TOKEN, 12, "test", "abc", TEST_REPOSITORY_BRANCH_NAME, TEST_REPOSITORY_PARENT_BRANCH_NAME);
+        Bitbucket bitbucketObject = BitbucketRepositoryService.createBitbucketObject(
+                "https://bitbucket.org",
+                TOKEN,
+                12,
+                "test",
+                "abc",
+                TEST_REPOSITORY_BRANCH_NAME,
+                TEST_REPOSITORY_PARENT_BRANCH_NAME);
 
         try {
             String jsonStringNonPrCommentOrFixPr =
@@ -117,7 +123,7 @@ public class ScannerArgumentServiceTest {
 
         try {
             String jsonStringForPrComment =
-                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"bitbucket\":{\"api\":{\"url\":\"https://bitbucket.org\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\"},\"key\":\"abc\"}}}}";
+                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"bitbucket\":{\"api\":{\"url\":\"https://bitbucket.org\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\",\"branch\":{\"name\":\"TEST_BRANCH\",\"parent\":\"TEST_PARENT_BRANCH\"}},\"key\":\"abc\"}}}}";
             String inputJsonPathForPrComment = scannerArgumentService.createBridgeInputJson(
                     blackDuck, bitbucketObject, true, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
             Path filePath = Paths.get(inputJsonPathForPrComment);
@@ -251,7 +257,7 @@ public class ScannerArgumentServiceTest {
                 + "}},"
                 + "\"github\":{\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"name\":\"fake-repo\""
                 + ",\"owner\":{\"name\":\"fake-owner\"},\"pull\":{\"number\":1},\"branch\":{\"name\":"
-                + "\"fake-branch\"}}}}}";
+                + "\"fake-branch\",\"parent\":\"fake-parent-branch\"}}}}}";
 
         Coverity coverity = new Coverity();
         coverity.getConnect().setUrl("https://fake.coverity.url");
@@ -305,7 +311,7 @@ public class ScannerArgumentServiceTest {
         blackDuck.getAutomation().setPrComment(true);
 
         String jsonStringForPrComment =
-                "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"automation\":{\"prComment\":true}},\"gitlab\":{\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"branch\":{\"name\":\"fake-gitlab-branch\"},\"pull\":{\"number\":12},\"name\":\"fake-group/fake-gitlab-repo\"}}}}";
+                "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"automation\":{\"prComment\":true}},\"gitlab\":{\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"branch\":{\"name\":\"fake-gitlab-branch\",\"parent\":\"fake-gitlab-parent-branch\"},\"pull\":{\"number\":12},\"name\":\"fake-group/fake-gitlab-repo\"}}}}";
 
         try {
             Gitlab gitlabObject = gitlabRepositoryService.createGitlabObject(

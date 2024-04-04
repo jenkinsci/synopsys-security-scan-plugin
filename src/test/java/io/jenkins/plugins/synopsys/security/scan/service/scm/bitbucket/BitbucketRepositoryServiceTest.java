@@ -50,7 +50,12 @@ public class BitbucketRepositoryServiceTest {
         bitbucketSCMSourceMock = mock(BitbucketSCMSource.class);
 
         when(bitbucketRepositoryServiceMock.fetchBitbucketRepositoryDetails(
-                        bitbucketParametersMap, bitbucketSCMSourceMock, TEST_REPOSITORY_PULL_NUMBER, false, TEST_REPOSITORY_BRANCH_NAME, TEST_REPOSITORY_PARENT_BRANCH_NAME))
+                        bitbucketParametersMap,
+                        bitbucketSCMSourceMock,
+                        TEST_REPOSITORY_PULL_NUMBER,
+                        false,
+                        TEST_REPOSITORY_BRANCH_NAME,
+                        TEST_REPOSITORY_PARENT_BRANCH_NAME))
                 .thenReturn(bitbucket);
 
         listenerMock = Mockito.mock(TaskListener.class);
@@ -60,7 +65,12 @@ public class BitbucketRepositoryServiceTest {
     @Test
     void createBitbucketObjectTest() throws PluginExceptionHandler {
         Bitbucket bitbucket = bitbucketRepositoryServiceMock.fetchBitbucketRepositoryDetails(
-                bitbucketParametersMap, bitbucketSCMSourceMock, TEST_REPOSITORY_PULL_NUMBER, false, TEST_REPOSITORY_BRANCH_NAME, TEST_REPOSITORY_PARENT_BRANCH_NAME);
+                bitbucketParametersMap,
+                bitbucketSCMSourceMock,
+                TEST_REPOSITORY_PULL_NUMBER,
+                false,
+                TEST_REPOSITORY_BRANCH_NAME,
+                TEST_REPOSITORY_PARENT_BRANCH_NAME);
 
         assertEquals(TEST_BITBUCKET_URL, bitbucket.getApi().getUrl());
         assertEquals(TEST_BITBUCKET_TOKEN, bitbucket.getApi().getToken());
@@ -84,8 +94,13 @@ public class BitbucketRepositoryServiceTest {
         when(bitbucketApiFromSCMSource.getRepository()).thenReturn(bitbucketRepository);
 
         BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listenerMock);
-        Bitbucket result =
-                bitbucketRepositoryService.fetchBitbucketRepositoryDetails(scanParameters, bitbucketSCMSource, 1, true, TEST_REPOSITORY_BRANCH_NAME, TEST_REPOSITORY_PARENT_BRANCH_NAME);
+        Bitbucket result = bitbucketRepositoryService.fetchBitbucketRepositoryDetails(
+                scanParameters,
+                bitbucketSCMSource,
+                1,
+                true,
+                TEST_REPOSITORY_BRANCH_NAME,
+                TEST_REPOSITORY_PARENT_BRANCH_NAME);
 
         assertNotNull(result);
 
@@ -94,6 +109,11 @@ public class BitbucketRepositoryServiceTest {
         assertThrows(
                 PluginExceptionHandler.class,
                 () -> bitbucketRepositoryService.fetchBitbucketRepositoryDetails(
-                        scanParameters, bitbucketSCMSource, 1, true, TEST_REPOSITORY_BRANCH_NAME, TEST_REPOSITORY_PARENT_BRANCH_NAME));
+                        scanParameters,
+                        bitbucketSCMSource,
+                        1,
+                        true,
+                        TEST_REPOSITORY_BRANCH_NAME,
+                        TEST_REPOSITORY_PARENT_BRANCH_NAME));
     }
 }

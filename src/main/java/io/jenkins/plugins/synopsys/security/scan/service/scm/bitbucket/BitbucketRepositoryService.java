@@ -58,7 +58,13 @@ public class BitbucketRepositoryService {
         }
 
         return createBitbucketObject(
-                serverUrl, bitbucketToken, projectRepositoryPullNumber, repositoryName, projectKey, branchName, parentBranchName);
+                serverUrl,
+                bitbucketToken,
+                projectRepositoryPullNumber,
+                repositoryName,
+                projectKey,
+                branchName,
+                parentBranchName);
     }
 
     public static Bitbucket createBitbucketObject(

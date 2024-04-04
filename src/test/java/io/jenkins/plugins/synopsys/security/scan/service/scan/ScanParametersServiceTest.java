@@ -43,7 +43,8 @@ public class ScanParametersServiceTest {
         parameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
         assertThrows(
-                PluginExceptionHandler.class, () -> scanParametersService.performScanParameterValidation(parameters, envVarsMock));
+                PluginExceptionHandler.class,
+                () -> scanParametersService.performScanParameterValidation(parameters, envVarsMock));
     }
 
     @Test
