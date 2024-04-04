@@ -2,6 +2,7 @@ package io.jenkins.plugins.synopsys.security.scan.service.scan.polaris;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import hudson.EnvVars;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
@@ -16,6 +17,7 @@ import org.mockito.Mockito;
 public class PolarisParametersServiceTest {
     private PolarisParametersService polarisParametersService;
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
+    private final EnvVars envVarsMock = Mockito.mock(EnvVars.class);
     private final String TEST_POLARIS_SERVER_URL = "https://fake.polaris-server.url";
     private final String TEST_POLARIS_ACCESS_TOKEN = "fakePolarisAccessToken";
     private final String TEST_APPLICATION_NAME = "fake-polaris-application-name";
@@ -25,7 +27,7 @@ public class PolarisParametersServiceTest {
 
     @BeforeEach
     void setUp() {
-        polarisParametersService = new PolarisParametersService(listenerMock);
+        polarisParametersService = new PolarisParametersService(listenerMock, envVarsMock);
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 
@@ -33,13 +35,13 @@ public class PolarisParametersServiceTest {
     void invalidScanParametersTest() {
         Map<String, Object> polarisParameters = new HashMap<>();
 
-        assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters));
+        assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters, envVarsMock));
 
         polarisParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
         polarisParameters.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, TEST_POLARIS_ACCESS_TOKEN);
         polarisParameters.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
 
-        assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters));
+        assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters, envVarsMock));
     }
 
     @Test
@@ -53,7 +55,7 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, TEST_POLARIS_ASSESSMENT_TYPES);
         polarisParameters.put(ApplicationConstants.POLARIS_BRANCH_NAME_KEY, TEST_POLARIS_BRANCH_NAME);
 
-        assertTrue(polarisParametersService.isValidPolarisParameters(polarisParameters));
+        assertTrue(polarisParametersService.isValidPolarisParameters(polarisParameters, envVarsMock));
     }
 
     @Test

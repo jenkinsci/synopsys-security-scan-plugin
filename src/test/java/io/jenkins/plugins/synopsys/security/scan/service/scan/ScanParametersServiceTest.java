@@ -32,7 +32,7 @@ public class ScanParametersServiceTest {
         parameters.put(ApplicationConstants.BLACKDUCK_URL_KEY, "https://fake.blackduck.url");
         parameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
-        assertTrue(scanParametersService.performScanParameterValidation(parameters));
+        assertTrue(scanParametersService.performScanParameterValidation(parameters, envVarsMock));
     }
 
     @Test
@@ -43,7 +43,7 @@ public class ScanParametersServiceTest {
         parameters.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, "MDJDSROSVC56FAKEKEY");
 
         assertThrows(
-                PluginExceptionHandler.class, () -> scanParametersService.performScanParameterValidation(parameters));
+                PluginExceptionHandler.class, () -> scanParametersService.performScanParameterValidation(parameters, envVarsMock));
     }
 
     @Test
@@ -61,7 +61,7 @@ public class ScanParametersServiceTest {
         parameters.put(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, "SCA, SAST");
         parameters.put(ApplicationConstants.POLARIS_BRANCH_NAME_KEY, "test-branch");
 
-        assertTrue(scanParametersService.performScanParameterValidation(parameters));
+        assertTrue(scanParametersService.performScanParameterValidation(parameters, envVarsMock));
     }
 
     @Test

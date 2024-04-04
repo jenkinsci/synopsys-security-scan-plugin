@@ -23,7 +23,7 @@ public class ScanParametersService {
         this.envVars = envVars;
     }
 
-    public boolean performScanParameterValidation(Map<String, Object> scanParameters) throws PluginExceptionHandler {
+    public boolean performScanParameterValidation(Map<String, Object> scanParameters, EnvVars envVars) throws PluginExceptionHandler {
         Set<String> securityProducts = getSynopsysSecurityProducts(scanParameters);
 
         if (securityProducts.contains(SecurityProduct.BLACKDUCK.name())) {
@@ -39,8 +39,8 @@ public class ScanParametersService {
             }
         }
         if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
-            PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
-            if (!polarisParametersService.isValidPolarisParameters(scanParameters)) {
+            PolarisParametersService polarisParametersService = new PolarisParametersService(listener, envVars);
+            if (!polarisParametersService.isValidPolarisParameters(scanParameters, envVars)) {
                 throw new PluginExceptionHandler(ErrorCode.INVALID_POLARIS_PARAMETERS);
             }
         }

@@ -1,5 +1,6 @@
 package io.jenkins.plugins.synopsys.security.scan.service.scan.polaris;
 
+import hudson.EnvVars;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
@@ -15,12 +16,14 @@ import java.util.Map;
 
 public class PolarisParametersService {
     private final LoggerWrapper logger;
+    private final EnvVars envVars;
 
-    public PolarisParametersService(TaskListener listener) {
+    public PolarisParametersService(TaskListener listener, EnvVars envVars) {
         this.logger = new LoggerWrapper(listener);
+        this.envVars = envVars;
     }
 
-    public boolean isValidPolarisParameters(Map<String, Object> polarisParameters) {
+    public boolean isValidPolarisParameters(Map<String, Object> polarisParameters, EnvVars envVars) {
         if (polarisParameters == null || polarisParameters.isEmpty()) {
             return false;
         }
@@ -44,7 +47,7 @@ public class PolarisParametersService {
                     }
                 });
 
-        validatePrcommentRelatedParamsForPolaris(polarisParameters, invalidParams);
+        validatePrcommentRelatedParamsForPolaris(polarisParameters, invalidParams, envVars);
                 
         if (invalidParams.isEmpty()) {
             logger.info("Polaris parameters are validated successfully");
@@ -56,18 +59,13 @@ public class PolarisParametersService {
         }
     }
 
-    public void validatePrcommentRelatedParamsForPolaris(Map<String, Object> polarisParameters, List<String> invalidParams) {
-        if (!isPrCommentEnabled(polarisParameters)) {
-            return;
-        }
-        if (!isValidParentBranchNameKey(polarisParameters)) {
+    public void validatePrcommentRelatedParamsForPolaris(Map<String, Object> polarisParameters, List<String> invalidParams, EnvVars envVars) {
+        boolean isPolarisParentBranchNameParamMandatory = envVars.containsKey(ApplicationConstants.ENV_CHANGE_ID_KEY)
+                && envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null;
+
+        if (isPolarisParentBranchNameParamMandatory && !isValidParentBranchNameKey(polarisParameters)) {
             invalidParams.add(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY);
         }
-    }
-
-    private boolean isPrCommentEnabled(Map<String, Object> polarisParameters) {
-        return polarisParameters.containsKey(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY)
-                && Boolean.TRUE.equals(polarisParameters.get(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY));
     }
 
     private boolean isValidParentBranchNameKey(Map<String, Object> polarisParameters) {
