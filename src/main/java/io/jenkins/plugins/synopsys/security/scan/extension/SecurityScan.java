@@ -55,6 +55,8 @@ public interface SecurityScan {
 
     public Boolean isPolaris_prComment_enabled();
 
+    public Boolean isPolarisPrCommentEnabledActualValue();
+
     public String getPolaris_prComment_severities();
 
     public String getPolaris_branch_parent_name();

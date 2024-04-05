@@ -78,6 +78,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String polaris_test_sca_type;
     private String polaris_branch_name;
     private String polaris_branch_parent_name;
+    private Boolean polarisPrCommentEnabledActualValue;
     private Boolean polaris_prComment_enabled;
     private String polaris_prComment_severities;
     private Boolean polaris_reports_sarif_create;
@@ -220,6 +221,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public Boolean isPolaris_prComment_enabled() {
         return polaris_prComment_enabled;
+    }
+
+    public Boolean isPolarisPrCommentEnabledActualValue() {
+        return polarisPrCommentEnabledActualValue;
     }
 
     public String getPolaris_prComment_severities() {
@@ -444,6 +449,12 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     @DataBoundSetter
     public void setPolaris_prComment_enabled(Boolean polaris_prComment_enabled) {
+        if (polaris_prComment_enabled) {
+            this.polarisPrCommentEnabledActualValue = true;
+        }
+        if (!polaris_prComment_enabled) {
+            this.polarisPrCommentEnabledActualValue = false;
+        }
         this.polaris_prComment_enabled = polaris_prComment_enabled ? true : null;
     }
 

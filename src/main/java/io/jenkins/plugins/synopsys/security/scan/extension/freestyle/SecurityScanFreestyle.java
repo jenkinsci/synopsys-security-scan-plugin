@@ -65,6 +65,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String polaris_branch_name;
     private String polaris_branch_parent_name;
     private Boolean polaris_prComment_enabled;
+    private Boolean polarisPrCommentEnabledActualValue;
     private String polaris_prComment_severities;
     private String polaris_test_sca_type;
     //    private String polaris_branch_parent_name;
@@ -219,6 +220,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public Boolean isPolaris_prComment_enabled() {
         return polaris_prComment_enabled;
+    }
+
+    public Boolean isPolarisPrCommentEnabledActualValue() {
+        return polarisPrCommentEnabledActualValue;
     }
 
     public String getPolaris_prComment_severities() {
@@ -453,6 +458,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setPolaris_prComment_enabled(Boolean polaris_prComment_enabled) {
         this.polaris_prComment_enabled = polaris_prComment_enabled ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setPolarisPrCommentEnabledActualValue(Boolean polarisPrCommentEnabledActualValue) {
+        this.polarisPrCommentEnabledActualValue = polarisPrCommentEnabledActualValue;
     }
 
     @DataBoundSetter

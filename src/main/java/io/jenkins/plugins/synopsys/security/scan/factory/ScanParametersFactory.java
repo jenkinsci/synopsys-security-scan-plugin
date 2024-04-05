@@ -353,9 +353,9 @@ public class ScanParametersFactory {
                     ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY, securityScan.getPolaris_branch_parent_name());
         }
 
-        if (securityScan.isPolaris_prComment_enabled() != null) {
+        if (securityScan.isPolarisPrCommentEnabledActualValue() != null) {
             polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, securityScan.isPolaris_prComment_enabled());
+                    ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, securityScan.isPolarisPrCommentEnabledActualValue());
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getPolaris_prComment_severities())) {
