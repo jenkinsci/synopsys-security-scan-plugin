@@ -79,6 +79,7 @@ public class PolarisParametersService {
 
     public Polaris preparePolarisObjectForBridge(Map<String, Object> polarisParameters) {
         Polaris polaris = new Polaris();
+        Prcomment prcomment = new Prcomment();
 
         for (Map.Entry<String, Object> entry : polarisParameters.entrySet()) {
             String key = entry.getKey();
@@ -105,7 +106,6 @@ public class PolarisParametersService {
                     break;
                 case ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY:
                     if (value.equals("true") || value.equals("false")) {
-                        Prcomment prcomment = new Prcomment();
                         prcomment.setEnabled(Boolean.parseBoolean(value));
                         polaris.setPrcomment(prcomment);
                     }
@@ -125,7 +125,8 @@ public class PolarisParametersService {
                         for (String input : prCommentSeveritiesInput) {
                             prCommentSeverities.add(input.trim());
                         }
-                        polaris.getPrcomment().setSeverities(prCommentSeverities);
+                        prcomment.setSeverities(prCommentSeverities);
+                        polaris.setPrcomment(prcomment);
                     }
                     break;
                 case ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY:
