@@ -355,7 +355,8 @@ public class ScanParametersFactory {
 
         if (securityScan.isPolarisPrCommentEnabledActualValue() != null) {
             polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, securityScan.isPolarisPrCommentEnabledActualValue());
+                    ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY,
+                    securityScan.isPolarisPrCommentEnabledActualValue());
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getPolaris_prComment_severities())) {
