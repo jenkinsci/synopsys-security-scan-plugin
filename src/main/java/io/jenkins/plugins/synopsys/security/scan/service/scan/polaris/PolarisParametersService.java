@@ -4,6 +4,8 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
+import io.jenkins.plugins.synopsys.security.scan.input.polaris.Prcomment;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,6 +54,7 @@ public class PolarisParametersService {
 
     public Polaris preparePolarisObjectForBridge(Map<String, Object> polarisParameters) {
         Polaris polaris = new Polaris();
+        Prcomment prcomment = new Prcomment();
 
         for (Map.Entry<String, Object> entry : polarisParameters.entrySet()) {
             String key = entry.getKey();
@@ -77,7 +80,10 @@ public class PolarisParametersService {
                     polaris.getBranch().setName(value);
                     break;
                 case ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY:
-                    polaris.getPrcomment().setEnabled(Boolean.parseBoolean(value));
+                    if (value.equals("true") || value.equals("false")) {
+                        prcomment.setEnabled(Boolean.parseBoolean(value));
+                        polaris.setPrcomment(prcomment);
+                    }
                     break;
                 case ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY:
                     polaris.getBranch().getParent().setName(value);
@@ -90,7 +96,8 @@ public class PolarisParametersService {
                         for (String input : prCommentSeveritiesInput) {
                             prCommentSeverities.add(input.trim());
                         }
-                        polaris.getPrcomment().setSeverities(prCommentSeverities);
+                        prcomment.setSeverities(prCommentSeverities);
+                        polaris.setPrcomment(prcomment);
                     }
                     break;
                 case ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY:
