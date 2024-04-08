@@ -46,10 +46,7 @@ public class BitbucketRepositoryServiceTest {
         bitbucketSCMSourceMock = mock(BitbucketSCMSource.class);
 
         when(bitbucketRepositoryServiceMock.fetchBitbucketRepositoryDetails(
-                        bitbucketParametersMap,
-                        bitbucketSCMSourceMock,
-                        TEST_REPOSITORY_PULL_NUMBER,
-                        false))
+                        bitbucketParametersMap, bitbucketSCMSourceMock, TEST_REPOSITORY_PULL_NUMBER, false))
                 .thenReturn(bitbucket);
 
         listenerMock = Mockito.mock(TaskListener.class);
@@ -59,10 +56,7 @@ public class BitbucketRepositoryServiceTest {
     @Test
     void createBitbucketObjectTest() throws PluginExceptionHandler {
         Bitbucket bitbucket = bitbucketRepositoryServiceMock.fetchBitbucketRepositoryDetails(
-                bitbucketParametersMap,
-                bitbucketSCMSourceMock,
-                TEST_REPOSITORY_PULL_NUMBER,
-                false);
+                bitbucketParametersMap, bitbucketSCMSourceMock, TEST_REPOSITORY_PULL_NUMBER, false);
 
         assertEquals(TEST_BITBUCKET_URL, bitbucket.getApi().getUrl());
         assertEquals(TEST_BITBUCKET_TOKEN, bitbucket.getApi().getToken());
@@ -86,11 +80,8 @@ public class BitbucketRepositoryServiceTest {
         when(bitbucketApiFromSCMSource.getRepository()).thenReturn(bitbucketRepository);
 
         BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listenerMock);
-        Bitbucket result = bitbucketRepositoryService.fetchBitbucketRepositoryDetails(
-                scanParameters,
-                bitbucketSCMSource,
-                1,
-                true);
+        Bitbucket result =
+                bitbucketRepositoryService.fetchBitbucketRepositoryDetails(scanParameters, bitbucketSCMSource, 1, true);
 
         assertNotNull(result);
 
@@ -99,9 +90,6 @@ public class BitbucketRepositoryServiceTest {
         assertThrows(
                 PluginExceptionHandler.class,
                 () -> bitbucketRepositoryService.fetchBitbucketRepositoryDetails(
-                        scanParameters,
-                        bitbucketSCMSource,
-                        1,
-                        true));
+                        scanParameters, bitbucketSCMSource, 1, true));
     }
 }

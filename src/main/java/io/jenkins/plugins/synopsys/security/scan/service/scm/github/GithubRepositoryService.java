@@ -51,7 +51,6 @@ public class GithubRepositoryService {
         }
 
         github.getRepository().getBranch().setName(branchName);
-//        github.getRepository().getBranch().setParent(parentBranchName);
 
         String githubHostUrl = extractGitHubHost(githubApiUri);
 

@@ -90,12 +90,8 @@ public class ScannerArgumentServiceTest {
         blackDuck.setUrl("https://fake.blackduck.url");
         blackDuck.setToken(TOKEN);
 
-        Bitbucket bitbucketObject = BitbucketRepositoryService.createBitbucketObject(
-                "https://bitbucket.org",
-                TOKEN,
-                12,
-                "test",
-                "abc");
+        Bitbucket bitbucketObject =
+                BitbucketRepositoryService.createBitbucketObject("https://bitbucket.org", TOKEN, 12, "test", "abc");
 
         try {
             String jsonStringNonPrCommentOrFixPr =
@@ -262,13 +258,7 @@ public class ScannerArgumentServiceTest {
 
         try {
             Github github = githubRepositoryService.createGithubObject(
-                    scanParametersMap,
-                    "fake-repo",
-                    "fake-owner",
-                    1,
-                    "fake-branch",
-                    true,
-                    CLOUD_API_URI);
+                    scanParametersMap, "fake-repo", "fake-owner", 1, "fake-branch", true, CLOUD_API_URI);
             String inputJsonPath = scannerArgumentService.createBridgeInputJson(
                     coverity, github, true, null, null, ApplicationConstants.COVERITY_INPUT_JSON_PREFIX);
             Path filePath = Paths.get(inputJsonPath);

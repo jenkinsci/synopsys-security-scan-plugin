@@ -55,7 +55,6 @@ public class GithubRepositoryServiceTest {
         assertEquals(githubCloud.getRepository().getOwner().getName(), TEST_REPOSITORY_OWNER);
         assertEquals(githubCloud.getRepository().getPull().getNumber(), TEST_REPOSITORY_PULL_NUMBER);
         assertEquals(githubCloud.getRepository().getBranch().getName(), TEST_REPOSITORY_BRANCH_NAME);
-//        assertEquals(githubCloud.getRepository().getBranch().getParent(), TEST_REPOSITORY_PARENT_BRANCH_NAME);
 
         Github githubEnterprise = githubRepositoryService.createGithubObject(
                 scanParametersMap,
