@@ -61,7 +61,6 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, TEST_POLARIS_PRCOMMENT_ENABLED);
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY, TEST_POLARIS_PRCOMMENT_SEVERITIES);
 
-
         assertTrue(polarisParametersService.isValidPolarisParameters(polarisParameters, envVarsMock));
     }
 
@@ -81,7 +80,6 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, true);
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY, "HIGH");
 
-
         Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(polarisParameters);
 
         assertEquals(polaris.getServerUrl(), TEST_POLARIS_SERVER_URL);
@@ -95,7 +93,5 @@ public class PolarisParametersServiceTest {
         assertEquals(polaris.getBranch().getParent().getName(), "test-parent-branch");
         assertEquals(polaris.getPrcomment().getEnabled(), true);
         assertEquals(polaris.getPrcomment().getSeverities(), Arrays.asList("HIGH"));
-
-
     }
 }
