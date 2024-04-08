@@ -28,8 +28,6 @@ public class BitbucketRepositoryServiceTest {
     private final Integer TEST_REPOSITORY_PULL_NUMBER = 7;
     private final String TEST_REPOSITORY_NAME = "TEST_REPO";
     private final String TEST_PROJECT_KEY = "my_key";
-    private final String TEST_REPOSITORY_BRANCH_NAME = "TEST_BRANCH";
-    private final String TEST_REPOSITORY_PARENT_BRANCH_NAME = "TEST_PARENT_BRANCH";
     Map<String, Object> bitbucketParametersMap = new HashMap<>();
     private BitbucketSCMSource bitbucketSCMSourceMock;
     private TaskListener listenerMock;
@@ -41,9 +39,7 @@ public class BitbucketRepositoryServiceTest {
                 TEST_BITBUCKET_TOKEN,
                 TEST_REPOSITORY_PULL_NUMBER,
                 TEST_REPOSITORY_NAME,
-                TEST_PROJECT_KEY,
-                null,
-                null);
+                TEST_PROJECT_KEY);
 
         bitbucketParametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, TEST_BITBUCKET_TOKEN);
 
@@ -53,9 +49,7 @@ public class BitbucketRepositoryServiceTest {
                         bitbucketParametersMap,
                         bitbucketSCMSourceMock,
                         TEST_REPOSITORY_PULL_NUMBER,
-                        false,
-                        TEST_REPOSITORY_BRANCH_NAME,
-                        TEST_REPOSITORY_PARENT_BRANCH_NAME))
+                        false))
                 .thenReturn(bitbucket);
 
         listenerMock = Mockito.mock(TaskListener.class);
@@ -68,9 +62,7 @@ public class BitbucketRepositoryServiceTest {
                 bitbucketParametersMap,
                 bitbucketSCMSourceMock,
                 TEST_REPOSITORY_PULL_NUMBER,
-                false,
-                TEST_REPOSITORY_BRANCH_NAME,
-                TEST_REPOSITORY_PARENT_BRANCH_NAME);
+                false);
 
         assertEquals(TEST_BITBUCKET_URL, bitbucket.getApi().getUrl());
         assertEquals(TEST_BITBUCKET_TOKEN, bitbucket.getApi().getToken());
@@ -98,9 +90,7 @@ public class BitbucketRepositoryServiceTest {
                 scanParameters,
                 bitbucketSCMSource,
                 1,
-                true,
-                TEST_REPOSITORY_BRANCH_NAME,
-                TEST_REPOSITORY_PARENT_BRANCH_NAME);
+                true);
 
         assertNotNull(result);
 
@@ -112,8 +102,6 @@ public class BitbucketRepositoryServiceTest {
                         scanParameters,
                         bitbucketSCMSource,
                         1,
-                        true,
-                        TEST_REPOSITORY_BRANCH_NAME,
-                        TEST_REPOSITORY_PARENT_BRANCH_NAME));
+                        true));
     }
 }

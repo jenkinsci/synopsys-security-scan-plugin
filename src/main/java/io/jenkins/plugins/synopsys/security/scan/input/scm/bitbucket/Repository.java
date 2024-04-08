@@ -11,13 +11,6 @@ public class Repository {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("branch")
-    private Branch branch;
-
-    public Repository() {
-        branch = new Branch();
-    }
-
     public String getName() {
         return name;
     }
@@ -32,13 +25,5 @@ public class Repository {
 
     public void setPull(Pull pull) {
         this.pull = pull;
-    }
-
-    public Branch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch = branch;
     }
 }

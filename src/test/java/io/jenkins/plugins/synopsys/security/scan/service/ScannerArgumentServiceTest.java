@@ -46,8 +46,6 @@ public class ScannerArgumentServiceTest {
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
     private final EnvVars envVarsMock = Mockito.mock(EnvVars.class);
     private final String CLOUD_API_URI = "https://api.github.com";
-    private final String TEST_REPOSITORY_BRANCH_NAME = "TEST_BRANCH";
-    private final String TEST_REPOSITORY_PARENT_BRANCH_NAME = "TEST_PARENT_BRANCH";
     private FilePath workspace;
     private final String TOKEN = "MDJDSROSVC56FAKEKEY";
 
@@ -97,9 +95,7 @@ public class ScannerArgumentServiceTest {
                 TOKEN,
                 12,
                 "test",
-                "abc",
-                TEST_REPOSITORY_BRANCH_NAME,
-                TEST_REPOSITORY_PARENT_BRANCH_NAME);
+                "abc");
 
         try {
             String jsonStringNonPrCommentOrFixPr =
@@ -123,7 +119,7 @@ public class ScannerArgumentServiceTest {
 
         try {
             String jsonStringForPrComment =
-                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"bitbucket\":{\"api\":{\"url\":\"https://bitbucket.org\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\",\"branch\":{\"name\":\"TEST_BRANCH\",\"parent\":\"TEST_PARENT_BRANCH\"}},\"key\":\"abc\"}}}}";
+                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"bitbucket\":{\"api\":{\"url\":\"https://bitbucket.org\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\"},\"key\":\"abc\"}}}}";
             String inputJsonPathForPrComment = scannerArgumentService.createBridgeInputJson(
                     blackDuck, bitbucketObject, true, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
             Path filePath = Paths.get(inputJsonPathForPrComment);
@@ -257,7 +253,7 @@ public class ScannerArgumentServiceTest {
                 + "}},"
                 + "\"github\":{\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"name\":\"fake-repo\""
                 + ",\"owner\":{\"name\":\"fake-owner\"},\"pull\":{\"number\":1},\"branch\":{\"name\":"
-                + "\"fake-branch\",\"parent\":\"fake-parent-branch\"}}}}}";
+                + "\"fake-branch\"}}}}}";
 
         Coverity coverity = new Coverity();
         coverity.getConnect().setUrl("https://fake.coverity.url");
@@ -271,7 +267,6 @@ public class ScannerArgumentServiceTest {
                     "fake-owner",
                     1,
                     "fake-branch",
-                    "fake-parent-branch",
                     true,
                     CLOUD_API_URI);
             String inputJsonPath = scannerArgumentService.createBridgeInputJson(
@@ -311,7 +306,7 @@ public class ScannerArgumentServiceTest {
         blackDuck.getAutomation().setPrComment(true);
 
         String jsonStringForPrComment =
-                "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"automation\":{\"prComment\":true}},\"gitlab\":{\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"branch\":{\"name\":\"fake-gitlab-branch\",\"parent\":\"fake-gitlab-parent-branch\"},\"pull\":{\"number\":12},\"name\":\"fake-group/fake-gitlab-repo\"}}}}";
+                "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"automation\":{\"prComment\":true}},\"gitlab\":{\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"branch\":{\"name\":\"fake-gitlab-branch\"},\"pull\":{\"number\":12},\"name\":\"fake-group/fake-gitlab-repo\"}}}}";
 
         try {
             Gitlab gitlabObject = gitlabRepositoryService.createGitlabObject(
@@ -319,7 +314,6 @@ public class ScannerArgumentServiceTest {
                     "fake-group/fake-gitlab-repo",
                     12,
                     "fake-gitlab-branch",
-                    "fake-gitlab-parent-branch",
                     "https://gitlab.com/fake-group/fake-gitlab-repo.git",
                     true);
             String inputJsonPathForGitlabPrComment = scannerArgumentService.createBridgeInputJson(

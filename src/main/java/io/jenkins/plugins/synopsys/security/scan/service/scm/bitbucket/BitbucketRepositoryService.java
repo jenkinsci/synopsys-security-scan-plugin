@@ -25,9 +25,7 @@ public class BitbucketRepositoryService {
             Map<String, Object> scanParameters,
             BitbucketSCMSource bitbucketSCMSource,
             Integer projectRepositoryPullNumber,
-            boolean isFixPrOrPrComment,
-            String branchName,
-            String parentBranchName)
+            boolean isFixPrOrPrComment)
             throws PluginExceptionHandler {
 
         String bitbucketToken = (String) scanParameters.get(ApplicationConstants.BITBUCKET_TOKEN_KEY);
@@ -62,9 +60,7 @@ public class BitbucketRepositoryService {
                 bitbucketToken,
                 projectRepositoryPullNumber,
                 repositoryName,
-                projectKey,
-                branchName,
-                parentBranchName);
+                projectKey);
     }
 
     public static Bitbucket createBitbucketObject(
@@ -72,17 +68,13 @@ public class BitbucketRepositoryService {
             String bitbucketToken,
             Integer projectRepositoryPullNumber,
             String repositoryName,
-            String projectKey,
-            String branchName,
-            String parentBranchName) {
+            String projectKey) {
         Bitbucket bitbucket = new Bitbucket();
         bitbucket.getApi().setUrl(serverUrl);
         bitbucket.getApi().setToken(bitbucketToken);
 
         Repository repository = new Repository();
         repository.setName(repositoryName);
-        repository.getBranch().setName(branchName);
-        repository.getBranch().setParent(parentBranchName);
 
         if (projectRepositoryPullNumber != null) {
             Pull pull = new Pull();

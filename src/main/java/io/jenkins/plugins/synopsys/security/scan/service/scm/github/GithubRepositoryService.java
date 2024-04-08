@@ -28,7 +28,6 @@ public class GithubRepositoryService {
             String repositoryOwner,
             Integer projectRepositoryPullNumber,
             String branchName,
-            String parentBranchName,
             boolean isFixPrOrPrComment,
             String githubApiUri)
             throws PluginExceptionHandler {
@@ -52,7 +51,7 @@ public class GithubRepositoryService {
         }
 
         github.getRepository().getBranch().setName(branchName);
-        github.getRepository().getBranch().setParent(parentBranchName);
+//        github.getRepository().getBranch().setParent(parentBranchName);
 
         String githubHostUrl = extractGitHubHost(githubApiUri);
 
