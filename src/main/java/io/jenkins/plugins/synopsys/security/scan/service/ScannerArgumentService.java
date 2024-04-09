@@ -147,7 +147,7 @@ public class ScannerArgumentService {
                     ApplicationConstants.COVERITY_INPUT_JSON_PREFIX));
         }
         if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
-            PolarisParametersService polarisParametersService = new PolarisParametersService(listener, envVars);
+            PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
             Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(scanParameters);
 
             if (polaris.getBranch().getParent() == null) {

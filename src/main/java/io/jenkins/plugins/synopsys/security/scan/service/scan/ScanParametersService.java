@@ -40,8 +40,8 @@ public class ScanParametersService {
             }
         }
         if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
-            PolarisParametersService polarisParametersService = new PolarisParametersService(listener, envVars);
-            if (!polarisParametersService.isValidPolarisParameters(scanParameters, envVars)) {
+            PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
+            if (!polarisParametersService.isValidPolarisParameters(scanParameters)) {
                 throw new PluginExceptionHandler(ErrorCode.INVALID_POLARIS_PARAMETERS);
             }
         }

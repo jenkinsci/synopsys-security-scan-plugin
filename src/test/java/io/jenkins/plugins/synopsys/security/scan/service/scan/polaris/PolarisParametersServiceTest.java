@@ -30,7 +30,7 @@ public class PolarisParametersServiceTest {
 
     @BeforeEach
     void setUp() {
-        polarisParametersService = new PolarisParametersService(listenerMock, envVarsMock);
+        polarisParametersService = new PolarisParametersService(listenerMock);
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 
@@ -38,13 +38,13 @@ public class PolarisParametersServiceTest {
     void invalidScanParametersTest() {
         Map<String, Object> polarisParameters = new HashMap<>();
 
-        assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters, envVarsMock));
+        assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters));
 
         polarisParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
         polarisParameters.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, TEST_POLARIS_ACCESS_TOKEN);
         polarisParameters.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
 
-        assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters, envVarsMock));
+        assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters));
     }
 
     @Test
@@ -61,7 +61,7 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, TEST_POLARIS_PRCOMMENT_ENABLED);
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY, TEST_POLARIS_PRCOMMENT_SEVERITIES);
 
-        assertTrue(polarisParametersService.isValidPolarisParameters(polarisParameters, envVarsMock));
+        assertTrue(polarisParametersService.isValidPolarisParameters(polarisParameters));
     }
 
     @Test

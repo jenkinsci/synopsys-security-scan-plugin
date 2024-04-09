@@ -1,6 +1,5 @@
 package io.jenkins.plugins.synopsys.security.scan.service.scan.polaris;
 
-import hudson.EnvVars;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
@@ -15,14 +14,12 @@ import java.util.Map;
 
 public class PolarisParametersService {
     private final LoggerWrapper logger;
-    private final EnvVars envVars;
 
-    public PolarisParametersService(TaskListener listener, EnvVars envVars) {
+    public PolarisParametersService(TaskListener listener) {
         this.logger = new LoggerWrapper(listener);
-        this.envVars = envVars;
     }
 
-    public boolean isValidPolarisParameters(Map<String, Object> polarisParameters, EnvVars envVars) {
+    public boolean isValidPolarisParameters(Map<String, Object> polarisParameters) {
         if (polarisParameters == null || polarisParameters.isEmpty()) {
             return false;
         }
