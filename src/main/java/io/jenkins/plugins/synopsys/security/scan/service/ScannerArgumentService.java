@@ -228,9 +228,9 @@ public class ScannerArgumentService {
         String branchName = envVars.get(ApplicationConstants.ENV_BRANCH_NAME_KEY);
         String targetBranchName = envVars.get(ApplicationConstants.ENV_CHANGE_TARGET_KEY);
         boolean isPullRequest = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null ? true : false;
-
         if (Utility.isStringNullOrBlank(coverity.getConnect().getProject().getName()) && repositoryName != null) {
             coverity.getConnect().getProject().setName(repositoryName);
+            logger.info("Coverity Project Name: " + repositoryName);
         }
 
         String defaultStreamName = isPullRequest ? targetBranchName : branchName;
@@ -238,7 +238,9 @@ public class ScannerArgumentService {
         if (Utility.isStringNullOrBlank(coverity.getConnect().getStream().getName())
                 && repositoryName != null
                 && defaultStreamName != null) {
-            coverity.getConnect().getStream().setName(repositoryName.concat("-").concat(defaultStreamName));
+            String coveritySteamName = repositoryName.concat("-").concat(defaultStreamName);
+            coverity.getConnect().getStream().setName(coveritySteamName);
+            logger.info("Coverity Stream Name: " + coveritySteamName);
         }
     }
 
@@ -247,10 +249,12 @@ public class ScannerArgumentService {
 
         if (Utility.isStringNullOrBlank(polaris.getProjectName().getName()) && repositoryName != null) {
             polaris.getProjectName().setName(repositoryName);
+            logger.info("Polaris Project Name: " + repositoryName);
         }
 
         if (Utility.isStringNullOrBlank(polaris.getApplicationName().getName()) && repositoryName != null) {
             polaris.getApplicationName().setName(repositoryName);
+            logger.info("Polaris Application Name: " + repositoryName);
         }
     }
 

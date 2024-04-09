@@ -118,8 +118,7 @@ public class PluginParametersHandler {
                         || Objects.equals(
                                 parametersCopy.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true))
                 && envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null) {
-            logger.warn(
-                    "SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans");
+            logger.warn("SARIF report create/upload is ignored for PR/MR scans");
         }
     }
 
