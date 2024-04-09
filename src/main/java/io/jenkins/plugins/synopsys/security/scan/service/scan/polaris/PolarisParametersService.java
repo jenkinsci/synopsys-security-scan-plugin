@@ -46,7 +46,6 @@ public class PolarisParametersService {
                     }
                 });
 
-        validatePrcommentRelatedParamsForPolaris(polarisParameters, invalidParams, envVars);
 
         if (invalidParams.isEmpty()) {
             logger.info("Polaris parameters are validated successfully");
@@ -56,25 +55,6 @@ public class PolarisParametersService {
             logger.error("Invalid Polaris parameters: " + invalidParams);
             return false;
         }
-    }
-
-    public void validatePrcommentRelatedParamsForPolaris(
-            Map<String, Object> polarisParameters, List<String> invalidParams, EnvVars envVars) {
-        boolean isPolarisParentBranchNameParamMandatory = envVars.containsKey(ApplicationConstants.ENV_CHANGE_ID_KEY)
-                && envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null;
-
-        if (isPolarisParentBranchNameParamMandatory && !isValidParentBranchNameKey(polarisParameters)) {
-            invalidParams.add(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY);
-        }
-    }
-
-    private boolean isValidParentBranchNameKey(Map<String, Object> polarisParameters) {
-        return polarisParameters.containsKey(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY)
-                && polarisParameters.get(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY) != null
-                && !polarisParameters
-                        .get(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY)
-                        .toString()
-                        .isEmpty();
     }
 
     public Polaris preparePolarisObjectForBridge(Map<String, Object> polarisParameters) {
@@ -113,8 +93,8 @@ public class PolarisParametersService {
                 case ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY:
                     if (!value.isEmpty()) {
                         Parent parent = new Parent();
+                        parent.setName(value);
                         polaris.getBranch().setParent(parent);
-                        polaris.getBranch().getParent().setName(value);
                     }
                     break;
                 case ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY:

@@ -15,6 +15,7 @@ import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
 import io.jenkins.plugins.synopsys.security.scan.input.NetworkAirGap;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.polaris.Parent;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.input.report.File;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Issue;
@@ -148,6 +149,15 @@ public class ScannerArgumentService {
         if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener, envVars);
             Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(scanParameters);
+
+            if(polaris.getBranch().getParent() == null) {
+                String defaultParentBranchName = envVars.get(ApplicationConstants.PARENT_BRANCH_NAME);
+                if(defaultParentBranchName != null) {
+                    Parent parent = new Parent();
+                    parent.setName(defaultParentBranchName);
+                    polaris.getBranch().setParent(parent);
+                }
+            }
 
             scanCommands.add(BridgeParams.STAGE_OPTION);
             scanCommands.add(BridgeParams.POLARIS_STAGE);
