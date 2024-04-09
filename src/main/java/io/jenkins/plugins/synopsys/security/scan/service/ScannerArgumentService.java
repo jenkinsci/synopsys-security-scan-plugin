@@ -150,9 +150,9 @@ public class ScannerArgumentService {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener, envVars);
             Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(scanParameters);
 
-            if(polaris.getBranch().getParent() == null) {
+            if (polaris.getBranch().getParent() == null) {
                 String defaultParentBranchName = envVars.get(ApplicationConstants.PARENT_BRANCH_NAME);
-                if(defaultParentBranchName != null) {
+                if (defaultParentBranchName != null) {
                     Parent parent = new Parent();
                     parent.setName(defaultParentBranchName);
                     polaris.getBranch().setParent(parent);

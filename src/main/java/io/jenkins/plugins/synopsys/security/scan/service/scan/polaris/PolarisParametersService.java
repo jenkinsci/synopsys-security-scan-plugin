@@ -46,7 +46,6 @@ public class PolarisParametersService {
                     }
                 });
 
-
         if (invalidParams.isEmpty()) {
             logger.info("Polaris parameters are validated successfully");
             return true;
