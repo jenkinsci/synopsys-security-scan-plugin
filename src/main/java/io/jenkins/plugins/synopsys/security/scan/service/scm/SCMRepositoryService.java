@@ -36,7 +36,7 @@ public class SCMRepositoryService {
 
         LoggerWrapper logger = new LoggerWrapper(listener);
         if (isFixPrOrPrComment && projectRepositoryPullNumber == null) {
-            logger.warn("PRComment is set true but this is not a pull request scan");
+            logger.warn("PR comment is ignored for non PR/MR scan");
             return null;
         }
 
