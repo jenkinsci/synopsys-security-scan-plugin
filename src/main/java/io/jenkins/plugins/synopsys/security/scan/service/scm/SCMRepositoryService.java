@@ -36,7 +36,14 @@ public class SCMRepositoryService {
 
         LoggerWrapper logger = new LoggerWrapper(listener);
         if (isFixPrOrPrComment && projectRepositoryPullNumber == null) {
-            logger.warn("PR comment is ignored for non PR/MR scan");
+            String productName = (String) scanParameters.get(ApplicationConstants.PRODUCT_KEY);
+            if (productName.equalsIgnoreCase("BLACKDUCK")) {
+                logger.info(ApplicationConstants.BLACKDUCK_PRCOMMENT_INFO_FOR_NON_PR_SCANS);
+            } else if (productName.equalsIgnoreCase("COVERITY")) {
+                logger.info(ApplicationConstants.COVERITY_PRCOMMENT_INFO_FOR_NON_PR_SCANS);
+            } else if (productName.equalsIgnoreCase("POLARIS")) {
+                logger.info(ApplicationConstants.POLARIS_PRCOMMENT_INFO_FOR_NON_PR_SCANS);
+            }
             return null;
         }
 

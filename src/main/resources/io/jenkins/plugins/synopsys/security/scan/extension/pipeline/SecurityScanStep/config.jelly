@@ -79,7 +79,7 @@
             <f:entry field="polaris_branch_name" title="Polaris Branch Name (Mandatory)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="polaris_branch_parent_name" title="Polaris Parent Branch Name (Mandatory)">
+            <f:entry field="polaris_branch_parent_name" title="Polaris Parent Branch Name (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="polaris_prComment_enabled" title="Add Comments to Pull Requests (Optional)">
