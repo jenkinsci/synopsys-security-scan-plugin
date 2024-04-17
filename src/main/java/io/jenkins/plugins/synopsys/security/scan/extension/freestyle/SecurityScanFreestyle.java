@@ -67,6 +67,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String polaris_assessment_types;
     private String polaris_triage;
     private String polaris_branch_name;
+    private String polaris_branch_parent_name;
+    private Boolean polaris_prComment_enabled;
+    private Boolean polarisPrCommentEnabledActualValue;
+    private String polaris_prComment_severities;
     private String polaris_test_sca_type;
     //    private String polaris_branch_parent_name;
     private Boolean polaris_reports_sarif_create;
@@ -230,6 +234,22 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         return polaris_branch_name;
     }
 
+    public String getPolaris_branch_parent_name() {
+        return polaris_branch_parent_name;
+    }
+
+    public Boolean isPolaris_prComment_enabled() {
+        return polaris_prComment_enabled;
+    }
+
+    public Boolean isPolarisPrCommentEnabledActualValue() {
+        return polarisPrCommentEnabledActualValue;
+    }
+
+    public String getPolaris_prComment_severities() {
+        return polaris_prComment_severities;
+    }
+
     public String getPolaris_test_sca_type() {
         return polaris_test_sca_type;
     }
@@ -358,8 +378,12 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     @DataBoundSetter
     public void setBlackduck_reports_sarif_groupSCAIssues(Boolean blackduck_reports_sarif_groupSCAIssues) {
-        this.blackduck_reports_sarif_groupSCAIssues = this.blackduck_reports_sarif_groupSCAIssues_temporary =
-                blackduck_reports_sarif_groupSCAIssues ? true : false;
+        if (blackduck_reports_sarif_create != null) {
+            this.blackduck_reports_sarif_groupSCAIssues =
+                    this.blackduck_reports_sarif_groupSCAIssues_temporary = blackduck_reports_sarif_groupSCAIssues;
+        } else {
+            this.blackduck_reports_sarif_groupSCAIssues = null;
+        }
     }
 
     @DataBoundSetter
@@ -464,6 +488,26 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     }
 
     @DataBoundSetter
+    public void setPolaris_branch_parent_name(String polaris_branch_parent_name) {
+        this.polaris_branch_parent_name = polaris_branch_parent_name;
+    }
+
+    @DataBoundSetter
+    public void setPolaris_prComment_enabled(Boolean polaris_prComment_enabled) {
+        this.polaris_prComment_enabled = polaris_prComment_enabled ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setPolarisPrCommentEnabledActualValue(Boolean polarisPrCommentEnabledActualValue) {
+        this.polarisPrCommentEnabledActualValue = polarisPrCommentEnabledActualValue;
+    }
+
+    @DataBoundSetter
+    public void setPolaris_prComment_severities(String polaris_prComment_severities) {
+        this.polaris_prComment_severities = polaris_prComment_severities;
+    }
+
+    @DataBoundSetter
     public void setPolaris_test_sca_type(String polaris_test_sca_type) {
         this.polaris_test_sca_type = Util.fixEmptyAndTrim(polaris_test_sca_type);
     }
@@ -480,8 +524,12 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     @DataBoundSetter
     public void setPolaris_reports_sarif_groupSCAIssues(Boolean polaris_reports_sarif_groupSCAIssues) {
-        this.polaris_reports_sarif_groupSCAIssues = this.polaris_reports_sarif_groupSCAIssues_temporary =
-                polaris_reports_sarif_groupSCAIssues ? true : false;
+        if (polaris_reports_sarif_create != null) {
+            this.polaris_reports_sarif_groupSCAIssues =
+                    this.polaris_reports_sarif_groupSCAIssues_temporary = polaris_reports_sarif_groupSCAIssues;
+        } else {
+            this.polaris_reports_sarif_groupSCAIssues = null;
+        }
     }
 
     @DataBoundSetter

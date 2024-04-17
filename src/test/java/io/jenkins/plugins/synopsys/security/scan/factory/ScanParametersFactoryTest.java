@@ -162,16 +162,22 @@ public class ScanParametersFactoryTest {
         securityScanStep.setPolaris_assessment_types("SCA");
         securityScanStep.setPolaris_triage("REQUIRED");
         securityScanStep.setPolaris_branch_name("test");
+        securityScanStep.setPolaris_branch_parent_name("master");
+        securityScanStep.setPolaris_prComment_enabled(true);
+        securityScanStep.setPolaris_prComment_severities("high, critical");
 
         Map<String, Object> polarisParametersMap = ScanParametersFactory.preparePolarisParametersMap(securityScanStep);
 
-        assertEquals(7, polarisParametersMap.size());
+        assertEquals(10, polarisParametersMap.size());
         assertEquals(
                 "https://fake.polaris-server.url",
                 polarisParametersMap.get(ApplicationConstants.POLARIS_SERVER_URL_KEY));
         assertEquals("fake-access-token", polarisParametersMap.get(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY));
         assertEquals("test", polarisParametersMap.get(ApplicationConstants.POLARIS_BRANCH_NAME_KEY));
         assertEquals("REQUIRED", polarisParametersMap.get(ApplicationConstants.POLARIS_TRIAGE_KEY));
+        assertEquals("master", polarisParametersMap.get(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY));
+        assertEquals(true, polarisParametersMap.get(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY));
+        assertEquals("high, critical", polarisParametersMap.get(ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY));
     }
 
     @Test

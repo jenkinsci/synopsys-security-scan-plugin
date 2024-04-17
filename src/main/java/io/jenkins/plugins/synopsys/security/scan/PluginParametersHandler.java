@@ -43,7 +43,7 @@ public class PluginParametersHandler {
 
         logMessagesForParameters(scanParameters, scanParametersService.getSynopsysSecurityProducts(scanParameters));
 
-        scanParametersService.performScanParameterValidation(scanParameters);
+        scanParametersService.performScanParameterValidation(scanParameters, envVars);
 
         bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams);
 

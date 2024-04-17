@@ -61,6 +61,14 @@ public interface SecurityScan {
 
     public String getPolaris_branch_name();
 
+    public Boolean isPolaris_prComment_enabled();
+
+    public Boolean isPolarisPrCommentEnabledActualValue();
+
+    public String getPolaris_prComment_severities();
+
+    public String getPolaris_branch_parent_name();
+
     public String getPolaris_test_sca_type();
 
     public String getBitbucket_token();

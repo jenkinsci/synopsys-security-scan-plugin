@@ -15,7 +15,6 @@ public class Github {
     public Github() {
         user = new User();
         repository = new Repository();
-        host = new Host();
     }
 
     public User getUser() {

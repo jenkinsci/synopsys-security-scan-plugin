@@ -44,6 +44,8 @@ public class ApplicationConstants {
     @Deprecated
     public static final String BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "blackduck_automation_prcomment";
 
+    public static final String BLACKDUCK_PRCOMMENT_INFO_FOR_NON_PR_SCANS =
+            "Black Duck PR Comment is ignored for non pull request scan";
     public static final String BLACKDUCK_PRCOMMENT_ENABLED_KEY = "blackduck_prComment_enabled";
     public static final String BLACKDUCK_DOWNLOAD_URL_KEY = "blackduck_download_url";
     public static final String BLACKDUCK_REPORTS_SARIF_CREATE_KEY = "blackduck_reports_sarif_create";
@@ -63,6 +65,8 @@ public class ApplicationConstants {
     public static final String COVERITY_AUTOMATION_PRCOMMENT_KEY = "coverity_automation_prcomment";
 
     public static final String COVERITY_PRCOMMENT_ENABLED_KEY = "coverity_prComment_enabled";
+    public static final String COVERITY_PRCOMMENT_INFO_FOR_NON_PR_SCANS =
+            "Coverity PR Comment is ignored for non pull request scan";
     public static final String COVERITY_VERSION_KEY = "coverity_version";
     public static final String COVERITY_LOCAL_KEY = "coverity_local";
 
@@ -73,6 +77,10 @@ public class ApplicationConstants {
     public static final String POLARIS_ASSESSMENT_TYPES_KEY = "polaris_assessment_types";
     public static final String POLARIS_TRIAGE_KEY = "polaris_triage";
     public static final String POLARIS_BRANCH_NAME_KEY = "polaris_branch_name";
+    public static final String POLARIS_PRCOMMENT_ENABLED_KEY = "polaris_prComment_enabled";
+    public static final String POLARIS_PRCOMMENT_INFO_FOR_NON_PR_SCANS =
+            "Polaris PR Comment is ignored for non pull request scan";
+    public static final String POLARIS_PRCOMMENT_SEVERITIES_KEY = "polaris_prComment_severities";
     public static final String POLARIS_TEST_SCA_TYPE_KEY = "polaris_test_sca_type";
     public static final String POLARIS_BRANCH_PARENT_NAME_KEY = "polaris_branch_parent_name";
     public static final String POLARIS_REPORTS_SARIF_CREATE_KEY = "polaris_reports_sarif_create";
