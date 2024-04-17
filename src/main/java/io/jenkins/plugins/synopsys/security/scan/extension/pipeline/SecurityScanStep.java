@@ -575,6 +575,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         private final transient Run<?, ?> run;
         private final transient Launcher launcher;
         private final transient Node node;
+        private final transient FlowNode flowNode;
 
         @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
         private final transient TaskListener listener;
@@ -593,6 +594,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             workspace = context.get(FilePath.class);
             launcher = context.get(Launcher.class);
             node = context.get(Node.class);
+            flowNode = context.get(FlowNode.class);
         }
 
         @Override
@@ -639,16 +641,14 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             throws PluginExceptionHandler, ScannerException, IOException, InterruptedException {
             if (exitCode != 0) {
                 if (Objects.equals(isMark_build_unstable(), true)) {
-                    Objects.requireNonNull(getContext().get(FlowNode.class)).addOrReplaceAction(new WarningAction(Result.UNSTABLE));
+                    flowNode.addOrReplaceAction(new WarningAction(Result.UNSTABLE));
                     run.setResult(Result.UNSTABLE);
                     return;
                 }
 
-//                Objects.requireNonNull(getContext().get(FlowNode.class))
-//                    .addOrReplaceAction(new WarningAction(Result.FAILURE));
-//                run.setResult(Result.FAILURE);
-
                 if (Objects.equals(isReturn_status(), true)) {
+                    flowNode.addOrReplaceAction(new WarningAction(Result.FAILURE));
+                    run.setResult(Result.FAILURE);
                     return;
                 }
 
