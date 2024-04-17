@@ -98,6 +98,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     Therefore, the stage won't be failed in case of non-zero status code.
      */
     private Boolean return_status = true;
+    private Boolean mark_build_unstable;
 
     @DataBoundConstructor
     public SecurityScanStep() {
@@ -246,6 +247,9 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public Boolean isReturn_status() {
         return return_status;
+    }
+    public Boolean isMark_build_unstable() {
+        return mark_build_unstable;
     }
 
     public Boolean isBlackduck_reports_sarif_create() {
@@ -474,6 +478,11 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     }
 
     @DataBoundSetter
+    public void setMark_build_unstable(Boolean mark_build_unstable) {
+        this.mark_build_unstable = mark_build_unstable;
+    }
+
+    @DataBoundSetter
     public void setBlackduck_reports_sarif_create(Boolean blackduck_reports_sarif_create) {
         this.blackduck_reports_sarif_create = blackduck_reports_sarif_create ? true : null;
     }
@@ -636,6 +645,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         private void handleExitCode(int exitCode, String exitMessage, Exception e)
                 throws PluginExceptionHandler, ScannerException {
             if (exitCode != 0) {
+                if (Objects.equals(isMark_build_unstable(), true)) {
+                    run.setResult(Result.UNSTABLE);
+                }
+
                 if (Objects.equals(isReturn_status(), true)) {
                     return;
                 }
