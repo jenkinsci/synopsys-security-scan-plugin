@@ -267,7 +267,8 @@ public class ScannerArgumentService {
             return github.getRepository().getName();
         } else if (scmObject instanceof Gitlab) {
             Gitlab gitlab = (Gitlab) scmObject;
-            return gitlab.getRepository().getName();
+            String fullName = gitlab.getRepository().getName();
+            return extractLastPart(fullName);
         }
 
         return null;
@@ -409,5 +410,16 @@ public class ScannerArgumentService {
         for (String item : array) {
             list.add(item.trim());
         }
+    }
+
+    private String extractLastPart(String fullRepoName) {
+        if (fullRepoName != null && !fullRepoName.isEmpty()) {
+            int lastSlashIndex = fullRepoName.lastIndexOf('/');
+            if (lastSlashIndex != -1 && lastSlashIndex < fullRepoName.length() - 1) {
+                return fullRepoName.substring(lastSlashIndex + 1);
+            }
+        }
+
+        return fullRepoName;
     }
 }
