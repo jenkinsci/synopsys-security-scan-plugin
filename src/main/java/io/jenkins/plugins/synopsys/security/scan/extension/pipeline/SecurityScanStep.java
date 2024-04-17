@@ -3,7 +3,10 @@ package io.jenkins.plugins.synopsys.security.scan.extension.pipeline;
 import com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.*;
-import hudson.model.*;
+import hudson.model.Node;
+import hudson.model.Result;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.util.ListBoxModel;
 import hudson.util.ListBoxModel.Option;
 import io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource;
@@ -11,29 +14,18 @@ import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandle
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
-import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
-import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
-import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
-import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
-import io.jenkins.plugins.synopsys.security.scan.global.Utility;
+import io.jenkins.plugins.synopsys.security.scan.global.*;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.SCMRepositoryService;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import javax.annotation.Nonnull;
 import jenkins.scm.api.SCMSource;
 import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
-import org.jenkinsci.plugins.workflow.steps.Step;
-import org.jenkinsci.plugins.workflow.steps.StepContext;
-import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
-import org.jenkinsci.plugins.workflow.steps.StepExecution;
-import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
+import org.jenkinsci.plugins.workflow.actions.WarningAction;
+import org.jenkinsci.plugins.workflow.graph.FlowNode;
+import org.jenkinsci.plugins.workflow.steps.*;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -604,7 +596,8 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         }
 
         @Override
-        protected Integer run() throws PluginExceptionHandler, ScannerException {
+        protected Integer run()
+            throws PluginExceptionHandler, ScannerException, IOException, InterruptedException {
             LoggerWrapper logger = new LoggerWrapper(listener);
             int exitCode = 0;
             String undefinedErrorMessage = null;
@@ -643,11 +636,17 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         }
 
         private void handleExitCode(int exitCode, String exitMessage, Exception e)
-                throws PluginExceptionHandler, ScannerException {
+            throws PluginExceptionHandler, ScannerException, IOException, InterruptedException {
             if (exitCode != 0) {
                 if (Objects.equals(isMark_build_unstable(), true)) {
+                    Objects.requireNonNull(getContext().get(FlowNode.class)).addOrReplaceAction(new WarningAction(Result.UNSTABLE));
                     run.setResult(Result.UNSTABLE);
+                    return;
                 }
+
+//                Objects.requireNonNull(getContext().get(FlowNode.class))
+//                    .addOrReplaceAction(new WarningAction(Result.FAILURE));
+//                run.setResult(Result.FAILURE);
 
                 if (Objects.equals(isReturn_status(), true)) {
                     return;
