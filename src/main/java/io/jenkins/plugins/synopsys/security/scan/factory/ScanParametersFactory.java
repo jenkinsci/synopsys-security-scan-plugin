@@ -348,10 +348,22 @@ public class ScanParametersFactory {
                     ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY, securityScan.getPolaris_test_sca_type());
         }
 
-        //        if (!Utility.isStringNullOrBlank(securityScan.getBridge_polaris_branch_parent_name())) {
-        //            polarisParametersMap.put(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY,
-        // securityScan.getBridge_polaris_branch_parent_name());
-        //        }
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_branch_parent_name())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY, securityScan.getPolaris_branch_parent_name());
+        }
+
+        if (securityScan.isPolarisPrCommentEnabledActualValue() != null) {
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY,
+                    securityScan.isPolarisPrCommentEnabledActualValue());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_prComment_severities())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY,
+                    securityScan.getPolaris_prComment_severities());
+        }
 
         return polarisParametersMap;
     }
