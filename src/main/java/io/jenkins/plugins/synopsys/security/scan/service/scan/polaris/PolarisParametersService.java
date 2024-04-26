@@ -90,9 +90,6 @@ public class PolarisParametersService {
                         polaris.getAssessmentTypes().setTypes(assessmentTypes);
                     }
                     break;
-                case ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY:
-                    polaris.getTest().getSca().setType(value);
-                    break;
                 default:
                     break;
             }
