@@ -1,6 +1,6 @@
 # Synopsys Security Scan Plugin
 
-This repository contains a Jenkins plugin implemented as a Maven project. The plugin provides functionality for performing Synopsys Security Scan with Black Duck, Coverity and Polaris. This README.md file serves as a guide for the users of the plugin. Please note that this Jenkins plugin currently supports only **Bitbucket as the source code management (SCM) system.**
+This repository contains a Jenkins plugin implemented as a Maven project. The plugin provides functionality for performing Synopsys Security Scan with Black Duck, Coverity and Polaris. This README.md file serves as a guide for the users of the plugin.
 
 ## Build
 

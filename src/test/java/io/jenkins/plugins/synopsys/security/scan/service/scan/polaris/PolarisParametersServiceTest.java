@@ -73,7 +73,6 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, "SAST");
         polarisParameters.put(ApplicationConstants.POLARIS_TRIAGE_KEY, "REQUIRED");
         polarisParameters.put(ApplicationConstants.POLARIS_BRANCH_NAME_KEY, "test-branch");
-        polarisParameters.put(ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY, "SCA-PACKAGE");
         polarisParameters.put(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY, "test-parent-branch");
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, true);
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY, "HIGH");
@@ -87,7 +86,6 @@ public class PolarisParametersServiceTest {
         assertEquals(polaris.getAssessmentTypes().getTypes(), Arrays.asList("SAST"));
         assertEquals(polaris.getTriage(), "REQUIRED");
         assertEquals(polaris.getBranch().getName(), "test-branch");
-        assertEquals(polaris.getTest().getSca().getType(), "SCA-PACKAGE");
         assertEquals(polaris.getBranch().getParent().getName(), "test-parent-branch");
         assertEquals(polaris.getPrcomment().getEnabled(), true);
         assertEquals(polaris.getPrcomment().getSeverities(), Arrays.asList("HIGH"));

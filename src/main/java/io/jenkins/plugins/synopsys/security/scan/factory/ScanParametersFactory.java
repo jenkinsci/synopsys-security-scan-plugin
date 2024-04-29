@@ -357,11 +357,6 @@ public class ScanParametersFactory {
                     ApplicationConstants.POLARIS_BRANCH_NAME_KEY, securityScan.getPolaris_branch_name());
         }
 
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_test_sca_type())) {
-            polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY, securityScan.getPolaris_test_sca_type());
-        }
-
         if (!Utility.isStringNullOrBlank(securityScan.getPolaris_branch_parent_name())) {
             polarisParametersMap.put(
                     ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY, securityScan.getPolaris_branch_parent_name());

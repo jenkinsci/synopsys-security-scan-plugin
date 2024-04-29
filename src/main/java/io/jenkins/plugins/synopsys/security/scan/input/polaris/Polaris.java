@@ -26,9 +26,6 @@ public class Polaris {
     @JsonProperty("branch")
     private Branch branch;
 
-    @JsonProperty("test")
-    private Test test;
-
     @JsonProperty("prComment")
     private Prcomment prcomment;
 
@@ -96,14 +93,6 @@ public class Polaris {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
-    }
-
-    public Test getTest() {
-        return test;
-    }
-
-    public void setTest(Test test) {
-        this.test = test;
     }
 
     public Reports getReports() {

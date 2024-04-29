@@ -6,7 +6,6 @@ import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Parent;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Prcomment;
-import io.jenkins.plugins.synopsys.security.scan.input.polaris.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -112,13 +111,6 @@ public class PolarisParametersService {
                             assessmentTypes.add(input.trim());
                         }
                         polaris.getAssessmentTypes().setTypes(assessmentTypes);
-                    }
-                    break;
-                case ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY:
-                    if (!value.isEmpty()) {
-                        Test test = new Test();
-                        test.getSca().setType(value);
-                        polaris.setTest(test);
                     }
                     break;
                 default:

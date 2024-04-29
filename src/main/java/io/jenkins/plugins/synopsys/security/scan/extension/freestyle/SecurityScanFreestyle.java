@@ -71,8 +71,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private Boolean polaris_prComment_enabled;
     private Boolean polarisPrCommentEnabledActualValue;
     private String polaris_prComment_severities;
-    private String polaris_test_sca_type;
-    //    private String polaris_branch_parent_name;
     private Boolean polaris_reports_sarif_create;
     private String polaris_reports_sarif_file_path;
     private String polaris_reports_sarif_issue_types;
@@ -248,10 +246,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public String getPolaris_prComment_severities() {
         return polaris_prComment_severities;
-    }
-
-    public String getPolaris_test_sca_type() {
-        return polaris_test_sca_type;
     }
 
     public Boolean isPolaris_reports_sarif_create() {
@@ -505,11 +499,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setPolaris_prComment_severities(String polaris_prComment_severities) {
         this.polaris_prComment_severities = polaris_prComment_severities;
-    }
-
-    @DataBoundSetter
-    public void setPolaris_test_sca_type(String polaris_test_sca_type) {
-        this.polaris_test_sca_type = Util.fixEmptyAndTrim(polaris_test_sca_type);
     }
 
     @DataBoundSetter
