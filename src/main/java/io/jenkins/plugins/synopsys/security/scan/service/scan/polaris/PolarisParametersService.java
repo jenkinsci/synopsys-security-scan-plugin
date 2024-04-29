@@ -3,7 +3,10 @@ package io.jenkins.plugins.synopsys.security.scan.service.scan.polaris;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.input.polaris.Parent;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
+import io.jenkins.plugins.synopsys.security.scan.input.polaris.Prcomment;
+import io.jenkins.plugins.synopsys.security.scan.input.polaris.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +29,6 @@ public class PolarisParametersService {
         Arrays.asList(
                         ApplicationConstants.POLARIS_SERVER_URL_KEY,
                         ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY,
-                        ApplicationConstants.POLARIS_APPLICATION_NAME_KEY,
-                        ApplicationConstants.POLARIS_PROJECT_NAME_KEY,
                         ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY,
                         ApplicationConstants.POLARIS_BRANCH_NAME_KEY)
                 .forEach(key -> {
@@ -52,6 +53,7 @@ public class PolarisParametersService {
 
     public Polaris preparePolarisObjectForBridge(Map<String, Object> polarisParameters) {
         Polaris polaris = new Polaris();
+        Prcomment prcomment = new Prcomment();
 
         for (Map.Entry<String, Object> entry : polarisParameters.entrySet()) {
             String key = entry.getKey();
@@ -76,9 +78,31 @@ public class PolarisParametersService {
                 case ApplicationConstants.POLARIS_BRANCH_NAME_KEY:
                     polaris.getBranch().setName(value);
                     break;
-                    //                case ApplicationConstants.BRIDGE_POLARIS_BRANCH_PARENT_NAME_KEY:
-                    //                    polaris.getBranch().getParent().setName(value);
-                    //                    break;
+                case ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY:
+                    if (value.equals("true") || value.equals("false")) {
+                        prcomment.setEnabled(Boolean.parseBoolean(value));
+                        polaris.setPrcomment(prcomment);
+                    }
+                    break;
+                case ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY:
+                    if (!value.isEmpty()) {
+                        Parent parent = new Parent();
+                        parent.setName(value);
+                        polaris.getBranch().setParent(parent);
+                    }
+                    break;
+                case ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY:
+                    if (!value.isEmpty()) {
+                        List<String> prCommentSeverities = new ArrayList<>();
+                        String[] prCommentSeveritiesInput = value.toUpperCase().split(",");
+
+                        for (String input : prCommentSeveritiesInput) {
+                            prCommentSeverities.add(input.trim());
+                        }
+                        prcomment.setSeverities(prCommentSeverities);
+                        polaris.setPrcomment(prcomment);
+                    }
+                    break;
                 case ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY:
                     if (!value.isEmpty()) {
                         List<String> assessmentTypes = new ArrayList<>();

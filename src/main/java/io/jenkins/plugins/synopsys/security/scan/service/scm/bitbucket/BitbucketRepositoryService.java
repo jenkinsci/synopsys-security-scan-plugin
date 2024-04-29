@@ -55,6 +55,13 @@ public class BitbucketRepositoryService {
             projectKey = bitbucketRepository.getProject().getKey();
         }
 
+        if (projectRepositoryPullNumber != null) {
+            logger.info("BitBucket repositoryName: " + repositoryName);
+            logger.info("BitBucket projectKey: " + projectKey);
+            logger.info("BitBucket projectRepositoryPullNumber: " + projectRepositoryPullNumber);
+            logger.info("BitBucket serverUrl: " + serverUrl);
+        }
+
         return createBitbucketObject(
                 serverUrl, bitbucketToken, projectRepositoryPullNumber, repositoryName, projectKey);
     }
@@ -69,12 +76,14 @@ public class BitbucketRepositoryService {
         bitbucket.getApi().setUrl(serverUrl);
         bitbucket.getApi().setToken(bitbucketToken);
 
-        Pull pull = new Pull();
-        pull.setNumber(projectRepositoryPullNumber);
-
         Repository repository = new Repository();
         repository.setName(repositoryName);
-        repository.setPull(pull);
+
+        if (projectRepositoryPullNumber != null) {
+            Pull pull = new Pull();
+            pull.setNumber(projectRepositoryPullNumber);
+            repository.setPull(pull);
+        }
 
         bitbucket.getProject().setKey(projectKey);
         bitbucket.getProject().setRepository(repository);

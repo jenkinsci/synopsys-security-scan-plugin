@@ -19,11 +19,6 @@ public class Sarif {
     @JsonProperty("groupSCAIssues")
     private Boolean groupSCAIssues;
 
-    public Sarif() {
-        this.issue = new Issue();
-        this.file = new File();
-    }
-
     public Issue getIssue() {
         return issue;
     }

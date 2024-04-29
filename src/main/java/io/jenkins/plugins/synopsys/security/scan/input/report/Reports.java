@@ -6,10 +6,6 @@ public class Reports {
     @JsonProperty("sarif")
     private Sarif sarif;
 
-    public Reports() {
-        this.sarif = new Sarif();
-    }
-
     public Sarif getSarif() {
         return sarif;
     }

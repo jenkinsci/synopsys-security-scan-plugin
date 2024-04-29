@@ -15,7 +15,11 @@ import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
 import io.jenkins.plugins.synopsys.security.scan.input.NetworkAirGap;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.polaris.Parent;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
+import io.jenkins.plugins.synopsys.security.scan.input.report.File;
+import io.jenkins.plugins.synopsys.security.scan.input.report.Issue;
+import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Sarif;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
@@ -146,6 +150,15 @@ public class ScannerArgumentService {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
             Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(scanParameters);
 
+            if (polaris.getBranch().getParent() == null) {
+                String defaultParentBranchName = envVars.get(ApplicationConstants.ENV_CHANGE_TARGET_KEY);
+                if (defaultParentBranchName != null) {
+                    Parent parent = new Parent();
+                    parent.setName(defaultParentBranchName);
+                    polaris.getBranch().setParent(parent);
+                }
+            }
+
             scanCommands.add(BridgeParams.STAGE_OPTION);
             scanCommands.add(BridgeParams.POLARIS_STAGE);
             scanCommands.add(BridgeParams.INPUT_OPTION);
@@ -202,6 +215,7 @@ public class ScannerArgumentService {
         if (scanObject instanceof BlackDuck) {
             BlackDuck blackDuck = (BlackDuck) scanObject;
             if (sarifObject != null) {
+                blackDuck.setReports(new Reports());
                 blackDuck.getReports().setSarif(sarifObject);
             }
             bridgeInput.setBlackDuck(blackDuck);
@@ -214,7 +228,11 @@ public class ScannerArgumentService {
         } else if (scanObject instanceof Polaris) {
             Polaris polaris = (Polaris) scanObject;
             if (sarifObject != null) {
+                polaris.setReports(new Reports());
                 polaris.getReports().setSarif(sarifObject);
+            }
+            if (scmObject != null) {
+                setPolarisApplicationNameAndProjectName(polaris, scmObject);
             }
             bridgeInput.setPolaris(polaris);
         }
@@ -223,14 +241,35 @@ public class ScannerArgumentService {
     private void setCoverityProjectNameAndStreamName(Coverity coverity, Object scmObject) {
         String repositoryName = getRepositoryName(scmObject);
         String branchName = envVars.get(ApplicationConstants.ENV_BRANCH_NAME_KEY);
-
+        String targetBranchName = envVars.get(ApplicationConstants.ENV_CHANGE_TARGET_KEY);
+        boolean isPullRequest = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null ? true : false;
         if (Utility.isStringNullOrBlank(coverity.getConnect().getProject().getName()) && repositoryName != null) {
             coverity.getConnect().getProject().setName(repositoryName);
+            logger.info("Coverity Project Name: " + repositoryName);
         }
+
+        String defaultStreamName = isPullRequest ? targetBranchName : branchName;
+
         if (Utility.isStringNullOrBlank(coverity.getConnect().getStream().getName())
                 && repositoryName != null
-                && branchName != null) {
-            coverity.getConnect().getStream().setName(repositoryName.concat("-").concat(branchName));
+                && defaultStreamName != null) {
+            String coveritySteamName = repositoryName.concat("-").concat(defaultStreamName);
+            coverity.getConnect().getStream().setName(coveritySteamName);
+            logger.info("Coverity Stream Name: " + coveritySteamName);
+        }
+    }
+
+    private void setPolarisApplicationNameAndProjectName(Polaris polaris, Object scmObject) {
+        String repositoryName = getRepositoryName(scmObject);
+
+        if (Utility.isStringNullOrBlank(polaris.getProjectName().getName()) && repositoryName != null) {
+            polaris.getProjectName().setName(repositoryName);
+            logger.info("Polaris Project Name: " + repositoryName);
+        }
+
+        if (Utility.isStringNullOrBlank(polaris.getApplicationName().getName()) && repositoryName != null) {
+            polaris.getApplicationName().setName(repositoryName);
+            logger.info("Polaris Application Name: " + repositoryName);
         }
     }
 
@@ -243,7 +282,8 @@ public class ScannerArgumentService {
             return github.getRepository().getName();
         } else if (scmObject instanceof Gitlab) {
             Gitlab gitlab = (Gitlab) scmObject;
-            return gitlab.getRepository().getName();
+            String fullName = gitlab.getRepository().getName();
+            return extractLastPart(fullName);
         }
 
         return null;
@@ -289,6 +329,9 @@ public class ScannerArgumentService {
         } else if (scanParameters.containsKey(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY)
                 && Objects.equals(scanParameters.get(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY), true)) {
             return true;
+        } else if (scanParameters.containsKey(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY)
+                && Objects.equals(scanParameters.get(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY), true)) {
+            return true;
         }
         return false;
     }
@@ -324,7 +367,10 @@ public class ScannerArgumentService {
         if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY)) {
             String reports_sarif_file_path =
                     (String) scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY);
-            sarif.getFile().setPath(reports_sarif_file_path);
+            if (reports_sarif_file_path != null) {
+                sarif.setFile(new File());
+                sarif.getFile().setPath(reports_sarif_file_path);
+            }
         }
         if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY)) {
             String reports_sarif_severities =
@@ -334,7 +380,9 @@ public class ScannerArgumentService {
                     reports_sarif_severities.toUpperCase().split(",");
 
             addArrayElementsToList(reports_sarif_severitiesInput, severities);
-            sarif.setSeverities(severities);
+            if (!severities.isEmpty()) {
+                sarif.setSeverities(severities);
+            }
         }
         if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY)) {
             Boolean reports_sarif_groupSCAIssues =
@@ -352,7 +400,10 @@ public class ScannerArgumentService {
         if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY)) {
             String reports_sarif_file_path =
                     (String) scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_FILE_PATH_KEY);
-            sarif.getFile().setPath(reports_sarif_file_path);
+            if (reports_sarif_file_path != null) {
+                sarif.setFile(new File());
+                sarif.getFile().setPath(reports_sarif_file_path);
+            }
         }
         if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_SEVERITIES_KEY)) {
             String reports_sarif_severities =
@@ -362,7 +413,9 @@ public class ScannerArgumentService {
                     reports_sarif_severities.toUpperCase().split(",");
 
             addArrayElementsToList(reports_sarif_severitiesInput, severities);
-            sarif.setSeverities(severities);
+            if (!severities.isEmpty()) {
+                sarif.setSeverities(severities);
+            }
         }
         if (scanParameters.containsKey(ApplicationConstants.POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY)) {
             Boolean reports_sarif_groupSCAIssues =
@@ -377,7 +430,10 @@ public class ScannerArgumentService {
                     reports_sarif_issue_types.toUpperCase().split(",");
 
             addArrayElementsToList(reports_sarif_issue_typesInput, issueTypes);
-            sarif.getIssue().setTypes(issueTypes);
+            if (!issueTypes.isEmpty()) {
+                sarif.setIssue(new Issue());
+                sarif.getIssue().setTypes(issueTypes);
+            }
         }
     }
 
@@ -385,5 +441,16 @@ public class ScannerArgumentService {
         for (String item : array) {
             list.add(item.trim());
         }
+    }
+
+    private String extractLastPart(String fullRepoName) {
+        if (fullRepoName != null && !fullRepoName.isEmpty()) {
+            int lastSlashIndex = fullRepoName.lastIndexOf('/');
+            if (lastSlashIndex != -1 && lastSlashIndex < fullRepoName.length() - 1) {
+                return fullRepoName.substring(lastSlashIndex + 1);
+            }
+        }
+
+        return fullRepoName;
     }
 }

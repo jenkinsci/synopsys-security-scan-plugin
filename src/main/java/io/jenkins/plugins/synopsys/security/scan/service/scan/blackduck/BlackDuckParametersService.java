@@ -3,8 +3,7 @@ package io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
-import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
-import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Download;
+import io.jenkins.plugins.synopsys.security.scan.input.blackduck.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +46,8 @@ public class BlackDuckParametersService {
 
     public BlackDuck prepareBlackDuckObjectForBridge(Map<String, Object> blackDuckParameters) {
         BlackDuck blackDuck = new BlackDuck();
+        Scan scan = new Scan();
+        Automation automation = new Automation();
 
         for (Map.Entry<String, Object> entry : blackDuckParameters.entrySet()) {
             String key = entry.getKey();
@@ -63,16 +64,16 @@ public class BlackDuckParametersService {
                     setInstallDirectory(blackDuck, value);
                     break;
                 case ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY:
-                    setScanFull(blackDuck, value);
+                    setScanFull(blackDuck, value, scan);
                     break;
                 case ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY:
-                    setScanFailureSeverities(blackDuck, value);
+                    setScanFailureSeverities(blackDuck, value, scan);
                     break;
                 case ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY:
-                    setAutomationFixpr(blackDuck, value);
+                    setAutomationFixpr(blackDuck, value, automation);
                     break;
                 case ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY:
-                    setAutomationPrComment(blackDuck, value);
+                    setAutomationPrComment(blackDuck, value, automation);
                     break;
                 case ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY:
                     setDownloadUrl(blackDuck, value);
@@ -86,16 +87,21 @@ public class BlackDuckParametersService {
     }
 
     private void setInstallDirectory(BlackDuck blackDuck, String value) {
-        blackDuck.getInstall().setDirectory(value);
-    }
-
-    private void setScanFull(BlackDuck blackDuck, String value) {
-        if (isBoolean(value)) {
-            blackDuck.getScan().setFull(Boolean.parseBoolean(value));
+        if (value != null) {
+            Install install = new Install();
+            install.setDirectory(value);
+            blackDuck.setInstall(install);
         }
     }
 
-    private void setScanFailureSeverities(BlackDuck blackDuck, String value) {
+    private void setScanFull(BlackDuck blackDuck, String value, Scan scan) {
+        if (isBoolean(value)) {
+            scan.setFull(Boolean.parseBoolean(value));
+            blackDuck.setScan(scan);
+        }
+    }
+
+    private void setScanFailureSeverities(BlackDuck blackDuck, String value, Scan scan) {
         if (!value.isEmpty()) {
             List<String> failureSeverities = new ArrayList<>();
             String[] failureSeveritiesInput = value.toUpperCase().split(",");
@@ -103,26 +109,35 @@ public class BlackDuckParametersService {
             for (String input : failureSeveritiesInput) {
                 failureSeverities.add(input.trim());
             }
-            blackDuck.getScan().getFailure().setSeverities(failureSeverities);
+            if (!failureSeverities.isEmpty()) {
+                Failure failure = new Failure();
+                failure.setSeverities(failureSeverities);
+                scan.setFailure(failure);
+                blackDuck.setScan(scan);
+            }
         }
     }
 
-    private void setAutomationFixpr(BlackDuck blackDuck, String value) {
+    private void setAutomationFixpr(BlackDuck blackDuck, String value, Automation automation) {
         if (isBoolean(value)) {
-            blackDuck.getAutomation().setFixpr(Boolean.parseBoolean(value));
+            automation.setFixpr(Boolean.parseBoolean(value));
+            blackDuck.setAutomation(automation);
         }
     }
 
-    private void setAutomationPrComment(BlackDuck blackDuck, String value) {
+    private void setAutomationPrComment(BlackDuck blackDuck, String value, Automation automation) {
         if (isBoolean(value)) {
-            blackDuck.getAutomation().setPrComment(Boolean.parseBoolean(value));
+            automation.setPrComment(Boolean.parseBoolean(value));
+            blackDuck.setAutomation(automation);
         }
     }
 
     private void setDownloadUrl(BlackDuck blackDuck, String value) {
-        Download download = new Download();
-        download.setUrl(value);
-        blackDuck.setDownload(download);
+        if (value != null) {
+            Download download = new Download();
+            download.setUrl(value);
+            blackDuck.setDownload(download);
+        }
     }
 
     private boolean isBoolean(String value) {

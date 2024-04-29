@@ -5,7 +5,8 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
-import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Install;
+import io.jenkins.plugins.synopsys.security.scan.input.coverity.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -110,14 +111,24 @@ public class CoverityParametersService {
                     coverity.getConnect().getStream().setName(value);
                     break;
                 case ApplicationConstants.COVERITY_POLICY_VIEW_KEY:
-                    coverity.getConnect().getPolicy().setView(value);
+                    if (!value.isBlank()) {
+                        Policy policy = new Policy();
+                        policy.setView(value);
+                        coverity.getConnect().setPolicy(policy);
+                    }
                     break;
                 case ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY:
-                    coverity.getInstall().setDirectory(value);
+                    if (!value.isBlank()) {
+                        Install install = new Install();
+                        install.setDirectory(value);
+                        coverity.setInstall(install);
+                    }
                     break;
                 case ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY:
                     if (value.equals("true") || value.equals("false")) {
-                        coverity.getAutomation().setPrComment(Boolean.parseBoolean(value));
+                        Automation automation = new Automation();
+                        automation.setPrComment(Boolean.parseBoolean(value));
+                        coverity.setAutomation(automation);
                     }
                     break;
                 case ApplicationConstants.COVERITY_VERSION_KEY:

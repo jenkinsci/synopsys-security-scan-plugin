@@ -26,6 +26,9 @@ public class Polaris {
     @JsonProperty("branch")
     private Branch branch;
 
+    @JsonProperty("prComment")
+    private Prcomment prcomment;
+
     @JsonProperty("reports")
     private Reports reports;
 
@@ -34,7 +37,6 @@ public class Polaris {
         projectName = new ProjectName();
         assessmentTypes = new AssessmentTypes();
         branch = new Branch();
-        reports = new Reports();
     }
 
     public String getAccessToken() {
@@ -99,5 +101,13 @@ public class Polaris {
 
     public void setReports(Reports reports) {
         this.reports = reports;
+    }
+
+    public Prcomment getPrcomment() {
+        return prcomment;
+    }
+
+    public void setPrcomment(Prcomment prcomment) {
+        this.prcomment = prcomment;
     }
 }

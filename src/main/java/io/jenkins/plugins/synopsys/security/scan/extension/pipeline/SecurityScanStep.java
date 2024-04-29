@@ -50,10 +50,11 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String blackduck_scan_failure_severities;
     //    private Boolean blackduck_automation_fixpr;
     private Boolean blackduck_automation_prcomment;
+    private Boolean blackduck_prComment_enabled;
+    private Boolean blackduck_prComment_enabled_temporary;
     private String blackduck_download_url;
     private Boolean blackduck_reports_sarif_create;
     private String blackduck_reports_sarif_file_path;
-
     private Boolean blackduck_reports_sarif_groupSCAIssues;
     private String blackduck_reports_sarif_severities;
     private Boolean blackduck_reports_sarif_groupSCAIssues_temporary;
@@ -66,6 +67,8 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String coverity_policy_view;
     private String coverity_install_directory;
     private Boolean coverity_automation_prcomment;
+    private Boolean coverity_prComment_enabled;
+    private Boolean coverity_prComment_enabled_temporary;
     private String coverity_version;
     private Boolean coverity_local;
 
@@ -76,7 +79,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String polaris_assessment_types;
     private String polaris_triage;
     private String polaris_branch_name;
-    //    private String polaris_branch_parent_name;
+    private String polaris_branch_parent_name;
+    private Boolean polarisPrCommentEnabledActualValue;
+    private Boolean polaris_prComment_enabled;
+    private String polaris_prComment_severities;
     private Boolean polaris_reports_sarif_create;
     private String polaris_reports_sarif_file_path;
     private String polaris_reports_sarif_issue_types;
@@ -135,6 +141,14 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return blackduck_automation_prcomment;
     }
 
+    public Boolean isBlackduck_prComment_enabled() {
+        return blackduck_prComment_enabled;
+    }
+
+    public Boolean isBlackduck_prComment_enabled_temporary() {
+        return blackduck_prComment_enabled_temporary;
+    }
+
     public String getBlackduck_download_url() {
         return blackduck_download_url;
     }
@@ -171,6 +185,14 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return coverity_automation_prcomment;
     }
 
+    public Boolean isCoverity_prComment_enabled() {
+        return coverity_prComment_enabled;
+    }
+
+    public Boolean isCoverity_prComment_enabled_temporary() {
+        return coverity_prComment_enabled_temporary;
+    }
+
     public String getCoverity_version() {
         return coverity_version;
     }
@@ -205,6 +227,22 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public String getPolaris_branch_name() {
         return polaris_branch_name;
+    }
+
+    public String getPolaris_branch_parent_name() {
+        return polaris_branch_parent_name;
+    }
+
+    public Boolean isPolaris_prComment_enabled() {
+        return polaris_prComment_enabled;
+    }
+
+    public Boolean isPolarisPrCommentEnabledActualValue() {
+        return polarisPrCommentEnabledActualValue;
+    }
+
+    public String getPolaris_prComment_severities() {
+        return polaris_prComment_severities;
     }
 
     public String getBitbucket_token() {
@@ -329,6 +367,12 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     }
 
     @DataBoundSetter
+    public void setBlackduck_prComment_enabled(Boolean blackduck_prComment_enabled) {
+        this.blackduck_prComment_enabled = blackduck_prComment_enabled ? true : null;
+        this.blackduck_prComment_enabled_temporary = blackduck_prComment_enabled ? true : false;
+    }
+
+    @DataBoundSetter
     public void setBlackduck_download_url(String blackduck_download_url) {
         this.blackduck_download_url = Util.fixEmptyAndTrim(blackduck_download_url);
     }
@@ -374,6 +418,12 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     }
 
     @DataBoundSetter
+    public void setCoverity_prComment_enabled(Boolean coverity_prComment_enabled) {
+        this.coverity_prComment_enabled = coverity_prComment_enabled ? true : null;
+        this.coverity_prComment_enabled_temporary = coverity_prComment_enabled ? true : false;
+    }
+
+    @DataBoundSetter
     public void setCoverity_version(String coverity_version) {
         this.coverity_version = Util.fixEmptyAndTrim(coverity_version);
     }
@@ -416,6 +466,27 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setPolaris_branch_name(String polaris_branch_name) {
         this.polaris_branch_name = Util.fixEmptyAndTrim(polaris_branch_name);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_branch_parent_name(String polaris_branch_parent_name) {
+        this.polaris_branch_parent_name = Util.fixEmptyAndTrim(polaris_branch_parent_name);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_prComment_enabled(Boolean polaris_prComment_enabled) {
+        if (polaris_prComment_enabled) {
+            this.polarisPrCommentEnabledActualValue = true;
+        }
+        if (!polaris_prComment_enabled) {
+            this.polarisPrCommentEnabledActualValue = false;
+        }
+        this.polaris_prComment_enabled = polaris_prComment_enabled ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setPolaris_prComment_severities(String polaris_prComment_severities) {
+        this.polaris_prComment_severities = Util.fixEmptyAndTrim(polaris_prComment_severities);
     }
 
     @DataBoundSetter

@@ -96,7 +96,13 @@ public class SecurityScanner {
             if (Objects.equals(scanParams.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
                     || Objects.equals(scanParams.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true)) {
 
-                if (envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) == null) {
+                String changeId = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY);
+                boolean isPullRequest = changeId != null;
+
+                logger.info((isPullRequest ? "This is a (PR/MR) event" : "This is not a (PR/MR) event")
+                        + (isPullRequest ? " (PR/MR Number: " + changeId + ")" : ""));
+
+                if (!isPullRequest) {
                     ScanParametersService scanParametersService = new ScanParametersService(listener, envVars);
                     Set<String> scanType = scanParametersService.getSynopsysSecurityProducts(scanParams);
                     boolean isBlackDuckScan = scanType.contains(SecurityProduct.BLACKDUCK.name());

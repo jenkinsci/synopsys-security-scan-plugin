@@ -14,7 +14,6 @@ public class Gitlab {
     private Repository repository;
 
     public Gitlab() {
-        api = new Api();
         user = new User();
         repository = new Repository();
     }

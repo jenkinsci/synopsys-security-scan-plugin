@@ -12,6 +12,7 @@ import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.service.bridge.BridgeDownloadParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -42,7 +43,7 @@ public class PluginParametersHandler {
 
         logMessagesForParameters(scanParameters, scanParametersService.getSynopsysSecurityProducts(scanParameters));
 
-        scanParametersService.performScanParameterValidation(scanParameters);
+        scanParametersService.performScanParameterValidation(scanParameters, envVars);
 
         bridgeDownloadParametersService.performBridgeDownloadParameterValidation(bridgeDownloadParams);
 
@@ -107,16 +108,17 @@ public class PluginParametersHandler {
     public void logMessagesForParameters(Map<String, Object> scanParameters, Set<String> securityProducts) {
         logger.println("-------------------------- Parameter Validation Initiated --------------------------");
 
-        logMessagesForProductParameters(scanParameters, securityProducts);
+        Map<String, Object> parametersCopy = new HashMap<>(scanParameters);
 
-        logMessagesForBridgeParameters(scanParameters);
+        logMessagesForProductParameters(parametersCopy, securityProducts);
 
-        if ((Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
+        logMessagesForBridgeParameters(parametersCopy);
+
+        if ((Objects.equals(parametersCopy.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
                         || Objects.equals(
-                                scanParameters.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true))
+                                parametersCopy.get(ApplicationConstants.POLARIS_REPORTS_SARIF_CREATE_KEY), true))
                 && envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null) {
-            logger.warn(
-                    "SARIF report create/upload is ignored in case of PR/MR scan, it's only supported for non PR/MR scans");
+            logger.info("SARIF report create/upload is ignored for PR/MR scans");
         }
     }
 
@@ -126,8 +128,8 @@ public class PluginParametersHandler {
         for (String product : securityProducts) {
             String securityProduct = product.toLowerCase();
             logger.info("Parameters for %s:", securityProduct);
-
-            for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
+            Map<String, Object> filteredParameters = filterParameter(scanParameters);
+            for (Map.Entry<String, Object> entry : filteredParameters.entrySet()) {
                 String key = entry.getKey();
                 if (key.contains(securityProduct)) {
                     Object value = entry.getValue();
@@ -159,5 +161,24 @@ public class PluginParametersHandler {
                 logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
             }
         }
+    }
+
+    public static Map<String, Object> filterParameter(Map<String, Object> scanParameters) {
+        boolean blackduckPrCommentEnabled =
+                scanParameters.containsKey(ApplicationConstants.BLACKDUCK_PRCOMMENT_ENABLED_KEY);
+        boolean blackduckAutomationPrComment =
+                scanParameters.containsKey(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY);
+        boolean coverityPrCommentEnabled =
+                scanParameters.containsKey(ApplicationConstants.COVERITY_PRCOMMENT_ENABLED_KEY);
+        boolean coverityAutomationPrComment =
+                scanParameters.containsKey(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY);
+
+        if (blackduckPrCommentEnabled && blackduckAutomationPrComment) {
+            scanParameters.remove(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY);
+        } else if (coverityPrCommentEnabled && coverityAutomationPrComment) {
+            scanParameters.remove(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY);
+        }
+
+        return scanParameters;
     }
 }

@@ -18,7 +18,7 @@
             <f:entry field="blackduck_scan_full" title="Black Duck Full Scan (Optional)">
                 <f:checkbox/>
             </f:entry>
-            <f:entry field="blackduck_automation_prcomment" title="Add Comments to Pull Requests (Optional)">
+            <f:entry field="blackduck_prComment_enabled" title="Add Comments to Pull Requests (Optional)">
                 <f:checkbox/>
             </f:entry>
             <!--        <f:entry field="bridge_blackduck_automation_fixpr" title="Create Fix Pull Requests">-->
@@ -56,7 +56,7 @@
             <f:entry field="coverity_version" title="Coverity Version Number (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="coverity_automation_prcomment" title="Add Comments to Pull Requests (Optional)">
+            <f:entry field="coverity_prComment_enabled" title="Add Comments to Pull Requests (Optional)">
                 <f:checkbox/>
             </f:entry>
             <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
@@ -67,16 +67,25 @@
 
     <div id="polaris" style="display: none;">
         <f:section title="Polaris Parameters">
-            <f:entry field="polaris_application_name" title="Polaris Application Name (Mandatory)">
+            <f:entry field="polaris_application_name" title="Polaris Application Name (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="polaris_project_name" title="Polaris Project Name (Mandatory)">
+            <f:entry field="polaris_project_name" title="Polaris Project Name (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="polaris_assessment_types" title="Polaris Assessment Types (Mandatory)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="polaris_branch_name" title="Polaris Branch Name (Mandatory)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_branch_parent_name" title="Polaris Parent Branch Name (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_prComment_enabled" title="Add Comments to Pull Requests (Optional)">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry field="polaris_prComment_severities" title="Polaris PR Comment Severities (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="polaris_triage" title="Polaris Triage (Optional)">

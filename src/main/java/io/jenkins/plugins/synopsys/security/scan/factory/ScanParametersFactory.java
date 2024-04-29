@@ -210,7 +210,14 @@ public class ScanParametersFactory {
         // securityScan.isBlackduck_automation_fixpr());
         //        }
 
-        if (securityScan.isBlackduck_automation_prcomment() != null) {
+        if (securityScan.isBlackduck_prComment_enabled_temporary() != null) {
+            blackDuckParameters.put(
+                    ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
+                    securityScan.isBlackduck_prComment_enabled_temporary());
+            blackDuckParameters.put(
+                    ApplicationConstants.BLACKDUCK_PRCOMMENT_ENABLED_KEY,
+                    securityScan.isBlackduck_prComment_enabled_temporary());
+        } else if (securityScan.isBlackduck_automation_prcomment() != null) {
             blackDuckParameters.put(
                     ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
                     securityScan.isBlackduck_automation_prcomment());
@@ -267,7 +274,14 @@ public class ScanParametersFactory {
             coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, securityScan.isCoverity_local());
         }
 
-        if (securityScan.isCoverity_automation_prcomment() != null) {
+        if (securityScan.isCoverity_prComment_enabled_temporary() != null) {
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
+                    securityScan.isCoverity_prComment_enabled_temporary());
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_PRCOMMENT_ENABLED_KEY,
+                    securityScan.isCoverity_prComment_enabled_temporary());
+        } else if (securityScan.isCoverity_automation_prcomment() != null) {
             coverityParameters.put(
                     ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
                     securityScan.isCoverity_automation_prcomment());
@@ -343,10 +357,22 @@ public class ScanParametersFactory {
                     ApplicationConstants.POLARIS_BRANCH_NAME_KEY, securityScan.getPolaris_branch_name());
         }
 
-        //        if (!Utility.isStringNullOrBlank(securityScan.getBridge_polaris_branch_parent_name())) {
-        //            polarisParametersMap.put(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY,
-        // securityScan.getBridge_polaris_branch_parent_name());
-        //        }
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_branch_parent_name())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY, securityScan.getPolaris_branch_parent_name());
+        }
+
+        if (securityScan.isPolarisPrCommentEnabledActualValue() != null) {
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY,
+                    securityScan.isPolarisPrCommentEnabledActualValue());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_prComment_severities())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY,
+                    securityScan.getPolaris_prComment_severities());
+        }
 
         return polarisParametersMap;
     }
