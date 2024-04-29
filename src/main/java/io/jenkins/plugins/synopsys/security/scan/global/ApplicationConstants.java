@@ -57,8 +57,10 @@ public class ApplicationConstants {
     public static final String COVERITY_STREAM_NAME_KEY = "coverity_stream_name";
     public static final String COVERITY_POLICY_VIEW_KEY = "coverity_policy_view";
     public static final String COVERITY_INSTALL_DIRECTORY_KEY = "coverity_install_directory";
+
     @Deprecated
     public static final String COVERITY_AUTOMATION_PRCOMMENT_KEY = "coverity_automation_prcomment";
+
     public static final String COVERITY_PRCOMMENT_ENABLED_KEY = "coverity_prComment_enabled";
     public static final String COVERITY_PRCOMMENT_INFO_FOR_NON_PR_SCANS =
             "Coverity PR Comment is ignored for non pull request scan";

@@ -6,7 +6,6 @@ import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Parent;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Prcomment;
-import io.jenkins.plugins.synopsys.security.scan.input.polaris.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
