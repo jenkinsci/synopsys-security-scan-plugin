@@ -29,7 +29,7 @@ public class PolarisParametersServiceTest {
 
     @BeforeEach
     void setUp() {
-        polarisParametersService = new PolarisParametersService(listenerMock);
+        polarisParametersService = new PolarisParametersService(listenerMock, envVarsMock);
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 
@@ -63,7 +63,7 @@ public class PolarisParametersServiceTest {
     }
 
     @Test
-    void prepareScanInputForBridgeTest() {
+    void prepareScanInputForBridgeForNonPPContextTest() {
         Map<String, Object> polarisParameters = new HashMap<>();
 
         polarisParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
@@ -76,6 +76,36 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY, "test-parent-branch");
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, true);
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY, "HIGH");
+
+        Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(polarisParameters);
+
+        assertEquals(polaris.getServerUrl(), TEST_POLARIS_SERVER_URL);
+        assertEquals(polaris.getAccessToken(), TEST_POLARIS_ACCESS_TOKEN);
+        assertEquals(polaris.getApplicationName().getName(), TEST_APPLICATION_NAME);
+        assertEquals(polaris.getProjectName().getName(), "fake-project-name");
+        assertEquals(polaris.getAssessmentTypes().getTypes(), Arrays.asList("SAST"));
+        assertEquals(polaris.getTriage(), "REQUIRED");
+        assertEquals(polaris.getBranch().getName(), "test-branch");
+        assertNull(polaris.getBranch().getParent());
+        assertNull(polaris.getPrcomment());
+    }
+
+    @Test
+    void prepareScanInputForBridgeForPPContextTest() {
+        Map<String, Object> polarisParameters = new HashMap<>();
+
+        polarisParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
+        polarisParameters.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, TEST_POLARIS_ACCESS_TOKEN);
+        polarisParameters.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
+        polarisParameters.put(ApplicationConstants.POLARIS_PROJECT_NAME_KEY, "fake-project-name");
+        polarisParameters.put(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, "SAST");
+        polarisParameters.put(ApplicationConstants.POLARIS_TRIAGE_KEY, "REQUIRED");
+        polarisParameters.put(ApplicationConstants.POLARIS_BRANCH_NAME_KEY, "test-branch");
+        polarisParameters.put(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY, "test-parent-branch");
+        polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, true);
+        polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY, "HIGH");
+
+        Mockito.when(envVarsMock.get(ApplicationConstants.ENV_CHANGE_ID_KEY)).thenReturn("1");
 
         Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(polarisParameters);
 

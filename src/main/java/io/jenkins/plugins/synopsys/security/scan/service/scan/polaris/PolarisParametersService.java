@@ -1,8 +1,10 @@
 package io.jenkins.plugins.synopsys.security.scan.service.scan.polaris;
 
+import hudson.EnvVars;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Parent;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Prcomment;
@@ -13,9 +15,11 @@ import java.util.Map;
 
 public class PolarisParametersService {
     private final LoggerWrapper logger;
+    private final EnvVars envVars;
 
-    public PolarisParametersService(TaskListener listener) {
+    public PolarisParametersService(TaskListener listener, EnvVars envVars) {
         this.logger = new LoggerWrapper(listener);
+        this.envVars = envVars;
     }
 
     public boolean isValidPolarisParameters(Map<String, Object> polarisParameters) {
@@ -54,69 +58,113 @@ public class PolarisParametersService {
         Polaris polaris = new Polaris();
         Prcomment prcomment = new Prcomment();
 
-        for (Map.Entry<String, Object> entry : polarisParameters.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue().toString().trim();
+        if (polarisParameters.containsKey(ApplicationConstants.POLARIS_SERVER_URL_KEY)) {
+            polaris.setServerUrl(polarisParameters
+                    .get(ApplicationConstants.POLARIS_SERVER_URL_KEY)
+                    .toString()
+                    .trim());
+        }
 
-            switch (key) {
-                case ApplicationConstants.POLARIS_SERVER_URL_KEY:
-                    polaris.setServerUrl(value);
-                    break;
-                case ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY:
-                    polaris.setAccessToken(value);
-                    break;
-                case ApplicationConstants.POLARIS_APPLICATION_NAME_KEY:
-                    polaris.getApplicationName().setName(value);
-                    break;
-                case ApplicationConstants.POLARIS_PROJECT_NAME_KEY:
-                    polaris.getProjectName().setName(value);
-                    break;
-                case ApplicationConstants.POLARIS_TRIAGE_KEY:
-                    polaris.setTriage(value);
-                    break;
-                case ApplicationConstants.POLARIS_BRANCH_NAME_KEY:
-                    polaris.getBranch().setName(value);
-                    break;
-                case ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY:
-                    if (value.equals("true") || value.equals("false")) {
-                        prcomment.setEnabled(Boolean.parseBoolean(value));
-                        polaris.setPrcomment(prcomment);
+        if (polarisParameters.containsKey(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY)) {
+            polaris.setAccessToken(polarisParameters
+                    .get(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY)
+                    .toString()
+                    .trim());
+        }
+
+        if (polarisParameters.containsKey(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY)) {
+            polaris.getApplicationName()
+                    .setName(polarisParameters
+                            .get(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY)
+                            .toString()
+                            .trim());
+        }
+
+        if (polarisParameters.containsKey(ApplicationConstants.POLARIS_PROJECT_NAME_KEY)) {
+            polaris.getProjectName()
+                    .setName(polarisParameters
+                            .get(ApplicationConstants.POLARIS_PROJECT_NAME_KEY)
+                            .toString()
+                            .trim());
+        }
+
+        if (polarisParameters.containsKey(ApplicationConstants.POLARIS_TRIAGE_KEY)) {
+            polaris.setTriage(polarisParameters
+                    .get(ApplicationConstants.POLARIS_TRIAGE_KEY)
+                    .toString()
+                    .trim());
+        }
+
+        if (polarisParameters.containsKey(ApplicationConstants.POLARIS_BRANCH_NAME_KEY)) {
+            polaris.getBranch()
+                    .setName(polarisParameters
+                            .get(ApplicationConstants.POLARIS_BRANCH_NAME_KEY)
+                            .toString()
+                            .trim());
+        }
+
+        if (polarisParameters.containsKey(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY)) {
+            setPolarisPrCommentInputs(polarisParameters, prcomment, polaris);
+        }
+
+        if (polarisParameters.containsKey(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY)) {
+            setAssessmentTypes(polarisParameters, polaris);
+        }
+
+        return polaris;
+    }
+
+    private void setAssessmentTypes(Map<String, Object> polarisParameters, Polaris polaris) {
+        String assessmentTypesValue = polarisParameters
+                .get(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY)
+                .toString()
+                .trim();
+        if (!assessmentTypesValue.isEmpty()) {
+            List<String> assessmentTypes =
+                    Arrays.asList(assessmentTypesValue.toUpperCase().split(","));
+            polaris.getAssessmentTypes().setTypes(assessmentTypes);
+        }
+    }
+
+    private void setPolarisPrCommentInputs(
+            Map<String, Object> polarisParameters, Prcomment prcomment, Polaris polaris) {
+        String isEnabled = polarisParameters
+                .get(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY)
+                .toString()
+                .trim();
+        if (isEnabled.equals("true")) {
+            boolean isPullRequestEvent = Utility.isPullRequestEvent(envVars);
+            if (isPullRequestEvent) {
+                prcomment.setEnabled(true);
+
+                if (polarisParameters.containsKey(ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY)) {
+                    String prCommentSeveritiesValue = polarisParameters
+                            .get(ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY)
+                            .toString()
+                            .trim();
+                    if (!prCommentSeveritiesValue.isEmpty()) {
+                        List<String> prCommentSeverities = Arrays.asList(
+                                prCommentSeveritiesValue.toUpperCase().split(","));
+                        prcomment.setSeverities(prCommentSeverities);
                     }
-                    break;
-                case ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY:
-                    if (!value.isEmpty()) {
+                }
+
+                polaris.setPrcomment(prcomment);
+
+                if (polarisParameters.containsKey(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY)) {
+                    String parentName = polarisParameters
+                            .get(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY)
+                            .toString()
+                            .trim();
+                    if (!parentName.isEmpty()) {
                         Parent parent = new Parent();
-                        parent.setName(value);
+                        parent.setName(parentName);
                         polaris.getBranch().setParent(parent);
                     }
-                    break;
-                case ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY:
-                    if (!value.isEmpty()) {
-                        List<String> prCommentSeverities = new ArrayList<>();
-                        String[] prCommentSeveritiesInput = value.toUpperCase().split(",");
-
-                        for (String input : prCommentSeveritiesInput) {
-                            prCommentSeverities.add(input.trim());
-                        }
-                        prcomment.setSeverities(prCommentSeverities);
-                        polaris.setPrcomment(prcomment);
-                    }
-                    break;
-                case ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY:
-                    if (!value.isEmpty()) {
-                        List<String> assessmentTypes = new ArrayList<>();
-                        String[] assessmentTypesInput = value.toUpperCase().split(",");
-
-                        for (String input : assessmentTypesInput) {
-                            assessmentTypes.add(input.trim());
-                        }
-                        polaris.getAssessmentTypes().setTypes(assessmentTypes);
-                    }
-                    break;
-                default:
-                    break;
+                }
+            } else {
+                logger.info(ApplicationConstants.POLARIS_PRCOMMENT_INFO_FOR_NON_PR_SCANS);
             }
         }
-        return polaris;
     }
 }

@@ -416,6 +416,7 @@ public class ScannerArgumentServiceTest {
 
         List<String> commandLineArgs =
                 scannerArgumentService.getCommandLineArgs(installedDependencies, polarisParameters, workspace);
+        scannerArgumentService.getCommandLineArgs(installedDependencies, polarisParameters, workspace);
 
         if (getOSNameForTest().contains("win")) {
             assertEquals(
@@ -441,27 +442,22 @@ public class ScannerArgumentServiceTest {
     }
 
     @Test
-    public void isFixPrOrPrCommentValueSetTest() {
+    public void isPrCommentValueSetTest() {
         Map<String, Object> scanParameters = new HashMap<>();
 
-        scanParameters.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, true);
-        assertTrue(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
-
-        scanParameters.clear();
         scanParameters.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, true);
-        assertTrue(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
+        assertTrue(scannerArgumentService.isPrCommentValueSet(scanParameters));
 
         scanParameters.clear();
         scanParameters.put(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY, true);
-        assertTrue(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
+        assertTrue(scannerArgumentService.isPrCommentValueSet(scanParameters));
 
         scanParameters.clear();
-        scanParameters.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, true);
-        scanParameters.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, true);
-        assertTrue(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
+        scanParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, true);
+        assertTrue(scannerArgumentService.isPrCommentValueSet(scanParameters));
 
         scanParameters.clear();
-        assertFalse(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
+        assertFalse(scannerArgumentService.isPrCommentValueSet(scanParameters));
     }
 
     @Test

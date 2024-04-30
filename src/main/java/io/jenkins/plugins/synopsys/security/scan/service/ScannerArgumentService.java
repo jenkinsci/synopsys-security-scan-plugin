@@ -89,7 +89,7 @@ public class ScannerArgumentService {
         ScanParametersService scanParametersService = new ScanParametersService(listener, envVars);
         Set<String> securityProducts = scanParametersService.getSynopsysSecurityProducts(scanParameters);
 
-        boolean fixPrOrPrComment = isFixPrOrPrCommentValueSet(scanParameters);
+        boolean isPrCommentSet = isPrCommentValueSet(scanParameters);
 
         SCMRepositoryService scmRepositoryService = new SCMRepositoryService(listener, envVars);
         Object scmObject = null;
@@ -97,7 +97,7 @@ public class ScannerArgumentService {
         String jobType = Utility.jenkinsJobType(envVars);
         if (jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
             scmObject = scmRepositoryService.fetchSCMRepositoryDetails(
-                    installedBranchSourceDependencies, scanParameters, fixPrOrPrComment);
+                    installedBranchSourceDependencies, scanParameters, isPrCommentSet);
         }
 
         List<String> scanCommands = new ArrayList<>();
@@ -117,7 +117,7 @@ public class ScannerArgumentService {
         }
 
         if (securityProducts.contains(SecurityProduct.BLACKDUCK.name())) {
-            BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener);
+            BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener, envVars);
             BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckObjectForBridge(scanParameters);
 
             scanCommands.add(BridgeParams.STAGE_OPTION);
@@ -126,7 +126,7 @@ public class ScannerArgumentService {
             scanCommands.add(createBridgeInputJson(
                     blackDuck,
                     scmObject,
-                    fixPrOrPrComment,
+                    isPrCommentSet,
                     networkAirGap,
                     sarif,
                     ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX));
@@ -141,13 +141,13 @@ public class ScannerArgumentService {
             scanCommands.add(createBridgeInputJson(
                     coverity,
                     scmObject,
-                    fixPrOrPrComment,
+                    isPrCommentSet,
                     networkAirGap,
                     sarif,
                     ApplicationConstants.COVERITY_INPUT_JSON_PREFIX));
         }
         if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
-            PolarisParametersService polarisParametersService = new PolarisParametersService(listener);
+            PolarisParametersService polarisParametersService = new PolarisParametersService(listener, envVars);
             Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(scanParameters);
 
             if (polaris.getBranch().getParent() == null) {
@@ -165,7 +165,7 @@ public class ScannerArgumentService {
             scanCommands.add(createBridgeInputJson(
                     polaris,
                     scmObject,
-                    fixPrOrPrComment,
+                    isPrCommentSet,
                     networkAirGap,
                     sarif,
                     ApplicationConstants.POLARIS_INPUT_JSON_PREFIX));
@@ -177,7 +177,7 @@ public class ScannerArgumentService {
     public String createBridgeInputJson(
             Object scanObject,
             Object scmObject,
-            boolean fixPrOrPrComment,
+            boolean isPrCommentSet,
             NetworkAirGap networkAirGap,
             Sarif sarif,
             String jsonPrefix) {
@@ -185,7 +185,8 @@ public class ScannerArgumentService {
 
         setScanObject(bridgeInput, scanObject, scmObject, sarif);
 
-        if (fixPrOrPrComment) {
+        boolean isPullRequestEvent = Utility.isPullRequestEvent(envVars);
+        if (isPrCommentSet && isPullRequestEvent) {
             setScmObject(bridgeInput, scmObject);
         }
 
@@ -242,7 +243,7 @@ public class ScannerArgumentService {
         String repositoryName = getRepositoryName(scmObject);
         String branchName = envVars.get(ApplicationConstants.ENV_BRANCH_NAME_KEY);
         String targetBranchName = envVars.get(ApplicationConstants.ENV_CHANGE_TARGET_KEY);
-        boolean isPullRequest = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null ? true : false;
+        boolean isPullRequest = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null;
         if (Utility.isStringNullOrBlank(coverity.getConnect().getProject().getName()) && repositoryName != null) {
             coverity.getConnect().getProject().setName(repositoryName);
             logger.info("Coverity Project Name: " + repositoryName);
@@ -319,11 +320,8 @@ public class ScannerArgumentService {
         return inputJsonPath;
     }
 
-    public boolean isFixPrOrPrCommentValueSet(Map<String, Object> scanParameters) {
-        if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY)
-                && Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY), true)) {
-            return true;
-        } else if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY)
+    public boolean isPrCommentValueSet(Map<String, Object> scanParameters) {
+        if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY)
                 && Objects.equals(scanParameters.get(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY), true)) {
             return true;
         } else if (scanParameters.containsKey(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY)

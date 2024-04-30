@@ -247,4 +247,8 @@ public class Utility {
                 ? new File(customSarifReportFilePath).getName()
                 : ApplicationConstants.SARIF_REPORT_FILENAME;
     }
+
+    public static boolean isPullRequestEvent(EnvVars envVars) {
+        return envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null;
+    }
 }

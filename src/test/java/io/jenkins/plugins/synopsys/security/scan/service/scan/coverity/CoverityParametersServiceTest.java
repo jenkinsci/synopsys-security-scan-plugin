@@ -2,6 +2,7 @@ package io.jenkins.plugins.synopsys.security.scan.service.scan.coverity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import hudson.EnvVars;
@@ -55,7 +56,7 @@ public class CoverityParametersServiceTest {
     }
 
     @Test
-    void prepareScanInputForBridgeTest() {
+    void prepareScanInputForBridgeNonPRContextTest() {
         Map<String, Object> coverityParameters = new HashMap<>();
 
         coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, TEST_COVERITY_URL);
@@ -65,6 +66,7 @@ public class CoverityParametersServiceTest {
         coverityParameters.put(ApplicationConstants.COVERITY_STREAM_NAME_KEY, "fake-repo-branch");
         coverityParameters.put(ApplicationConstants.COVERITY_VERSION_KEY, "2023.6.0");
         coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, true);
+        coverityParameters.put(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY, true);
 
         Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(coverityParameters);
 
@@ -75,5 +77,33 @@ public class CoverityParametersServiceTest {
         assertEquals(coverity.getConnect().getStream().getName(), "fake-repo-branch");
         assertEquals(coverity.getVersion(), "2023.6.0");
         assertTrue(coverity.isLocal());
+        assertNull(coverity.getAutomation());
+    }
+
+    @Test
+    void prepareScanInputForBridgePRContextTest() {
+        Map<String, Object> coverityParameters = new HashMap<>();
+
+        coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, TEST_COVERITY_URL);
+        coverityParameters.put(ApplicationConstants.COVERITY_USER_KEY, TEST_COVERITY_USER_NAME);
+        coverityParameters.put(ApplicationConstants.COVERITY_PASSPHRASE_KEY, TEST_COVERITY_USER_PASSWORD);
+        coverityParameters.put(ApplicationConstants.COVERITY_PROJECT_NAME_KEY, "fake-repo");
+        coverityParameters.put(ApplicationConstants.COVERITY_STREAM_NAME_KEY, "fake-repo-branch");
+        coverityParameters.put(ApplicationConstants.COVERITY_VERSION_KEY, "2023.6.0");
+        coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, true);
+        coverityParameters.put(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY, true);
+
+        Mockito.when(envVarsMock.get(ApplicationConstants.ENV_CHANGE_ID_KEY)).thenReturn("1");
+
+        Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(coverityParameters);
+
+        assertEquals(coverity.getConnect().getUrl(), TEST_COVERITY_URL);
+        assertEquals(coverity.getConnect().getUser().getName(), TEST_COVERITY_USER_NAME);
+        assertEquals(coverity.getConnect().getUser().getPassword(), TEST_COVERITY_USER_PASSWORD);
+        assertEquals(coverity.getConnect().getProject().getName(), "fake-repo");
+        assertEquals(coverity.getConnect().getStream().getName(), "fake-repo-branch");
+        assertEquals(coverity.getVersion(), "2023.6.0");
+        assertTrue(coverity.isLocal());
+        assertTrue(coverity.getAutomation().getPrComment());
     }
 }

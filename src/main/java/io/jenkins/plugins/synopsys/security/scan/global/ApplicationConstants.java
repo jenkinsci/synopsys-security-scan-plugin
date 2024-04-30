@@ -40,7 +40,10 @@ public class ApplicationConstants {
     public static final String BLACKDUCK_SCAN_FULL_KEY = "blackduck_scan_full";
     public static final String BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY = "blackduck_scan_failure_severities";
     public static final String BLACKDUCK_AUTOMATION_FIXPR_KEY = "blackduck_automation_fixpr";
+
+    @Deprecated
     public static final String BLACKDUCK_AUTOMATION_PRCOMMENT_KEY = "blackduck_automation_prcomment";
+
     public static final String BLACKDUCK_PRCOMMENT_INFO_FOR_NON_PR_SCANS =
             "Black Duck PR Comment is ignored for non pull request scan";
     public static final String BLACKDUCK_PRCOMMENT_ENABLED_KEY = "blackduck_prComment_enabled";

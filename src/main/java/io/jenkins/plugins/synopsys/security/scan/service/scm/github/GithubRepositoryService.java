@@ -28,12 +28,12 @@ public class GithubRepositoryService {
             String repositoryOwner,
             Integer projectRepositoryPullNumber,
             String branchName,
-            boolean isFixPrOrPrComment,
+            boolean isPrCommentSet,
             String githubApiUri)
             throws PluginExceptionHandler {
         String githubToken = (String) scanParameters.get(ApplicationConstants.GITHUB_TOKEN_KEY);
 
-        if (isFixPrOrPrComment && Utility.isStringNullOrBlank(githubToken)) {
+        if (isPrCommentSet && Utility.isStringNullOrBlank(githubToken)) {
             logger.error("PrComment is set true but no GitHub token found!");
             throw new PluginExceptionHandler(ErrorCode.NO_GITHUB_TOKEN_FOUND);
         }

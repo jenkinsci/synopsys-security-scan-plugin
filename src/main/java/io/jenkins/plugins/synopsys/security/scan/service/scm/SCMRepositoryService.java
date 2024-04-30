@@ -30,23 +30,10 @@ public class SCMRepositoryService {
     public Object fetchSCMRepositoryDetails(
             Map<String, Boolean> installedBranchSourceDependencies,
             Map<String, Object> scanParameters,
-            boolean isFixPrOrPrComment)
+            boolean isPrCommentSet)
             throws PluginExceptionHandler {
-
         String pullRequestNumber = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY);
         Integer projectRepositoryPullNumber = pullRequestNumber != null ? Integer.parseInt(pullRequestNumber) : null;
-
-        LoggerWrapper logger = new LoggerWrapper(listener);
-        if (isFixPrOrPrComment && projectRepositoryPullNumber == null) {
-            String productName = (String) scanParameters.get(ApplicationConstants.PRODUCT_KEY);
-            if (productName.equalsIgnoreCase("BLACKDUCK")) {
-                logger.info(ApplicationConstants.BLACKDUCK_PRCOMMENT_INFO_FOR_NON_PR_SCANS);
-            } else if (productName.equalsIgnoreCase("COVERITY")) {
-                logger.info(ApplicationConstants.COVERITY_PRCOMMENT_INFO_FOR_NON_PR_SCANS);
-            } else if (productName.equalsIgnoreCase("POLARIS")) {
-                logger.info(ApplicationConstants.POLARIS_PRCOMMENT_INFO_FOR_NON_PR_SCANS);
-            }
-        }
 
         SCMSource scmSource = findSCMSource();
         if (installedBranchSourceDependencies.getOrDefault(
@@ -55,7 +42,7 @@ public class SCMRepositoryService {
             BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listener);
             BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
             return bitbucketRepositoryService.fetchBitbucketRepositoryDetails(
-                    scanParameters, bitbucketSCMSource, projectRepositoryPullNumber, isFixPrOrPrComment);
+                    scanParameters, bitbucketSCMSource, projectRepositoryPullNumber, isPrCommentSet);
         } else if (installedBranchSourceDependencies.getOrDefault(
                         ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME, false)
                 && scmSource instanceof GitHubSCMSource) {
@@ -73,7 +60,7 @@ public class SCMRepositoryService {
                     repositoryOwner,
                     projectRepositoryPullNumber,
                     branchName,
-                    isFixPrOrPrComment,
+                    isPrCommentSet,
                     apiUri);
         } else if (installedBranchSourceDependencies.getOrDefault(
                         ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME, false)
@@ -91,7 +78,7 @@ public class SCMRepositoryService {
                     projectRepositoryPullNumber,
                     branchName,
                     repositoryUrl,
-                    isFixPrOrPrComment);
+                    isPrCommentSet);
         }
         return null;
     }

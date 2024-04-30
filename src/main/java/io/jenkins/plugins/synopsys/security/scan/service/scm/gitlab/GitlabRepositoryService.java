@@ -28,11 +28,11 @@ public class GitlabRepositoryService {
             Integer projectRepositoryPullNumber,
             String branchName,
             String repositoryUrl,
-            boolean isFixPrOrPrComment)
+            boolean isPrCommentSet)
             throws PluginExceptionHandler {
         String gitlabToken = (String) scanParameters.get(ApplicationConstants.GITLAB_TOKEN_KEY);
 
-        if (isFixPrOrPrComment && Utility.isStringNullOrBlank(gitlabToken)) {
+        if (isPrCommentSet && Utility.isStringNullOrBlank(gitlabToken)) {
             logger.error("PrComment is set true but no GitLab token found!");
             throw new PluginExceptionHandler(ErrorCode.NO_GITLAB_TOKEN_FOUND);
         }

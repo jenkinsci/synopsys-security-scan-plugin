@@ -25,11 +25,11 @@ public class BitbucketRepositoryService {
             Map<String, Object> scanParameters,
             BitbucketSCMSource bitbucketSCMSource,
             Integer projectRepositoryPullNumber,
-            boolean isFixPrOrPrComment)
+            boolean isPrCommentSet)
             throws PluginExceptionHandler {
 
         String bitbucketToken = (String) scanParameters.get(ApplicationConstants.BITBUCKET_TOKEN_KEY);
-        if (Utility.isStringNullOrBlank(bitbucketToken) && isFixPrOrPrComment) {
+        if (isPrCommentSet && Utility.isStringNullOrBlank(bitbucketToken)) {
             logger.error("PrComment is set true but no Bitbucket token found!");
             throw new PluginExceptionHandler(ErrorCode.NO_BITBUCKET_TOKEN_FOUND);
         }
