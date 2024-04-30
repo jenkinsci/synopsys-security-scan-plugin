@@ -46,7 +46,6 @@ public class SCMRepositoryService {
             } else if (productName.equalsIgnoreCase("POLARIS")) {
                 logger.info(ApplicationConstants.POLARIS_PRCOMMENT_INFO_FOR_NON_PR_SCANS);
             }
-            return null;
         }
 
         SCMSource scmSource = findSCMSource();
