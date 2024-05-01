@@ -179,7 +179,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.10</version>
+        <version>0.8.12</version>
         <configuration>
           <excludes>
             <exclude>io/jenkins/plugins/synopsys/security/scan/extension/**/*.class</exclude>
