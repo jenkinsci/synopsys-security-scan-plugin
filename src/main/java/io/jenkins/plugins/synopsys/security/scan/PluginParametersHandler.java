@@ -139,8 +139,9 @@ public class PluginParametersHandler {
                         value = LogMessages.ASTERISKS;
                     }
                     logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
-                    if(key.equals(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY) || key.equals(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY)){
-                        logger.warn( key + " is deprecated. Please use " + getNewMappedParameterName(key));
+                    if (key.equals(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY)
+                            || key.equals(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY)) {
+                        logger.warn(key + " is deprecated, use " + getNewMappedParameterName(key));
                     }
                 }
             }
