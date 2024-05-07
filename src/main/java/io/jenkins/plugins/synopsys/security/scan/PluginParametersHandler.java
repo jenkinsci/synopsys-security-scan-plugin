@@ -139,6 +139,9 @@ public class PluginParametersHandler {
                         value = LogMessages.ASTERISKS;
                     }
                     logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
+                    if(key.equals(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY) || key.equals(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY)){
+                        logger.warn( key + " is deprecated. Please use " + getNewMappedParameterName(key));
+                    }
                 }
             }
 
@@ -163,7 +166,7 @@ public class PluginParametersHandler {
         }
     }
 
-    public static Map<String, Object> filterParameter(Map<String, Object> scanParameters) {
+    public Map<String, Object> filterParameter(Map<String, Object> scanParameters) {
         boolean blackduckPrCommentEnabled =
                 scanParameters.containsKey(ApplicationConstants.BLACKDUCK_PRCOMMENT_ENABLED_KEY);
         boolean blackduckAutomationPrComment =
@@ -180,5 +183,16 @@ public class PluginParametersHandler {
         }
 
         return scanParameters;
+    }
+
+    public static String getNewMappedParameterName(String key) {
+        switch (key) {
+            case ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY:
+                return ApplicationConstants.BLACKDUCK_PRCOMMENT_ENABLED_KEY;
+            case ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY:
+                return ApplicationConstants.COVERITY_PRCOMMENT_ENABLED_KEY;
+            default:
+                return "";
+        }
     }
 }
