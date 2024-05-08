@@ -20,6 +20,7 @@ import org.mockito.Mockito;
 public class UtilityTest {
     private FilePath workspace;
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
+    private final EnvVars envVarsMock = Mockito.mock(EnvVars.class);
     private LoggerWrapper logger;
     private URL url;
 
@@ -234,6 +235,17 @@ public class UtilityTest {
         String customPath = null;
         String result = Utility.determineSARIFReportFileName(customPath);
         assertEquals(ApplicationConstants.SARIF_REPORT_FILENAME, result);
+    }
+
+    @Test
+    public void isPullRequestEventForPRContextTest() {
+        Mockito.when(envVarsMock.get(ApplicationConstants.ENV_CHANGE_ID_KEY)).thenReturn("1");
+        assertTrue(Utility.isPullRequestEvent(envVarsMock));
+    }
+
+    @Test
+    public void isPullRequestEventForNonPRContextTest() {
+        assertFalse(Utility.isPullRequestEvent(envVarsMock));
     }
 
     public String getHomeDirectory() {

@@ -26,13 +26,6 @@ public class BlackDuck {
     @JsonProperty("reports")
     private Reports reports;
 
-    public BlackDuck() {
-        scan = new Scan();
-        automation = new Automation();
-        install = new Install();
-        reports = new Reports();
-    }
-
     public String getUrl() {
         return url;
     }

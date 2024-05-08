@@ -18,7 +18,6 @@ public class Repository {
 
     public Repository() {
         owner = new Owner();
-        pull = new Pull();
         branch = new Branch();
     }
 

@@ -5,7 +5,8 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
-import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Install;
+import io.jenkins.plugins.synopsys.security.scan.input.coverity.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -89,49 +90,124 @@ public class CoverityParametersService {
     public Coverity prepareCoverityObjectForBridge(Map<String, Object> coverityParameters) {
         Coverity coverity = new Coverity();
 
-        for (Map.Entry<String, Object> entry : coverityParameters.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue().toString().trim();
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_URL_KEY)) {
+            coverity.getConnect()
+                    .setUrl(coverityParameters
+                            .get(ApplicationConstants.COVERITY_URL_KEY)
+                            .toString()
+                            .trim());
+        }
 
-            switch (key) {
-                case ApplicationConstants.COVERITY_URL_KEY:
-                    coverity.getConnect().setUrl(value);
-                    break;
-                case ApplicationConstants.COVERITY_USER_KEY:
-                    coverity.getConnect().getUser().setName(value);
-                    break;
-                case ApplicationConstants.COVERITY_PASSPHRASE_KEY:
-                    coverity.getConnect().getUser().setPassword(value);
-                    break;
-                case ApplicationConstants.COVERITY_PROJECT_NAME_KEY:
-                    coverity.getConnect().getProject().setName(value);
-                    break;
-                case ApplicationConstants.COVERITY_STREAM_NAME_KEY:
-                    coverity.getConnect().getStream().setName(value);
-                    break;
-                case ApplicationConstants.COVERITY_POLICY_VIEW_KEY:
-                    coverity.getConnect().getPolicy().setView(value);
-                    break;
-                case ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY:
-                    coverity.getInstall().setDirectory(value);
-                    break;
-                case ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY:
-                    if (value.equals("true") || value.equals("false")) {
-                        coverity.getAutomation().setPrComment(Boolean.parseBoolean(value));
-                    }
-                    break;
-                case ApplicationConstants.COVERITY_VERSION_KEY:
-                    coverity.setVersion(value);
-                    break;
-                case ApplicationConstants.COVERITY_LOCAL_KEY:
-                    if (value.equals("true") || value.equals("false")) {
-                        coverity.setLocal(Boolean.parseBoolean(value));
-                    }
-                    break;
-                default:
-                    break;
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_USER_KEY)) {
+            coverity.getConnect()
+                    .getUser()
+                    .setName(coverityParameters
+                            .get(ApplicationConstants.COVERITY_USER_KEY)
+                            .toString()
+                            .trim());
+        }
+
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_PASSPHRASE_KEY)) {
+            coverity.getConnect()
+                    .getUser()
+                    .setPassword(coverityParameters
+                            .get(ApplicationConstants.COVERITY_PASSPHRASE_KEY)
+                            .toString()
+                            .trim());
+        }
+
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_PROJECT_NAME_KEY)) {
+            coverity.getConnect()
+                    .getProject()
+                    .setName(coverityParameters
+                            .get(ApplicationConstants.COVERITY_PROJECT_NAME_KEY)
+                            .toString()
+                            .trim());
+        }
+
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_STREAM_NAME_KEY)) {
+            coverity.getConnect()
+                    .getStream()
+                    .setName(coverityParameters
+                            .get(ApplicationConstants.COVERITY_STREAM_NAME_KEY)
+                            .toString()
+                            .trim());
+        }
+
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_POLICY_VIEW_KEY)) {
+            setCoverityPolicyView(coverityParameters, coverity);
+        }
+
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY)) {
+            setCoverityInstallDirectory(coverityParameters, coverity);
+        }
+
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY)) {
+            setCoverityPrComment(coverityParameters, coverity);
+        }
+
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_VERSION_KEY)) {
+            coverity.setVersion(coverityParameters
+                    .get(ApplicationConstants.COVERITY_VERSION_KEY)
+                    .toString()
+                    .trim());
+        }
+
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_LOCAL_KEY)) {
+            setCoverityLocal(coverityParameters, coverity);
+        }
+
+        return coverity;
+    }
+
+    private void setCoverityLocal(Map<String, Object> coverityParameters, Coverity coverity) {
+        String value = coverityParameters
+                .get(ApplicationConstants.COVERITY_LOCAL_KEY)
+                .toString()
+                .trim();
+        if (value.equals("true") || value.equals("false")) {
+            coverity.setLocal(Boolean.parseBoolean(value));
+        }
+    }
+
+    private void setCoverityPrComment(Map<String, Object> coverityParameters, Coverity coverity) {
+        String isEnabled = coverityParameters
+                .get(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY)
+                .toString()
+                .trim();
+        if (isEnabled.equals("true")) {
+            boolean isPullRequestEvent = Utility.isPullRequestEvent(envVars);
+            if (isPullRequestEvent) {
+                Automation automation = new Automation();
+                automation.setPrComment(true);
+                coverity.setAutomation(automation);
+            } else {
+                logger.info(ApplicationConstants.COVERITY_PRCOMMENT_INFO_FOR_NON_PR_SCANS);
             }
         }
-        return coverity;
+    }
+
+    private void setCoverityInstallDirectory(Map<String, Object> coverityParameters, Coverity coverity) {
+        String value = coverityParameters
+                .get(ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY)
+                .toString()
+                .trim();
+        if (!value.isBlank()) {
+            Install install = new Install();
+            install.setDirectory(value);
+            coverity.setInstall(install);
+        }
+    }
+
+    private void setCoverityPolicyView(Map<String, Object> coverityParameters, Coverity coverity) {
+        String value = coverityParameters
+                .get(ApplicationConstants.COVERITY_POLICY_VIEW_KEY)
+                .toString()
+                .trim();
+        if (!value.isBlank()) {
+            Policy policy = new Policy();
+            policy.setView(value);
+            coverity.getConnect().setPolicy(policy);
+        }
     }
 }

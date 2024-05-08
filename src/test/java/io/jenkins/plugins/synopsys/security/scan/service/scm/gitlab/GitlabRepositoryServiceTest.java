@@ -23,6 +23,7 @@ public class GitlabRepositoryServiceTest {
     private final Integer TEST_REPOSITORY_PULL_NUMBER = 7;
     private final String TEST_REPOSITORY_NAME = "fake-repo";
     private final String TEST_REPOSITORY_BRANCH_NAME = "fake-branch";
+    private final String TEST_REPOSITORY_PARENT_BRANCH_NAME = "fake-parent-branch";
     private Map<String, Object> scanParametersMap;
 
     @BeforeEach
@@ -52,7 +53,6 @@ public class GitlabRepositoryServiceTest {
         assertEquals(gitlabCloud.getRepository().getName(), TEST_REPOSITORY_NAME);
         assertEquals(gitlabCloud.getRepository().getPull().getNumber(), TEST_REPOSITORY_PULL_NUMBER);
         assertEquals(gitlabCloud.getRepository().getBranch().getName(), TEST_REPOSITORY_BRANCH_NAME);
-        assertEquals(gitlabCloud.getApi().getUrl(), "");
     }
 
     @Test

@@ -21,8 +21,6 @@ public class Coverity {
 
     public Coverity() {
         connect = new Connect();
-        install = new Install();
-        automation = new Automation();
     }
 
     public Connect getConnect() {

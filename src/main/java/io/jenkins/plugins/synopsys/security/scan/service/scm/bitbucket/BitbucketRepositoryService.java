@@ -25,11 +25,11 @@ public class BitbucketRepositoryService {
             Map<String, Object> scanParameters,
             BitbucketSCMSource bitbucketSCMSource,
             Integer projectRepositoryPullNumber,
-            boolean isFixPrOrPrComment)
+            boolean isPrCommentSet)
             throws PluginExceptionHandler {
 
         String bitbucketToken = (String) scanParameters.get(ApplicationConstants.BITBUCKET_TOKEN_KEY);
-        if (Utility.isStringNullOrBlank(bitbucketToken) && isFixPrOrPrComment) {
+        if (isPrCommentSet && Utility.isStringNullOrBlank(bitbucketToken)) {
             logger.error("PrComment is set true but no Bitbucket token found!");
             throw new PluginExceptionHandler(ErrorCode.NO_BITBUCKET_TOKEN_FOUND);
         }
@@ -55,6 +55,13 @@ public class BitbucketRepositoryService {
             projectKey = bitbucketRepository.getProject().getKey();
         }
 
+        if (projectRepositoryPullNumber != null) {
+            logger.info("BitBucket repositoryName: " + repositoryName);
+            logger.info("BitBucket projectKey: " + projectKey);
+            logger.info("BitBucket projectRepositoryPullNumber: " + projectRepositoryPullNumber);
+            logger.info("BitBucket serverUrl: " + serverUrl);
+        }
+
         return createBitbucketObject(
                 serverUrl, bitbucketToken, projectRepositoryPullNumber, repositoryName, projectKey);
     }
@@ -69,12 +76,14 @@ public class BitbucketRepositoryService {
         bitbucket.getApi().setUrl(serverUrl);
         bitbucket.getApi().setToken(bitbucketToken);
 
-        Pull pull = new Pull();
-        pull.setNumber(projectRepositoryPullNumber);
-
         Repository repository = new Repository();
         repository.setName(repositoryName);
-        repository.setPull(pull);
+
+        if (projectRepositoryPullNumber != null) {
+            Pull pull = new Pull();
+            pull.setNumber(projectRepositoryPullNumber);
+            repository.setPull(pull);
+        }
 
         bitbucket.getProject().setKey(projectKey);
         bitbucket.getProject().setRepository(repository);

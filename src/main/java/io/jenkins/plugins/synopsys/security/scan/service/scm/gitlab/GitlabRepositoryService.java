@@ -6,6 +6,8 @@ import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.common.Pull;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Api;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,11 +28,11 @@ public class GitlabRepositoryService {
             Integer projectRepositoryPullNumber,
             String branchName,
             String repositoryUrl,
-            boolean isFixPrOrPrComment)
+            boolean isPrCommentSet)
             throws PluginExceptionHandler {
         String gitlabToken = (String) scanParameters.get(ApplicationConstants.GITLAB_TOKEN_KEY);
 
-        if (isFixPrOrPrComment && Utility.isStringNullOrBlank(gitlabToken)) {
+        if (isPrCommentSet && Utility.isStringNullOrBlank(gitlabToken)) {
             logger.error("PrComment is set true but no GitLab token found!");
             throw new PluginExceptionHandler(ErrorCode.NO_GITLAB_TOKEN_FOUND);
         }
@@ -40,17 +42,28 @@ public class GitlabRepositoryService {
         gitlab.getUser().setToken(gitlabToken);
         gitlab.getRepository().setName(repositoryName);
         gitlab.getRepository().getBranch().setName(branchName);
-        gitlab.getRepository().getPull().setNumber(projectRepositoryPullNumber);
+
+        if (projectRepositoryPullNumber != null) {
+            Pull pull = new Pull();
+            pull.setNumber(projectRepositoryPullNumber);
+            gitlab.getRepository().setPull(pull);
+        }
 
         String gitlabHostUrl = extractGitlabHost(repositoryUrl);
+
+        if (projectRepositoryPullNumber != null) {
+            logger.info("Gitlab repositoryName: " + repositoryName);
+            logger.info("Gitlab projectRepositoryPullNumber: " + projectRepositoryPullNumber);
+            logger.info("Gitlab branchName: " + branchName);
+            logger.info("Gitlab gitlabHostUrl: " + gitlabHostUrl);
+        }
 
         if (gitlabHostUrl.equals(INVALID_GITLAB_REPO_URL)) {
             logger.error(INVALID_GITLAB_REPO_URL);
             throw new PluginExceptionHandler(ErrorCode.INVALID_GITLAB_URL);
         } else {
-            if (gitlabHostUrl.startsWith(GITLAB_CLOUD_HOST_URL)) {
-                gitlab.getApi().setUrl("");
-            } else {
+            if (!gitlabHostUrl.startsWith(GITLAB_CLOUD_HOST_URL)) {
+                gitlab.setApi(new Api());
                 gitlab.getApi().setUrl(gitlabHostUrl);
             }
         }

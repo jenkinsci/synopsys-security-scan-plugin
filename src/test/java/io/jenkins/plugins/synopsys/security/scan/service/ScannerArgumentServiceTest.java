@@ -13,6 +13,7 @@ import io.jenkins.plugins.synopsys.security.scan.global.BridgeParams;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
+import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Automation;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Sarif;
@@ -59,6 +60,7 @@ public class ScannerArgumentServiceTest {
         Mockito.doReturn("fake-branch").when(envVarsMock).get(ApplicationConstants.ENV_BRANCH_NAME_KEY);
         Mockito.doReturn("fake-job/branch").when(envVarsMock).get(ApplicationConstants.ENV_JOB_NAME_KEY);
         Mockito.doReturn("0").when(envVarsMock).get(ApplicationConstants.ENV_CHANGE_ID_KEY);
+        Mockito.doReturn("fake-main").when(envVarsMock).get(ApplicationConstants.ENV_CHANGE_TARGET_KEY);
 
         scannerArgumentService = new ScannerArgumentService(listenerMock, envVarsMock, workspace);
     }
@@ -94,7 +96,7 @@ public class ScannerArgumentServiceTest {
 
         try {
             String jsonStringNonPrCommentOrFixPr =
-                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{},\"reports\":{\"sarif\":{\"issue\":{},\"file\":{}}}}}}";
+                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"}}}";
 
             String inputJsonPathForNonFixPr = scannerArgumentService.createBridgeInputJson(
                     blackDuck, bitbucketObject, false, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
@@ -114,7 +116,7 @@ public class ScannerArgumentServiceTest {
 
         try {
             String jsonStringForPrComment =
-                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{},\"reports\":{\"sarif\":{\"issue\":{},\"file\":{}}}},\"bitbucket\":{\"api\":{\"url\":\"https://bitbucket.org\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\"},\"key\":\"abc\"}}}}";
+                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"bitbucket\":{\"api\":{\"url\":\"https://bitbucket.org\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\"},\"key\":\"abc\"}}}}";
             String inputJsonPathForPrComment = scannerArgumentService.createBridgeInputJson(
                     blackDuck, bitbucketObject, true, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
             Path filePath = Paths.get(inputJsonPathForPrComment);
@@ -244,11 +246,11 @@ public class ScannerArgumentServiceTest {
 
         String jsonStringForPrComment = "{\"data\":{\"coverity\":{\"connect\":{\"url\":\"https://fake.coverity.url\","
                 + "\"user\":{\"name\":\"fake-user\",\"password\":\"fakeUserPassword\"},"
-                + "\"project\":{\"name\":\"fake-repo\"},\"stream\":{\"name\":\"fake-repo-fake-branch\"},"
-                + "\"policy\":{}},\"install\":{},\"automation\":{}},"
+                + "\"project\":{\"name\":\"fake-repo\"},\"stream\":{\"name\":\"fake-repo-fake-main\"}"
+                + "}},"
                 + "\"github\":{\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"name\":\"fake-repo\""
                 + ",\"owner\":{\"name\":\"fake-owner\"},\"pull\":{\"number\":1},\"branch\":{\"name\":"
-                + "\"fake-branch\"}},\"host\":{\"url\":\"\"}}}}";
+                + "\"fake-branch\"}}}}}";
 
         Coverity coverity = new Coverity();
         coverity.getConnect().setUrl("https://fake.coverity.url");
@@ -291,10 +293,11 @@ public class ScannerArgumentServiceTest {
         BlackDuck blackDuck = new BlackDuck();
         blackDuck.setUrl("https://fake.blackduck.url");
         blackDuck.setToken(TOKEN);
+        blackDuck.setAutomation(new Automation());
         blackDuck.getAutomation().setPrComment(true);
 
         String jsonStringForPrComment =
-                "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"install\":{},\"scan\":{\"failure\":{}},\"automation\":{\"prComment\":true},\"reports\":{\"sarif\":{\"issue\":{},\"file\":{}}}},\"gitlab\":{\"api\":{\"url\":\"\"},\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"branch\":{\"name\":\"fake-gitlab-branch\"},\"pull\":{\"number\":12},\"name\":\"fake-group/fake-gitlab-repo\"}}}}";
+                "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\",\"automation\":{\"prComment\":true}},\"gitlab\":{\"user\":{\"token\":\"MDJDSROSVC56FAKEKEY\"},\"repository\":{\"branch\":{\"name\":\"fake-gitlab-branch\"},\"pull\":{\"number\":12},\"name\":\"fake-group/fake-gitlab-repo\"}}}}";
 
         try {
             Gitlab gitlabObject = gitlabRepositoryService.createGitlabObject(
@@ -413,6 +416,7 @@ public class ScannerArgumentServiceTest {
 
         List<String> commandLineArgs =
                 scannerArgumentService.getCommandLineArgs(installedDependencies, polarisParameters, workspace);
+        scannerArgumentService.getCommandLineArgs(installedDependencies, polarisParameters, workspace);
 
         if (getOSNameForTest().contains("win")) {
             assertEquals(
@@ -438,27 +442,22 @@ public class ScannerArgumentServiceTest {
     }
 
     @Test
-    public void isFixPrOrPrCommentValueSetTest() {
+    public void isPrCommentValueSetTest() {
         Map<String, Object> scanParameters = new HashMap<>();
 
-        scanParameters.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, true);
-        assertTrue(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
-
-        scanParameters.clear();
         scanParameters.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, true);
-        assertTrue(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
+        assertTrue(scannerArgumentService.isPrCommentValueSet(scanParameters));
 
         scanParameters.clear();
         scanParameters.put(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY, true);
-        assertTrue(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
+        assertTrue(scannerArgumentService.isPrCommentValueSet(scanParameters));
 
         scanParameters.clear();
-        scanParameters.put(ApplicationConstants.BLACKDUCK_AUTOMATION_FIXPR_KEY, true);
-        scanParameters.put(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY, true);
-        assertTrue(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
+        scanParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, true);
+        assertTrue(scannerArgumentService.isPrCommentValueSet(scanParameters));
 
         scanParameters.clear();
-        assertFalse(scannerArgumentService.isFixPrOrPrCommentValueSet(scanParameters));
+        assertFalse(scannerArgumentService.isPrCommentValueSet(scanParameters));
     }
 
     @Test

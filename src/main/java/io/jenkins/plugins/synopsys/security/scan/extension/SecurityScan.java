@@ -17,6 +17,10 @@ public interface SecurityScan {
 
     public Boolean isBlackduck_automation_prcomment();
 
+    public Boolean isBlackduck_prComment_enabled();
+
+    public Boolean isBlackduck_prComment_enabled_temporary();
+
     public String getBlackduck_download_url();
 
     public String getCoverity_url();
@@ -34,6 +38,10 @@ public interface SecurityScan {
     public String getCoverity_install_directory();
 
     public Boolean isCoverity_automation_prcomment();
+
+    public Boolean isCoverity_prComment_enabled();
+
+    public Boolean isCoverity_prComment_enabled_temporary();
 
     public String getCoverity_version();
 
@@ -53,7 +61,13 @@ public interface SecurityScan {
 
     public String getPolaris_branch_name();
 
-    public String getPolaris_test_sca_type();
+    public Boolean isPolaris_prComment_enabled();
+
+    public Boolean isPolarisPrCommentEnabledActualValue();
+
+    public String getPolaris_prComment_severities();
+
+    public String getPolaris_branch_parent_name();
 
     public String getBitbucket_token();
 

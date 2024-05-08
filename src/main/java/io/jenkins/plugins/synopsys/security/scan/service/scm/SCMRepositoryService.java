@@ -6,6 +6,7 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.bitbucket.BitbucketRepositoryService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.github.GithubRepositoryService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.gitlab.GitlabRepositoryService;
@@ -18,20 +19,21 @@ import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
 public class SCMRepositoryService {
     private final TaskListener listener;
     private final EnvVars envVars;
+    private final LoggerWrapper logger;
 
     public SCMRepositoryService(TaskListener listener, EnvVars envVars) {
         this.listener = listener;
         this.envVars = envVars;
+        this.logger = new LoggerWrapper(listener);
     }
 
     public Object fetchSCMRepositoryDetails(
             Map<String, Boolean> installedBranchSourceDependencies,
             Map<String, Object> scanParameters,
-            boolean isFixPrOrPrComment)
+            boolean isPrCommentSet)
             throws PluginExceptionHandler {
-        Integer projectRepositoryPullNumber = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null
-                ? Integer.parseInt(envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY))
-                : null;
+        String pullRequestNumber = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY);
+        Integer projectRepositoryPullNumber = pullRequestNumber != null ? Integer.parseInt(pullRequestNumber) : null;
 
         SCMSource scmSource = findSCMSource();
         if (installedBranchSourceDependencies.getOrDefault(
@@ -40,7 +42,7 @@ public class SCMRepositoryService {
             BitbucketRepositoryService bitbucketRepositoryService = new BitbucketRepositoryService(listener);
             BitbucketSCMSource bitbucketSCMSource = (BitbucketSCMSource) scmSource;
             return bitbucketRepositoryService.fetchBitbucketRepositoryDetails(
-                    scanParameters, bitbucketSCMSource, projectRepositoryPullNumber, isFixPrOrPrComment);
+                    scanParameters, bitbucketSCMSource, projectRepositoryPullNumber, isPrCommentSet);
         } else if (installedBranchSourceDependencies.getOrDefault(
                         ApplicationConstants.GITHUB_BRANCH_SOURCE_PLUGIN_NAME, false)
                 && scmSource instanceof GitHubSCMSource) {
@@ -58,7 +60,7 @@ public class SCMRepositoryService {
                     repositoryOwner,
                     projectRepositoryPullNumber,
                     branchName,
-                    isFixPrOrPrComment,
+                    isPrCommentSet,
                     apiUri);
         } else if (installedBranchSourceDependencies.getOrDefault(
                         ApplicationConstants.GITLAB_BRANCH_SOURCE_PLUGIN_NAME, false)
@@ -76,7 +78,7 @@ public class SCMRepositoryService {
                     projectRepositoryPullNumber,
                     branchName,
                     repositoryUrl,
-                    isFixPrOrPrComment);
+                    isPrCommentSet);
         }
         return null;
     }
@@ -84,6 +86,7 @@ public class SCMRepositoryService {
     public SCMSource findSCMSource() {
         String jobName = envVars.get(ApplicationConstants.ENV_JOB_NAME_KEY);
         jobName = jobName.substring(0, jobName.indexOf("/"));
+        logger.info("Jenkins Job name: " + jobName);
 
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         SCMSourceOwner owner = jenkins != null ? jenkins.getItemByFullName(jobName, SCMSourceOwner.class) : null;
