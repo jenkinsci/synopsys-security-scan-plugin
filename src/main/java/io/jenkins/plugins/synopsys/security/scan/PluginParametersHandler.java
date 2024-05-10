@@ -151,7 +151,7 @@ public class PluginParametersHandler {
     }
 
     private void logMessagesForAdditionalParameters(Map<String, Object> scanParameters) {
-        logger.info("Parameters for bridge:");
+        logger.info("Parameters for additional configuration:");
 
         for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
             String key = entry.getKey();
