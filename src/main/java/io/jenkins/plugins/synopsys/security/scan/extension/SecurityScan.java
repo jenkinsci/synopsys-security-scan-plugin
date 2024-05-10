@@ -108,4 +108,6 @@ public interface SecurityScan {
     public String getPolaris_reports_sarif_issue_types();
 
     public Boolean isPolaris_reports_sarif_groupSCAIssues_temporary();
+
+    public String getMark_build_if_issues_are_present();
 }
