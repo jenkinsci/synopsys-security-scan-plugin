@@ -693,7 +693,6 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
             try {
                 verifyRequiredPlugins(logger, envVars);
-                run.setResult(Result.FAILURE);
 
                 exitCode = ScanParametersFactory.createPipelineCommand(
                                 run, listener, envVars, launcher, node, workspace)
