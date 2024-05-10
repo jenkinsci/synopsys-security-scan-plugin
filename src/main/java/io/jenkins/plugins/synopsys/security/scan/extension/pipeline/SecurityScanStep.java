@@ -107,7 +107,6 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private Boolean return_status = true;
     private String mark_build_if_issues_are_present;
 
-
     @DataBoundConstructor
     public SecurityScanStep() {
         // this block is kept empty intentionally
@@ -543,8 +542,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     }
 
     @DataBoundSetter
-    public void setMark_build_if_issues_are_present(
-        String mark_build_if_issues_are_present) {
+    public void setMark_build_if_issues_are_present(String mark_build_if_issues_are_present) {
         this.mark_build_if_issues_are_present = Util.fixEmptyAndTrim(mark_build_if_issues_are_present);
     }
 
@@ -726,8 +724,8 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         private void handleExitCode(int exitCode, String exitMessage, Exception e, LoggerWrapper logger)
                 throws PluginExceptionHandler, ScannerException {
             if (exitCode != 0) {
-                Result result = ScanParametersFactory
-                    .getBuildResultIfIssuesAreFound(exitCode, getMark_build_if_issues_are_present(), logger);
+                Result result = ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                        exitCode, getMark_build_if_issues_are_present(), logger);
                 if (result != null) {
                     logger.info("Marking build as " + result + " since issues are present");
                     handleNonZeroExitCode(exitCode, result, exitMessage, e);

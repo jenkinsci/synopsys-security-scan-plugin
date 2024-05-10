@@ -322,8 +322,8 @@ public class ScanParametersFactory {
 
         if (!Utility.isStringNullOrBlank(securityScan.getMark_build_if_issues_are_present())) {
             bridgeParameters.put(
-                ApplicationConstants.MARK_BUILD_IF_ISSUES_ARE_PRESENT,
-                securityScan.getMark_build_if_issues_are_present());
+                    ApplicationConstants.MARK_BUILD_IF_ISSUES_ARE_PRESENT,
+                    securityScan.getMark_build_if_issues_are_present());
         }
 
         return bridgeParameters;
@@ -481,14 +481,14 @@ public class ScanParametersFactory {
         return isValid;
     }
 
-    public static Result getBuildResultIfIssuesAreFound(int exitCode, String markBuildIfIssuesArePresent, LoggerWrapper logger) {
+    public static Result getBuildResultIfIssuesAreFound(
+            int exitCode, String markBuildIfIssuesArePresent, LoggerWrapper logger) {
         Result result = null;
 
         if (!Utility.isStringNullOrBlank((markBuildIfIssuesArePresent))) {
             if (exitCode == ErrorCode.BRIDGE_BUILD_BREAK) {
                 try {
-                    BuildStatus buildStatus =
-                        BuildStatus.valueOf(markBuildIfIssuesArePresent.toUpperCase());
+                    BuildStatus buildStatus = BuildStatus.valueOf(markBuildIfIssuesArePresent.toUpperCase());
                     if (buildStatus.in(BuildStatus.FAILURE, BuildStatus.UNSTABLE, BuildStatus.SUCCESS)) {
                         result = getMappedResultForBuildStatus(buildStatus);
                     }
@@ -496,7 +496,8 @@ public class ScanParametersFactory {
                     logger.warn("Unsupported value for build status: " + markBuildIfIssuesArePresent);
                 }
             } else {
-                logger.info("Marking build as " + markBuildIfIssuesArePresent + " is ignored since no issues are present");
+                logger.info(
+                        "Marking build as " + markBuildIfIssuesArePresent + " is ignored since no issues are present");
             }
         }
 

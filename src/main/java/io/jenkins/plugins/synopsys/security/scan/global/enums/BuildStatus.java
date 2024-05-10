@@ -8,7 +8,6 @@ public enum BuildStatus {
     SUCCESS;
 
     public boolean in(BuildStatus... buildStatuses) {
-        return Arrays.stream(buildStatuses)
-            .anyMatch(status -> status == this);
+        return Arrays.stream(buildStatuses).anyMatch(status -> status == this);
     }
 }

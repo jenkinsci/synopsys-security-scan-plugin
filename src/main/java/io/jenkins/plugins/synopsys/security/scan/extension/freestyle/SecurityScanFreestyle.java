@@ -577,8 +577,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     }
 
     @DataBoundSetter
-    public void setMark_build_if_issues_are_present(
-        String mark_build_if_issues_are_present) {
+    public void setMark_build_if_issues_are_present(String mark_build_if_issues_are_present) {
         this.mark_build_if_issues_are_present = mark_build_if_issues_are_present;
     }
 
@@ -627,11 +626,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         }
     }
 
-    private void handleExitCode(Run<?, ?> run, LoggerWrapper logger,
-                                int exitCode, String exitMessage, Exception e) {
+    private void handleExitCode(Run<?, ?> run, LoggerWrapper logger, int exitCode, String exitMessage, Exception e) {
         if (exitCode != 0) {
-            Result result = ScanParametersFactory
-                .getBuildResultIfIssuesAreFound(exitCode, getMark_build_if_issues_are_present(), logger);
+            Result result = ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                    exitCode, getMark_build_if_issues_are_present(), logger);
             if (result != null) {
                 logger.info("Marking build as " + result + " since issues are present");
                 run.setResult(result);

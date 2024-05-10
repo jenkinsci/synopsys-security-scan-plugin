@@ -1,6 +1,7 @@
 package io.jenkins.plugins.synopsys.security.scan.factory;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.Result;
@@ -232,15 +233,18 @@ public class ScanParametersFactoryTest {
     public void getBuildResultIfIssuesAreFoundTest() {
         LoggerWrapper loggerMock = new LoggerWrapper(listenerMock);
 
-        assertEquals(ScanParametersFactory.getBuildResultIfIssuesAreFound(
-            ErrorCode.BRIDGE_BUILD_BREAK, "FAILURE", loggerMock),
-            Result.FAILURE);
-        assertEquals(ScanParametersFactory.getBuildResultIfIssuesAreFound(
-                ErrorCode.BRIDGE_BUILD_BREAK, "UNSTABLE", loggerMock),
-            Result.UNSTABLE);
-        assertEquals(ScanParametersFactory.getBuildResultIfIssuesAreFound(
-                ErrorCode.BRIDGE_BUILD_BREAK, "SUCCESS", loggerMock),
-            Result.SUCCESS);
+        assertEquals(
+                ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                        ErrorCode.BRIDGE_BUILD_BREAK, "FAILURE", loggerMock),
+                Result.FAILURE);
+        assertEquals(
+                ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                        ErrorCode.BRIDGE_BUILD_BREAK, "UNSTABLE", loggerMock),
+                Result.UNSTABLE);
+        assertEquals(
+                ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                        ErrorCode.BRIDGE_BUILD_BREAK, "SUCCESS", loggerMock),
+                Result.SUCCESS);
         assertNull(ScanParametersFactory.getBuildResultIfIssuesAreFound(
                 ErrorCode.BRIDGE_BUILD_BREAK, "ABORTED", loggerMock));
     }
