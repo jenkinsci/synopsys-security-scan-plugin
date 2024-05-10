@@ -106,6 +106,9 @@
         <f:entry field="network_airgap" title="Network Airgap (Optional)">
             <f:checkbox checked="${instance.isNetwork_airgap() == true}"/>
         </f:entry>
+        <f:entry field="mark_build_if_issues_are_present" title="Build status if issues are present (Optional)">
+            <f:select/>
+        </f:entry>
     </f:section>
 
     <style>
