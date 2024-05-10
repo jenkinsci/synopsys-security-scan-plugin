@@ -1,15 +1,8 @@
 package io.jenkins.plugins.synopsys.security.scan.extension.freestyle;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import hudson.EnvVars;
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
-import hudson.Util;
-import hudson.model.AbstractProject;
-import hudson.model.FreeStyleProject;
-import hudson.model.Run;
-import hudson.model.TaskListener;
+import hudson.*;
+import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.ListBoxModel;
@@ -20,6 +13,7 @@ import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
 import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.BuildStatus;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import java.util.Map;
 import jenkins.tasks.SimpleBuildStep;
@@ -86,6 +80,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private Boolean include_diagnostics;
     private Boolean network_airgap;
     private Boolean return_status;
+
+    private String mark_build_if_issues_are_present;
 
     @DataBoundConstructor
     public SecurityScanFreestyle() {
@@ -306,6 +302,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public Boolean isReturn_status() {
         return return_status;
+    }
+
+    public String getMark_build_if_issues_are_present() {
+        return mark_build_if_issues_are_present;
     }
 
     @DataBoundSetter
@@ -576,6 +576,12 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         this.return_status = return_status ? true : null;
     }
 
+    @DataBoundSetter
+    public void setMark_build_if_issues_are_present(
+        String mark_build_if_issues_are_present) {
+        this.mark_build_if_issues_are_present = mark_build_if_issues_are_present;
+    }
+
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)
             throws PluginExceptionHandler {
         return ScanParametersFactory.preparePipelineParametersMap(
@@ -617,12 +623,20 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
             logger.info(
                     "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
-            handleExitCode(exitCode, exitMessage, unknownException);
+            handleExitCode(run, logger, exitCode, exitMessage, unknownException);
         }
     }
 
-    private void handleExitCode(int exitCode, String exitMessage, Exception e) {
+    private void handleExitCode(Run<?, ?> run, LoggerWrapper logger,
+                                int exitCode, String exitMessage, Exception e) {
         if (exitCode != 0) {
+            Result result = ScanParametersFactory
+                .getBuildResultIfIssuesAreFound(exitCode, getMark_build_if_issues_are_present(), logger);
+            if (result != null) {
+                logger.info("Marking build as " + result + " since issues are present");
+                run.setResult(result);
+            }
+
             if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
                 // Throw exception with stack trace for undefined errors
                 throw new RuntimeException(new ScannerException(exitMessage, e));
@@ -655,6 +669,18 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
                 String value = product.name().toLowerCase();
                 items.add(new ListBoxModel.Option(label, value));
             }
+            return items;
+        }
+
+        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
+        public ListBoxModel doFillMark_build_if_issues_are_presentItems() {
+            ListBoxModel items = new ListBoxModel();
+
+            items.add("Select", "");
+            items.add(BuildStatus.FAILURE.name(), BuildStatus.FAILURE.name());
+            items.add(BuildStatus.UNSTABLE.name(), BuildStatus.UNSTABLE.name());
+            items.add(BuildStatus.SUCCESS.name(), BuildStatus.SUCCESS.name());
+
             return items;
         }
     }
