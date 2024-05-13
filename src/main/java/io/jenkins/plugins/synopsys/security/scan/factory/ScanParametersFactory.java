@@ -20,6 +20,7 @@ import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.ScannerArgumentService;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import jenkins.model.GlobalConfiguration;
 
@@ -493,7 +494,9 @@ public class ScanParametersFactory {
                         result = getMappedResultForBuildStatus(buildStatus);
                     }
                 } catch (IllegalArgumentException e) {
-                    logger.warn("Unsupported value for build status: " + markBuildIfIssuesArePresent);
+                    logger.warn("Unsupported value for build status: " + markBuildIfIssuesArePresent
+                            + ". Supported values are: "
+                            + List.of(BuildStatus.FAILURE, BuildStatus.UNSTABLE, BuildStatus.SUCCESS));
                 }
             } else {
                 logger.info(
