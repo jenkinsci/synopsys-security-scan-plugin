@@ -657,5 +657,13 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
             }
             return items;
         }
+
+        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
+        public ListBoxModel doFillAssessmentModeItems() {
+            ListBoxModel items = new ListBoxModel();
+            items.add(new ListBoxModel.Option("CI", "CI"));
+            items.add(new ListBoxModel.Option("SOURCE_UPLOAD", "SOURCE_UPLOAD"));
+            return items;
+        }
     }
 }

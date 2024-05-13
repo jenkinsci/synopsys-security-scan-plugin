@@ -81,10 +81,14 @@
             </f:entry>
         </f:section>
 
+    <div id="assessmentMode">
+        <f:entry field="assessmentMode" title="Select Assessment Mode">
+            <f:select/>
+        </f:entry>
+    </div>
+
+    <div id="source_upload" style="display: none;">
         <f:section title="Source Upload Options">
-            <f:entry field="polaris_assessment_mode" title="Polaris Assessment Mode (Optional)">
-                <f:textbox/>
-            </f:entry>
             <f:entry field="project_source_archive" title="Project Source Archive (Optional)">
                 <f:textbox/>
             </f:entry>
@@ -98,6 +102,7 @@
                 <f:textbox/>
             </f:entry>
         </f:section>
+    </div>
 
         <f:section title="SARIF Report Options">
             <f:entry field="polaris_reports_sarif_create" title="Generate SARIF Report for Polaris Issues (Optional)">
@@ -183,9 +188,20 @@
 
         document.addEventListener('change', function() {
             var selectedOption = document.querySelector('select[name="_.product"]')?.value;
+            var assessmentModeOption = document.querySelector('select[name="_.assessmentMode"]')?.value;
+            console.log('assessmentModeOption', assessmentModeOption);
+            var sourceUploadDiv = document.getElementById('source_upload');
             var blackduckDiv = document.getElementById('blackduck');
             var coverityDiv = document.getElementById('coverity');
             var polarisDiv = document.getElementById('polaris');
+
+            if(assessmentModeOption === 'SOURCE_UPLOAD') {
+                showDiv(sourceUploadDiv);
+            }
+
+            if(assessmentModeOption === 'CI') {
+                hideAParticularDiv(sourceUploadDiv);
+            }
 
             if (selectedOption === 'blackduck') {
                 clearInputFields(coverityDiv);

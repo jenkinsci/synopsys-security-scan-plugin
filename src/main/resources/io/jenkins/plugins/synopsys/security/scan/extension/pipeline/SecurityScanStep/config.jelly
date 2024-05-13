@@ -93,23 +93,28 @@
             </f:entry>
         </f:section>
 
-        <f:section title="Source Upload Options">
-            <f:entry field="polaris_assessment_mode" title="Polaris Assessment Mode (Optional)">
-                <f:textbox/>
+        <div id="assessmentMode">
+            <f:entry field="assessmentMode" title="Select Assessment Mode">
+                <f:select/>
             </f:entry>
-            <f:entry field="project_source_archive" title="Project Source Archive (Optional)">
-                <f:textbox/>
-            </f:entry>
-            <f:entry field="project_source_preserveSymLinks" title="Project Source Preserve Sym Links (Optional)">
-                <f:checkbox/>
-            </f:entry>
-            <f:entry field="project_source_excludes" title="Project Source Excludes (Optional)">
-                <f:textbox/>
-            </f:entry>
-            <f:entry field="project_directory" title="Project Directory (Optional)">
-                <f:textbox/>
-            </f:entry>
-        </f:section>
+        </div>
+
+        <div id="source_upload" style="display: none;">
+            <f:section title="Source Upload Options">
+                <f:entry field="project_source_archive" title="Project Source Archive (Optional)">
+                    <f:textbox/>
+                </f:entry>
+                <f:entry field="project_source_preserveSymLinks" title="Project Source Preserve Sym Links (Optional)">
+                    <f:checkbox/>
+                </f:entry>
+                <f:entry field="project_source_excludes" title="Project Source Excludes (Optional)">
+                    <f:textbox/>
+                </f:entry>
+                <f:entry field="project_directory" title="Project Directory (Optional)">
+                    <f:textbox/>
+                </f:entry>
+            </f:section>
+        </div>
 
         <f:section title="SARIF Report Options">
             <f:entry field="polaris_reports_sarif_create" title="Generate SARIF Report for Polaris Issues (Optional)">
@@ -137,9 +142,9 @@
         <f:entry field="network_airgap" title="Network Airgap (Optional)">
             <f:checkbox/>
         </f:entry>
-<!--        <f:entry field="return_status" title="Return Status Code (Optional)">-->
-<!--            <f:checkbox/>-->
-<!--        </f:entry>-->
+        <!--        <f:entry field="return_status" title="Return Status Code (Optional)">-->
+        <!--            <f:checkbox/>-->
+        <!--        </f:entry>-->
     </f:section>
 
     <script type="text/javascript">
@@ -147,6 +152,18 @@
         var blackduckDiv = document.getElementById('blackduck');
         var coverityDiv = document.getElementById('coverity');
         var polarisDiv = document.getElementById('polaris');
+
+        function hideAllDivs(blackduckDiv, coverityDiv, polarisDiv) {
+            if(blackduckDiv) {
+                blackduckDiv.style.display='none';
+            }
+            if(coverityDiv) {
+                coverityDiv.style.display='none';
+            }
+            if(polarisDiv) {
+                polarisDiv.style.display='none';
+            }
+        }
 
         function hideAllDivs() {
             blackduckDiv.style.display = 'none';
@@ -160,6 +177,12 @@
         function showDiv(div) {
             if (div) {
                 div.style.display = 'block';
+            }
+        }
+
+        function hideAParticularDiv(div) {
+            if(div) {
+                div.style.display = 'none';
             }
         }
 
@@ -185,24 +208,42 @@
             });
         }
 
-        synopsysSecurityProduct.addEventListener('change', function () {
-            hideAllDivs();
+        document.addEventListener('change', function () {
+            // hideAllDivs();
+            var assessmentModeOption = document.querySelector('select[name="_.assessmentMode"]')?.value;
+            console.log('assessmentModeOption', assessmentModeOption);
+            var sourceUploadDiv = document.getElementById('source_upload');
+
+            if(assessmentModeOption === 'SOURCE_UPLOAD') {
+                showDiv(sourceUploadDiv);
+            }
+
+            if(assessmentModeOption === 'CI') {
+                hideAParticularDiv(sourceUploadDiv);
+            }
+
             var selectedOption = synopsysSecurityProduct.value;
             if (selectedOption == 'blackduck') {
                 clearInputFields(coverityDiv);
+                hideAParticularDiv(coverityDiv);
                 clearInputFields(polarisDiv);
+                hideAParticularDiv(polarisDiv);
                 showDiv(blackduckDiv);
                 setCheckboxToDefaultTrue(['_.blackduck_reports_sarif_groupSCAIssues'])
             } else if (selectedOption == 'coverity') {
                 clearInputFields(blackduckDiv);
+                hideAParticularDiv(blackduckDiv);
                 clearInputFields(polarisDiv);
+                hideAParticularDiv(polarisDiv);
                 showDiv(coverityDiv);
             } else if (selectedOption == 'polaris') {
                 clearInputFields(blackduckDiv);
+                hideAParticularDiv(blackduckDiv);
                 clearInputFields(coverityDiv);
+                hideAParticularDiv(coverityDiv);
                 showDiv(polarisDiv);
                 setCheckboxToDefaultTrue(['_.polaris_reports_sarif_groupSCAIssues'])
-            }else if (selectedOption == 'Select') {
+            }else if (selectedOption == 'select') {
                 hideAllDivs();
             }
         });

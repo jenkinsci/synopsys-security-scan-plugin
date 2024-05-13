@@ -616,7 +616,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             ListBoxModel items = new ListBoxModel();
             Map<String, String> customLabels = new HashMap<>();
 
-            items.add(new Option("Select", ""));
+            items.add(new Option("Select", "select"));
             customLabels.put(SecurityProduct.BLACKDUCK.name().toLowerCase(), "Black Duck");
             customLabels.put(SecurityProduct.COVERITY.name().toLowerCase(), "Coverity");
             customLabels.put(SecurityProduct.POLARIS.name().toLowerCase(), "Polaris");
@@ -628,6 +628,15 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             }
             return items;
         }
+
+        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
+        public ListBoxModel doFillAssessmentModeItems() {
+            ListBoxModel items = new ListBoxModel();
+            items.add(new ListBoxModel.Option("CI", "CI"));
+            items.add(new ListBoxModel.Option("SOURCE_UPLOAD", "SOURCE_UPLOAD"));
+            return items;
+        }
+
     }
 
     public class Execution extends SynchronousNonBlockingStepExecution<Integer> {
