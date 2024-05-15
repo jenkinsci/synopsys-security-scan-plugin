@@ -119,7 +119,7 @@
         <f:entry field="network_airgap" title="Network Airgap (Optional)">
             <f:checkbox/>
         </f:entry>
-        <f:entry field="mark_build_if_issues_are_present" title="Build status if issues are present (Optional)">
+        <f:entry field="mark_build_if_issues_present" title="Build status if issues are present (Optional)">
             <f:select/>
         </f:entry>
 <!--        <f:entry field="return_status" title="Return Status Code (Optional)">-->

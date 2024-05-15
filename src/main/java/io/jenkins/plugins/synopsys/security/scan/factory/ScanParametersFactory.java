@@ -321,10 +321,9 @@ public class ScanParametersFactory {
             bridgeParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, securityScan.isNetwork_airgap());
         }
 
-        if (!Utility.isStringNullOrBlank(securityScan.getMark_build_if_issues_are_present())) {
+        if (!Utility.isStringNullOrBlank(securityScan.getMark_build_if_issues_present())) {
             bridgeParameters.put(
-                    ApplicationConstants.MARK_BUILD_IF_ISSUES_ARE_PRESENT,
-                    securityScan.getMark_build_if_issues_are_present());
+                    ApplicationConstants.MARK_BUILD_IF_ISSUES_PRESENT, securityScan.getMark_build_if_issues_present());
         }
 
         return bridgeParameters;

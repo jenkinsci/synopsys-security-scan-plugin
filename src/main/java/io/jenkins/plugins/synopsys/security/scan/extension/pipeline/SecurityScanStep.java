@@ -105,7 +105,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     By default the plugin will always return a status code even if there is error.
      */
     private Boolean return_status = true;
-    private String mark_build_if_issues_are_present;
+    private String mark_build_if_issues_present;
 
     @DataBoundConstructor
     public SecurityScanStep() {
@@ -284,8 +284,8 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return return_status;
     }
 
-    public String getMark_build_if_issues_are_present() {
-        return mark_build_if_issues_are_present;
+    public String getMark_build_if_issues_present() {
+        return mark_build_if_issues_present;
     }
 
     public Boolean isBlackduck_reports_sarif_create() {
@@ -542,8 +542,8 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     }
 
     @DataBoundSetter
-    public void setMark_build_if_issues_are_present(String mark_build_if_issues_are_present) {
-        this.mark_build_if_issues_are_present = Util.fixEmptyAndTrim(mark_build_if_issues_are_present);
+    public void setMark_build_if_issues_present(String mark_build_if_issues_present) {
+        this.mark_build_if_issues_present = Util.fixEmptyAndTrim(mark_build_if_issues_present);
     }
 
     @DataBoundSetter
@@ -642,7 +642,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         }
 
         @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
-        public ListBoxModel doFillMark_build_if_issues_are_presentItems() {
+        public ListBoxModel doFillMark_build_if_issues_presentItems() {
             ListBoxModel items = new ListBoxModel();
 
             items.add("Select", "");
@@ -724,7 +724,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
                 throws PluginExceptionHandler, ScannerException {
             if (exitCode != 0) {
                 Result result = ScanParametersFactory.getBuildResultIfIssuesAreFound(
-                        exitCode, getMark_build_if_issues_are_present(), logger);
+                        exitCode, getMark_build_if_issues_present(), logger);
                 if (result != null) {
                     logger.info("Marking build as " + result + " since issues are present");
                     handleNonZeroExitCode(exitCode, result, exitMessage, e);

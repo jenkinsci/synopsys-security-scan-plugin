@@ -81,7 +81,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private Boolean network_airgap;
     private Boolean return_status;
 
-    private String mark_build_if_issues_are_present;
+    private String mark_build_if_issues_present;
 
     @DataBoundConstructor
     public SecurityScanFreestyle() {
@@ -304,8 +304,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         return return_status;
     }
 
-    public String getMark_build_if_issues_are_present() {
-        return mark_build_if_issues_are_present;
+    public String getMark_build_if_issues_present() {
+        return mark_build_if_issues_present;
     }
 
     @DataBoundSetter
@@ -577,8 +577,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     }
 
     @DataBoundSetter
-    public void setMark_build_if_issues_are_present(String mark_build_if_issues_are_present) {
-        this.mark_build_if_issues_are_present = mark_build_if_issues_are_present;
+    public void setMark_build_if_issues_present(String mark_build_if_issues_present) {
+        this.mark_build_if_issues_present = mark_build_if_issues_present;
     }
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)
@@ -629,7 +629,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private void handleExitCode(Run<?, ?> run, LoggerWrapper logger, int exitCode, String exitMessage, Exception e) {
         if (exitCode != 0) {
             Result result = ScanParametersFactory.getBuildResultIfIssuesAreFound(
-                    exitCode, getMark_build_if_issues_are_present(), logger);
+                    exitCode, this.getMark_build_if_issues_present(), logger);
             if (result != null) {
                 logger.info("Marking build as " + result + " since issues are present");
                 run.setResult(result);
@@ -671,7 +671,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         }
 
         @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
-        public ListBoxModel doFillMark_build_if_issues_are_presentItems() {
+        public ListBoxModel doFillMark_build_if_issues_presentItems() {
             ListBoxModel items = new ListBoxModel();
 
             items.add("Select", "");

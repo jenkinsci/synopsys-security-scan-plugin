@@ -94,7 +94,7 @@ public class ApplicationConstants {
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
     public static final String GITHUB_TOKEN_KEY = "github_token";
     public static final String GITLAB_TOKEN_KEY = "gitlab_token";
-    public static final String MARK_BUILD_IF_ISSUES_ARE_PRESENT = "mark_build_if_issues_are_present";
+    public static final String MARK_BUILD_IF_ISSUES_PRESENT = "mark_build_if_issues_present";
 
     public static final String SYNOPSYS_BRIDGE_DOWNLOAD_URL = "synopsys_bridge_download_url";
     public static final String SYNOPSYS_BRIDGE_DOWNLOAD_VERSION = "synopsys_bridge_download_version";

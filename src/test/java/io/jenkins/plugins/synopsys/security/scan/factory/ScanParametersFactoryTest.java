@@ -247,5 +247,7 @@ public class ScanParametersFactoryTest {
                 Result.SUCCESS);
         assertNull(ScanParametersFactory.getBuildResultIfIssuesAreFound(
                 ErrorCode.BRIDGE_BUILD_BREAK, "ABORTED", loggerMock));
+        assertNull(ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                ErrorCode.BRIDGE_ADAPTER_ERROR, "UNSTABLE", loggerMock));
     }
 }
