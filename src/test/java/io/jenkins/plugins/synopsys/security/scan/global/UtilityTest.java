@@ -5,7 +5,9 @@ import static org.mockito.Mockito.when;
 
 import hudson.EnvVars;
 import hudson.FilePath;
+import hudson.model.Result;
 import hudson.model.TaskListener;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.BuildStatus;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -246,6 +248,13 @@ public class UtilityTest {
     @Test
     public void isPullRequestEventForNonPRContextTest() {
         assertFalse(Utility.isPullRequestEvent(envVarsMock));
+    }
+
+    @Test
+    public void getMappedResultForBuildStatusTest() {
+        assertEquals(Utility.getMappedResultForBuildStatus(BuildStatus.FAILURE), Result.FAILURE);
+        assertEquals(Utility.getMappedResultForBuildStatus(BuildStatus.UNSTABLE), Result.UNSTABLE);
+        assertEquals(Utility.getMappedResultForBuildStatus(BuildStatus.SUCCESS), Result.SUCCESS);
     }
 
     public String getHomeDirectory() {

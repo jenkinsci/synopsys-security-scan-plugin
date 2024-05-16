@@ -14,13 +14,11 @@ import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandle
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.global.ScannerGlobalConfig;
 import io.jenkins.plugins.synopsys.security.scan.global.*;
-import io.jenkins.plugins.synopsys.security.scan.global.ScanCredentialsHelper;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.BuildStatus;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.ScannerArgumentService;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import jenkins.model.GlobalConfiguration;
 
@@ -490,12 +488,12 @@ public class ScanParametersFactory {
                 try {
                     BuildStatus buildStatus = BuildStatus.valueOf(markBuildIfIssuesArePresent.toUpperCase());
                     if (buildStatus.in(BuildStatus.FAILURE, BuildStatus.UNSTABLE, BuildStatus.SUCCESS)) {
-                        result = getMappedResultForBuildStatus(buildStatus);
+                        result = Utility.getMappedResultForBuildStatus(buildStatus);
                     }
                 } catch (IllegalArgumentException e) {
                     logger.warn("Unsupported value for build status: " + markBuildIfIssuesArePresent
                             + ". Supported values are: "
-                            + List.of(BuildStatus.FAILURE, BuildStatus.UNSTABLE, BuildStatus.SUCCESS));
+                            + Arrays.asList(BuildStatus.values()));
                 }
             } else {
                 logger.info(
@@ -504,18 +502,5 @@ public class ScanParametersFactory {
         }
 
         return result;
-    }
-
-    private static Result getMappedResultForBuildStatus(BuildStatus buildStatus) {
-        if (buildStatus.equals(BuildStatus.FAILURE)) {
-            return Result.FAILURE;
-        }
-        if (buildStatus.equals(BuildStatus.UNSTABLE)) {
-            return Result.UNSTABLE;
-        }
-        if (buildStatus.equals(BuildStatus.SUCCESS)) {
-            return Result.SUCCESS;
-        }
-        return null;
     }
 }

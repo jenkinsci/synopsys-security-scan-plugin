@@ -711,9 +711,6 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
                     logger.info(exitMessage);
                 }
 
-                logger.println(
-                        "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
-
                 handleExitCode(exitCode, exitMessage, unknownException, logger);
             }
 
@@ -727,17 +724,21 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
                         exitCode, getMark_build_if_issues_present(), logger);
                 if (result != null) {
                     logger.info("Marking build as " + result + " since issues are present");
-                    handleNonZeroExitCode(exitCode, result, exitMessage, e);
+                    handleNonZeroExitCode(exitCode, result, exitMessage, e, logger);
                 } else {
-                    handleNonZeroExitCode(exitCode, Result.FAILURE, exitMessage, e);
+                    handleNonZeroExitCode(exitCode, Result.FAILURE, exitMessage, e, logger);
                 }
             }
         }
 
-        private void handleNonZeroExitCode(int exitCode, Result result, String exitMessage, Exception e)
+        private void handleNonZeroExitCode(
+                int exitCode, Result result, String exitMessage, Exception e, LoggerWrapper logger)
                 throws PluginExceptionHandler, ScannerException {
             flowNode.addOrReplaceAction(new WarningAction(result)); // Setting the stage result
             run.setResult(result); // Setting the build result
+
+            logger.println(
+                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
             if (Objects.equals(isReturn_status(), true)) {
                 return;

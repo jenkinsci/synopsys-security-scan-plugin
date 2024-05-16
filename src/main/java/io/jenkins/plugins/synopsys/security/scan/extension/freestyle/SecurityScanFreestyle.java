@@ -633,12 +633,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
             if (result != null) {
                 logger.info("Marking build as " + result + " since issues are present");
                 run.setResult(result);
+            } else if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
+                // Throw exception with stack trace for undefined errors
+                throw new RuntimeException(new ScannerException(exitMessage, e));
             } else {
-                if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
-                    // Throw exception with stack trace for undefined errors
-                    throw new RuntimeException(new ScannerException(exitMessage, e));
-                }
-
                 throw new RuntimeException(new PluginExceptionHandler(exitMessage));
             }
         }
