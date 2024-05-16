@@ -639,7 +639,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
             logger.info(
                     "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
-            if (result != null) {
+            if (result == null) {
                 if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
                     throw new RuntimeException(new ScannerException(exitMessage, e));
                 } else {
