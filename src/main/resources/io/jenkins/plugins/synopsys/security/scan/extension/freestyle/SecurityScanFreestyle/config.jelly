@@ -81,29 +81,29 @@
             </f:entry>
         </f:section>
 
+        <f:entry field="project_directory" title="Project Directory (Optional)">
+            <f:textbox/>
+        </f:entry>
+
     <div id="assessmentMode">
-        <f:entry field="assessmentMode" title="Select Assessment Mode">
+        <f:entry field="assessmentMode" title="Polaris Assessment Mode (Optional)">
             <f:select/>
         </f:entry>
     </div>
 
     <div id="source_upload" style="display: none;">
-        <f:section title="Source Upload Options">
-            <f:entry field="project_source_archive" title="Project Source Archive (Optional)">
+        <f:section title="Source Code Upload Options">
+            <f:entry field="project_source_archive" title="Upload Archive Instead Of Project Directory (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="project_source_excludes" title="Project Source Excludes (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="project_source_preserveSymLinks" title="Project Source Preserve Sym Links (Optional)">
                 <f:checkbox/>
             </f:entry>
-            <f:entry field="project_source_excludes" title="Project Source Excludes (Optional)">
-                <f:textbox/>
-            </f:entry>
         </f:section>
     </div>
-
-        <f:entry field="project_directory" title="Project Directory (Optional)">
-            <f:textbox/>
-        </f:entry>
 
         <f:section title="SARIF Report Options">
             <f:entry field="polaris_reports_sarif_create" title="Generate SARIF Report for Polaris Issues (Optional)">
