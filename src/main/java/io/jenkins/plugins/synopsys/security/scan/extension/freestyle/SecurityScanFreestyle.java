@@ -619,25 +619,32 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
                 logger.info(exitMessage);
             }
 
-            logger.info(
-                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
-
             handleExitCode(run, logger, exitCode, exitMessage, unknownException);
         }
     }
 
     private void handleExitCode(Run<?, ?> run, LoggerWrapper logger, int exitCode, String exitMessage, Exception e) {
-        if (exitCode != 0) {
+        if (exitCode == ErrorCode.SCAN_SUCCESSFUL) {
+            logger.info(
+                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+        } else {
             Result result = ScanParametersFactory.getBuildResultIfIssuesAreFound(
                     exitCode, this.getMark_build_if_issues_present(), logger);
+
             if (result != null) {
                 logger.info("Marking build as " + result + " since issues are present");
                 run.setResult(result);
-            } else if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
-                // Throw exception with stack trace for undefined errors
-                throw new RuntimeException(new ScannerException(exitMessage, e));
-            } else {
-                throw new RuntimeException(new PluginExceptionHandler(exitMessage));
+            }
+
+            logger.info(
+                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+
+            if (result != null) {
+                if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
+                    throw new RuntimeException(new ScannerException(exitMessage, e));
+                } else {
+                    throw new RuntimeException(new PluginExceptionHandler(exitMessage));
+                }
             }
         }
     }

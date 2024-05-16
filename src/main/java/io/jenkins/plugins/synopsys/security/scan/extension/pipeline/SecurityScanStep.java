@@ -719,7 +719,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
         private void handleExitCode(int exitCode, String exitMessage, Exception e, LoggerWrapper logger)
                 throws PluginExceptionHandler, ScannerException {
-            if (exitCode != 0) {
+            if (exitCode == ErrorCode.SCAN_SUCCESSFUL) {
+                logger.println(
+                        "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+            } else {
                 Result result = ScanParametersFactory.getBuildResultIfIssuesAreFound(
                         exitCode, getMark_build_if_issues_present(), logger);
                 if (result != null) {
@@ -747,8 +750,9 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
                 // Throw exception with stack trace for undefined errors
                 throw new ScannerException(exitMessage, e);
+            } else {
+                throw new PluginExceptionHandler(exitMessage);
             }
-            throw new PluginExceptionHandler(exitMessage);
         }
 
         public void verifyRequiredPlugins(LoggerWrapper logger, EnvVars envVars) throws PluginExceptionHandler {
