@@ -97,8 +97,8 @@
             <f:textbox/>
         </f:entry>
 
-        <div id="assessmentMode">
-            <f:entry field="assessmentMode" title="Polaris Assessment Mode (Optional)">
+        <div id="polaris_assessment_mode">
+            <f:entry field="polaris_assessment_mode" title="Polaris Assessment Mode (Optional)">
                 <f:select/>
             </f:entry>
         </div>
@@ -211,15 +211,16 @@
 
         document.addEventListener('change', function () {
             // hideAllDivs();
-            var assessmentModeOption = document.querySelector('select[name="_.assessmentMode"]')?.value;
-            console.log('assessmentModeOption', assessmentModeOption);
+            var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]')?.value;
+            console.log('polarisAssessmentModeOption', polarisAssessmentModeOption);
             var sourceUploadDiv = document.getElementById('source_upload');
 
-            if(assessmentModeOption === 'SOURCE_UPLOAD') {
+            if(polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
                 showDiv(sourceUploadDiv);
             }
 
-            if(assessmentModeOption === 'CI') {
+            if(polarisAssessmentModeOption === 'CI' || polarisAssessmentModeOption === '') {
+                clearInputFields(sourceUploadDiv);
                 hideAParticularDiv(sourceUploadDiv);
             }
 
@@ -245,6 +246,8 @@
                 showDiv(polarisDiv);
                 setCheckboxToDefaultTrue(['_.polaris_reports_sarif_groupSCAIssues'])
             }else if (selectedOption == 'select') {
+                clearInputFields(sourceUploadDiv);
+                hideAParticularDiv(sourceUploadDiv);
                 hideAllDivs();
             }
         });

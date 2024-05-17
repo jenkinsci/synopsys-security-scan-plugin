@@ -85,8 +85,8 @@
             <f:textbox/>
         </f:entry>
 
-    <div id="assessmentMode">
-        <f:entry field="assessmentMode" title="Polaris Assessment Mode (Optional)">
+    <div id="polaris_assessment_mode">
+        <f:entry field="polaris_assessment_mode" title="Polaris Assessment Mode (Optional)">
             <f:select/>
         </f:entry>
     </div>
@@ -189,19 +189,20 @@
 
         document.addEventListener('change', function() {
             var selectedOption = document.querySelector('select[name="_.product"]')?.value;
-            var assessmentModeOption = document.querySelector('select[name="_.assessmentMode"]')?.value;
-            console.log('assessmentModeOption', assessmentModeOption);
+            var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]')?.value;
+            console.log('polarisAssessmentModeOption', polarisAssessmentModeOption);
             var sourceUploadDiv = document.getElementById('source_upload');
             var blackduckDiv = document.getElementById('blackduck');
             var coverityDiv = document.getElementById('coverity');
             var polarisDiv = document.getElementById('polaris');
 
-            if(assessmentModeOption === 'SOURCE_UPLOAD') {
+            if(polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
                 showDiv(sourceUploadDiv);
             }
 
-            if(assessmentModeOption === 'CI') {
+            if(polarisAssessmentModeOption === 'CI' || polarisAssessmentModeOption === '') {
                 hideAParticularDiv(sourceUploadDiv);
+                clearInputFields(sourceUploadDiv);
             }
 
             if (selectedOption === 'blackduck') {

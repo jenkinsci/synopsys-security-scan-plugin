@@ -77,6 +77,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private Boolean polaris_reports_sarif_groupSCAIssues;
     private String polaris_reports_sarif_severities;
     private Boolean polaris_reports_sarif_groupSCAIssues_temporary;
+    private String project_source_archive;
+    private String polaris_assessment_mode;
 
     private transient String bitbucket_token;
 
@@ -270,6 +272,14 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public Boolean isPolaris_reports_sarif_groupSCAIssues_temporary() {
         return polaris_reports_sarif_groupSCAIssues_temporary;
+    }
+
+    public String getPolaris_assessment_mode() {
+        return polaris_assessment_mode;
+    }
+
+    public String getProject_source_archive() {
+        return project_source_archive;
     }
 
     public String getBitbucket_token() {
@@ -532,6 +542,16 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     }
 
     @DataBoundSetter
+    public void setPolaris_assessment_mode(String polaris_assessment_mode) {
+        this.polaris_assessment_mode = Util.fixEmptyAndTrim(polaris_assessment_mode);
+    }
+
+    @DataBoundSetter
+    public void setProject_source_archive(String project_source_archive) {
+        this.project_source_archive = Util.fixEmptyAndTrim(project_source_archive);
+    }
+
+    @DataBoundSetter
     public void setBitbucket_token(String bitbucket_token) {
         this.bitbucket_token = bitbucket_token;
     }
@@ -659,8 +679,9 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         }
 
         @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
-        public ListBoxModel doFillAssessmentModeItems() {
+        public ListBoxModel doFillPolaris_assessment_modeItems() {
             ListBoxModel items = new ListBoxModel();
+            items.add(new ListBoxModel.Option("", ""));
             items.add(new ListBoxModel.Option("CI", "CI"));
             items.add(new ListBoxModel.Option("SOURCE_UPLOAD", "SOURCE_UPLOAD"));
             return items;
