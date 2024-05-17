@@ -319,9 +319,8 @@ public class ScanParametersFactory {
             bridgeParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, securityScan.isNetwork_airgap());
         }
 
-        if (!Utility.isStringNullOrBlank(securityScan.getMark_build_if_issues_present())) {
-            bridgeParameters.put(
-                    ApplicationConstants.MARK_BUILD_IF_ISSUES_PRESENT, securityScan.getMark_build_if_issues_present());
+        if (!Utility.isStringNullOrBlank(securityScan.getMark_build_status())) {
+            bridgeParameters.put(ApplicationConstants.MARK_BUILD_STATUS, securityScan.getMark_build_status());
         }
 
         return bridgeParameters;
@@ -483,21 +482,17 @@ public class ScanParametersFactory {
             int exitCode, String markBuildIfIssuesArePresent, LoggerWrapper logger) {
         Result result = null;
 
-        if (!Utility.isStringNullOrBlank((markBuildIfIssuesArePresent))) {
-            if (exitCode == ErrorCode.BRIDGE_BUILD_BREAK) {
-                try {
-                    BuildStatus buildStatus = BuildStatus.valueOf(markBuildIfIssuesArePresent.toUpperCase());
-                    if (buildStatus.in(BuildStatus.FAILURE, BuildStatus.UNSTABLE, BuildStatus.SUCCESS)) {
-                        result = Utility.getMappedResultForBuildStatus(buildStatus);
-                    }
-                } catch (IllegalArgumentException e) {
-                    logger.warn("Unsupported value for build status: " + markBuildIfIssuesArePresent
-                            + ". Supported values are: "
-                            + Arrays.asList(BuildStatus.values()));
+        if (exitCode == ErrorCode.BRIDGE_BUILD_BREAK && !Utility.isStringNullOrBlank((markBuildIfIssuesArePresent))) {
+            try {
+                BuildStatus buildStatus = BuildStatus.valueOf(markBuildIfIssuesArePresent.toUpperCase());
+                if (buildStatus.in(BuildStatus.FAILURE, BuildStatus.UNSTABLE, BuildStatus.SUCCESS)) {
+                    result = Utility.getMappedResultForBuildStatus(buildStatus);
                 }
-            } else {
-                logger.info(
-                        "Marking build as " + markBuildIfIssuesArePresent + " is ignored since no issues are present");
+            } catch (IllegalArgumentException e) {
+                logger.warn("Unsupported value for " + ApplicationConstants.MARK_BUILD_STATUS
+                        + ": " + markBuildIfIssuesArePresent
+                        + ". Supported values are: "
+                        + Arrays.asList(BuildStatus.values()));
             }
         }
 

@@ -13,6 +13,7 @@ import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
 import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.BuildStatus;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import java.util.Map;
@@ -81,7 +82,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private Boolean network_airgap;
     private Boolean return_status;
 
-    private String mark_build_if_issues_present;
+    private String mark_build_status;
 
     @DataBoundConstructor
     public SecurityScanFreestyle() {
@@ -304,8 +305,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         return return_status;
     }
 
-    public String getMark_build_if_issues_present() {
-        return mark_build_if_issues_present;
+    public String getMark_build_status() {
+        return mark_build_status;
     }
 
     @DataBoundSetter
@@ -577,8 +578,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     }
 
     @DataBoundSetter
-    public void setMark_build_if_issues_present(String mark_build_if_issues_present) {
-        this.mark_build_if_issues_present = mark_build_if_issues_present;
+    public void setMark_build_status(String mark_build_status) {
+        this.mark_build_status = mark_build_status;
     }
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)
@@ -624,12 +625,17 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     }
 
     private void handleExitCode(Run<?, ?> run, LoggerWrapper logger, int exitCode, String exitMessage, Exception e) {
+        if (exitCode != ErrorCode.BRIDGE_BUILD_BREAK && !Utility.isStringNullOrBlank(this.getMark_build_status())) {
+            logger.info("Marking build status as " + this.getMark_build_status() + " is ignored since exit code is: "
+                    + exitCode);
+        }
+
         if (exitCode == ErrorCode.SCAN_SUCCESSFUL) {
             logger.info(
                     "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
         } else {
-            Result result = ScanParametersFactory.getBuildResultIfIssuesAreFound(
-                    exitCode, this.getMark_build_if_issues_present(), logger);
+            Result result =
+                    ScanParametersFactory.getBuildResultIfIssuesAreFound(exitCode, this.getMark_build_status(), logger);
 
             if (result != null) {
                 logger.info("Marking build as " + result + " since issues are present");
@@ -676,7 +682,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         }
 
         @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
-        public ListBoxModel doFillMark_build_if_issues_presentItems() {
+        public ListBoxModel doFillMark_build_statusItems() {
             ListBoxModel items = new ListBoxModel();
 
             items.add("Select", "");
