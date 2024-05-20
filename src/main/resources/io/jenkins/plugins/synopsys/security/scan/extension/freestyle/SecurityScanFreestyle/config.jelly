@@ -206,6 +206,8 @@
             }
 
             if (selectedOption === 'blackduck') {
+                clearInputFields(sourceUploadDiv);
+                hideAParticularDiv(sourceUploadDiv);
                 clearInputFields(coverityDiv);
                 hideAParticularDiv(polarisDiv);
                 clearInputFields(polarisDiv);
@@ -213,6 +215,8 @@
                 showDiv(blackduckDiv);
                 validateProductField();
             } else if (selectedOption === 'coverity') {
+                clearInputFields(sourceUploadDiv);
+                hideAParticularDiv(sourceUploadDiv);
                 clearInputFields(blackduckDiv);
                 hideAParticularDiv(blackduckDiv);
                 clearInputFields(polarisDiv);
@@ -229,10 +233,12 @@
                 validateProductField();
                 validatePolarisFields();
             }else if (selectedOption === 'select') {
-                hideAllDivs(blackduckDiv, coverityDiv, polarisDiv);
+                clearInputFields(sourceUploadDiv);
+                hideAParticularDiv(sourceUploadDiv);
                 clearInputFields(blackduckDiv);
                 clearInputFields(coverityDiv);
                 clearInputFields(polarisDiv);
+                hideAllDivs(blackduckDiv, coverityDiv, polarisDiv);
                 validateProductField();
             }
 

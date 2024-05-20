@@ -226,6 +226,8 @@
 
             var selectedOption = synopsysSecurityProduct.value;
             if (selectedOption == 'blackduck') {
+                clearInputFields(sourceUploadDiv);
+                hideAParticularDiv(sourceUploadDiv);
                 clearInputFields(coverityDiv);
                 hideAParticularDiv(coverityDiv);
                 clearInputFields(polarisDiv);
@@ -233,6 +235,8 @@
                 showDiv(blackduckDiv);
                 setCheckboxToDefaultTrue(['_.blackduck_reports_sarif_groupSCAIssues'])
             } else if (selectedOption == 'coverity') {
+                clearInputFields(sourceUploadDiv);
+                hideAParticularDiv(sourceUploadDiv);
                 clearInputFields(blackduckDiv);
                 hideAParticularDiv(blackduckDiv);
                 clearInputFields(polarisDiv);
