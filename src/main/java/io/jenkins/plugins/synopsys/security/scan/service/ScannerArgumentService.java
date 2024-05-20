@@ -116,6 +116,7 @@ public class ScannerArgumentService {
         if (securityProducts.contains(SecurityProduct.BLACKDUCK.name())) {
             BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener, envVars);
             BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckObjectForBridge(scanParameters);
+            Project project = blackDuckParametersService.prepareProjectObjectForBridge(scanParameters);
 
             scanCommands.add(BridgeParams.STAGE_OPTION);
             scanCommands.add(BridgeParams.BLACKDUCK_STAGE);
@@ -127,11 +128,12 @@ public class ScannerArgumentService {
                     networkAirGap,
                     sarif,
                     ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX,
-                    null));
+                    project));
         }
         if (securityProducts.contains(SecurityProduct.COVERITY.name())) {
             CoverityParametersService coverityParametersService = new CoverityParametersService(listener, envVars);
             Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(scanParameters);
+            Project project = coverityParametersService.prepareProjectObjectForBridge(scanParameters);
 
             scanCommands.add(BridgeParams.STAGE_OPTION);
             scanCommands.add(BridgeParams.COVERITY_STAGE);
@@ -143,7 +145,7 @@ public class ScannerArgumentService {
                     networkAirGap,
                     sarif,
                     ApplicationConstants.COVERITY_INPUT_JSON_PREFIX,
-                    null));
+                    project));
         }
         if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener, envVars);

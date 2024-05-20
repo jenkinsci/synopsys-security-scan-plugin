@@ -185,6 +185,7 @@ public class PolarisParametersService {
             }
         }
     }
+
     public Project prepareProjectObjectForBridge(Map<String, Object> polarisParameters) {
         Project project = new Project();
         Source source = new Source();

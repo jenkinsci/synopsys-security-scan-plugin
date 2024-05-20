@@ -228,6 +228,12 @@ public class ScanParametersFactory {
                     ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY, securityScan.getBlackduck_download_url());
         }
 
+        if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
+            blackDuckParameters.put(
+                    ApplicationConstants.PROJECT_DIRECTORY_KEY,
+                    securityScan.getProject_directory());
+        }
+
         return blackDuckParameters;
     }
 
@@ -272,6 +278,12 @@ public class ScanParametersFactory {
 
         if (securityScan.isCoverity_local() != null) {
             coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, securityScan.isCoverity_local());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
+            coverityParameters.put(
+                    ApplicationConstants.PROJECT_DIRECTORY_KEY,
+                    securityScan.getProject_directory());
         }
 
         if (securityScan.isCoverity_prComment_enabled_temporary() != null) {
