@@ -79,6 +79,12 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private Boolean polaris_reports_sarif_groupSCAIssues_temporary;
     private String project_source_archive;
     private String polaris_assessment_mode;
+    private String project_source_excludes;
+    private Boolean project_source_preserveSymLinks;
+    private String project_directory;
+    private String coverity_project_directory;
+    private String blackduck_project_directory;
+    private String polaris_project_directory;
 
     private transient String bitbucket_token;
 
@@ -281,6 +287,30 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     public String getProject_source_archive() {
         return project_source_archive;
     }
+
+    public Boolean isProject_source_preserveSymLinks() {
+        return project_source_preserveSymLinks;
+    }
+
+    public String getProject_source_excludes() {
+        return project_source_excludes;
+    }
+
+    public String getProject_directory() {
+        return project_directory;
+    }
+    public String getBlackduck_project_directory() {
+        return blackduck_project_directory;
+    }
+
+    public String getCoverity_project_directory() {
+        return coverity_project_directory;
+    }
+
+    public String getPolaris_project_directory() {
+        return polaris_project_directory;
+    }
+
 
     public String getBitbucket_token() {
         return bitbucket_token;
@@ -549,6 +579,39 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setProject_source_archive(String project_source_archive) {
         this.project_source_archive = Util.fixEmptyAndTrim(project_source_archive);
+    }
+
+    @DataBoundSetter
+    public void setProject_source_preserveSymLinks(Boolean project_source_preserveSymLinks) {
+        this.project_source_preserveSymLinks = project_source_preserveSymLinks;
+    }
+
+    @DataBoundSetter
+    public void setProject_source_excludes(String project_source_excludes) {
+        this.project_source_excludes = Util.fixEmptyAndTrim(project_source_excludes);
+    }
+
+    @DataBoundSetter
+    public void setProject_directory(String project_directory) {
+        this.project_directory = Util.fixEmptyAndTrim(project_directory);
+    }
+
+    @DataBoundSetter
+    public void setCoverity_project_directory(String coverity_project_directory) {
+        if(getProduct().contentEquals("coverity"))
+            this.coverity_project_directory = this.project_directory = Util.fixEmptyAndTrim(coverity_project_directory);
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_project_directory(String blackduck_project_directory) {
+        if(getProduct().contentEquals("blackduck"))
+            this. blackduck_project_directory = this.project_directory = Util.fixEmptyAndTrim(blackduck_project_directory);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_project_directory(String polaris_project_directory) {
+        if(getProduct().contentEquals("polaris"))
+            this.polaris_project_directory = this.project_directory = Util.fixEmptyAndTrim(polaris_project_directory);
     }
 
     @DataBoundSetter

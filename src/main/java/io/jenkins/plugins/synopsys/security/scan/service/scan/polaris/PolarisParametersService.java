@@ -5,9 +5,13 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
+import io.jenkins.plugins.synopsys.security.scan.input.polaris.AssessmentTypes;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Parent;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Prcomment;
+import io.jenkins.plugins.synopsys.security.scan.input.project.Project;
+import io.jenkins.plugins.synopsys.security.scan.input.project.Source;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -111,6 +115,10 @@ public class PolarisParametersService {
             setAssessmentTypes(polarisParameters, polaris);
         }
 
+        if(polarisParameters.containsKey(ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY)) {
+            setAssessmentMode(polarisParameters, polaris);
+        }
+
         return polaris;
     }
 
@@ -123,6 +131,16 @@ public class PolarisParametersService {
             List<String> assessmentTypes =
                     Arrays.asList(assessmentTypesValue.toUpperCase().split(","));
             polaris.getAssessmentTypes().setTypes(assessmentTypes);
+        }
+    }
+
+    private void setAssessmentMode(Map<String, Object> polarisParameters, Polaris polaris) {
+        String assessmentModeValue = polarisParameters
+                .get(ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY)
+                .toString()
+                .trim();
+        if(!assessmentModeValue.isEmpty()) {
+            polaris.getAssessmentTypes().setMode(assessmentModeValue);
         }
     }
 
@@ -167,4 +185,46 @@ public class PolarisParametersService {
             }
         }
     }
+    public Project prepareProjectObjectForBridge(Map<String, Object> polarisParameters) {
+        Project project = new Project();
+        Source source = new Source();
+
+        if(polarisParameters.containsKey(ApplicationConstants.PROJECT_DIRECTORY_KEY)) {
+            String projectDirectory =
+                    polarisParameters.get(ApplicationConstants.PROJECT_DIRECTORY_KEY)
+                            .toString()
+                            .trim();
+            project.setDirectory(projectDirectory);
+        }
+        if(polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY)) {
+            String archive =
+                    polarisParameters.get(ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY)
+                            .toString()
+                            .trim();
+            source.setArchive(archive);
+            project.setSource(source);
+        }
+
+        if(polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY)) {
+            Boolean preserveSymLinks =
+                    (Boolean) polarisParameters.get(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY);
+            source.setPreserveSymLinks(preserveSymLinks);
+            project.setSource(source);
+        }
+
+        if(polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY)) {
+            String sourceExcludesValue = polarisParameters
+                    .get(ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY)
+                    .toString()
+                    .trim();
+            if (!sourceExcludesValue.isEmpty()) {
+                List<String> sourceExcludes=
+                        Arrays.asList(sourceExcludesValue.toUpperCase().split(","));
+                source.setExcludes(sourceExcludes);
+                project.setSource(source);
+            }
+        }
+        return project;
+    }
+
 }

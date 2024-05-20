@@ -91,6 +91,12 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private Boolean polaris_reports_sarif_groupSCAIssues_temporary;
     private String polaris_assessment_mode;
     private String project_source_archive;
+    private String project_source_excludes;
+    private Boolean project_source_preserveSymLinks;
+    private String project_directory;
+    private String coverity_project_directory;
+    private String blackduck_project_directory;
+    private String polaris_project_directory;
 
     private transient String bitbucket_token;
     private transient String github_token;
@@ -248,14 +254,6 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return polaris_prComment_severities;
     }
 
-    public String getPolaris_assessment_mode() {
-        return polaris_assessment_mode;
-    }
-
-    public String getProject_source_archive() {
-        return project_source_archive;
-    }
-
     public String getBitbucket_token() {
         return bitbucket_token;
     }
@@ -334,6 +332,38 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public Boolean isPolaris_reports_sarif_groupSCAIssues_temporary() {
         return polaris_reports_sarif_groupSCAIssues_temporary;
+    }
+
+    public String getPolaris_assessment_mode() {
+        return polaris_assessment_mode;
+    }
+
+    public String getProject_source_archive() {
+        return project_source_archive;
+    }
+
+    public Boolean isProject_source_preserveSymLinks() {
+        return project_source_preserveSymLinks;
+    }
+
+    public String getProject_source_excludes() {
+        return project_source_excludes;
+    }
+
+    public String getProject_directory() {
+        return project_directory;
+    }
+
+    public String getBlackduck_project_directory() {
+        return null;
+    }
+
+    public String getCoverity_project_directory() {
+        return null;
+    }
+
+    public String getPolaris_project_directory() {
+        return null;
     }
 
     @DataBoundSetter
@@ -508,6 +538,39 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setProject_source_archive(String project_source_archive) {
         this.project_source_archive = Util.fixEmptyAndTrim(project_source_archive);
+    }
+
+    @DataBoundSetter
+    public void setProject_source_preserveSymLinks(Boolean project_source_preserveSymLinks) {
+        this.project_source_preserveSymLinks = project_source_preserveSymLinks;
+    }
+
+    @DataBoundSetter
+    public void setProject_source_excludes(String project_source_excludes) {
+        this.project_source_excludes = Util.fixEmptyAndTrim(project_source_excludes);
+    }
+
+    @DataBoundSetter
+    public void setProject_directory(String project_directory) {
+        this.project_directory = Util.fixEmptyAndTrim(project_directory);
+    }
+
+    @DataBoundSetter
+    public void setCoverity_project_directory(String coverity_project_directory) {
+        if(getProduct().contentEquals("coverity"))
+            this.project_directory = Util.fixEmptyAndTrim(coverity_project_directory);
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_project_directory(String blackduck_project_directory) {
+        if(getProduct().contentEquals("blackduck"))
+            this.project_directory = Util.fixEmptyAndTrim(blackduck_project_directory);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_project_directory(String polaris_project_directory) {
+        if(getProduct().contentEquals("polaris"))
+            this.project_directory = Util.fixEmptyAndTrim(polaris_project_directory);
     }
 
     @DataBoundSetter

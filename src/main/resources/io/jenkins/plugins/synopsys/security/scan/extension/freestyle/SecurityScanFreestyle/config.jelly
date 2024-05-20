@@ -19,6 +19,9 @@
             <f:entry field="blackduck_scan_full" title="Black Duck Full Scan (Optional)">
                 <f:checkbox checked="${instance.isBlackduck_scan_full() == true}"/>
             </f:entry>
+            <f:entry field="blackduck_project_directory" title="Project Directory (Optional)">
+                <f:textbox/>
+            </f:entry>
         </f:section>
         <f:section title="SARIF Report Options">
             <f:entry field="blackduck_reports_sarif_create" title="Generate SARIF Report for Black Duck Issues (Optional)">
@@ -55,6 +58,9 @@
             <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
                 <f:checkbox checked="${instance.isCoverity_local() == true}"/>
             </f:entry>
+            <f:entry field="coverity_project_directory" title="Project Directory (Optional)">
+                <f:textbox/>
+            </f:entry>
         </f:section>
     </div>
 
@@ -79,11 +85,10 @@
             <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
                 <f:textbox/>
             </f:entry>
+            <f:entry field="polaris_project_directory" title="Project Directory (Optional)">
+                <f:textbox/>
+            </f:entry>
         </f:section>
-
-        <f:entry field="project_directory" title="Project Directory (Optional)">
-            <f:textbox/>
-        </f:entry>
 
     <div id="polaris_assessment_mode">
         <f:entry field="polaris_assessment_mode" title="Polaris Assessment Mode (Optional)">

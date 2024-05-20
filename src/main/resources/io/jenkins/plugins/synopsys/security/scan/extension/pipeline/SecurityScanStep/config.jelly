@@ -21,6 +21,9 @@
             <f:entry field="blackduck_prComment_enabled" title="Add Comments to Pull Requests (Optional)">
                 <f:checkbox/>
             </f:entry>
+            <f:entry field="blackduck_project_directory" title="Project Directory (Optional)">
+                <f:textbox/>
+            </f:entry>
             <!--        <f:entry field="bridge_blackduck_automation_fixpr" title="Create Fix Pull Requests">-->
             <!--            <f:checkbox/>-->
             <!--        </f:entry>-->
@@ -62,7 +65,14 @@
             <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
                 <f:checkbox/>
             </f:entry>
+            <f:entry field="coverity_project_directory" title="Project Directory (Optional)">
+                <f:textbox/>
+            </f:entry>
+<!--            <f:entry field="coverity_project_directory" title="Project Directory (Optional)">-->
+<!--                <f:textbox/>-->
+<!--            </f:entry>-->
         </f:section>
+
     </div>
 
     <div id="polaris" style="display: none;">
@@ -91,11 +101,10 @@
             <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
                 <f:textbox/>
             </f:entry>
+            <f:entry field="polaris_project_directory" title="Project Directory (Optional)">
+                <f:textbox/>
+            </f:entry>
         </f:section>
-
-        <f:entry field="project_directory" title="Project Directory (Optional)">
-            <f:textbox/>
-        </f:entry>
 
         <div id="polaris_assessment_mode">
             <f:entry field="polaris_assessment_mode" title="Polaris Assessment Mode (Optional)">
