@@ -105,7 +105,7 @@
                 <f:textbox/>
             </f:entry>
             <f:entry field="project_source_preserveSymLinks" title="Project Source Preserve Sym Links (Optional)">
-                <f:checkbox/>
+                <f:checkbox checked="${instance.isProject_source_preserveSymLinks() == true}"/>
             </f:entry>
         </f:section>
     </div>
@@ -148,11 +148,17 @@
 
         var selectedOption = document.querySelector('select[name="_.product"]')?.value;
 
+        var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]')?.value;
+        var sourceUploadDiv = document.getElementById('source_upload');
+
         if(selectedOption &amp;&amp; selectedOption !== 'select') {
             document.getElementById(selectedOption).style.display = 'block';
                 validateProductField();
                 validateCoverityFields();
                 validatePolarisFields();
+            if(selectedOption === 'polaris' &amp;&amp; polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
+                showDiv(sourceUploadDiv);
+            }
         }
 
         function hideAllDivs(blackduckDiv, coverityDiv, polarisDiv) {
@@ -195,7 +201,7 @@
         document.addEventListener('change', function() {
             var selectedOption = document.querySelector('select[name="_.product"]')?.value;
             var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]')?.value;
-            console.log('polarisAssessmentModeOption', polarisAssessmentModeOption);
+
             var sourceUploadDiv = document.getElementById('source_upload');
             var blackduckDiv = document.getElementById('blackduck');
             var coverityDiv = document.getElementById('coverity');
