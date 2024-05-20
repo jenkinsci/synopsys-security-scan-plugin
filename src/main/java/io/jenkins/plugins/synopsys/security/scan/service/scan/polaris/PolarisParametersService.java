@@ -187,44 +187,45 @@ public class PolarisParametersService {
     }
 
     public Project prepareProjectObjectForBridge(Map<String, Object> polarisParameters) {
-        Project project = new Project();
-        Source source = new Source();
+        Project project = null;
+        Source source = null;
 
-        if(polarisParameters.containsKey(ApplicationConstants.PROJECT_DIRECTORY_KEY)) {
-            String projectDirectory =
-                    polarisParameters.get(ApplicationConstants.PROJECT_DIRECTORY_KEY)
-                            .toString()
-                            .trim();
-            project.setDirectory(projectDirectory);
-        }
-        if(polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY)) {
-            String archive =
-                    polarisParameters.get(ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY)
-                            .toString()
-                            .trim();
-            source.setArchive(archive);
-            project.setSource(source);
-        }
+        boolean hasProjectDirectory = polarisParameters.containsKey(ApplicationConstants.PROJECT_DIRECTORY_KEY);
+        boolean hasSourceArchive = polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY);
+        boolean hasPreserveSymLinks = polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY);
+        boolean hasSourceExcludes = polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY);
 
-        if(polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY)) {
-            Boolean preserveSymLinks =
-                    (Boolean) polarisParameters.get(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY);
-            source.setPreserveSymLinks(preserveSymLinks);
-            project.setSource(source);
-        }
+        if (hasProjectDirectory || hasSourceArchive || hasPreserveSymLinks || hasSourceExcludes) {
+            project = new Project();
+            source = new Source();
 
-        if(polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY)) {
-            String sourceExcludesValue = polarisParameters
-                    .get(ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY)
-                    .toString()
-                    .trim();
-            if (!sourceExcludesValue.isEmpty()) {
-                List<String> sourceExcludes=
-                        Arrays.asList(sourceExcludesValue.toUpperCase().split(","));
-                source.setExcludes(sourceExcludes);
+            if (hasProjectDirectory) {
+                String projectDirectory = polarisParameters.get(ApplicationConstants.PROJECT_DIRECTORY_KEY).toString().trim();
+                project.setDirectory(projectDirectory);
+            }
+
+            if (hasSourceArchive) {
+                String archive = polarisParameters.get(ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY).toString().trim();
+                source.setArchive(archive);
                 project.setSource(source);
             }
+
+            if (hasPreserveSymLinks) {
+                Boolean preserveSymLinks = (Boolean) polarisParameters.get(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY);
+                source.setPreserveSymLinks(preserveSymLinks);
+                project.setSource(source);
+            }
+
+            if (hasSourceExcludes) {
+                String sourceExcludesValue = polarisParameters.get(ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY).toString().trim();
+                if (!sourceExcludesValue.isEmpty()) {
+                    List<String> sourceExcludes = Arrays.asList(sourceExcludesValue.toUpperCase().split(","));
+                    source.setExcludes(sourceExcludes);
+                    project.setSource(source);
+                }
+            }
         }
+
         return project;
     }
 
