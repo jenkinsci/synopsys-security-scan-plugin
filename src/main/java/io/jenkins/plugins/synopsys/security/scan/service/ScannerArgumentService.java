@@ -18,7 +18,6 @@ import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Parent;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.input.project.Project;
-import io.jenkins.plugins.synopsys.security.scan.input.project.Source;
 import io.jenkins.plugins.synopsys.security.scan.input.report.File;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Issue;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
@@ -189,7 +188,7 @@ public class ScannerArgumentService {
 
         setScanObject(bridgeInput, scanObject, scmObject, sarif);
 
-        if(project != null) {
+        if (project != null) {
             bridgeInput.setProject(project);
         }
 

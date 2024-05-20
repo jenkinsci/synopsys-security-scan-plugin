@@ -557,19 +557,19 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     @DataBoundSetter
     public void setCoverity_project_directory(String coverity_project_directory) {
-        if(getProduct().contentEquals("coverity"))
+        if (getProduct().contentEquals("coverity"))
             this.project_directory = Util.fixEmptyAndTrim(coverity_project_directory);
     }
 
     @DataBoundSetter
     public void setBlackduck_project_directory(String blackduck_project_directory) {
-        if(getProduct().contentEquals("blackduck"))
+        if (getProduct().contentEquals("blackduck"))
             this.project_directory = Util.fixEmptyAndTrim(blackduck_project_directory);
     }
 
     @DataBoundSetter
     public void setPolaris_project_directory(String polaris_project_directory) {
-        if(getProduct().contentEquals("polaris"))
+        if (getProduct().contentEquals("polaris"))
             this.project_directory = Util.fixEmptyAndTrim(polaris_project_directory);
     }
 
@@ -721,7 +721,6 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             items.add(new ListBoxModel.Option("SOURCE_UPLOAD", "SOURCE_UPLOAD"));
             return items;
         }
-
     }
 
     public class Execution extends SynchronousNonBlockingStepExecution<Integer> {

@@ -299,6 +299,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     public String getProject_directory() {
         return project_directory;
     }
+
     public String getBlackduck_project_directory() {
         return blackduck_project_directory;
     }
@@ -310,7 +311,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     public String getPolaris_project_directory() {
         return polaris_project_directory;
     }
-
 
     public String getBitbucket_token() {
         return bitbucket_token;
@@ -598,19 +598,20 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     @DataBoundSetter
     public void setCoverity_project_directory(String coverity_project_directory) {
-        if(getProduct().contentEquals("coverity"))
+        if (getProduct().contentEquals("coverity"))
             this.coverity_project_directory = this.project_directory = Util.fixEmptyAndTrim(coverity_project_directory);
     }
 
     @DataBoundSetter
     public void setBlackduck_project_directory(String blackduck_project_directory) {
-        if(getProduct().contentEquals("blackduck"))
-            this. blackduck_project_directory = this.project_directory = Util.fixEmptyAndTrim(blackduck_project_directory);
+        if (getProduct().contentEquals("blackduck"))
+            this.blackduck_project_directory =
+                    this.project_directory = Util.fixEmptyAndTrim(blackduck_project_directory);
     }
 
     @DataBoundSetter
     public void setPolaris_project_directory(String polaris_project_directory) {
-        if(getProduct().contentEquals("polaris"))
+        if (getProduct().contentEquals("polaris"))
             this.polaris_project_directory = this.project_directory = Util.fixEmptyAndTrim(polaris_project_directory);
     }
 

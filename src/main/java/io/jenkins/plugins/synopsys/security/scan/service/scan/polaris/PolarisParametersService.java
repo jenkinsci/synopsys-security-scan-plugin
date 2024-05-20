@@ -5,13 +5,11 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
-import io.jenkins.plugins.synopsys.security.scan.input.polaris.AssessmentTypes;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Parent;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Prcomment;
 import io.jenkins.plugins.synopsys.security.scan.input.project.Project;
 import io.jenkins.plugins.synopsys.security.scan.input.project.Source;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -115,7 +113,7 @@ public class PolarisParametersService {
             setAssessmentTypes(polarisParameters, polaris);
         }
 
-        if(polarisParameters.containsKey(ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY)) {
+        if (polarisParameters.containsKey(ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY)) {
             setAssessmentMode(polarisParameters, polaris);
         }
 
@@ -139,7 +137,7 @@ public class PolarisParametersService {
                 .get(ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY)
                 .toString()
                 .trim();
-        if(!assessmentModeValue.isEmpty()) {
+        if (!assessmentModeValue.isEmpty()) {
             polaris.getAssessmentTypes().setMode(assessmentModeValue);
         }
     }
@@ -192,7 +190,8 @@ public class PolarisParametersService {
 
         boolean hasProjectDirectory = polarisParameters.containsKey(ApplicationConstants.PROJECT_DIRECTORY_KEY);
         boolean hasSourceArchive = polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY);
-        boolean hasPreserveSymLinks = polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY);
+        boolean hasPreserveSymLinks =
+                polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY);
         boolean hasSourceExcludes = polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY);
 
         if (hasProjectDirectory || hasSourceArchive || hasPreserveSymLinks || hasSourceExcludes) {
@@ -200,26 +199,36 @@ public class PolarisParametersService {
             source = new Source();
 
             if (hasProjectDirectory) {
-                String projectDirectory = polarisParameters.get(ApplicationConstants.PROJECT_DIRECTORY_KEY).toString().trim();
+                String projectDirectory = polarisParameters
+                        .get(ApplicationConstants.PROJECT_DIRECTORY_KEY)
+                        .toString()
+                        .trim();
                 project.setDirectory(projectDirectory);
             }
 
             if (hasSourceArchive) {
-                String archive = polarisParameters.get(ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY).toString().trim();
+                String archive = polarisParameters
+                        .get(ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY)
+                        .toString()
+                        .trim();
                 source.setArchive(archive);
                 project.setSource(source);
             }
 
             if (hasPreserveSymLinks) {
-                Boolean preserveSymLinks = (Boolean) polarisParameters.get(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY);
+                Boolean preserveSymLinks =
+                        (Boolean) polarisParameters.get(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY);
                 source.setPreserveSymLinks(preserveSymLinks);
                 project.setSource(source);
             }
 
             if (hasSourceExcludes) {
-                String sourceExcludesValue = polarisParameters.get(ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY).toString().trim();
+                String sourceExcludesValue = polarisParameters
+                        .get(ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY)
+                        .toString()
+                        .trim();
                 if (!sourceExcludesValue.isEmpty()) {
-                    List<String> sourceExcludes = Arrays.asList(sourceExcludesValue.toUpperCase().split(","));
+                    List<String> sourceExcludes = Arrays.asList(sourceExcludesValue.split(","));
                     source.setExcludes(sourceExcludes);
                     project.setSource(source);
                 }
@@ -228,5 +237,4 @@ public class PolarisParametersService {
 
         return project;
     }
-
 }

@@ -1,14 +1,15 @@
 package io.jenkins.plugins.synopsys.security.scan.input.project;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 public class Source {
     @JsonProperty("archive")
     private String archive;
+
     @JsonProperty("preserveSymLinks")
     private Boolean preserveSymLinks;
+
     @JsonProperty("excludes")
     private List<String> excludes;
 

@@ -8,8 +8,6 @@ import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Install;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.*;
 import io.jenkins.plugins.synopsys.security.scan.input.project.Project;
-import io.jenkins.plugins.synopsys.security.scan.input.project.Source;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -217,13 +215,13 @@ public class CoverityParametersService {
     public Project prepareProjectObjectForBridge(Map<String, Object> polarisParameters) {
         Project project = null;
 
-        if(polarisParameters.containsKey(ApplicationConstants.PROJECT_DIRECTORY_KEY)) {
+        if (polarisParameters.containsKey(ApplicationConstants.PROJECT_DIRECTORY_KEY)) {
             project = new Project();
 
-            String projectDirectory =
-                    polarisParameters.get(ApplicationConstants.PROJECT_DIRECTORY_KEY)
-                            .toString()
-                            .trim();
+            String projectDirectory = polarisParameters
+                    .get(ApplicationConstants.PROJECT_DIRECTORY_KEY)
+                    .toString()
+                    .trim();
             project.setDirectory(projectDirectory);
         }
         return project;
