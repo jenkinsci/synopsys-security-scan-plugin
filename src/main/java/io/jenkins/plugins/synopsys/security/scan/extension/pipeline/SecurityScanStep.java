@@ -93,6 +93,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String project_source_archive;
     private String project_source_excludes;
     private Boolean project_source_preserveSymLinks;
+    private Boolean project_source_preserveSymLinks_actualValue;
     private String project_directory;
     private String coverity_project_directory;
     private String blackduck_project_directory;
@@ -346,6 +347,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return project_source_preserveSymLinks;
     }
 
+    public Boolean isProject_source_preserveSymLinks_actualValue() {
+        return project_source_preserveSymLinks_actualValue;
+    }
+
     public String getProject_source_excludes() {
         return project_source_excludes;
     }
@@ -542,7 +547,8 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     @DataBoundSetter
     public void setProject_source_preserveSymLinks(Boolean project_source_preserveSymLinks) {
-        this.project_source_preserveSymLinks = project_source_preserveSymLinks;
+        this.project_source_preserveSymLinks = project_source_preserveSymLinks ? true : null;
+        this.project_source_preserveSymLinks_actualValue = project_source_preserveSymLinks ? true : false;
     }
 
     @DataBoundSetter

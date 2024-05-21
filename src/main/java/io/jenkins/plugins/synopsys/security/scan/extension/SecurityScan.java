@@ -87,6 +87,8 @@ public interface SecurityScan {
 
     public Boolean isProject_source_preserveSymLinks();
 
+    public Boolean isProject_source_preserveSymLinks_actualValue();
+
     public String getProject_source_excludes();
 
     public String getProject_directory();

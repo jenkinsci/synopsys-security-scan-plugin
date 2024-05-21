@@ -400,10 +400,10 @@ public class ScanParametersFactory {
             polarisParametersMap.put(
                     ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY, securityScan.getProject_source_excludes());
         }
-        if (securityScan.isProject_source_preserveSymLinks() != null) {
+        if (securityScan.isProject_source_preserveSymLinks_actualValue() != null) {
             polarisParametersMap.put(
                     ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY,
-                    securityScan.isProject_source_preserveSymLinks());
+                    securityScan.isProject_source_preserveSymLinks_actualValue());
         }
 
         return polarisParametersMap;

@@ -81,6 +81,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String polaris_assessment_mode;
     private String project_source_excludes;
     private Boolean project_source_preserveSymLinks;
+    private Boolean project_source_preserveSymLinks_actualValue;
     private String project_directory;
     private String coverity_project_directory;
     private String blackduck_project_directory;
@@ -290,6 +291,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public Boolean isProject_source_preserveSymLinks() {
         return project_source_preserveSymLinks;
+    }
+
+    public Boolean isProject_source_preserveSymLinks_actualValue() {
+        return project_source_preserveSymLinks_actualValue;
     }
 
     public String getProject_source_excludes() {
@@ -583,7 +588,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     @DataBoundSetter
     public void setProject_source_preserveSymLinks(Boolean project_source_preserveSymLinks) {
-        this.project_source_preserveSymLinks = project_source_preserveSymLinks;
+        this.project_source_preserveSymLinks =  this.project_source_preserveSymLinks_actualValue = project_source_preserveSymLinks;
     }
 
     @DataBoundSetter
