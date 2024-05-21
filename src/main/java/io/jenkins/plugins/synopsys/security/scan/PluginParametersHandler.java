@@ -10,6 +10,7 @@ import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.bridge.BridgeDownloadParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
 import java.util.HashMap;
@@ -131,7 +132,7 @@ public class PluginParametersHandler {
             Map<String, Object> filteredParameters = filterParameter(scanParameters);
             for (Map.Entry<String, Object> entry : filteredParameters.entrySet()) {
                 String key = entry.getKey();
-                if (key.contains(securityProduct) || key.startsWith("project_")) {
+                if (key.contains(securityProduct) || key.equals("project_directory")) {
                     Object value = entry.getValue();
                     if (key.equals(ApplicationConstants.BLACKDUCK_TOKEN_KEY)
                             || key.equals(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY)
@@ -143,6 +144,10 @@ public class PluginParametersHandler {
                             || key.equals(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY)) {
                         logger.warn(key + " is deprecated, use " + getNewMappedParameterName(key));
                     }
+                }
+                else if(securityProduct.equals(SecurityProduct.POLARIS.name().toLowerCase()) && key.startsWith("project_")) {
+                    Object value = entry.getValue();
+                    logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
                 }
             }
 
