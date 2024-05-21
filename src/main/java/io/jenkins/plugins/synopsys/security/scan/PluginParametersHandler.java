@@ -131,7 +131,7 @@ public class PluginParametersHandler {
             Map<String, Object> filteredParameters = filterParameter(scanParameters);
             for (Map.Entry<String, Object> entry : filteredParameters.entrySet()) {
                 String key = entry.getKey();
-                if (key.contains(securityProduct)) {
+                if (key.contains(securityProduct) || key.startsWith("project_")) {
                     Object value = entry.getValue();
                     if (key.equals(ApplicationConstants.BLACKDUCK_TOKEN_KEY)
                             || key.equals(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY)
