@@ -189,7 +189,7 @@ public class ScannerArgumentService {
         setScanObject(bridgeInput, scanObject, scmObject, sarif);
 
         if (project != null) {
-            bridgeInput.setProject(project);
+            setProjectObject(bridgeInput, project);
         }
 
         boolean isPullRequestEvent = Utility.isPullRequestEvent(envVars);
@@ -216,6 +216,10 @@ public class ScannerArgumentService {
         }
 
         return jsonPath;
+    }
+
+    public void setProjectObject(BridgeInput bridgeInput, Project project) {
+        bridgeInput.setProject(project);
     }
 
     private void setScanObject(BridgeInput bridgeInput, Object scanObject, Object scmObject, Sarif sarifObject) {

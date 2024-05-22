@@ -16,6 +16,7 @@ import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Automation;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.project.Project;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Sarif;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
@@ -161,6 +162,15 @@ public class ScannerArgumentServiceTest {
 
         scannerArgumentService.setScmObject(bridgeInput, gitlab);
         Mockito.verify(bridgeInput).setGitlab(gitlab);
+    }
+
+    @Test
+    public void setProjectObjectTest() {
+        BridgeInput bridgeInput = Mockito.mock(BridgeInput.class);
+        Project project = Mockito.mock(Project.class);
+
+        scannerArgumentService.setProjectObject(bridgeInput, project);
+        Mockito.verify(bridgeInput).setProject(project);
     }
 
     @Test
