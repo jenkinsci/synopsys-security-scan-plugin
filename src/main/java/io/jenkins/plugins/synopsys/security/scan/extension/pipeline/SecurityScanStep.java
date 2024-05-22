@@ -359,14 +359,17 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return project_directory;
     }
 
+    // Returning the null value because blackduck_project_directory field is not visible in the pipeline syntax script
     public String getBlackduck_project_directory() {
         return null;
     }
 
+    // Returning the null value because coverity_project_directory field is not visible in the pipeline syntax script
     public String getCoverity_project_directory() {
         return null;
     }
 
+    // Returning the null value because polaris_project_directory field is not visible in the pipeline syntax script
     public String getPolaris_project_directory() {
         return null;
     }
@@ -563,19 +566,19 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     @DataBoundSetter
     public void setCoverity_project_directory(String coverity_project_directory) {
-        if (getProduct().contentEquals("coverity"))
+        if (getProduct().contentEquals(SecurityProduct.COVERITY.name().toLowerCase()))
             this.project_directory = Util.fixEmptyAndTrim(coverity_project_directory);
     }
 
     @DataBoundSetter
     public void setBlackduck_project_directory(String blackduck_project_directory) {
-        if (getProduct().contentEquals("blackduck"))
+        if (getProduct().contentEquals(SecurityProduct.BLACKDUCK.name().toLowerCase()))
             this.project_directory = Util.fixEmptyAndTrim(blackduck_project_directory);
     }
 
     @DataBoundSetter
     public void setPolaris_project_directory(String polaris_project_directory) {
-        if (getProduct().contentEquals("polaris"))
+        if (getProduct().contentEquals(SecurityProduct.POLARIS.name().toLowerCase()))
             this.project_directory = Util.fixEmptyAndTrim(polaris_project_directory);
     }
 
@@ -722,7 +725,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
         public ListBoxModel doFillPolaris_assessment_modeItems() {
             ListBoxModel items = new ListBoxModel();
-            items.add(new ListBoxModel.Option("", ""));
+            items.add(new ListBoxModel.Option("Select", ""));
             items.add(new ListBoxModel.Option("CI", "CI"));
             items.add(new ListBoxModel.Option("SOURCE_UPLOAD", "SOURCE_UPLOAD"));
             return items;

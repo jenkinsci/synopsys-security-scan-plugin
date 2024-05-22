@@ -604,20 +604,20 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     @DataBoundSetter
     public void setCoverity_project_directory(String coverity_project_directory) {
-        if (getProduct().contentEquals("coverity"))
+        if (getProduct().contentEquals(SecurityProduct.COVERITY.name().toLowerCase()))
             this.coverity_project_directory = this.project_directory = Util.fixEmptyAndTrim(coverity_project_directory);
     }
 
     @DataBoundSetter
     public void setBlackduck_project_directory(String blackduck_project_directory) {
-        if (getProduct().contentEquals("blackduck"))
+        if (getProduct().contentEquals(SecurityProduct.BLACKDUCK.name().toLowerCase()))
             this.blackduck_project_directory =
                     this.project_directory = Util.fixEmptyAndTrim(blackduck_project_directory);
     }
 
     @DataBoundSetter
     public void setPolaris_project_directory(String polaris_project_directory) {
-        if (getProduct().contentEquals("polaris"))
+        if (getProduct().contentEquals(SecurityProduct.POLARIS.name().toLowerCase()))
             this.polaris_project_directory = this.project_directory = Util.fixEmptyAndTrim(polaris_project_directory);
     }
 
@@ -751,7 +751,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
         public ListBoxModel doFillPolaris_assessment_modeItems() {
             ListBoxModel items = new ListBoxModel();
-            items.add(new ListBoxModel.Option("", ""));
+            items.add(new ListBoxModel.Option("Select", ""));
             items.add(new ListBoxModel.Option("CI", "CI"));
             items.add(new ListBoxModel.Option("SOURCE_UPLOAD", "SOURCE_UPLOAD"));
             return items;

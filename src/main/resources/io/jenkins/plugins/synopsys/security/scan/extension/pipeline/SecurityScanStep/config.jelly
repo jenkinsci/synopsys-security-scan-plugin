@@ -68,9 +68,6 @@
             <f:entry field="coverity_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
             </f:entry>
-<!--            <f:entry field="coverity_project_directory" title="Project Directory (Optional)">-->
-<!--                <f:textbox/>-->
-<!--            </f:entry>-->
         </f:section>
 
     </div>
