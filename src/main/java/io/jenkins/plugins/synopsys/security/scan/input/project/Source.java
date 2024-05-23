@@ -2,6 +2,7 @@ package io.jenkins.plugins.synopsys.security.scan.input.project;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+import java.util.Objects;
 
 public class Source {
     @JsonProperty("archive")
@@ -35,5 +36,20 @@ public class Source {
 
     public void setExcludes(List<String> excludes) {
         this.excludes = excludes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Source source = (Source) o;
+        return Objects.equals(archive, source.archive)
+                && Objects.equals(preserveSymLinks, source.preserveSymLinks)
+                && Objects.equals(excludes, source.excludes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(archive, preserveSymLinks, excludes);
     }
 }

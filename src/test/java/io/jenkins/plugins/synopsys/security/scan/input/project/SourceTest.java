@@ -5,17 +5,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
-class SourceTest {
+public class SourceTest {
 
     @Test
-    public void testGetSetArchive() {
+    void testGetSetArchive() {
         Source source = new Source();
         source.setArchive("test_archive");
         assertEquals("test_archive", source.getArchive());
     }
 
     @Test
-    public void testGetSetPreserveSymLinks() {
+    void testGetSetPreserveSymLinks() {
         Source source = new Source();
         source.setPreserveSymLinks(true);
         assertTrue(source.getPreserveSymLinks());
@@ -24,7 +24,7 @@ class SourceTest {
     }
 
     @Test
-    public void testGetSetExcludes() {
+    void testGetSetExcludes() {
         Source source = new Source();
         source.setExcludes(Arrays.asList("exclude1", "exclude2"));
         assertEquals(Arrays.asList("exclude1", "exclude2"), source.getExcludes());

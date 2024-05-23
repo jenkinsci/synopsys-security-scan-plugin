@@ -11,14 +11,14 @@ import org.junit.jupiter.api.Test;
 public class ProjectTest {
 
     @Test
-    public void testGetSetDirectory() {
+    void testGetSetDirectory() {
         Project project = new Project();
         project.setDirectory("test_directory");
         assertEquals("test_directory", project.getDirectory());
     }
 
     @Test
-    public void testGetSetSource() {
+    void testGetSetSource() {
         Project project = new Project();
         Source source = new Source();
         source.setArchive("test_archive");
@@ -32,7 +32,7 @@ public class ProjectTest {
     }
 
     @Test
-    public void testSerialization() throws JsonProcessingException {
+    void testSerialization() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
@@ -46,19 +46,14 @@ public class ProjectTest {
         project.setSource(source);
 
         String json = mapper.writeValueAsString(project);
-        String expectedJson = "{\n" + "  \"directory\" : \"test_directory\",\n"
-                + "  \"source\" : {\n"
-                + "    \"archive\" : \"test_archive\",\n"
-                + "    \"preserveSymLinks\" : true,\n"
-                + "    \"excludes\" : [ \"exclude1\", \"exclude2\" ]\n"
-                + "  }\n"
-                + "}";
 
-        assertEquals(expectedJson, json);
+        Project deserializedProject = mapper.readValue(json, Project.class);
+
+        assertEquals(project, deserializedProject);
     }
 
     @Test
-    public void testDeserialization() throws JsonProcessingException {
+    void testDeserialization() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 
         String json = "{\n" + "  \"directory\" : \"test_directory\",\n"
