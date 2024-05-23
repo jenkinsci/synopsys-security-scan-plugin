@@ -258,7 +258,7 @@
                 hideAParticularDiv(coverityDiv);
                 showDiv(polarisDiv);
                 setCheckboxToDefaultTrue(['_.polaris_reports_sarif_groupSCAIssues'])
-            }else if (selectedOption == 'select') {
+            }else if (selectedOption == '') {
                 hideAllDivs();
             }
         });

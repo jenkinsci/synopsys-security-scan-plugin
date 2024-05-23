@@ -709,7 +709,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             ListBoxModel items = new ListBoxModel();
             Map<String, String> customLabels = new HashMap<>();
 
-            items.add(new Option("Select", "select"));
+            items.add(new Option("Select", ""));
             customLabels.put(SecurityProduct.BLACKDUCK.name().toLowerCase(), "Black Duck");
             customLabels.put(SecurityProduct.COVERITY.name().toLowerCase(), "Coverity");
             customLabels.put(SecurityProduct.POLARIS.name().toLowerCase(), "Polaris");
