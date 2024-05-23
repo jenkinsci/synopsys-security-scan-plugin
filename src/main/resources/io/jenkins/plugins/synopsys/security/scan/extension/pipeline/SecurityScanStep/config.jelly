@@ -203,6 +203,14 @@
                         field.checked = false;
                     }
                 });
+                // clears polaris assessment mode dropdown value
+                var selectedOption = document.querySelector('select[name="_.product"]')?.value;
+                if(selectedOption !== 'polaris') {
+                    var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]');
+                    if(polarisAssessmentModeOption) {
+                        polarisAssessmentModeOption.value = ""
+                    }
+                }
             }
         }
 
@@ -216,9 +224,9 @@
         }
 
         document.addEventListener('change', function () {
-            // hideAllDivs();
+            var selectedOption = synopsysSecurityProduct.value;
+
             var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]')?.value;
-            console.log('polarisAssessmentModeOption', polarisAssessmentModeOption);
             var sourceUploadDiv = document.getElementById('source_upload');
 
             if(polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
@@ -230,10 +238,7 @@
                 hideAParticularDiv(sourceUploadDiv);
             }
 
-            var selectedOption = synopsysSecurityProduct.value;
             if (selectedOption == 'blackduck') {
-                clearInputFields(sourceUploadDiv);
-                hideAParticularDiv(sourceUploadDiv);
                 clearInputFields(coverityDiv);
                 hideAParticularDiv(coverityDiv);
                 clearInputFields(polarisDiv);
@@ -241,8 +246,6 @@
                 showDiv(blackduckDiv);
                 setCheckboxToDefaultTrue(['_.blackduck_reports_sarif_groupSCAIssues'])
             } else if (selectedOption == 'coverity') {
-                clearInputFields(sourceUploadDiv);
-                hideAParticularDiv(sourceUploadDiv);
                 clearInputFields(blackduckDiv);
                 hideAParticularDiv(blackduckDiv);
                 clearInputFields(polarisDiv);
@@ -256,8 +259,6 @@
                 showDiv(polarisDiv);
                 setCheckboxToDefaultTrue(['_.polaris_reports_sarif_groupSCAIssues'])
             }else if (selectedOption == 'select') {
-                clearInputFields(sourceUploadDiv);
-                hideAParticularDiv(sourceUploadDiv);
                 hideAllDivs();
             }
         });
