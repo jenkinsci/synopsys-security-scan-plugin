@@ -195,6 +195,14 @@
                         field.checked = false;
                     }
                 });
+                // clears polaris assessment mode dropdown value
+                var selectedOption = document.querySelector('select[name="_.product"]')?.value;
+                if(selectedOption !== 'polaris') {
+                    var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]');
+                    if(polarisAssessmentModeOption) {
+                        polarisAssessmentModeOption.value = ""
+                    }
+                }
             }
         }
 
@@ -212,13 +220,11 @@
             }
 
             if(polarisAssessmentModeOption === 'CI' || polarisAssessmentModeOption === '') {
-                hideAParticularDiv(sourceUploadDiv);
                 clearInputFields(sourceUploadDiv);
+                hideAParticularDiv(sourceUploadDiv);
             }
 
             if (selectedOption === 'blackduck') {
-                clearInputFields(sourceUploadDiv);
-                hideAParticularDiv(sourceUploadDiv);
                 clearInputFields(coverityDiv);
                 hideAParticularDiv(polarisDiv);
                 clearInputFields(polarisDiv);
@@ -226,8 +232,6 @@
                 showDiv(blackduckDiv);
                 validateProductField();
             } else if (selectedOption === 'coverity') {
-                clearInputFields(sourceUploadDiv);
-                hideAParticularDiv(sourceUploadDiv);
                 clearInputFields(blackduckDiv);
                 hideAParticularDiv(blackduckDiv);
                 clearInputFields(polarisDiv);
@@ -243,9 +247,7 @@
                 showDiv(polarisDiv);
                 validateProductField();
                 validatePolarisFields();
-            }else if (selectedOption === 'select') {
-                clearInputFields(sourceUploadDiv);
-                hideAParticularDiv(sourceUploadDiv);
+            } else if (selectedOption === 'select') {
                 clearInputFields(blackduckDiv);
                 clearInputFields(coverityDiv);
                 clearInputFields(polarisDiv);
