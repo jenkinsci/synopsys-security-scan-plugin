@@ -359,17 +359,20 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return project_directory;
     }
 
-    // Returning the null value because blackduck_project_directory field is not visible in the pipeline syntax script
+    // Returning the null value because if we return any other value, blackduck_project_directory field will be visible
+    // in the pipeline syntax script
     public String getBlackduck_project_directory() {
         return null;
     }
 
-    // Returning the null value because coverity_project_directory field is not visible in the pipeline syntax script
+    // Returning the null value because if we return any other value, coverity_project_directory field will be visible
+    // in the pipeline syntax script
     public String getCoverity_project_directory() {
         return null;
     }
 
-    // Returning the null value because polaris_project_directory field is not visible in the pipeline syntax script
+    // Returning the null value because if we return any other value, polaris_project_directory field will be visible in
+    // the pipeline syntax script
     public String getPolaris_project_directory() {
         return null;
     }
