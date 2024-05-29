@@ -16,6 +16,7 @@ import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Automation;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Sarif;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
@@ -61,6 +62,7 @@ public class ScannerArgumentServiceTest {
         Mockito.doReturn("fake-job/branch").when(envVarsMock).get(ApplicationConstants.ENV_JOB_NAME_KEY);
         Mockito.doReturn("0").when(envVarsMock).get(ApplicationConstants.ENV_CHANGE_ID_KEY);
         Mockito.doReturn("fake-main").when(envVarsMock).get(ApplicationConstants.ENV_CHANGE_TARGET_KEY);
+        Mockito.doReturn("fake-pr-branch").when(envVarsMock).get(ApplicationConstants.ENV_CHANGE_BRANCH_KEY);
 
         scannerArgumentService = new ScannerArgumentService(listenerMock, envVarsMock, workspace);
     }
@@ -119,6 +121,75 @@ public class ScannerArgumentServiceTest {
                     "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"bitbucket\":{\"api\":{\"url\":\"\",\"user\":{\"name\":\"fake-user\"},\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\"},\"key\":\"abc\"}}}}";
             String inputJsonPathForPrComment = scannerArgumentService.createBridgeInputJson(
                     blackDuck, bitbucketObject, true, null, null, ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX);
+            Path filePath = Paths.get(inputJsonPathForPrComment);
+
+            JsonNode expectedJsonNode = objectMapper.readTree(jsonStringForPrComment);
+
+            String actualJsonString = new String(Files.readAllBytes(Paths.get(inputJsonPathForPrComment)));
+            JsonNode actualJsonNode = objectMapper.readTree(actualJsonString);
+
+            assertEquals(expectedJsonNode, actualJsonNode);
+            Utility.removeFile(filePath.toString(), workspace, listenerMock);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void createPolarisInputJsonTest() {
+        Polaris polaris = new Polaris();
+        polaris.setServerUrl("https://fake.polaris.url");
+        polaris.setAccessToken(TOKEN);
+
+        String inputJsonPath = scannerArgumentService.createBridgeInputJson(
+                polaris, bitBucket, false, null, null, ApplicationConstants.POLARIS_INPUT_JSON_PREFIX);
+        Path filePath = Paths.get(inputJsonPath);
+
+        assertTrue(
+                Files.exists(filePath),
+                String.format(
+                        "File %s does not exist at the specified path.",
+                        ApplicationConstants.POLARIS_INPUT_JSON_PREFIX.concat(".json")));
+        Utility.removeFile(filePath.toString(), workspace, listenerMock);
+    }
+
+    @Test
+    void bitbucket_polarisInputJsonTest() {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Polaris polaris = new Polaris();
+        polaris.setServerUrl("https://fake.polaris.url");
+        polaris.setAccessToken(TOKEN);
+
+        Bitbucket bitbucketObject =
+                BitbucketRepositoryService.createBitbucketObject("https://bitbucket.org", TOKEN, 12, "test", "abc");
+
+        try {
+            String jsonStringNonPrCommentOrFixPr =
+                    "{\"data\":{\"polaris\":{\"accesstoken\":\"MDJDSROSVC56FAKEKEY\",\"application\":{\"name\":\"test\"},\"project\":{\"name\":\"test\"},\"assessment\":{},\"serverUrl\":\"https://fake.polaris.url\",\"branch\":{\"name\":\"fake-pr-branch\"}}}}";
+
+            String inputJsonPathForNonFixPr = scannerArgumentService.createBridgeInputJson(
+                    polaris, bitbucketObject, false, null, null, ApplicationConstants.POLARIS_INPUT_JSON_PREFIX);
+            Path filePath = Paths.get(inputJsonPathForNonFixPr);
+
+            String actualJsonString = new String(Files.readAllBytes(filePath));
+
+            JsonNode expectedJsonNode = objectMapper.readTree(jsonStringNonPrCommentOrFixPr);
+            JsonNode actualJsonNode = objectMapper.readTree(actualJsonString);
+
+            assertEquals(expectedJsonNode, actualJsonNode);
+            Utility.removeFile(filePath.toString(), workspace, listenerMock);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String jsonStringForPrComment =
+                    "{\"data\":{\"polaris\":{\"accesstoken\":\"MDJDSROSVC56FAKEKEY\",\"application\":{\"name\":\"test\"},\"project\":{\"name\":\"test\"},\"assessment\":{},\"serverUrl\":\"https://fake.polaris.url\",\"branch\":{\"name\":\"fake-pr-branch\"}},\"bitbucket\":{\"api\":{\"url\":\"https://bitbucket.org\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\"},\"key\":\"abc\"}}}}";
+            String inputJsonPathForPrComment = scannerArgumentService.createBridgeInputJson(
+                    polaris, bitbucketObject, true, null, null, ApplicationConstants.POLARIS_INPUT_JSON_PREFIX);
             Path filePath = Paths.get(inputJsonPathForPrComment);
 
             JsonNode expectedJsonNode = objectMapper.readTree(jsonStringForPrComment);

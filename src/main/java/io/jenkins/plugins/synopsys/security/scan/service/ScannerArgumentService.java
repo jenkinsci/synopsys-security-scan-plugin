@@ -233,7 +233,7 @@ public class ScannerArgumentService {
                 polaris.getReports().setSarif(sarifObject);
             }
             if (scmObject != null) {
-                setPolarisApplicationNameAndProjectName(polaris, scmObject);
+                setDefaultValuesForPolarisParams(polaris, scmObject);
             }
             bridgeInput.setPolaris(polaris);
         }
@@ -260,8 +260,17 @@ public class ScannerArgumentService {
         }
     }
 
-    private void setPolarisApplicationNameAndProjectName(Polaris polaris, Object scmObject) {
+    private void setDefaultValuesForPolarisParams(Polaris polaris, Object scmObject) {
         String repositoryName = getRepositoryName(scmObject);
+        boolean isPullRequest = envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null;
+        String branchName = isPullRequest
+                ? envVars.get(ApplicationConstants.ENV_CHANGE_BRANCH_KEY)
+                : envVars.get(ApplicationConstants.ENV_BRANCH_NAME_KEY);
+
+        if (Utility.isStringNullOrBlank(polaris.getBranch().getName())) {
+            polaris.getBranch().setName(branchName);
+            logger.info("Polaris Branch Name: " + branchName);
+        }
 
         if (Utility.isStringNullOrBlank(polaris.getProjectName().getName()) && repositoryName != null) {
             polaris.getProjectName().setName(repositoryName);
