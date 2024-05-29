@@ -46,6 +46,7 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     private String polarisServerUrl;
     private String polarisCredentialsId;
     private String bitbucketCredentialsId;
+    private String bitbucketUsername;
     private String githubCredentialsId;
     private String gitlabCredentialsId;
 
@@ -81,6 +82,12 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @DataBoundSetter
     public void setBitbucketCredentialsId(String bitbucketCredentialsId) {
         this.bitbucketCredentialsId = bitbucketCredentialsId;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setBitbucketUsername(String bitbucketUsername) {
+        this.bitbucketUsername = bitbucketUsername;
         save();
     }
 
@@ -204,6 +211,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     public String getBitbucketCredentialsId() {
         return bitbucketCredentialsId;
+    }
+
+    public String getBitbucketUsername() {
+        return bitbucketUsername;
     }
 
     public String getGithubCredentialsId() {

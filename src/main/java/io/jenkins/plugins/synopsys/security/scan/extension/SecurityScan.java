@@ -69,6 +69,8 @@ public interface SecurityScan {
 
     public String getPolaris_branch_parent_name();
 
+    public String getBitbucket_user_name();
+
     public String getBitbucket_token();
 
     public String getGithub_token();

@@ -64,6 +64,9 @@ public class ScanParametersFactory {
             parametersMap.putAll(prepareBlackDuckParametersMap(securityScan));
             parametersMap.putAll(prepareSarifReportParametersMap(securityScan));
 
+            if (!Utility.isStringNullOrBlank(securityScan.getBitbucket_user_name())) {
+                parametersMap.put(ApplicationConstants.BITBUCKET_USERNAME_KEY, securityScan.getBitbucket_user_name());
+            }
             if (!Utility.isStringNullOrBlank(securityScan.getBitbucket_token())) {
                 parametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, securityScan.getBitbucket_token());
             }
@@ -130,6 +133,8 @@ public class ScanParametersFactory {
                     globalParameters,
                     ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY,
                     config.getCoverityInstallationPath());
+            addParameterIfNotBlank(
+                    globalParameters, ApplicationConstants.BITBUCKET_USERNAME_KEY, config.getBitbucketUsername());
             addParameterIfNotBlank(
                     globalParameters,
                     ApplicationConstants.BITBUCKET_TOKEN_KEY,
