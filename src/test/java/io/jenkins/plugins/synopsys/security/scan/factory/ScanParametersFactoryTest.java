@@ -1,16 +1,16 @@
 package io.jenkins.plugins.synopsys.security.scan.factory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import hudson.EnvVars;
 import hudson.FilePath;
+import hudson.model.Result;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.extension.pipeline.SecurityScanStep;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
+import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -136,7 +136,7 @@ public class ScanParametersFactoryTest {
         securityScanStep.setInclude_diagnostics(true);
         securityScanStep.setNetwork_airgap(true);
 
-        Map<String, Object> bridgeParametersMap = ScanParametersFactory.prepareBridgeParametersMap(securityScanStep);
+        Map<String, Object> bridgeParametersMap = ScanParametersFactory.prepareAddtionalParametersMap(securityScanStep);
 
         assertEquals(5, bridgeParametersMap.size());
         assertEquals(
@@ -148,7 +148,7 @@ public class ScanParametersFactoryTest {
         assertTrue((boolean) bridgeParametersMap.get(ApplicationConstants.NETWORK_AIRGAP_KEY));
 
         Map<String, Object> emptyBridgeParametersMap =
-                ScanParametersFactory.prepareBridgeParametersMap(new SecurityScanStep());
+                ScanParametersFactory.prepareAddtionalParametersMap(new SecurityScanStep());
 
         assertEquals(0, emptyBridgeParametersMap.size());
     }
@@ -227,5 +227,27 @@ public class ScanParametersFactoryTest {
         assertTrue(ScanParametersFactory.validateProduct("POLARIS", listenerMock));
         assertTrue(ScanParametersFactory.validateProduct("COveRiTy", listenerMock));
         assertFalse(ScanParametersFactory.validateProduct("polar1s", listenerMock));
+    }
+
+    @Test
+    public void getBuildResultIfIssuesAreFoundTest() {
+        LoggerWrapper loggerMock = new LoggerWrapper(listenerMock);
+
+        assertEquals(
+                ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                        ErrorCode.BRIDGE_BUILD_BREAK, "FAILURE", loggerMock),
+                Result.FAILURE);
+        assertEquals(
+                ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                        ErrorCode.BRIDGE_BUILD_BREAK, "UNSTABLE", loggerMock),
+                Result.UNSTABLE);
+        assertEquals(
+                ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                        ErrorCode.BRIDGE_BUILD_BREAK, "SUCCESS", loggerMock),
+                Result.SUCCESS);
+        assertNull(ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                ErrorCode.BRIDGE_BUILD_BREAK, "ABORTED", loggerMock));
+        assertNull(ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                ErrorCode.BRIDGE_ADAPTER_ERROR, "UNSTABLE", loggerMock));
     }
 }

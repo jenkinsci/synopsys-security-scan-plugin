@@ -2,8 +2,10 @@ package io.jenkins.plugins.synopsys.security.scan.global;
 
 import hudson.EnvVars;
 import hudson.FilePath;
+import hudson.model.Result;
 import hudson.model.TaskListener;
 import hudson.model.TopLevelItem;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.BuildStatus;
 import java.io.File;
 import java.io.IOException;
 import java.net.Authenticator;
@@ -250,5 +252,18 @@ public class Utility {
 
     public static boolean isPullRequestEvent(EnvVars envVars) {
         return envVars.get(ApplicationConstants.ENV_CHANGE_ID_KEY) != null;
+    }
+
+    public static Result getMappedResultForBuildStatus(BuildStatus buildStatus) {
+        if (buildStatus.equals(BuildStatus.FAILURE)) {
+            return Result.FAILURE;
+        }
+        if (buildStatus.equals(BuildStatus.UNSTABLE)) {
+            return Result.UNSTABLE;
+        }
+        if (buildStatus.equals(BuildStatus.SUCCESS)) {
+            return Result.SUCCESS;
+        }
+        return null;
     }
 }

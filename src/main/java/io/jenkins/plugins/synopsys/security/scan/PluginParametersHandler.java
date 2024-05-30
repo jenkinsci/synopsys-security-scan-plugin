@@ -112,7 +112,7 @@ public class PluginParametersHandler {
 
         logMessagesForProductParameters(parametersCopy, securityProducts);
 
-        logMessagesForBridgeParameters(parametersCopy);
+        logMessagesForAdditionalParameters(parametersCopy);
 
         if ((Objects.equals(parametersCopy.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
                         || Objects.equals(
@@ -147,8 +147,8 @@ public class PluginParametersHandler {
         }
     }
 
-    private void logMessagesForBridgeParameters(Map<String, Object> scanParameters) {
-        logger.info("Parameters for bridge:");
+    private void logMessagesForAdditionalParameters(Map<String, Object> scanParameters) {
+        logger.info("Parameters for additional configuration:");
 
         for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
             String key = entry.getKey();
@@ -157,7 +157,7 @@ public class PluginParametersHandler {
                     || key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY)
                     || key.equals(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY)
                     || key.equals(ApplicationConstants.NETWORK_AIRGAP_KEY)
-                    || key.equals(ApplicationConstants.RETURN_STATUS_KEY)) {
+                    || key.equals(ApplicationConstants.MARK_BUILD_STATUS)) {
                 Object value = entry.getValue();
                 logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
             }
