@@ -55,7 +55,7 @@ public class BitbucketRepositoryService {
 
         if (bitbucketRepository != null) {
             repositoryName = bitbucketRepository.getRepositoryName();
-            projectKey = bitbucketRepository.getProject().getKey();
+            projectKey = bitbucketRepository.getOwnerName();
         }
 
         if (projectRepositoryPullNumber != null) {
