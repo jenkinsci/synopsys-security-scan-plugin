@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PolarisParametersService {
     private final LoggerWrapper logger;
@@ -127,7 +129,9 @@ public class PolarisParametersService {
                 .trim();
         if (!assessmentTypesValue.isEmpty()) {
             List<String> assessmentTypes =
-                    Arrays.asList(assessmentTypesValue.toUpperCase().split(","));
+                    Stream.of(assessmentTypesValue.toUpperCase().split(","))
+                            .map(String::trim)
+                            .collect(Collectors.toList());
             polaris.getAssessmentTypes().setTypes(assessmentTypes);
         }
     }
@@ -228,7 +232,10 @@ public class PolarisParametersService {
                         .toString()
                         .trim();
                 if (!sourceExcludesValue.isEmpty()) {
-                    List<String> sourceExcludes = Arrays.asList(sourceExcludesValue.split(","));
+                    List<String> sourceExcludes =
+                            Stream.of(sourceExcludesValue.split(","))
+                                    .map(String::trim)
+                                    .collect(Collectors.toList());
                     source.setExcludes(sourceExcludes);
                     project.setSource(source);
                 }
