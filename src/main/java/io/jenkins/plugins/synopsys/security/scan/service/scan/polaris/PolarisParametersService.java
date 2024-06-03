@@ -128,10 +128,10 @@ public class PolarisParametersService {
                 .toString()
                 .trim();
         if (!assessmentTypesValue.isEmpty()) {
-            List<String> assessmentTypes =
-                    Stream.of(assessmentTypesValue.toUpperCase().split(","))
-                            .map(String::trim)
-                            .collect(Collectors.toList());
+            List<String> assessmentTypes = Stream.of(
+                            assessmentTypesValue.toUpperCase().split(","))
+                    .map(String::trim)
+                    .collect(Collectors.toList());
             polaris.getAssessmentTypes().setTypes(assessmentTypes);
         }
     }
@@ -232,10 +232,9 @@ public class PolarisParametersService {
                         .toString()
                         .trim();
                 if (!sourceExcludesValue.isEmpty()) {
-                    List<String> sourceExcludes =
-                            Stream.of(sourceExcludesValue.split(","))
-                                    .map(String::trim)
-                                    .collect(Collectors.toList());
+                    List<String> sourceExcludes = Stream.of(sourceExcludesValue.split(","))
+                            .map(String::trim)
+                            .collect(Collectors.toList());
                     source.setExcludes(sourceExcludes);
                     project.setSource(source);
                 }
