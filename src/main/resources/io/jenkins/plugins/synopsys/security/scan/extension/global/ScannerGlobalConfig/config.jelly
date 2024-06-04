@@ -76,11 +76,7 @@
         </div>
 
         <div>
-            <f:entry field="bitbucketUsername" title="Bitbucket Username (Optional)">
-                <f:textbox name="bitbucketUsername" />
-            </f:entry>
-
-            <f:entry field="bitbucketCredentialsId" title="Bitbucket Token / App Password (Optional)">
+            <f:entry field="bitbucketCredentialsId" title="Bitbucket Token / Username and App Password (Optional)">
                 <c:select/>
             </f:entry>
 

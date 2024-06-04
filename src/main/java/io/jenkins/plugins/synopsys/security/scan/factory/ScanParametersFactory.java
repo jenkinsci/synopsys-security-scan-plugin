@@ -134,13 +134,19 @@ public class ScanParametersFactory {
                     ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY,
                     config.getCoverityInstallationPath());
             addParameterIfNotBlank(
-                    globalParameters, ApplicationConstants.BITBUCKET_USERNAME_KEY, config.getBitbucketUsername());
+                    globalParameters,
+                    ApplicationConstants.BITBUCKET_USERNAME_KEY,
+                    scanCredentialsHelper
+                            .getUsernameByCredentialsId(config.getBitbucketCredentialsId())
+                            .orElse(null));
             addParameterIfNotBlank(
                     globalParameters,
                     ApplicationConstants.BITBUCKET_TOKEN_KEY,
                     scanCredentialsHelper
                             .getApiTokenByCredentialsId(config.getBitbucketCredentialsId())
-                            .orElse(null));
+                            .orElse(scanCredentialsHelper
+                                    .getPasswordByCredentialsId(config.getBitbucketCredentialsId())
+                                    .orElse(null)));
             addParameterIfNotBlank(
                     globalParameters,
                     ApplicationConstants.GITHUB_TOKEN_KEY,

@@ -1,5 +1,6 @@
 package io.jenkins.plugins.synopsys.security.scan.extension.global;
 
+import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.cloudbees.plugins.credentials.impl.BaseStandardCredentials;
 import hudson.Extension;
@@ -46,7 +47,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     private String polarisServerUrl;
     private String polarisCredentialsId;
     private String bitbucketCredentialsId;
-    private String bitbucketUsername;
     private String githubCredentialsId;
     private String gitlabCredentialsId;
 
@@ -82,12 +82,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     @DataBoundSetter
     public void setBitbucketCredentialsId(String bitbucketCredentialsId) {
         this.bitbucketCredentialsId = bitbucketCredentialsId;
-        save();
-    }
-
-    @DataBoundSetter
-    public void setBitbucketUsername(String bitbucketUsername) {
-        this.bitbucketUsername = bitbucketUsername;
         save();
     }
 
@@ -213,10 +207,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         return bitbucketCredentialsId;
     }
 
-    public String getBitbucketUsername() {
-        return bitbucketUsername;
-    }
-
     public String getGithubCredentialsId() {
         return githubCredentialsId;
     }
@@ -267,7 +257,21 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
     public ListBoxModel doFillBitbucketCredentialsIdItems() {
-        return getOptionsWithApiTokenCredentials();
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return new StandardListBoxModel().includeEmptyValue();
+        }
+        jenkins.checkPermission(Jenkins.ADMINISTER);
+        return new StandardListBoxModel()
+                .includeEmptyValue()
+                .includeMatchingAs(
+                        ACL.SYSTEM,
+                        jenkins,
+                        BaseStandardCredentials.class,
+                        Collections.emptyList(),
+                        CredentialsMatchers.anyOf(
+                                ScanCredentialsHelper.USERNAME_PASSWORD_CREDENTIALS,
+                                ScanCredentialsHelper.API_TOKEN_CREDENTIALS));
     }
 
     @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
