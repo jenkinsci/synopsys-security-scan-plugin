@@ -1,15 +1,8 @@
 package io.jenkins.plugins.synopsys.security.scan.extension.freestyle;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import hudson.EnvVars;
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
-import hudson.Util;
-import hudson.model.AbstractProject;
-import hudson.model.FreeStyleProject;
-import hudson.model.Run;
-import hudson.model.TaskListener;
+import hudson.*;
+import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.ListBoxModel;
@@ -20,6 +13,8 @@ import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
 import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.global.Utility;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.BuildStatus;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import java.util.Map;
 import jenkins.tasks.SimpleBuildStep;
@@ -95,6 +90,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private Boolean include_diagnostics;
     private Boolean network_airgap;
     private Boolean return_status;
+
+    private String mark_build_status;
 
     @DataBoundConstructor
     public SecurityScanFreestyle() {
@@ -351,6 +348,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public Boolean isReturn_status() {
         return return_status;
+    }
+
+    public String getMark_build_status() {
+        return mark_build_status;
     }
 
     @DataBoundSetter
@@ -666,6 +667,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         this.return_status = return_status ? true : null;
     }
 
+    @DataBoundSetter
+    public void setMark_build_status(String mark_build_status) {
+        this.mark_build_status = mark_build_status;
+    }
+
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)
             throws PluginExceptionHandler {
         return ScanParametersFactory.preparePipelineParametersMap(
@@ -704,21 +710,38 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
                 logger.info(exitMessage);
             }
 
-            logger.info(
-                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
-
-            handleExitCode(exitCode, exitMessage, unknownException);
+            handleExitCode(run, logger, exitCode, exitMessage, unknownException);
         }
     }
 
-    private void handleExitCode(int exitCode, String exitMessage, Exception e) {
-        if (exitCode != 0) {
-            if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
-                // Throw exception with stack trace for undefined errors
-                throw new RuntimeException(new ScannerException(exitMessage, e));
+    private void handleExitCode(Run<?, ?> run, LoggerWrapper logger, int exitCode, String exitMessage, Exception e) {
+        if (exitCode != ErrorCode.BRIDGE_BUILD_BREAK && !Utility.isStringNullOrBlank(this.getMark_build_status())) {
+            logger.info("Marking build status as " + this.getMark_build_status() + " is ignored since exit code is: "
+                    + exitCode);
+        }
+
+        if (exitCode == ErrorCode.SCAN_SUCCESSFUL) {
+            logger.info(
+                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+        } else {
+            Result result =
+                    ScanParametersFactory.getBuildResultIfIssuesAreFound(exitCode, this.getMark_build_status(), logger);
+
+            if (result != null) {
+                logger.info("Marking build as " + result + " since issues are present");
+                run.setResult(result);
             }
 
-            throw new RuntimeException(new PluginExceptionHandler(exitMessage));
+            logger.info(
+                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+
+            if (result == null) {
+                if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
+                    throw new RuntimeException(new ScannerException(exitMessage, e));
+                } else {
+                    throw new RuntimeException(new PluginExceptionHandler(exitMessage));
+                }
+            }
         }
     }
 
@@ -745,6 +768,18 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
                 String value = product.name().toLowerCase();
                 items.add(new ListBoxModel.Option(label, value));
             }
+            return items;
+        }
+
+        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
+        public ListBoxModel doFillMark_build_statusItems() {
+            ListBoxModel items = new ListBoxModel();
+
+            items.add("Select", "");
+            items.add(BuildStatus.FAILURE.name(), BuildStatus.FAILURE.name());
+            items.add(BuildStatus.UNSTABLE.name(), BuildStatus.UNSTABLE.name());
+            items.add(BuildStatus.SUCCESS.name(), BuildStatus.SUCCESS.name());
+
             return items;
         }
 

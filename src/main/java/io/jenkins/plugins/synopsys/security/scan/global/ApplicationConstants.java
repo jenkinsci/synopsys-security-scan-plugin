@@ -32,6 +32,7 @@ public class ApplicationConstants {
     public static final String ENV_CHANGE_ID_KEY = "CHANGE_ID";
     public static final String ENV_CHANGE_TARGET_KEY = "CHANGE_TARGET";
     public static final String ENV_BRANCH_NAME_KEY = "BRANCH_NAME";
+    public static final String ENV_CHANGE_BRANCH_KEY = "CHANGE_BRANCH";
 
     public static final String PRODUCT_KEY = "product";
     public static final String BLACKDUCK_URL_KEY = "blackduck_url";
@@ -100,6 +101,7 @@ public class ApplicationConstants {
     public static final String BITBUCKET_TOKEN_KEY = "bitbucket_token";
     public static final String GITHUB_TOKEN_KEY = "github_token";
     public static final String GITLAB_TOKEN_KEY = "gitlab_token";
+    public static final String MARK_BUILD_STATUS = "mark_build_status";
 
     public static final String SYNOPSYS_BRIDGE_DOWNLOAD_URL = "synopsys_bridge_download_url";
     public static final String SYNOPSYS_BRIDGE_DOWNLOAD_VERSION = "synopsys_bridge_download_version";

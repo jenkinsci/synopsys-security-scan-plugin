@@ -16,6 +16,7 @@ import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.BuildStatus;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.SCMRepositoryService;
 import java.io.IOException;
@@ -29,6 +30,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import jenkins.scm.api.SCMSource;
 import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
+import org.jenkinsci.plugins.workflow.actions.WarningAction;
+import org.jenkinsci.plugins.workflow.graph.FlowNode;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
@@ -110,9 +113,9 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private Boolean network_airgap;
     /*
     By default the plugin will always return a status code even if there is error.
-    Therefore, the stage won't be failed in case of non-zero status code.
      */
     private Boolean return_status = true;
+    private String mark_build_status;
 
     @DataBoundConstructor
     public SecurityScanStep() {
@@ -289,6 +292,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public Boolean isReturn_status() {
         return return_status;
+    }
+
+    public String getMark_build_status() {
+        return mark_build_status;
     }
 
     public Boolean isBlackduck_reports_sarif_create() {
@@ -631,6 +638,11 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     }
 
     @DataBoundSetter
+    public void setMark_build_status(String mark_build_status) {
+        this.mark_build_status = Util.fixEmptyAndTrim(mark_build_status);
+    }
+
+    @DataBoundSetter
     public void setBlackduck_reports_sarif_create(Boolean blackduck_reports_sarif_create) {
         this.blackduck_reports_sarif_create = blackduck_reports_sarif_create ? true : null;
     }
@@ -726,6 +738,18 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         }
 
         @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
+        public ListBoxModel doFillMark_build_statusItems() {
+            ListBoxModel items = new ListBoxModel();
+
+            items.add("Select", "");
+            items.add(BuildStatus.FAILURE.name(), BuildStatus.FAILURE.name());
+            items.add(BuildStatus.UNSTABLE.name(), BuildStatus.UNSTABLE.name());
+            items.add(BuildStatus.SUCCESS.name(), BuildStatus.SUCCESS.name());
+
+            return items;
+        }
+
+        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
         public ListBoxModel doFillPolaris_assessment_modeItems() {
             ListBoxModel items = new ListBoxModel();
             items.add(new ListBoxModel.Option("Select", ""));
@@ -740,6 +764,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         private final transient Run<?, ?> run;
         private final transient Launcher launcher;
         private final transient Node node;
+        private final transient FlowNode flowNode;
 
         @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
         private final transient TaskListener listener;
@@ -758,6 +783,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             workspace = context.get(FilePath.class);
             launcher = context.get(Launcher.class);
             node = context.get(Node.class);
+            flowNode = context.get(FlowNode.class);
         }
 
         @Override
@@ -790,27 +816,51 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
                     logger.info(exitMessage);
                 }
 
-                logger.println(
-                        "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
-
-                handleExitCode(exitCode, exitMessage, unknownException);
+                handleExitCode(exitCode, exitMessage, unknownException, logger);
             }
 
             return exitCode;
         }
 
-        private void handleExitCode(int exitCode, String exitMessage, Exception e)
+        private void handleExitCode(int exitCode, String exitMessage, Exception e, LoggerWrapper logger)
                 throws PluginExceptionHandler, ScannerException {
-            if (exitCode != 0) {
-                if (Objects.equals(isReturn_status(), true)) {
-                    return;
-                }
+            if (exitCode != ErrorCode.BRIDGE_BUILD_BREAK && !Utility.isStringNullOrBlank(getMark_build_status())) {
+                logger.info("Marking build status as " + getMark_build_status() + " is ignored since exit code is: "
+                        + exitCode);
+            }
 
-                if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
-                    // Throw exception with stack trace for undefined errors
-                    throw new ScannerException(exitMessage, e);
+            if (exitCode == ErrorCode.SCAN_SUCCESSFUL) {
+                logger.println(
+                        "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+            } else {
+                Result result =
+                        ScanParametersFactory.getBuildResultIfIssuesAreFound(exitCode, getMark_build_status(), logger);
+                if (result != null) {
+                    logger.info("Marking build as " + result + " since issues are present");
+                    handleNonZeroExitCode(exitCode, result, exitMessage, e, logger);
+                } else {
+                    handleNonZeroExitCode(exitCode, Result.FAILURE, exitMessage, e, logger);
                 }
+            }
+        }
 
+        private void handleNonZeroExitCode(
+                int exitCode, Result result, String exitMessage, Exception e, LoggerWrapper logger)
+                throws PluginExceptionHandler, ScannerException {
+            flowNode.addOrReplaceAction(new WarningAction(result)); // Setting the stage result
+            run.setResult(result); // Setting the build result
+
+            logger.println(
+                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+
+            if (Objects.equals(isReturn_status(), true)) {
+                return;
+            }
+
+            if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
+                // Throw exception with stack trace for undefined errors
+                throw new ScannerException(exitMessage, e);
+            } else {
                 throw new PluginExceptionHandler(exitMessage);
             }
         }

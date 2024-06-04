@@ -83,7 +83,7 @@
             <f:entry field="polaris_assessment_types" title="Polaris Assessment Types (Mandatory)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="polaris_branch_name" title="Polaris Branch Name (Mandatory)">
+            <f:entry field="polaris_branch_name" title="Polaris Branch Name (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="polaris_branch_parent_name" title="Polaris Parent Branch Name (Optional)">
@@ -149,9 +149,12 @@
         <f:entry field="network_airgap" title="Network Airgap (Optional)">
             <f:checkbox/>
         </f:entry>
-        <!--        <f:entry field="return_status" title="Return Status Code (Optional)">-->
-        <!--            <f:checkbox/>-->
-        <!--        </f:entry>-->
+        <f:entry field="mark_build_status" title="Mark build status if issues are present (Optional)">
+            <f:select/>
+        </f:entry>
+<!--        <f:entry field="return_status" title="Return Status Code (Optional)">-->
+<!--            <f:checkbox/>-->
+<!--        </f:entry>-->
     </f:section>
 
     <script type="text/javascript">

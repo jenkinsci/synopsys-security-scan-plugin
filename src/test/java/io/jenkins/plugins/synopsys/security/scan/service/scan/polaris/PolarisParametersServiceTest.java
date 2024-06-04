@@ -22,6 +22,7 @@ public class PolarisParametersServiceTest {
     private final String TEST_POLARIS_SERVER_URL = "https://fake.polaris-server.url";
     private final String TEST_POLARIS_ACCESS_TOKEN = "fakePolarisAccessToken";
     private final String TEST_APPLICATION_NAME = "fake-polaris-application-name";
+    private final String TEST_PROJECT_NAME = "fake-polaris-project-name";
     private final String TEST_POLARIS_ASSESSMENT_TYPES = "SCA, SAST";
     private final String TEST_POLARIS_BRANCH_NAME = "test-branch";
     private final Boolean TEST_POLARIS_PRCOMMENT_ENABLED = true;
@@ -59,6 +60,7 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
         polarisParameters.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, TEST_POLARIS_ACCESS_TOKEN);
         polarisParameters.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
+        polarisParameters.put(ApplicationConstants.POLARIS_PROJECT_NAME_KEY, TEST_PROJECT_NAME);
         polarisParameters.put(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, TEST_POLARIS_ASSESSMENT_TYPES);
         polarisParameters.put(ApplicationConstants.POLARIS_BRANCH_NAME_KEY, TEST_POLARIS_BRANCH_NAME);
         polarisParameters.put(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY, TEST_POLARIS_BRANCH_PARENT_NAME);

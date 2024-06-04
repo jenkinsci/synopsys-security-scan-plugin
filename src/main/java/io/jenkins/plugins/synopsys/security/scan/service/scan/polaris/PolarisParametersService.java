@@ -31,13 +31,25 @@ public class PolarisParametersService {
             return false;
         }
 
+        List<String> invalidParams = getInvalidPolarisParamsForAllJobTypes(polarisParameters);
+
+        if (invalidParams.isEmpty()) {
+            logger.info("Polaris parameters are validated successfully");
+            return true;
+        } else {
+            logger.error("Polaris parameters are not valid");
+            logger.error("Invalid Polaris parameters: " + invalidParams);
+            return false;
+        }
+    }
+
+    private List<String> getInvalidPolarisParamsForAllJobTypes(Map<String, Object> polarisParameters) {
         List<String> invalidParams = new ArrayList<>();
 
         Arrays.asList(
                         ApplicationConstants.POLARIS_SERVER_URL_KEY,
                         ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY,
-                        ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY,
-                        ApplicationConstants.POLARIS_BRANCH_NAME_KEY)
+                        ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY)
                 .forEach(key -> {
                     boolean isKeyValid = polarisParameters.containsKey(key)
                             && polarisParameters.get(key) != null
@@ -48,14 +60,38 @@ public class PolarisParametersService {
                     }
                 });
 
-        if (invalidParams.isEmpty()) {
-            logger.info("Polaris parameters are validated successfully");
-            return true;
-        } else {
-            logger.error("Polaris parameters are not valid");
-            logger.error("Invalid Polaris parameters: " + invalidParams);
-            return false;
+        invalidParams.addAll(getInvalidMandatoryParamsForFreeStyleAndPipeline(polarisParameters));
+
+        return invalidParams;
+    }
+
+    private List<String> getInvalidMandatoryParamsForFreeStyleAndPipeline(Map<String, Object> polarisParameters) {
+        List<String> invalidParamsForPipelineOrFreeStyle = new ArrayList<>();
+
+        String jobType = Utility.jenkinsJobType(envVars);
+        if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
+            Arrays.asList(
+                            ApplicationConstants.POLARIS_APPLICATION_NAME_KEY,
+                            ApplicationConstants.POLARIS_PROJECT_NAME_KEY)
+                    .forEach(key -> {
+                        boolean isKeyValid = polarisParameters.containsKey(key)
+                                && polarisParameters.get(key) != null
+                                && !polarisParameters.get(key).toString().isEmpty();
+
+                        if (!isKeyValid) {
+                            invalidParamsForPipelineOrFreeStyle.add(key);
+                        }
+                    });
+            if (!invalidParamsForPipelineOrFreeStyle.isEmpty()) {
+                logger.error(invalidParamsForPipelineOrFreeStyle + " is mandatory parameter for "
+                        + (jobType.equalsIgnoreCase(ApplicationConstants.FREESTYLE_JOB_TYPE_NAME)
+                                ? "FreeStyle"
+                                : "Pipeline")
+                        + " job type");
+            }
         }
+
+        return invalidParamsForPipelineOrFreeStyle;
     }
 
     public Polaris preparePolarisObjectForBridge(Map<String, Object> polarisParameters) {
@@ -170,20 +206,24 @@ public class PolarisParametersService {
                 }
 
                 polaris.setPrcomment(prcomment);
-
-                if (polarisParameters.containsKey(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY)) {
-                    String parentName = polarisParameters
-                            .get(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY)
-                            .toString()
-                            .trim();
-                    if (!parentName.isEmpty()) {
-                        Parent parent = new Parent();
-                        parent.setName(parentName);
-                        polaris.getBranch().setParent(parent);
-                    }
-                }
+                setBranchParent(polarisParameters, polaris);
             } else {
                 logger.info(ApplicationConstants.POLARIS_PRCOMMENT_INFO_FOR_NON_PR_SCANS);
+            }
+        }
+    }
+
+    private static void setBranchParent(Map<String, Object> polarisParameters, Polaris polaris) {
+        if (polarisParameters.containsKey(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY)) {
+            String parentName = polarisParameters
+                    .get(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY)
+                    .toString()
+                    .trim();
+
+            if (!parentName.isEmpty()) {
+                Parent parent = new Parent();
+                parent.setName(parentName);
+                polaris.getBranch().setParent(parent);
             }
         }
     }

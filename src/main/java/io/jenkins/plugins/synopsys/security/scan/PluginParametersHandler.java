@@ -113,7 +113,7 @@ public class PluginParametersHandler {
 
         logMessagesForProductParameters(parametersCopy, securityProducts);
 
-        logMessagesForBridgeParameters(parametersCopy);
+        logMessagesForAdditionalParameters(parametersCopy);
 
         if ((Objects.equals(parametersCopy.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
                         || Objects.equals(
@@ -149,14 +149,15 @@ public class PluginParametersHandler {
                     Object value = entry.getValue();
                     logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
                 }
+                logDeprecatedParameterWarning(key);
             }
 
             logger.println(LogMessages.DASHES);
         }
     }
 
-    private void logMessagesForBridgeParameters(Map<String, Object> scanParameters) {
-        logger.info("Parameters for bridge:");
+    private void logMessagesForAdditionalParameters(Map<String, Object> scanParameters) {
+        logger.info("Parameters for additional configuration:");
 
         for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
             String key = entry.getKey();
@@ -165,10 +166,17 @@ public class PluginParametersHandler {
                     || key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY)
                     || key.equals(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY)
                     || key.equals(ApplicationConstants.NETWORK_AIRGAP_KEY)
-                    || key.equals(ApplicationConstants.RETURN_STATUS_KEY)) {
+                    || key.equals(ApplicationConstants.MARK_BUILD_STATUS)) {
                 Object value = entry.getValue();
                 logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
             }
+        }
+    }
+
+    private void logDeprecatedParameterWarning(String key) {
+        if (key.equals(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY)
+                || key.equals(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY)) {
+            logger.warn(key + " is deprecated, use " + getNewMappedParameterName(key));
         }
     }
 
