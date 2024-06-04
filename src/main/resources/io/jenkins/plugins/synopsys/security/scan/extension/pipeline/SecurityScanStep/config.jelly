@@ -226,20 +226,8 @@
             });
         }
 
-        document.addEventListener('change', function () {
+        synopsysSecurityProduct.addEventListener('change', function () {
             var selectedOption = synopsysSecurityProduct.value;
-
-            var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]')?.value;
-            var sourceUploadDiv = document.getElementById('source_upload');
-
-            if(polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
-                showDiv(sourceUploadDiv);
-            }
-
-            if(polarisAssessmentModeOption === 'CI' || polarisAssessmentModeOption === '') {
-                clearInputFields(sourceUploadDiv);
-                hideAParticularDiv(sourceUploadDiv);
-            }
 
             if (selectedOption == 'blackduck') {
                 clearInputFields(coverityDiv);
@@ -263,6 +251,20 @@
                 setCheckboxToDefaultTrue(['_.polaris_reports_sarif_groupSCAIssues'])
             }else if (selectedOption == '') {
                 hideAllDivs();
+            }
+        });
+
+        document.addEventListener('change', function () {
+            var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]')?.value;
+            var sourceUploadDiv = document.getElementById('source_upload');
+
+            if(polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
+                showDiv(sourceUploadDiv);
+            }
+
+            if(polarisAssessmentModeOption === 'CI' || polarisAssessmentModeOption === '') {
+                clearInputFields(sourceUploadDiv);
+                hideAParticularDiv(sourceUploadDiv);
             }
         });
 
