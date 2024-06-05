@@ -153,8 +153,8 @@ public class ScannerArgumentService {
 
             if (polaris.getBranch().getParent() == null) {
                 String defaultParentBranchName = envVars.get(ApplicationConstants.ENV_CHANGE_TARGET_KEY);
-                logger.info("Polaris Branch Parent Name: " + defaultParentBranchName);
                 if (defaultParentBranchName != null) {
+                    logger.info("Polaris Branch Parent Name: " + defaultParentBranchName);
                     Parent parent = new Parent();
                     parent.setName(defaultParentBranchName);
                     polaris.getBranch().setParent(parent);
