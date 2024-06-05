@@ -72,7 +72,8 @@ public class PolarisParametersService {
         if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
             Arrays.asList(
                             ApplicationConstants.POLARIS_APPLICATION_NAME_KEY,
-                            ApplicationConstants.POLARIS_PROJECT_NAME_KEY)
+                            ApplicationConstants.POLARIS_PROJECT_NAME_KEY,
+                            ApplicationConstants.POLARIS_BRANCH_NAME_KEY)
                     .forEach(key -> {
                         boolean isKeyValid = polarisParameters.containsKey(key)
                                 && polarisParameters.get(key) != null
