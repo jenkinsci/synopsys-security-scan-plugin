@@ -1,5 +1,6 @@
 package io.jenkins.plugins.synopsys.security.scan.extension.global;
 
+import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.cloudbees.plugins.credentials.impl.BaseStandardCredentials;
 import hudson.Extension;
@@ -256,7 +257,21 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
 
     @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
     public ListBoxModel doFillBitbucketCredentialsIdItems() {
-        return getOptionsWithApiTokenCredentials();
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return new StandardListBoxModel().includeEmptyValue();
+        }
+        jenkins.checkPermission(Jenkins.ADMINISTER);
+        return new StandardListBoxModel()
+                .includeEmptyValue()
+                .includeMatchingAs(
+                        ACL.SYSTEM,
+                        jenkins,
+                        BaseStandardCredentials.class,
+                        Collections.emptyList(),
+                        CredentialsMatchers.anyOf(
+                                ScanCredentialsHelper.USERNAME_PASSWORD_CREDENTIALS,
+                                ScanCredentialsHelper.API_TOKEN_CREDENTIALS));
     }
 
     @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})

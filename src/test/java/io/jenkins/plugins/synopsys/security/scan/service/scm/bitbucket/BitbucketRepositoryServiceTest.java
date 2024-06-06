@@ -28,6 +28,7 @@ public class BitbucketRepositoryServiceTest {
     private final Integer TEST_REPOSITORY_PULL_NUMBER = 7;
     private final String TEST_REPOSITORY_NAME = "TEST_REPO";
     private final String TEST_PROJECT_KEY = "my_key";
+    private final String TEST_USERNAME_KEY = "my_user";
     Map<String, Object> bitbucketParametersMap = new HashMap<>();
     private BitbucketSCMSource bitbucketSCMSourceMock;
     private TaskListener listenerMock;
@@ -39,7 +40,8 @@ public class BitbucketRepositoryServiceTest {
                 TEST_BITBUCKET_TOKEN,
                 TEST_REPOSITORY_PULL_NUMBER,
                 TEST_REPOSITORY_NAME,
-                TEST_PROJECT_KEY);
+                TEST_PROJECT_KEY,
+                TEST_USERNAME_KEY);
 
         bitbucketParametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, TEST_BITBUCKET_TOKEN);
 

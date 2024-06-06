@@ -76,8 +76,8 @@
         </div>
 
         <div>
-            <f:entry field="bitbucketCredentialsId" title="Bitbucket Token (Optional)">
-               <c:select/>
+            <f:entry field="bitbucketCredentialsId" title="Bitbucket Token / Username and App Password (Optional)">
+                <c:select/>
             </f:entry>
 
             <f:entry field="githubCredentialsId" title="GitHub Token (Optional)">

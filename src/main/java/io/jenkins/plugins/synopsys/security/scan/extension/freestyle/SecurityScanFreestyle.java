@@ -82,6 +82,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String blackduck_project_directory;
     private String polaris_project_directory;
 
+    private String bitbucket_user_name;
     private transient String bitbucket_token;
 
     private String synopsys_bridge_download_url;
@@ -312,6 +313,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public String getPolaris_project_directory() {
         return polaris_project_directory;
+    }
+
+    public String getBitbucket_user_name() {
+        return bitbucket_user_name;
     }
 
     public String getBitbucket_token() {
@@ -567,6 +572,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setPolaris_reports_sarif_issue_types(String polaris_reports_sarif_issue_types) {
         this.polaris_reports_sarif_issue_types = Util.fixEmptyAndTrim(polaris_reports_sarif_issue_types);
+    }
+
+    @DataBoundSetter
+    public void setBitbucket_user_name(String bitbucket_user_name) {
+        this.bitbucket_user_name = bitbucket_user_name;
     }
 
     @DataBoundSetter

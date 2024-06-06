@@ -94,8 +94,8 @@ public class ScannerArgumentServiceTest {
         blackDuck.setUrl("https://fake.blackduck.url");
         blackDuck.setToken(TOKEN);
 
-        Bitbucket bitbucketObject =
-                BitbucketRepositoryService.createBitbucketObject("https://bitbucket.org", TOKEN, 12, "test", "abc");
+        Bitbucket bitbucketObject = BitbucketRepositoryService.createBitbucketObject(
+                "https://bitbucket.org", TOKEN, 12, "test", "abc", "fake-user");
 
         try {
             String jsonStringNonPrCommentOrFixPr =
@@ -125,7 +125,7 @@ public class ScannerArgumentServiceTest {
 
         try {
             String jsonStringForPrComment =
-                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"bitbucket\":{\"api\":{\"url\":\"https://bitbucket.org\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\"},\"key\":\"abc\"}}}}";
+                    "{\"data\":{\"blackduck\":{\"url\":\"https://fake.blackduck.url\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"bitbucket\":{\"api\":{\"url\":\"\",\"user\":{\"name\":\"fake-user\"},\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\"},\"key\":\"abc\"}}}}";
             String inputJsonPathForPrComment = scannerArgumentService.createBridgeInputJson(
                     blackDuck,
                     bitbucketObject,
@@ -175,8 +175,8 @@ public class ScannerArgumentServiceTest {
         polaris.setServerUrl("https://fake.polaris.url");
         polaris.setAccessToken(TOKEN);
 
-        Bitbucket bitbucketObject =
-                BitbucketRepositoryService.createBitbucketObject("https://bitbucket.org", TOKEN, 12, "test", "abc");
+        Bitbucket bitbucketObject = BitbucketRepositoryService.createBitbucketObject(
+                "https://bitbucket.org", TOKEN, 12, "test", "abc", "fake-username");
 
         try {
             String jsonStringNonPrCommentOrFixPr =
@@ -200,7 +200,7 @@ public class ScannerArgumentServiceTest {
 
         try {
             String jsonStringForPrComment =
-                    "{\"data\":{\"polaris\":{\"accesstoken\":\"MDJDSROSVC56FAKEKEY\",\"application\":{\"name\":\"test\"},\"project\":{\"name\":\"test\"},\"assessment\":{},\"serverUrl\":\"https://fake.polaris.url\",\"branch\":{\"name\":\"fake-pr-branch\"}},\"bitbucket\":{\"api\":{\"url\":\"https://bitbucket.org\",\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\"},\"key\":\"abc\"}}}}";
+                    "{\"data\":{\"polaris\":{\"accesstoken\":\"MDJDSROSVC56FAKEKEY\",\"application\":{\"name\":\"test\"},\"project\":{\"name\":\"test\"},\"assessment\":{},\"serverUrl\":\"https://fake.polaris.url\",\"branch\":{\"name\":\"fake-pr-branch\"}},\"bitbucket\":{\"api\":{\"url\":\"\",\"user\":{\"name\":\"fake-username\"},\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\"},\"key\":\"abc\"}}}}";
             String inputJsonPathForPrComment = scannerArgumentService.createBridgeInputJson(
                     polaris, bitbucketObject, true, null, null, ApplicationConstants.POLARIS_INPUT_JSON_PREFIX, null);
             Path filePath = Paths.get(inputJsonPathForPrComment);

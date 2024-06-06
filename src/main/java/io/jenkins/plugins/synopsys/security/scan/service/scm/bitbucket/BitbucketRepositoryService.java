@@ -11,11 +11,13 @@ import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Repository;
+import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.User;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.common.Pull;
 import java.util.Map;
 
 public class BitbucketRepositoryService {
     private final LoggerWrapper logger;
+    private static String BITBUCKET_CLOUD_HOST_URL = "https://bitbucket.org";
 
     public BitbucketRepositoryService(TaskListener listener) {
         this.logger = new LoggerWrapper(listener);
@@ -29,6 +31,11 @@ public class BitbucketRepositoryService {
             throws PluginExceptionHandler {
 
         String bitbucketToken = (String) scanParameters.get(ApplicationConstants.BITBUCKET_TOKEN_KEY);
+        String bitbucketUsername = (String) scanParameters.get(ApplicationConstants.BITBUCKET_USERNAME_KEY);
+        String serverUrl = bitbucketSCMSource.getServerUrl();
+        String repositoryName = null;
+        String projectKey = null;
+
         if (isPrCommentSet && Utility.isStringNullOrBlank(bitbucketToken)) {
             logger.error("PrComment is set true but no Bitbucket token found!");
             throw new PluginExceptionHandler(ErrorCode.NO_BITBUCKET_TOKEN_FOUND);
@@ -46,16 +53,13 @@ public class BitbucketRepositoryService {
             Thread.currentThread().interrupt();
         }
 
-        String serverUrl = bitbucketSCMSource.getServerUrl();
-        String repositoryName = null;
-        String projectKey = null;
-
         if (bitbucketRepository != null) {
             repositoryName = bitbucketRepository.getRepositoryName();
-            projectKey = bitbucketRepository.getProject().getKey();
+            projectKey = bitbucketRepository.getOwnerName();
         }
 
         if (projectRepositoryPullNumber != null) {
+            logger.info("BitBucket bitbucketUsername: " + bitbucketUsername);
             logger.info("BitBucket repositoryName: " + repositoryName);
             logger.info("BitBucket projectKey: " + projectKey);
             logger.info("BitBucket projectRepositoryPullNumber: " + projectRepositoryPullNumber);
@@ -63,7 +67,7 @@ public class BitbucketRepositoryService {
         }
 
         return createBitbucketObject(
-                serverUrl, bitbucketToken, projectRepositoryPullNumber, repositoryName, projectKey);
+                serverUrl, bitbucketToken, projectRepositoryPullNumber, repositoryName, projectKey, bitbucketUsername);
     }
 
     public static Bitbucket createBitbucketObject(
@@ -71,18 +75,26 @@ public class BitbucketRepositoryService {
             String bitbucketToken,
             Integer projectRepositoryPullNumber,
             String repositoryName,
-            String projectKey) {
+            String projectKey,
+            String bitbucketUsername) {
+        boolean isBitbucketCloud = serverUrl != null && serverUrl.startsWith(BITBUCKET_CLOUD_HOST_URL);
         Bitbucket bitbucket = new Bitbucket();
-        bitbucket.getApi().setUrl(serverUrl);
+        bitbucket.getApi().setUrl(isBitbucketCloud ? "" : serverUrl);
         bitbucket.getApi().setToken(bitbucketToken);
-
         Repository repository = new Repository();
         repository.setName(repositoryName);
 
         if (projectRepositoryPullNumber != null) {
             Pull pull = new Pull();
+            User user = new User();
+
             pull.setNumber(projectRepositoryPullNumber);
             repository.setPull(pull);
+
+            if (!Utility.isStringNullOrBlank(bitbucketUsername) && isBitbucketCloud) {
+                user.setName(bitbucketUsername);
+                bitbucket.getApi().setUser(user);
+            }
         }
 
         bitbucket.getProject().setKey(projectKey);

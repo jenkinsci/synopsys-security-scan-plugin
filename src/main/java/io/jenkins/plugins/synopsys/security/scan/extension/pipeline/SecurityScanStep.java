@@ -102,6 +102,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String blackduck_project_directory;
     private String polaris_project_directory;
 
+    private String bitbucket_user_name;
     private transient String bitbucket_token;
     private transient String github_token;
     private transient String gitlab_token;
@@ -256,6 +257,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public String getPolaris_prComment_severities() {
         return polaris_prComment_severities;
+    }
+
+    public String getBitbucket_user_name() {
+        return bitbucket_user_name;
     }
 
     public String getBitbucket_token() {
@@ -546,6 +551,11 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setPolaris_prComment_severities(String polaris_prComment_severities) {
         this.polaris_prComment_severities = Util.fixEmptyAndTrim(polaris_prComment_severities);
+    }
+
+    @DataBoundSetter
+    public void setBitbucket_user_name(String bitbucket_user_name) {
+        this.bitbucket_user_name = bitbucket_user_name;
     }
 
     @DataBoundSetter

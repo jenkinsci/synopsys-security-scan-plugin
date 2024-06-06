@@ -65,6 +65,9 @@ public class ScanParametersFactory {
             parametersMap.putAll(prepareBlackDuckParametersMap(securityScan));
             parametersMap.putAll(prepareSarifReportParametersMap(securityScan));
 
+            if (!Utility.isStringNullOrBlank(securityScan.getBitbucket_user_name())) {
+                parametersMap.put(ApplicationConstants.BITBUCKET_USERNAME_KEY, securityScan.getBitbucket_user_name());
+            }
             if (!Utility.isStringNullOrBlank(securityScan.getBitbucket_token())) {
                 parametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, securityScan.getBitbucket_token());
             }
@@ -133,10 +136,18 @@ public class ScanParametersFactory {
                     config.getCoverityInstallationPath());
             addParameterIfNotBlank(
                     globalParameters,
+                    ApplicationConstants.BITBUCKET_USERNAME_KEY,
+                    scanCredentialsHelper
+                            .getUsernameByCredentialsId(config.getBitbucketCredentialsId())
+                            .orElse(null));
+            addParameterIfNotBlank(
+                    globalParameters,
                     ApplicationConstants.BITBUCKET_TOKEN_KEY,
                     scanCredentialsHelper
                             .getApiTokenByCredentialsId(config.getBitbucketCredentialsId())
-                            .orElse(null));
+                            .orElse(scanCredentialsHelper
+                                    .getPasswordByCredentialsId(config.getBitbucketCredentialsId())
+                                    .orElse(null)));
             addParameterIfNotBlank(
                     globalParameters,
                     ApplicationConstants.GITHUB_TOKEN_KEY,
