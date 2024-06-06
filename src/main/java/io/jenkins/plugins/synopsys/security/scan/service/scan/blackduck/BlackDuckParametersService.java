@@ -124,22 +124,21 @@ public class BlackDuckParametersService {
             setSearchDepth(blackDuck, Integer.parseInt(value));
         }
 
+        if (blackDuckParameters.containsKey(ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY)) {
+            String value = blackDuckParameters
+                    .get(ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY)
+                    .toString()
+                    .trim();
+            setConfigPath(blackDuck, value);
+        }
 
-//        if (blackDuckParameters.containsKey(ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY)) {
-//            String value = blackDuckParameters
-//                    .get(ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY)
-//                    .toString()
-//                    .trim();
-//            setDownloadUrl(blackDuck, value);
-//        }
-//
-//        if (blackDuckParameters.containsKey(ApplicationConstants.BLACKDUCK_ARGS_KEY)) {
-//            String value = blackDuckParameters
-//                    .get(ApplicationConstants.BLACKDUCK_ARGS_KEY)
-//                    .toString()
-//                    .trim();
-//            setDownloadUrl(blackDuck, value);
-//        }
+        if (blackDuckParameters.containsKey(ApplicationConstants.BLACKDUCK_ARGS_KEY)) {
+            String value = blackDuckParameters
+                    .get(ApplicationConstants.BLACKDUCK_ARGS_KEY)
+                    .toString()
+                    .trim();
+            blackDuck.setArgs(value);
+        }
 
         return blackDuck;
     }
@@ -208,6 +207,14 @@ public class BlackDuckParametersService {
             Search search = new Search();
             search.setDepth(value);
             blackDuck.setSearch(search);
+        }
+    }
+
+    private void setConfigPath(BlackDuck blackDuck, String value) {
+        if (value != null) {
+            Config config = new Config();
+            config.setPath(value);
+            blackDuck.setConfig(config);
         }
     }
 

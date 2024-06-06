@@ -76,7 +76,7 @@
             <f:entry field="coverity_clean_command" title="Coverity Clean Command (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="coverity_config_path" title="Coverity Clean Command (Optional)">
+            <f:entry field="coverity_config_path" title="Coverity Config Path (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="coverity_args" title="Coverity Arguments (Optional)">
