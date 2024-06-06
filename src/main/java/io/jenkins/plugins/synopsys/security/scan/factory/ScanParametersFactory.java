@@ -229,6 +229,10 @@ public class ScanParametersFactory {
                     ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY, securityScan.getBlackduck_download_url());
         }
 
+        if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
+            blackDuckParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
+        }
+
         return blackDuckParameters;
     }
 
@@ -273,6 +277,10 @@ public class ScanParametersFactory {
 
         if (securityScan.isCoverity_local() != null) {
             coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, securityScan.isCoverity_local());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
+            coverityParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
         }
 
         if (securityScan.isCoverity_prComment_enabled_temporary() != null) {
@@ -377,6 +385,30 @@ public class ScanParametersFactory {
             polarisParametersMap.put(
                     ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY,
                     securityScan.getPolaris_prComment_severities());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_assessment_mode())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY, securityScan.getPolaris_assessment_mode());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
+            polarisParametersMap.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getProject_source_archive())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY, securityScan.getProject_source_archive());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getProject_source_excludes())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY, securityScan.getProject_source_excludes());
+        }
+        if (securityScan.isProject_source_preserveSymLinks_actualValue() != null) {
+            polarisParametersMap.put(
+                    ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY,
+                    securityScan.isProject_source_preserveSymLinks_actualValue());
         }
 
         return polarisParametersMap;

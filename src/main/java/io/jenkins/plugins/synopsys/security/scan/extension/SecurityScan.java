@@ -69,6 +69,30 @@ public interface SecurityScan {
 
     public String getPolaris_branch_parent_name();
 
+    public Boolean isPolaris_reports_sarif_create();
+
+    public String getPolaris_reports_sarif_file_path();
+
+    public Boolean isPolaris_reports_sarif_groupSCAIssues();
+
+    public String getPolaris_reports_sarif_severities();
+
+    public String getPolaris_reports_sarif_issue_types();
+
+    public Boolean isPolaris_reports_sarif_groupSCAIssues_temporary();
+
+    public String getPolaris_assessment_mode();
+
+    public String getProject_source_archive();
+
+    public Boolean isProject_source_preserveSymLinks();
+
+    public Boolean isProject_source_preserveSymLinks_actualValue();
+
+    public String getProject_source_excludes();
+
+    public String getProject_directory();
+
     public String getBitbucket_token();
 
     public String getGithub_token();
@@ -96,18 +120,6 @@ public interface SecurityScan {
     public Boolean isBlackduck_reports_sarif_groupSCAIssues_temporary();
 
     public Boolean isReturn_status();
-
-    public Boolean isPolaris_reports_sarif_create();
-
-    public String getPolaris_reports_sarif_file_path();
-
-    public Boolean isPolaris_reports_sarif_groupSCAIssues();
-
-    public String getPolaris_reports_sarif_severities();
-
-    public String getPolaris_reports_sarif_issue_types();
-
-    public Boolean isPolaris_reports_sarif_groupSCAIssues_temporary();
 
     public String getMark_build_status();
 }

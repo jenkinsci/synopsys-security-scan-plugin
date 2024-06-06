@@ -72,6 +72,15 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private Boolean polaris_reports_sarif_groupSCAIssues;
     private String polaris_reports_sarif_severities;
     private Boolean polaris_reports_sarif_groupSCAIssues_temporary;
+    private String project_source_archive;
+    private String polaris_assessment_mode;
+    private String project_source_excludes;
+    private Boolean project_source_preserveSymLinks;
+    private Boolean project_source_preserveSymLinks_actualValue;
+    private String project_directory;
+    private String coverity_project_directory;
+    private String blackduck_project_directory;
+    private String polaris_project_directory;
 
     private transient String bitbucket_token;
 
@@ -269,6 +278,42 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         return polaris_reports_sarif_groupSCAIssues_temporary;
     }
 
+    public String getPolaris_assessment_mode() {
+        return polaris_assessment_mode;
+    }
+
+    public String getProject_source_archive() {
+        return project_source_archive;
+    }
+
+    public Boolean isProject_source_preserveSymLinks() {
+        return project_source_preserveSymLinks;
+    }
+
+    public Boolean isProject_source_preserveSymLinks_actualValue() {
+        return project_source_preserveSymLinks_actualValue;
+    }
+
+    public String getProject_source_excludes() {
+        return project_source_excludes;
+    }
+
+    public String getProject_directory() {
+        return project_directory;
+    }
+
+    public String getBlackduck_project_directory() {
+        return blackduck_project_directory;
+    }
+
+    public String getCoverity_project_directory() {
+        return coverity_project_directory;
+    }
+
+    public String getPolaris_project_directory() {
+        return polaris_project_directory;
+    }
+
     public String getBitbucket_token() {
         return bitbucket_token;
     }
@@ -373,12 +418,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     @DataBoundSetter
     public void setBlackduck_reports_sarif_groupSCAIssues(Boolean blackduck_reports_sarif_groupSCAIssues) {
-        if (blackduck_reports_sarif_create != null) {
-            this.blackduck_reports_sarif_groupSCAIssues =
-                    this.blackduck_reports_sarif_groupSCAIssues_temporary = blackduck_reports_sarif_groupSCAIssues;
-        } else {
-            this.blackduck_reports_sarif_groupSCAIssues = null;
-        }
+        this.blackduck_reports_sarif_groupSCAIssues = this.blackduck_reports_sarif_groupSCAIssues_temporary =
+                blackduck_reports_sarif_groupSCAIssues ? true : false;
     }
 
     @DataBoundSetter
@@ -514,12 +555,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     @DataBoundSetter
     public void setPolaris_reports_sarif_groupSCAIssues(Boolean polaris_reports_sarif_groupSCAIssues) {
-        if (polaris_reports_sarif_create != null) {
-            this.polaris_reports_sarif_groupSCAIssues =
-                    this.polaris_reports_sarif_groupSCAIssues_temporary = polaris_reports_sarif_groupSCAIssues;
-        } else {
-            this.polaris_reports_sarif_groupSCAIssues = null;
-        }
+        this.polaris_reports_sarif_groupSCAIssues = this.polaris_reports_sarif_groupSCAIssues_temporary =
+                polaris_reports_sarif_groupSCAIssues ? true : false;
     }
 
     @DataBoundSetter
@@ -530,6 +567,51 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setPolaris_reports_sarif_issue_types(String polaris_reports_sarif_issue_types) {
         this.polaris_reports_sarif_issue_types = Util.fixEmptyAndTrim(polaris_reports_sarif_issue_types);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_assessment_mode(String polaris_assessment_mode) {
+        this.polaris_assessment_mode = Util.fixEmptyAndTrim(polaris_assessment_mode);
+    }
+
+    @DataBoundSetter
+    public void setProject_source_archive(String project_source_archive) {
+        this.project_source_archive = Util.fixEmptyAndTrim(project_source_archive);
+    }
+
+    @DataBoundSetter
+    public void setProject_source_preserveSymLinks(Boolean project_source_preserveSymLinks) {
+        this.project_source_preserveSymLinks =
+                this.project_source_preserveSymLinks_actualValue = project_source_preserveSymLinks;
+    }
+
+    @DataBoundSetter
+    public void setProject_source_excludes(String project_source_excludes) {
+        this.project_source_excludes = Util.fixEmptyAndTrim(project_source_excludes);
+    }
+
+    @DataBoundSetter
+    public void setProject_directory(String project_directory) {
+        this.project_directory = Util.fixEmptyAndTrim(project_directory);
+    }
+
+    @DataBoundSetter
+    public void setCoverity_project_directory(String coverity_project_directory) {
+        if (getProduct().contentEquals(SecurityProduct.COVERITY.name().toLowerCase()))
+            this.coverity_project_directory = this.project_directory = Util.fixEmptyAndTrim(coverity_project_directory);
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_project_directory(String blackduck_project_directory) {
+        if (getProduct().contentEquals(SecurityProduct.BLACKDUCK.name().toLowerCase()))
+            this.blackduck_project_directory =
+                    this.project_directory = Util.fixEmptyAndTrim(blackduck_project_directory);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_project_directory(String polaris_project_directory) {
+        if (getProduct().contentEquals(SecurityProduct.POLARIS.name().toLowerCase()))
+            this.polaris_project_directory = this.project_directory = Util.fixEmptyAndTrim(polaris_project_directory);
     }
 
     @DataBoundSetter
@@ -690,6 +772,15 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
             items.add(BuildStatus.UNSTABLE.name(), BuildStatus.UNSTABLE.name());
             items.add(BuildStatus.SUCCESS.name(), BuildStatus.SUCCESS.name());
 
+            return items;
+        }
+
+        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
+        public ListBoxModel doFillPolaris_assessment_modeItems() {
+            ListBoxModel items = new ListBoxModel();
+            items.add(new ListBoxModel.Option("Select", ""));
+            items.add(new ListBoxModel.Option("CI", "CI"));
+            items.add(new ListBoxModel.Option("SOURCE_UPLOAD", "SOURCE_UPLOAD"));
             return items;
         }
     }

@@ -6,6 +6,7 @@ import hudson.EnvVars;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
+import io.jenkins.plugins.synopsys.security.scan.input.project.Project;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ public class BlackDuckParametersServiceTest {
     private final String TEST_BLACKDUCK_URL = "https://fake.blackduck.url";
     private final String TEST_BLACKDUCK_TOKEN = "MDJDSROSVC56FAKEKEY";
     private final String TEST_BLACKDUCK_INSTALL_DIRECTORY_PATH = "/path/to/blackduck/directory";
+    private final String TEST_PROJECT_DIRECTORY = "DIR/TEST";
 
     @BeforeEach
     void setUp() {
@@ -40,6 +42,7 @@ public class BlackDuckParametersServiceTest {
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, true);
         blackDuckParametersMap.put(
                 ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, "BLOCKER, CRITICAL, MAJOR, MINOR");
+        blackDuckParametersMap.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, TEST_PROJECT_DIRECTORY);
 
         BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckObjectForBridge(blackDuckParametersMap);
 
@@ -108,5 +111,21 @@ public class BlackDuckParametersServiceTest {
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
 
         assertFalse(blackDuckParametersService.isValidBlackDuckParameters(blackDuckParametersMap));
+    }
+
+    @Test
+    void prepareScanInputForBridgeForBlackduckAndProjectDirectoryTest() {
+        Map<String, Object> blackDuckParametersMap = new HashMap<>();
+
+        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_URL_KEY, TEST_BLACKDUCK_URL);
+        blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_TOKEN_KEY, TEST_BLACKDUCK_TOKEN);
+        blackDuckParametersMap.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, TEST_PROJECT_DIRECTORY);
+
+        BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckObjectForBridge(blackDuckParametersMap);
+        Project project = blackDuckParametersService.prepareProjectObjectForBridge(blackDuckParametersMap);
+
+        assertEquals(TEST_BLACKDUCK_URL, blackDuck.getUrl());
+        assertEquals(TEST_BLACKDUCK_TOKEN, blackDuck.getToken());
+        assertEquals(project.getDirectory(), TEST_PROJECT_DIRECTORY);
     }
 }

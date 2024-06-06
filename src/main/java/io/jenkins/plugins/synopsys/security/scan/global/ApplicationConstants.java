@@ -88,6 +88,12 @@ public class ApplicationConstants {
     public static final String POLARIS_REPORTS_SARIF_GROUPSCAISSUES_KEY = "polaris_reports_sarif_groupSCAIssues";
     public static final String POLARIS_REPORTS_SARIF_SEVERITIES_KEY = "polaris_reports_sarif_severities";
     public static final String POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY = "polaris_reports_sarif_issue_types";
+    public static final String POLARIS_ASSESSMENT_MODE_KEY = "polaris_assessment_mode";
+
+    public static final String PROJECT_DIRECTORY_KEY = "project_directory";
+    public static final String PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
+    public static final String PROJECT_SOURCE_EXCLUDES_KEY = "project_source_excludes";
+    public static final String PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY = "project_source_preserveSymLinks";
 
     public static final String INCLUDE_DIAGNOSTICS_KEY = "include_diagnostics";
     public static final String NETWORK_AIRGAP_KEY = "network_airgap";
