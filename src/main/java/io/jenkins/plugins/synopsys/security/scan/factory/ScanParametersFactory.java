@@ -244,6 +244,20 @@ public class ScanParametersFactory {
             blackDuckParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
         }
 
+        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_search_depth())) {
+            blackDuckParameters.put(
+                    ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY, securityScan.getBlackduck_search_depth());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_config_path())) {
+            blackDuckParameters.put(
+                    ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY, securityScan.getBlackduck_config_path());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_args())) {
+            blackDuckParameters.put(ApplicationConstants.BLACKDUCK_ARGS_KEY, securityScan.getBlackduck_args());
+        }
+
         return blackDuckParameters;
     }
 
@@ -292,6 +306,25 @@ public class ScanParametersFactory {
 
         if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
             coverityParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_build_command())) {
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_BUILD_COMMAND_KEY, securityScan.getCoverity_build_command());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_clean_command())) {
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY, securityScan.getCoverity_clean_command());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_config_path())) {
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_CONFIG_PATH_KEY, securityScan.getCoverity_config_path());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_args())) {
+            coverityParameters.put(ApplicationConstants.COVERITY_ARGS_KEY, securityScan.getCoverity_args());
         }
 
         if (securityScan.isCoverity_prComment_enabled_temporary() != null) {

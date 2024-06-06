@@ -24,6 +24,15 @@
             <f:entry field="blackduck_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
             </f:entry>
+            <f:entry field="blackduck_search_depth" title="Black Duck Search Depth (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="blackduck_config_path" title="Black Duck Config Path (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="blackduck_args" title="Black Duck Arguments (Optional)">
+                <f:textbox/>
+            </f:entry>
             <!--        <f:entry field="bridge_blackduck_automation_fixpr" title="Create Fix Pull Requests">-->
             <!--            <f:checkbox/>-->
             <!--        </f:entry>-->
@@ -68,8 +77,19 @@
             <f:entry field="coverity_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
             </f:entry>
+            <f:entry field="coverity_build_command" title="Coverity Build Command (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_clean_command" title="Coverity Clean Command (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_config_path" title="Coverity Clean Command (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_args" title="Coverity Arguments (Optional)">
+                <f:textbox/>
+            </f:entry>
         </f:section>
-
     </div>
 
     <div id="polaris" style="display: none;">

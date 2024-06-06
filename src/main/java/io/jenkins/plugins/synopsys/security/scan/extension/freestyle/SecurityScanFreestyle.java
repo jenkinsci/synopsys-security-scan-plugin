@@ -41,6 +41,9 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private Boolean blackduck_reports_sarif_groupSCAIssues;
     private String blackduck_reports_sarif_severities;
     private Boolean blackduck_reports_sarif_groupSCAIssues_temporary;
+    private String blackduck_search_depth;
+    private String blackduck_config_path;
+    private String blackduck_args;
 
     private String coverity_url;
     private String coverity_user;
@@ -54,6 +57,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private Boolean coverity_prComment_enabled_temporary;
     private String coverity_version;
     private Boolean coverity_local;
+    private String coverity_build_command;
+    private String coverity_clean_command;
+    private String coverity_config_path;
+    private String coverity_args;
 
     private String polaris_server_url;
     private transient String polaris_access_token;
@@ -163,6 +170,18 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         return blackduck_reports_sarif_groupSCAIssues_temporary;
     }
 
+    public String getBlackduck_search_depth() {
+        return blackduck_search_depth;
+    }
+
+    public String getBlackduck_config_path() {
+        return blackduck_config_path;
+    }
+
+    public String getBlackduck_args() {
+        return blackduck_args;
+    }
+
     public String getCoverity_url() {
         return coverity_url;
     }
@@ -209,6 +228,22 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public Boolean isCoverity_local() {
         return coverity_local;
+    }
+
+    public String getCoverity_build_command() {
+        return coverity_build_command;
+    }
+
+    public String getCoverity_clean_command() {
+        return coverity_clean_command;
+    }
+
+    public String getCoverity_config_path() {
+        return coverity_config_path;
+    }
+
+    public String getCoverity_args() {
+        return coverity_args;
     }
 
     public String getPolaris_server_url() {
@@ -433,6 +468,21 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     }
 
     @DataBoundSetter
+    public void setBlackduck_search_depth(String blackduck_search_depth) {
+        this.blackduck_search_depth = blackduck_search_depth;
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_config_path(String blackduck_config_path) {
+        this.blackduck_config_path = blackduck_config_path;
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_args(String blackduck_args) {
+        this.blackduck_args = blackduck_args;
+    }
+
+    @DataBoundSetter
     public void setCoverity_url(String coverity_url) {
         this.coverity_url = coverity_url;
     }
@@ -491,6 +541,26 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setCoverity_local(Boolean coverity_local) {
         this.coverity_local = coverity_local ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_build_command(String coverity_build_command) {
+        this.coverity_build_command = coverity_build_command;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_clean_command(String coverity_clean_command) {
+        this.coverity_clean_command = coverity_clean_command;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_config_path(String coverity_config_path) {
+        this.coverity_config_path = coverity_config_path;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_args(String coverity_args) {
+        this.coverity_args = coverity_args;
     }
 
     @DataBoundSetter
