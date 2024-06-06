@@ -478,17 +478,17 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     @DataBoundSetter
     public void setBlackduck_search_depth(String blackduck_search_depth) {
-        this.blackduck_search_depth = blackduck_search_depth;
+        this.blackduck_search_depth = Util.fixEmptyAndTrim(blackduck_search_depth);
     }
 
     @DataBoundSetter
     public void setBlackduck_config_path(String blackduck_config_path) {
-        this.blackduck_config_path = blackduck_config_path;
+        this.blackduck_config_path = Util.fixEmptyAndTrim(blackduck_config_path);
     }
 
     @DataBoundSetter
     public void setBlackduck_args(String blackduck_args) {
-        this.blackduck_args = blackduck_args;
+        this.blackduck_args = Util.fixEmptyAndTrim(blackduck_args);
     }
 
     @DataBoundSetter
@@ -549,22 +549,22 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     @DataBoundSetter
     public void setCoverity_build_command(String coverity_build_command) {
-        this.coverity_build_command = coverity_build_command;
+        this.coverity_build_command = Util.fixEmptyAndTrim(coverity_build_command);
     }
 
     @DataBoundSetter
     public void setCoverity_clean_command(String coverity_clean_command) {
-        this.coverity_clean_command = coverity_clean_command;
+        this.coverity_clean_command = Util.fixEmptyAndTrim(coverity_clean_command);
     }
 
     @DataBoundSetter
     public void setCoverity_config_path(String coverity_config_path) {
-        this.coverity_config_path = coverity_config_path;
+        this.coverity_config_path = Util.fixEmptyAndTrim(coverity_config_path);
     }
 
     @DataBoundSetter
     public void setCoverity_args(String coverity_args) {
-        this.coverity_args = coverity_args;
+        this.coverity_args = Util.fixEmptyAndTrim(coverity_args);
     }
 
     @DataBoundSetter
