@@ -5,6 +5,7 @@ import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Node;
+import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.PluginParametersHandler;
@@ -13,7 +14,7 @@ import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandle
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.global.ScannerGlobalConfig;
 import io.jenkins.plugins.synopsys.security.scan.global.*;
-import io.jenkins.plugins.synopsys.security.scan.global.ScanCredentialsHelper;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.BuildStatus;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.ScannerArgumentService;
 import java.util.Arrays;
@@ -78,7 +79,7 @@ public class ScanParametersFactory {
                 parametersMap.put(ApplicationConstants.GITHUB_TOKEN_KEY, securityScan.getGithub_token());
             }
 
-            parametersMap.putAll(prepareBridgeParametersMap(securityScan));
+            parametersMap.putAll(prepareAddtionalParametersMap(securityScan));
 
             if (securityScan.isReturn_status() != null) {
                 parametersMap.put(ApplicationConstants.RETURN_STATUS_KEY, securityScan.isReturn_status());
@@ -239,6 +240,10 @@ public class ScanParametersFactory {
                     ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY, securityScan.getBlackduck_download_url());
         }
 
+        if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
+            blackDuckParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
+        }
+
         return blackDuckParameters;
     }
 
@@ -285,6 +290,10 @@ public class ScanParametersFactory {
             coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, securityScan.isCoverity_local());
         }
 
+        if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
+            coverityParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
+        }
+
         if (securityScan.isCoverity_prComment_enabled_temporary() != null) {
             coverityParameters.put(
                     ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
@@ -301,7 +310,7 @@ public class ScanParametersFactory {
         return coverityParameters;
     }
 
-    public static Map<String, Object> prepareBridgeParametersMap(SecurityScan securityScan) {
+    public static Map<String, Object> prepareAddtionalParametersMap(SecurityScan securityScan) {
         Map<String, Object> bridgeParameters = new HashMap<>();
 
         if (!Utility.isStringNullOrBlank(securityScan.getSynopsys_bridge_download_url())) {
@@ -327,6 +336,10 @@ public class ScanParametersFactory {
 
         if (securityScan.isNetwork_airgap() != null) {
             bridgeParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, securityScan.isNetwork_airgap());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getMark_build_status())) {
+            bridgeParameters.put(ApplicationConstants.MARK_BUILD_STATUS, securityScan.getMark_build_status());
         }
 
         return bridgeParameters;
@@ -383,6 +396,30 @@ public class ScanParametersFactory {
             polarisParametersMap.put(
                     ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY,
                     securityScan.getPolaris_prComment_severities());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_assessment_mode())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY, securityScan.getPolaris_assessment_mode());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
+            polarisParametersMap.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getProject_source_archive())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY, securityScan.getProject_source_archive());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getProject_source_excludes())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY, securityScan.getProject_source_excludes());
+        }
+        if (securityScan.isProject_source_preserveSymLinks_actualValue() != null) {
+            polarisParametersMap.put(
+                    ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY,
+                    securityScan.isProject_source_preserveSymLinks_actualValue());
         }
 
         return polarisParametersMap;
@@ -482,5 +519,26 @@ public class ScanParametersFactory {
         }
 
         return isValid;
+    }
+
+    public static Result getBuildResultIfIssuesAreFound(
+            int exitCode, String markBuildIfIssuesArePresent, LoggerWrapper logger) {
+        Result result = null;
+
+        if (exitCode == ErrorCode.BRIDGE_BUILD_BREAK && !Utility.isStringNullOrBlank((markBuildIfIssuesArePresent))) {
+            try {
+                BuildStatus buildStatus = BuildStatus.valueOf(markBuildIfIssuesArePresent.toUpperCase());
+                if (buildStatus.in(BuildStatus.FAILURE, BuildStatus.UNSTABLE, BuildStatus.SUCCESS)) {
+                    result = Utility.getMappedResultForBuildStatus(buildStatus);
+                }
+            } catch (IllegalArgumentException e) {
+                logger.warn("Unsupported value for " + ApplicationConstants.MARK_BUILD_STATUS
+                        + ": " + markBuildIfIssuesArePresent
+                        + ". Supported values are: "
+                        + Arrays.asList(BuildStatus.values()));
+            }
+        }
+
+        return result;
     }
 }

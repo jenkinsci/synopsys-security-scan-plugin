@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
+import io.jenkins.plugins.synopsys.security.scan.input.project.Project;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
@@ -18,6 +19,9 @@ public class BridgeInput {
 
     @JsonProperty("polaris")
     private Polaris polaris;
+
+    @JsonProperty("project")
+    private Project project;
 
     @JsonProperty("bitbucket")
     private Bitbucket bitbucket;
@@ -96,5 +100,13 @@ public class BridgeInput {
 
     public void setGitlab(Gitlab gitlab) {
         this.gitlab = gitlab;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

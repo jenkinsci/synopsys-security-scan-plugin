@@ -17,6 +17,7 @@ import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Parent;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
+import io.jenkins.plugins.synopsys.security.scan.input.project.Project;
 import io.jenkins.plugins.synopsys.security.scan.input.report.File;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Issue;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
@@ -30,12 +31,7 @@ import io.jenkins.plugins.synopsys.security.scan.service.scan.coverity.CoverityP
 import io.jenkins.plugins.synopsys.security.scan.service.scan.polaris.PolarisParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.SCMRepositoryService;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class ScannerArgumentService {
     private final TaskListener listener;
@@ -119,6 +115,7 @@ public class ScannerArgumentService {
         if (securityProducts.contains(SecurityProduct.BLACKDUCK.name())) {
             BlackDuckParametersService blackDuckParametersService = new BlackDuckParametersService(listener, envVars);
             BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckObjectForBridge(scanParameters);
+            Project project = blackDuckParametersService.prepareProjectObjectForBridge(scanParameters);
 
             scanCommands.add(BridgeParams.STAGE_OPTION);
             scanCommands.add(BridgeParams.BLACKDUCK_STAGE);
@@ -129,11 +126,13 @@ public class ScannerArgumentService {
                     isPrCommentSet,
                     networkAirGap,
                     sarif,
-                    ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX));
+                    ApplicationConstants.BLACKDUCK_INPUT_JSON_PREFIX,
+                    project));
         }
         if (securityProducts.contains(SecurityProduct.COVERITY.name())) {
             CoverityParametersService coverityParametersService = new CoverityParametersService(listener, envVars);
             Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(scanParameters);
+            Project project = coverityParametersService.prepareProjectObjectForBridge(scanParameters);
 
             scanCommands.add(BridgeParams.STAGE_OPTION);
             scanCommands.add(BridgeParams.COVERITY_STAGE);
@@ -144,15 +143,18 @@ public class ScannerArgumentService {
                     isPrCommentSet,
                     networkAirGap,
                     sarif,
-                    ApplicationConstants.COVERITY_INPUT_JSON_PREFIX));
+                    ApplicationConstants.COVERITY_INPUT_JSON_PREFIX,
+                    project));
         }
         if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener, envVars);
             Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(scanParameters);
+            Project project = polarisParametersService.prepareProjectObjectForBridge(scanParameters);
 
             if (polaris.getBranch().getParent() == null) {
                 String defaultParentBranchName = envVars.get(ApplicationConstants.ENV_CHANGE_TARGET_KEY);
                 if (defaultParentBranchName != null) {
+                    logger.info("Polaris Branch Parent Name: " + defaultParentBranchName);
                     Parent parent = new Parent();
                     parent.setName(defaultParentBranchName);
                     polaris.getBranch().setParent(parent);
@@ -168,7 +170,8 @@ public class ScannerArgumentService {
                     isPrCommentSet,
                     networkAirGap,
                     sarif,
-                    ApplicationConstants.POLARIS_INPUT_JSON_PREFIX));
+                    ApplicationConstants.POLARIS_INPUT_JSON_PREFIX,
+                    project));
         }
 
         return scanCommands;
@@ -180,10 +183,15 @@ public class ScannerArgumentService {
             boolean isPrCommentSet,
             NetworkAirGap networkAirGap,
             Sarif sarif,
-            String jsonPrefix) {
+            String jsonPrefix,
+            Project project) {
         BridgeInput bridgeInput = new BridgeInput();
 
         setScanObject(bridgeInput, scanObject, scmObject, sarif);
+
+        if (project != null) {
+            setProjectObject(bridgeInput, project);
+        }
 
         boolean isPullRequestEvent = Utility.isPullRequestEvent(envVars);
         if (isPrCommentSet && isPullRequestEvent) {
@@ -209,6 +217,10 @@ public class ScannerArgumentService {
         }
 
         return jsonPath;
+    }
+
+    public void setProjectObject(BridgeInput bridgeInput, Project project) {
+        bridgeInput.setProject(project);
     }
 
     private void setScanObject(BridgeInput bridgeInput, Object scanObject, Object scmObject, Sarif sarifObject) {

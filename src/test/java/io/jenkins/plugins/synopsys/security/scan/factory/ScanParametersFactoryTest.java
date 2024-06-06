@@ -1,16 +1,16 @@
 package io.jenkins.plugins.synopsys.security.scan.factory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import hudson.EnvVars;
 import hudson.FilePath;
+import hudson.model.Result;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.extension.pipeline.SecurityScanStep;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
+import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -74,11 +74,12 @@ public class ScanParametersFactoryTest {
         securityScanStep.setBlackduck_automation_prcomment(true);
         securityScanStep.setBlackduck_download_url("https://fake.blackduck-download-url");
         securityScanStep.setBlackduck_scan_failure_severities("MAJOR");
+        securityScanStep.setProject_directory("test/directory");
 
         Map<String, Object> blackDuckParametersMap =
                 ScanParametersFactory.prepareBlackDuckParametersMap(securityScanStep);
 
-        assertEquals(7, blackDuckParametersMap.size());
+        assertEquals(8, blackDuckParametersMap.size());
         assertEquals("https://fake.blackduck-url", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_URL_KEY));
         assertEquals("fake-token", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_TOKEN_KEY));
         assertEquals("/fake/path", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY));
@@ -88,7 +89,7 @@ public class ScanParametersFactoryTest {
                 "https://fake.blackduck-download-url",
                 blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY));
         assertEquals("MAJOR", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY));
-
+        assertEquals("test/directory", blackDuckParametersMap.get(ApplicationConstants.PROJECT_DIRECTORY_KEY));
         Map<String, Object> emptyBlackDuckParametersMap =
                 ScanParametersFactory.prepareBlackDuckParametersMap(new SecurityScanStep());
 
@@ -107,11 +108,12 @@ public class ScanParametersFactoryTest {
         securityScanStep.setCoverity_automation_prcomment(true);
         securityScanStep.setCoverity_version("1.0.0");
         securityScanStep.setCoverity_local(true);
+        securityScanStep.setProject_directory("test/directory");
 
         Map<String, Object> coverityParametersMap =
                 ScanParametersFactory.prepareCoverityParametersMap(securityScanStep);
 
-        assertEquals(10, coverityParametersMap.size());
+        assertEquals(11, coverityParametersMap.size());
         assertEquals("https://fake.coverity-url", coverityParametersMap.get(ApplicationConstants.COVERITY_URL_KEY));
         assertEquals("fake-user", coverityParametersMap.get(ApplicationConstants.COVERITY_USER_KEY));
         assertEquals("fake-passphrase", coverityParametersMap.get(ApplicationConstants.COVERITY_PASSPHRASE_KEY));
@@ -122,6 +124,7 @@ public class ScanParametersFactoryTest {
         assertTrue((boolean) coverityParametersMap.get(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY));
         assertEquals("1.0.0", coverityParametersMap.get(ApplicationConstants.COVERITY_VERSION_KEY));
         assertTrue(coverityParametersMap.containsKey(ApplicationConstants.COVERITY_LOCAL_KEY));
+        assertEquals("test/directory", coverityParametersMap.get(ApplicationConstants.PROJECT_DIRECTORY_KEY));
 
         Map<String, Object> emptyCoverityParametersMap =
                 ScanParametersFactory.prepareCoverityParametersMap(new SecurityScanStep());
@@ -136,7 +139,7 @@ public class ScanParametersFactoryTest {
         securityScanStep.setInclude_diagnostics(true);
         securityScanStep.setNetwork_airgap(true);
 
-        Map<String, Object> bridgeParametersMap = ScanParametersFactory.prepareBridgeParametersMap(securityScanStep);
+        Map<String, Object> bridgeParametersMap = ScanParametersFactory.prepareAddtionalParametersMap(securityScanStep);
 
         assertEquals(5, bridgeParametersMap.size());
         assertEquals(
@@ -148,7 +151,7 @@ public class ScanParametersFactoryTest {
         assertTrue((boolean) bridgeParametersMap.get(ApplicationConstants.NETWORK_AIRGAP_KEY));
 
         Map<String, Object> emptyBridgeParametersMap =
-                ScanParametersFactory.prepareBridgeParametersMap(new SecurityScanStep());
+                ScanParametersFactory.prepareAddtionalParametersMap(new SecurityScanStep());
 
         assertEquals(0, emptyBridgeParametersMap.size());
     }
@@ -165,10 +168,15 @@ public class ScanParametersFactoryTest {
         securityScanStep.setPolaris_branch_parent_name("master");
         securityScanStep.setPolaris_prComment_enabled(true);
         securityScanStep.setPolaris_prComment_severities("high, critical");
+        securityScanStep.setPolaris_assessment_mode("SOURCE_UPLOAD");
+        securityScanStep.setProject_directory("test/directory");
+        securityScanStep.setProject_source_archive("fake-source-archive");
+        securityScanStep.setProject_source_preserveSymLinks(true);
+        securityScanStep.setProject_source_excludes("test_exclude");
 
         Map<String, Object> polarisParametersMap = ScanParametersFactory.preparePolarisParametersMap(securityScanStep);
 
-        assertEquals(10, polarisParametersMap.size());
+        assertEquals(15, polarisParametersMap.size());
         assertEquals(
                 "https://fake.polaris-server.url",
                 polarisParametersMap.get(ApplicationConstants.POLARIS_SERVER_URL_KEY));
@@ -178,6 +186,11 @@ public class ScanParametersFactoryTest {
         assertEquals("master", polarisParametersMap.get(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY));
         assertEquals(true, polarisParametersMap.get(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY));
         assertEquals("high, critical", polarisParametersMap.get(ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY));
+        assertEquals("SOURCE_UPLOAD", polarisParametersMap.get(ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY));
+        assertEquals("test/directory", polarisParametersMap.get(ApplicationConstants.PROJECT_DIRECTORY_KEY));
+        assertEquals("fake-source-archive", polarisParametersMap.get(ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY));
+        assertEquals("test_exclude", polarisParametersMap.get(ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY));
+        assertTrue((Boolean) polarisParametersMap.get(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY));
     }
 
     @Test
@@ -227,5 +240,27 @@ public class ScanParametersFactoryTest {
         assertTrue(ScanParametersFactory.validateProduct("POLARIS", listenerMock));
         assertTrue(ScanParametersFactory.validateProduct("COveRiTy", listenerMock));
         assertFalse(ScanParametersFactory.validateProduct("polar1s", listenerMock));
+    }
+
+    @Test
+    public void getBuildResultIfIssuesAreFoundTest() {
+        LoggerWrapper loggerMock = new LoggerWrapper(listenerMock);
+
+        assertEquals(
+                ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                        ErrorCode.BRIDGE_BUILD_BREAK, "FAILURE", loggerMock),
+                Result.FAILURE);
+        assertEquals(
+                ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                        ErrorCode.BRIDGE_BUILD_BREAK, "UNSTABLE", loggerMock),
+                Result.UNSTABLE);
+        assertEquals(
+                ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                        ErrorCode.BRIDGE_BUILD_BREAK, "SUCCESS", loggerMock),
+                Result.SUCCESS);
+        assertNull(ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                ErrorCode.BRIDGE_BUILD_BREAK, "ABORTED", loggerMock));
+        assertNull(ScanParametersFactory.getBuildResultIfIssuesAreFound(
+                ErrorCode.BRIDGE_ADAPTER_ERROR, "UNSTABLE", loggerMock));
     }
 }

@@ -19,6 +19,9 @@
             <f:entry field="blackduck_scan_full" title="Black Duck Full Scan (Optional)">
                 <f:checkbox checked="${instance.isBlackduck_scan_full() == true}"/>
             </f:entry>
+            <f:entry field="blackduck_project_directory" title="Project Directory (Optional)">
+                <f:textbox/>
+            </f:entry>
         </f:section>
         <f:section title="SARIF Report Options">
             <f:entry field="blackduck_reports_sarif_create" title="Generate SARIF Report for Black Duck Issues (Optional)">
@@ -55,6 +58,9 @@
             <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
                 <f:checkbox checked="${instance.isCoverity_local() == true}"/>
             </f:entry>
+            <f:entry field="coverity_project_directory" title="Project Directory (Optional)">
+                <f:textbox/>
+            </f:entry>
         </f:section>
     </div>
 
@@ -79,7 +85,31 @@
             <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
                 <f:textbox/>
             </f:entry>
+            <f:entry field="polaris_project_directory" title="Project Directory (Optional)">
+                <f:textbox/>
+            </f:entry>
         </f:section>
+
+    <div id="polaris_assessment_mode">
+        <f:entry field="polaris_assessment_mode" title="Polaris Assessment Mode (Optional)">
+            <f:select/>
+        </f:entry>
+    </div>
+
+    <div id="source_upload" style="display: none;">
+        <f:section title="Source Code Upload Options">
+            <f:entry field="project_source_archive" title="Upload Archive Instead Of Project Directory (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="project_source_excludes" title="Project Source Excludes (Optional)">
+                <f:textbox/>
+            </f:entry>
+<!--            <f:entry field="project_source_preserveSymLinks" title="Project Source Preserve Sym Links (Optional)">-->
+<!--                <f:checkbox checked="${instance.isProject_source_preserveSymLinks() == true}"/>-->
+<!--            </f:entry>-->
+        </f:section>
+    </div>
+
         <f:section title="SARIF Report Options">
             <f:entry field="polaris_reports_sarif_create" title="Generate SARIF Report for Polaris Issues (Optional)">
                 <f:checkbox checked="${instance.isPolaris_reports_sarif_create() == true}"/>
@@ -106,6 +136,9 @@
         <f:entry field="network_airgap" title="Network Airgap (Optional)">
             <f:checkbox checked="${instance.isNetwork_airgap() == true}"/>
         </f:entry>
+        <f:entry field="mark_build_status" title="Mark build status if issues are present (Optional)">
+            <f:select/>
+        </f:entry>
     </f:section>
 
     <style>
@@ -118,11 +151,17 @@
 
         var selectedOption = document.querySelector('select[name="_.product"]')?.value;
 
+        var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]')?.value;
+        var sourceUploadDiv = document.getElementById('source_upload');
+
         if(selectedOption &amp;&amp; selectedOption !== 'select') {
             document.getElementById(selectedOption).style.display = 'block';
                 validateProductField();
                 validateCoverityFields();
                 validatePolarisFields();
+            if(selectedOption === 'polaris' &amp;&amp; polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
+                showDiv(sourceUploadDiv);
+            }
         }
 
         function hideAllDivs(blackduckDiv, coverityDiv, polarisDiv) {
@@ -159,14 +198,34 @@
                         field.checked = false;
                     }
                 });
+                // clears polaris assessment mode dropdown value
+                var selectedOption = document.querySelector('select[name="_.product"]')?.value;
+                if(selectedOption !== 'polaris') {
+                    var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]');
+                    if(polarisAssessmentModeOption) {
+                        polarisAssessmentModeOption.value = ""
+                    }
+                }
             }
         }
 
         document.addEventListener('change', function() {
             var selectedOption = document.querySelector('select[name="_.product"]')?.value;
+            var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]')?.value;
+
+            var sourceUploadDiv = document.getElementById('source_upload');
             var blackduckDiv = document.getElementById('blackduck');
             var coverityDiv = document.getElementById('coverity');
             var polarisDiv = document.getElementById('polaris');
+
+            if(polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
+                showDiv(sourceUploadDiv);
+            }
+
+            if(polarisAssessmentModeOption === 'CI' || polarisAssessmentModeOption === '') {
+                clearInputFields(sourceUploadDiv);
+                hideAParticularDiv(sourceUploadDiv);
+            }
 
             if (selectedOption === 'blackduck') {
                 clearInputFields(coverityDiv);
@@ -191,11 +250,11 @@
                 showDiv(polarisDiv);
                 validateProductField();
                 validatePolarisFields();
-            }else if (selectedOption === 'select') {
-                hideAllDivs(blackduckDiv, coverityDiv, polarisDiv);
+            } else if (selectedOption === 'select') {
                 clearInputFields(blackduckDiv);
                 clearInputFields(coverityDiv);
                 clearInputFields(polarisDiv);
+                hideAllDivs(blackduckDiv, coverityDiv, polarisDiv);
                 validateProductField();
             }
 

@@ -16,6 +16,7 @@ import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.BuildStatus;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.SCMRepositoryService;
 import java.io.IOException;
@@ -29,6 +30,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import jenkins.scm.api.SCMSource;
 import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
+import org.jenkinsci.plugins.workflow.actions.WarningAction;
+import org.jenkinsci.plugins.workflow.graph.FlowNode;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
@@ -89,6 +92,16 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private Boolean polaris_reports_sarif_groupSCAIssues;
     private String polaris_reports_sarif_severities;
     private Boolean polaris_reports_sarif_groupSCAIssues_temporary;
+    private String polaris_assessment_mode;
+    private String project_source_archive;
+    private String project_source_excludes;
+    private Boolean project_source_preserveSymLinks;
+    private Boolean project_source_preserveSymLinks_actualValue;
+    private String project_directory;
+    private String coverity_project_directory;
+    private String blackduck_project_directory;
+    private String polaris_project_directory;
+
     private String bitbucket_user_name;
     private transient String bitbucket_token;
     private transient String github_token;
@@ -101,9 +114,9 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private Boolean network_airgap;
     /*
     By default the plugin will always return a status code even if there is error.
-    Therefore, the stage won't be failed in case of non-zero status code.
      */
     private Boolean return_status = true;
+    private String mark_build_status;
 
     @DataBoundConstructor
     public SecurityScanStep() {
@@ -286,6 +299,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return return_status;
     }
 
+    public String getMark_build_status() {
+        return mark_build_status;
+    }
+
     public Boolean isBlackduck_reports_sarif_create() {
         return blackduck_reports_sarif_create;
     }
@@ -328,6 +345,48 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public Boolean isPolaris_reports_sarif_groupSCAIssues_temporary() {
         return polaris_reports_sarif_groupSCAIssues_temporary;
+    }
+
+    public String getPolaris_assessment_mode() {
+        return polaris_assessment_mode;
+    }
+
+    public String getProject_source_archive() {
+        return project_source_archive;
+    }
+
+    public Boolean isProject_source_preserveSymLinks() {
+        return project_source_preserveSymLinks;
+    }
+
+    public Boolean isProject_source_preserveSymLinks_actualValue() {
+        return project_source_preserveSymLinks_actualValue;
+    }
+
+    public String getProject_source_excludes() {
+        return project_source_excludes;
+    }
+
+    public String getProject_directory() {
+        return project_directory;
+    }
+
+    // Returning the null value because if we return any other value, blackduck_project_directory field will be visible
+    // in the pipeline syntax script
+    public String getBlackduck_project_directory() {
+        return null;
+    }
+
+    // Returning the null value because if we return any other value, coverity_project_directory field will be visible
+    // in the pipeline syntax script
+    public String getCoverity_project_directory() {
+        return null;
+    }
+
+    // Returning the null value because if we return any other value, polaris_project_directory field will be visible in
+    // the pipeline syntax script
+    public String getPolaris_project_directory() {
+        return null;
     }
 
     @DataBoundSetter
@@ -500,6 +559,50 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     }
 
     @DataBoundSetter
+    public void setPolaris_assessment_mode(String polaris_assessment_mode) {
+        this.polaris_assessment_mode = Util.fixEmptyAndTrim(polaris_assessment_mode);
+    }
+
+    @DataBoundSetter
+    public void setProject_source_archive(String project_source_archive) {
+        this.project_source_archive = Util.fixEmptyAndTrim(project_source_archive);
+    }
+
+    @DataBoundSetter
+    public void setProject_source_preserveSymLinks(Boolean project_source_preserveSymLinks) {
+        this.project_source_preserveSymLinks = project_source_preserveSymLinks ? true : null;
+        this.project_source_preserveSymLinks_actualValue = project_source_preserveSymLinks ? true : false;
+    }
+
+    @DataBoundSetter
+    public void setProject_source_excludes(String project_source_excludes) {
+        this.project_source_excludes = Util.fixEmptyAndTrim(project_source_excludes);
+    }
+
+    @DataBoundSetter
+    public void setProject_directory(String project_directory) {
+        this.project_directory = Util.fixEmptyAndTrim(project_directory);
+    }
+
+    @DataBoundSetter
+    public void setCoverity_project_directory(String coverity_project_directory) {
+        if (getProduct().contentEquals(SecurityProduct.COVERITY.name().toLowerCase()))
+            this.project_directory = Util.fixEmptyAndTrim(coverity_project_directory);
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_project_directory(String blackduck_project_directory) {
+        if (getProduct().contentEquals(SecurityProduct.BLACKDUCK.name().toLowerCase()))
+            this.project_directory = Util.fixEmptyAndTrim(blackduck_project_directory);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_project_directory(String polaris_project_directory) {
+        if (getProduct().contentEquals(SecurityProduct.POLARIS.name().toLowerCase()))
+            this.project_directory = Util.fixEmptyAndTrim(polaris_project_directory);
+    }
+
+    @DataBoundSetter
     public void setBitbucket_token(String bitbucket_token) {
         this.bitbucket_token = bitbucket_token;
     }
@@ -542,6 +645,11 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setReturn_status(Boolean return_status) {
         this.return_status = return_status;
+    }
+
+    @DataBoundSetter
+    public void setMark_build_status(String mark_build_status) {
+        this.mark_build_status = Util.fixEmptyAndTrim(mark_build_status);
     }
 
     @DataBoundSetter
@@ -638,6 +746,27 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             }
             return items;
         }
+
+        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
+        public ListBoxModel doFillMark_build_statusItems() {
+            ListBoxModel items = new ListBoxModel();
+
+            items.add("Select", "");
+            items.add(BuildStatus.FAILURE.name(), BuildStatus.FAILURE.name());
+            items.add(BuildStatus.UNSTABLE.name(), BuildStatus.UNSTABLE.name());
+            items.add(BuildStatus.SUCCESS.name(), BuildStatus.SUCCESS.name());
+
+            return items;
+        }
+
+        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
+        public ListBoxModel doFillPolaris_assessment_modeItems() {
+            ListBoxModel items = new ListBoxModel();
+            items.add(new ListBoxModel.Option("Select", ""));
+            items.add(new ListBoxModel.Option("CI", "CI"));
+            items.add(new ListBoxModel.Option("SOURCE_UPLOAD", "SOURCE_UPLOAD"));
+            return items;
+        }
     }
 
     public class Execution extends SynchronousNonBlockingStepExecution<Integer> {
@@ -645,6 +774,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         private final transient Run<?, ?> run;
         private final transient Launcher launcher;
         private final transient Node node;
+        private final transient FlowNode flowNode;
 
         @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
         private final transient TaskListener listener;
@@ -663,6 +793,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             workspace = context.get(FilePath.class);
             launcher = context.get(Launcher.class);
             node = context.get(Node.class);
+            flowNode = context.get(FlowNode.class);
         }
 
         @Override
@@ -695,27 +826,51 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
                     logger.info(exitMessage);
                 }
 
-                logger.println(
-                        "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
-
-                handleExitCode(exitCode, exitMessage, unknownException);
+                handleExitCode(exitCode, exitMessage, unknownException, logger);
             }
 
             return exitCode;
         }
 
-        private void handleExitCode(int exitCode, String exitMessage, Exception e)
+        private void handleExitCode(int exitCode, String exitMessage, Exception e, LoggerWrapper logger)
                 throws PluginExceptionHandler, ScannerException {
-            if (exitCode != 0) {
-                if (Objects.equals(isReturn_status(), true)) {
-                    return;
-                }
+            if (exitCode != ErrorCode.BRIDGE_BUILD_BREAK && !Utility.isStringNullOrBlank(getMark_build_status())) {
+                logger.info("Marking build status as " + getMark_build_status() + " is ignored since exit code is: "
+                        + exitCode);
+            }
 
-                if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
-                    // Throw exception with stack trace for undefined errors
-                    throw new ScannerException(exitMessage, e);
+            if (exitCode == ErrorCode.SCAN_SUCCESSFUL) {
+                logger.println(
+                        "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+            } else {
+                Result result =
+                        ScanParametersFactory.getBuildResultIfIssuesAreFound(exitCode, getMark_build_status(), logger);
+                if (result != null) {
+                    logger.info("Marking build as " + result + " since issues are present");
+                    handleNonZeroExitCode(exitCode, result, exitMessage, e, logger);
+                } else {
+                    handleNonZeroExitCode(exitCode, Result.FAILURE, exitMessage, e, logger);
                 }
+            }
+        }
 
+        private void handleNonZeroExitCode(
+                int exitCode, Result result, String exitMessage, Exception e, LoggerWrapper logger)
+                throws PluginExceptionHandler, ScannerException {
+            flowNode.addOrReplaceAction(new WarningAction(result)); // Setting the stage result
+            run.setResult(result); // Setting the build result
+
+            logger.println(
+                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+
+            if (Objects.equals(isReturn_status(), true)) {
+                return;
+            }
+
+            if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
+                // Throw exception with stack trace for undefined errors
+                throw new ScannerException(exitMessage, e);
+            } else {
                 throw new PluginExceptionHandler(exitMessage);
             }
         }

@@ -1,15 +1,8 @@
 package io.jenkins.plugins.synopsys.security.scan.extension.freestyle;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import hudson.EnvVars;
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
-import hudson.Util;
-import hudson.model.AbstractProject;
-import hudson.model.FreeStyleProject;
-import hudson.model.Run;
-import hudson.model.TaskListener;
+import hudson.*;
+import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.ListBoxModel;
@@ -20,6 +13,8 @@ import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
 import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.global.Utility;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.BuildStatus;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import java.util.Map;
 import jenkins.tasks.SimpleBuildStep;
@@ -77,6 +72,15 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private Boolean polaris_reports_sarif_groupSCAIssues;
     private String polaris_reports_sarif_severities;
     private Boolean polaris_reports_sarif_groupSCAIssues_temporary;
+    private String project_source_archive;
+    private String polaris_assessment_mode;
+    private String project_source_excludes;
+    private Boolean project_source_preserveSymLinks;
+    private Boolean project_source_preserveSymLinks_actualValue;
+    private String project_directory;
+    private String coverity_project_directory;
+    private String blackduck_project_directory;
+    private String polaris_project_directory;
 
     private String bitbucket_user_name;
     private transient String bitbucket_token;
@@ -87,6 +91,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private Boolean include_diagnostics;
     private Boolean network_airgap;
     private Boolean return_status;
+
+    private String mark_build_status;
 
     @DataBoundConstructor
     public SecurityScanFreestyle() {
@@ -273,6 +279,42 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         return polaris_reports_sarif_groupSCAIssues_temporary;
     }
 
+    public String getPolaris_assessment_mode() {
+        return polaris_assessment_mode;
+    }
+
+    public String getProject_source_archive() {
+        return project_source_archive;
+    }
+
+    public Boolean isProject_source_preserveSymLinks() {
+        return project_source_preserveSymLinks;
+    }
+
+    public Boolean isProject_source_preserveSymLinks_actualValue() {
+        return project_source_preserveSymLinks_actualValue;
+    }
+
+    public String getProject_source_excludes() {
+        return project_source_excludes;
+    }
+
+    public String getProject_directory() {
+        return project_directory;
+    }
+
+    public String getBlackduck_project_directory() {
+        return blackduck_project_directory;
+    }
+
+    public String getCoverity_project_directory() {
+        return coverity_project_directory;
+    }
+
+    public String getPolaris_project_directory() {
+        return polaris_project_directory;
+    }
+
     public String getBitbucket_user_name() {
         return bitbucket_user_name;
     }
@@ -311,6 +353,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public Boolean isReturn_status() {
         return return_status;
+    }
+
+    public String getMark_build_status() {
+        return mark_build_status;
     }
 
     @DataBoundSetter
@@ -377,12 +423,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     @DataBoundSetter
     public void setBlackduck_reports_sarif_groupSCAIssues(Boolean blackduck_reports_sarif_groupSCAIssues) {
-        if (blackduck_reports_sarif_create != null) {
-            this.blackduck_reports_sarif_groupSCAIssues =
-                    this.blackduck_reports_sarif_groupSCAIssues_temporary = blackduck_reports_sarif_groupSCAIssues;
-        } else {
-            this.blackduck_reports_sarif_groupSCAIssues = null;
-        }
+        this.blackduck_reports_sarif_groupSCAIssues = this.blackduck_reports_sarif_groupSCAIssues_temporary =
+                blackduck_reports_sarif_groupSCAIssues ? true : false;
     }
 
     @DataBoundSetter
@@ -518,12 +560,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     @DataBoundSetter
     public void setPolaris_reports_sarif_groupSCAIssues(Boolean polaris_reports_sarif_groupSCAIssues) {
-        if (polaris_reports_sarif_create != null) {
-            this.polaris_reports_sarif_groupSCAIssues =
-                    this.polaris_reports_sarif_groupSCAIssues_temporary = polaris_reports_sarif_groupSCAIssues;
-        } else {
-            this.polaris_reports_sarif_groupSCAIssues = null;
-        }
+        this.polaris_reports_sarif_groupSCAIssues = this.polaris_reports_sarif_groupSCAIssues_temporary =
+                polaris_reports_sarif_groupSCAIssues ? true : false;
     }
 
     @DataBoundSetter
@@ -539,6 +577,51 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setBitbucket_user_name(String bitbucket_user_name) {
         this.bitbucket_user_name = bitbucket_user_name;
+    }
+
+    @DataBoundSetter
+    public void setPolaris_assessment_mode(String polaris_assessment_mode) {
+        this.polaris_assessment_mode = Util.fixEmptyAndTrim(polaris_assessment_mode);
+    }
+
+    @DataBoundSetter
+    public void setProject_source_archive(String project_source_archive) {
+        this.project_source_archive = Util.fixEmptyAndTrim(project_source_archive);
+    }
+
+    @DataBoundSetter
+    public void setProject_source_preserveSymLinks(Boolean project_source_preserveSymLinks) {
+        this.project_source_preserveSymLinks =
+                this.project_source_preserveSymLinks_actualValue = project_source_preserveSymLinks;
+    }
+
+    @DataBoundSetter
+    public void setProject_source_excludes(String project_source_excludes) {
+        this.project_source_excludes = Util.fixEmptyAndTrim(project_source_excludes);
+    }
+
+    @DataBoundSetter
+    public void setProject_directory(String project_directory) {
+        this.project_directory = Util.fixEmptyAndTrim(project_directory);
+    }
+
+    @DataBoundSetter
+    public void setCoverity_project_directory(String coverity_project_directory) {
+        if (getProduct().contentEquals(SecurityProduct.COVERITY.name().toLowerCase()))
+            this.coverity_project_directory = this.project_directory = Util.fixEmptyAndTrim(coverity_project_directory);
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_project_directory(String blackduck_project_directory) {
+        if (getProduct().contentEquals(SecurityProduct.BLACKDUCK.name().toLowerCase()))
+            this.blackduck_project_directory =
+                    this.project_directory = Util.fixEmptyAndTrim(blackduck_project_directory);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_project_directory(String polaris_project_directory) {
+        if (getProduct().contentEquals(SecurityProduct.POLARIS.name().toLowerCase()))
+            this.polaris_project_directory = this.project_directory = Util.fixEmptyAndTrim(polaris_project_directory);
     }
 
     @DataBoundSetter
@@ -586,6 +669,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         this.return_status = return_status ? true : null;
     }
 
+    @DataBoundSetter
+    public void setMark_build_status(String mark_build_status) {
+        this.mark_build_status = mark_build_status;
+    }
+
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)
             throws PluginExceptionHandler {
         return ScanParametersFactory.preparePipelineParametersMap(
@@ -624,21 +712,38 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
                 logger.info(exitMessage);
             }
 
-            logger.info(
-                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
-
-            handleExitCode(exitCode, exitMessage, unknownException);
+            handleExitCode(run, logger, exitCode, exitMessage, unknownException);
         }
     }
 
-    private void handleExitCode(int exitCode, String exitMessage, Exception e) {
-        if (exitCode != 0) {
-            if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
-                // Throw exception with stack trace for undefined errors
-                throw new RuntimeException(new ScannerException(exitMessage, e));
+    private void handleExitCode(Run<?, ?> run, LoggerWrapper logger, int exitCode, String exitMessage, Exception e) {
+        if (exitCode != ErrorCode.BRIDGE_BUILD_BREAK && !Utility.isStringNullOrBlank(this.getMark_build_status())) {
+            logger.info("Marking build status as " + this.getMark_build_status() + " is ignored since exit code is: "
+                    + exitCode);
+        }
+
+        if (exitCode == ErrorCode.SCAN_SUCCESSFUL) {
+            logger.info(
+                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+        } else {
+            Result result =
+                    ScanParametersFactory.getBuildResultIfIssuesAreFound(exitCode, this.getMark_build_status(), logger);
+
+            if (result != null) {
+                logger.info("Marking build as " + result + " since issues are present");
+                run.setResult(result);
             }
 
-            throw new RuntimeException(new PluginExceptionHandler(exitMessage));
+            logger.info(
+                    "**************************** END EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+
+            if (result == null) {
+                if (exitCode == ErrorCode.UNDEFINED_PLUGIN_ERROR) {
+                    throw new RuntimeException(new ScannerException(exitMessage, e));
+                } else {
+                    throw new RuntimeException(new PluginExceptionHandler(exitMessage));
+                }
+            }
         }
     }
 
@@ -665,6 +770,27 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
                 String value = product.name().toLowerCase();
                 items.add(new ListBoxModel.Option(label, value));
             }
+            return items;
+        }
+
+        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
+        public ListBoxModel doFillMark_build_statusItems() {
+            ListBoxModel items = new ListBoxModel();
+
+            items.add("Select", "");
+            items.add(BuildStatus.FAILURE.name(), BuildStatus.FAILURE.name());
+            items.add(BuildStatus.UNSTABLE.name(), BuildStatus.UNSTABLE.name());
+            items.add(BuildStatus.SUCCESS.name(), BuildStatus.SUCCESS.name());
+
+            return items;
+        }
+
+        @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
+        public ListBoxModel doFillPolaris_assessment_modeItems() {
+            ListBoxModel items = new ListBoxModel();
+            items.add(new ListBoxModel.Option("Select", ""));
+            items.add(new ListBoxModel.Option("CI", "CI"));
+            items.add(new ListBoxModel.Option("SOURCE_UPLOAD", "SOURCE_UPLOAD"));
             return items;
         }
     }

@@ -9,6 +9,7 @@ import hudson.EnvVars;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
+import io.jenkins.plugins.synopsys.security.scan.input.project.Project;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -105,5 +106,27 @@ public class CoverityParametersServiceTest {
         assertEquals(coverity.getVersion(), "2023.6.0");
         assertTrue(coverity.isLocal());
         assertTrue(coverity.getAutomation().getPrComment());
+    }
+
+    @Test
+    void prepareScanInputForBridgeForCoverityAndProjectDirectoryTest() {
+        Map<String, Object> coverityParameters = new HashMap<>();
+
+        coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, TEST_COVERITY_URL);
+        coverityParameters.put(ApplicationConstants.COVERITY_USER_KEY, TEST_COVERITY_USER_NAME);
+        coverityParameters.put(ApplicationConstants.COVERITY_PASSPHRASE_KEY, TEST_COVERITY_USER_PASSWORD);
+        coverityParameters.put(ApplicationConstants.COVERITY_PROJECT_NAME_KEY, "fake-repo");
+        coverityParameters.put(ApplicationConstants.COVERITY_STREAM_NAME_KEY, "fake-repo-branch");
+        coverityParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, "DIR/TEST");
+
+        Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(coverityParameters);
+        Project project = coverityParametersService.prepareProjectObjectForBridge(coverityParameters);
+
+        assertEquals(coverity.getConnect().getUrl(), TEST_COVERITY_URL);
+        assertEquals(coverity.getConnect().getUser().getName(), TEST_COVERITY_USER_NAME);
+        assertEquals(coverity.getConnect().getUser().getPassword(), TEST_COVERITY_USER_PASSWORD);
+        assertEquals(coverity.getConnect().getProject().getName(), "fake-repo");
+        assertEquals(coverity.getConnect().getStream().getName(), "fake-repo-branch");
+        assertEquals(project.getDirectory(), "DIR/TEST");
     }
 }

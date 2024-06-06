@@ -8,10 +8,14 @@ import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Parent;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Prcomment;
+import io.jenkins.plugins.synopsys.security.scan.input.project.Project;
+import io.jenkins.plugins.synopsys.security.scan.input.project.Source;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PolarisParametersService {
     private final LoggerWrapper logger;
@@ -68,7 +72,8 @@ public class PolarisParametersService {
         if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
             Arrays.asList(
                             ApplicationConstants.POLARIS_APPLICATION_NAME_KEY,
-                            ApplicationConstants.POLARIS_PROJECT_NAME_KEY)
+                            ApplicationConstants.POLARIS_PROJECT_NAME_KEY,
+                            ApplicationConstants.POLARIS_BRANCH_NAME_KEY)
                     .forEach(key -> {
                         boolean isKeyValid = polarisParameters.containsKey(key)
                                 && polarisParameters.get(key) != null
@@ -147,6 +152,10 @@ public class PolarisParametersService {
             setAssessmentTypes(polarisParameters, polaris);
         }
 
+        if (polarisParameters.containsKey(ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY)) {
+            setAssessmentMode(polarisParameters, polaris);
+        }
+
         return polaris;
     }
 
@@ -156,9 +165,21 @@ public class PolarisParametersService {
                 .toString()
                 .trim();
         if (!assessmentTypesValue.isEmpty()) {
-            List<String> assessmentTypes =
-                    Arrays.asList(assessmentTypesValue.toUpperCase().split(","));
+            List<String> assessmentTypes = Stream.of(
+                            assessmentTypesValue.toUpperCase().split(","))
+                    .map(String::trim)
+                    .collect(Collectors.toList());
             polaris.getAssessmentTypes().setTypes(assessmentTypes);
+        }
+    }
+
+    private void setAssessmentMode(Map<String, Object> polarisParameters, Polaris polaris) {
+        String assessmentModeValue = polarisParameters
+                .get(ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY)
+                .toString()
+                .trim();
+        if (!assessmentModeValue.isEmpty()) {
+            polaris.getAssessmentTypes().setMode(assessmentModeValue);
         }
     }
 
@@ -206,5 +227,61 @@ public class PolarisParametersService {
                 polaris.getBranch().setParent(parent);
             }
         }
+    }
+
+    public Project prepareProjectObjectForBridge(Map<String, Object> polarisParameters) {
+        Project project = null;
+        Source source = null;
+
+        boolean hasProjectDirectory = polarisParameters.containsKey(ApplicationConstants.PROJECT_DIRECTORY_KEY);
+        boolean hasSourceArchive = polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY);
+        boolean hasPreserveSymLinks =
+                polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY);
+        boolean hasSourceExcludes = polarisParameters.containsKey(ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY);
+
+        if (hasProjectDirectory || hasSourceArchive || hasPreserveSymLinks || hasSourceExcludes) {
+            project = new Project();
+            source = new Source();
+
+            if (hasProjectDirectory) {
+                String projectDirectory = polarisParameters
+                        .get(ApplicationConstants.PROJECT_DIRECTORY_KEY)
+                        .toString()
+                        .trim();
+                project.setDirectory(projectDirectory);
+            }
+
+            if (hasSourceArchive) {
+                String archive = polarisParameters
+                        .get(ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY)
+                        .toString()
+                        .trim();
+                source.setArchive(archive);
+                project.setSource(source);
+            }
+
+            if (hasPreserveSymLinks) {
+                Boolean preserveSymLinks =
+                        (Boolean) polarisParameters.get(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY);
+                source.setPreserveSymLinks(preserveSymLinks);
+                project.setSource(source);
+            }
+
+            if (hasSourceExcludes) {
+                String sourceExcludesValue = polarisParameters
+                        .get(ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY)
+                        .toString()
+                        .trim();
+                if (!sourceExcludesValue.isEmpty()) {
+                    List<String> sourceExcludes = Stream.of(sourceExcludesValue.split(","))
+                            .map(String::trim)
+                            .collect(Collectors.toList());
+                    source.setExcludes(sourceExcludes);
+                    project.setSource(source);
+                }
+            }
+        }
+
+        return project;
     }
 }

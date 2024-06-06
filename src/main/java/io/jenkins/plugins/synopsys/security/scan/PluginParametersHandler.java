@@ -10,6 +10,7 @@ import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
 import io.jenkins.plugins.synopsys.security.scan.global.LogMessages;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
+import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.bridge.BridgeDownloadParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
 import java.util.HashMap;
@@ -112,7 +113,7 @@ public class PluginParametersHandler {
 
         logMessagesForProductParameters(parametersCopy, securityProducts);
 
-        logMessagesForBridgeParameters(parametersCopy);
+        logMessagesForAdditionalParameters(parametersCopy);
 
         if ((Objects.equals(parametersCopy.get(ApplicationConstants.BLACKDUCK_REPORTS_SARIF_CREATE_KEY), true)
                         || Objects.equals(
@@ -131,7 +132,7 @@ public class PluginParametersHandler {
             Map<String, Object> filteredParameters = filterParameter(scanParameters);
             for (Map.Entry<String, Object> entry : filteredParameters.entrySet()) {
                 String key = entry.getKey();
-                if (key.contains(securityProduct)) {
+                if (key.contains(securityProduct) || key.equals("project_directory")) {
                     Object value = entry.getValue();
                     if (key.equals(ApplicationConstants.BLACKDUCK_TOKEN_KEY)
                             || key.equals(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY)
@@ -139,16 +140,24 @@ public class PluginParametersHandler {
                         value = LogMessages.ASTERISKS;
                     }
                     logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
-                    logDeprecatedParameterWarning(key);
+                    if (key.equals(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY)
+                            || key.equals(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY)) {
+                        logger.warn(key + " is deprecated, use " + getNewMappedParameterName(key));
+                    }
+                } else if (securityProduct.equals(SecurityProduct.POLARIS.name().toLowerCase())
+                        && key.startsWith("project_")) {
+                    Object value = entry.getValue();
+                    logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
                 }
+                logDeprecatedParameterWarning(key);
             }
 
             logger.println(LogMessages.DASHES);
         }
     }
 
-    private void logMessagesForBridgeParameters(Map<String, Object> scanParameters) {
-        logger.info("Parameters for bridge:");
+    private void logMessagesForAdditionalParameters(Map<String, Object> scanParameters) {
+        logger.info("Parameters for additional configuration:");
 
         for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
             String key = entry.getKey();
@@ -157,7 +166,7 @@ public class PluginParametersHandler {
                     || key.equals(ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY)
                     || key.equals(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY)
                     || key.equals(ApplicationConstants.NETWORK_AIRGAP_KEY)
-                    || key.equals(ApplicationConstants.RETURN_STATUS_KEY)) {
+                    || key.equals(ApplicationConstants.MARK_BUILD_STATUS)) {
                 Object value = entry.getValue();
                 logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
             }
