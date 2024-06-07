@@ -140,10 +140,6 @@ public class PluginParametersHandler {
                         value = LogMessages.ASTERISKS;
                     }
                     logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
-                    if (key.equals(ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY)
-                            || key.equals(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY)) {
-                        logger.warn(key + " is deprecated, use " + getNewMappedParameterName(key));
-                    }
                 } else if (securityProduct.equals(SecurityProduct.POLARIS.name().toLowerCase())
                         && key.startsWith("project_")) {
                     Object value = entry.getValue();
