@@ -61,7 +61,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private Boolean blackduck_reports_sarif_groupSCAIssues;
     private String blackduck_reports_sarif_severities;
     private Boolean blackduck_reports_sarif_groupSCAIssues_temporary;
-    private String blackduck_search_depth;
+    private Integer blackduck_search_depth;
     private String blackduck_config_path;
     private String blackduck_args;
 
@@ -174,7 +174,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return blackduck_download_url;
     }
 
-    public String getBlackduck_search_depth() {
+    public Integer getBlackduck_search_depth() {
         return blackduck_search_depth;
     }
 
@@ -477,8 +477,8 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     }
 
     @DataBoundSetter
-    public void setBlackduck_search_depth(String blackduck_search_depth) {
-        this.blackduck_search_depth = Util.fixEmptyAndTrim(blackduck_search_depth);
+    public void setBlackduck_search_depth(Integer blackduck_search_depth) {
+        this.blackduck_search_depth = blackduck_search_depth;
     }
 
     @DataBoundSetter

@@ -23,7 +23,7 @@ public interface SecurityScan {
 
     public String getBlackduck_download_url();
 
-    public String getBlackduck_search_depth();
+    public Integer getBlackduck_search_depth();
 
     public String getBlackduck_config_path();
 

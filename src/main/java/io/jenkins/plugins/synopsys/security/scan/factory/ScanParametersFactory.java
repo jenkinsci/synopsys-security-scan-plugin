@@ -244,7 +244,7 @@ public class ScanParametersFactory {
             blackDuckParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
         }
 
-        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_search_depth())) {
+        if (securityScan.getBlackduck_search_depth() != null) {
             blackDuckParameters.put(
                     ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY, securityScan.getBlackduck_search_depth());
         }
