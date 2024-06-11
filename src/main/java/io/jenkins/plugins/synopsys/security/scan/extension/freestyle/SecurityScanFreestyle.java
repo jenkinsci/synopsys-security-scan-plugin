@@ -89,7 +89,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String blackduck_project_directory;
     private String polaris_project_directory;
 
-    private String bitbucket_user_name;
+    private String bitbucket_username;
     private transient String bitbucket_token;
 
     private String synopsys_bridge_download_url;
@@ -350,8 +350,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         return polaris_project_directory;
     }
 
-    public String getBitbucket_user_name() {
-        return bitbucket_user_name;
+    public String getBitbucket_username() {
+        return bitbucket_username;
     }
 
     public String getBitbucket_token() {
@@ -645,8 +645,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     }
 
     @DataBoundSetter
-    public void setBitbucket_user_name(String bitbucket_user_name) {
-        this.bitbucket_user_name = bitbucket_user_name;
+    public void setBitbucket_username(String bitbucket_username) {
+        this.bitbucket_username = bitbucket_username;
     }
 
     @DataBoundSetter

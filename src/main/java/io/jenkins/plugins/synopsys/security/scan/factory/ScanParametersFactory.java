@@ -65,8 +65,8 @@ public class ScanParametersFactory {
             parametersMap.putAll(prepareBlackDuckParametersMap(securityScan));
             parametersMap.putAll(prepareSarifReportParametersMap(securityScan));
 
-            if (!Utility.isStringNullOrBlank(securityScan.getBitbucket_user_name())) {
-                parametersMap.put(ApplicationConstants.BITBUCKET_USERNAME_KEY, securityScan.getBitbucket_user_name());
+            if (!Utility.isStringNullOrBlank(securityScan.getBitbucket_username())) {
+                parametersMap.put(ApplicationConstants.BITBUCKET_USERNAME_KEY, securityScan.getBitbucket_username());
             }
             if (!Utility.isStringNullOrBlank(securityScan.getBitbucket_token())) {
                 parametersMap.put(ApplicationConstants.BITBUCKET_TOKEN_KEY, securityScan.getBitbucket_token());
