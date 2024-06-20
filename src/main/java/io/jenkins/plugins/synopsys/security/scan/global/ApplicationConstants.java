@@ -130,4 +130,6 @@ public class ApplicationConstants {
 
     public static final String MULTIBRANCH_JOB_TYPE_NAME = "WorkflowMultiBranchProject";
     public static final String FREESTYLE_JOB_TYPE_NAME = "FreeStyleProject";
+
+    public static final String DEFAULT_DROPDOWN_OPTION_NAME = "Select";
 }
