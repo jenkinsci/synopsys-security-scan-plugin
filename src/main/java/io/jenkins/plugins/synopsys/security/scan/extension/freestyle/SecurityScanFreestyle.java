@@ -10,10 +10,7 @@ import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandle
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
-import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
-import io.jenkins.plugins.synopsys.security.scan.global.ExceptionMessages;
-import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
-import io.jenkins.plugins.synopsys.security.scan.global.Utility;
+import io.jenkins.plugins.synopsys.security.scan.global.*;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.BuildStatus;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import java.util.Map;
@@ -763,7 +760,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
         public ListBoxModel doFillProductItems() {
             ListBoxModel items = new ListBoxModel();
-            items.add(new ListBoxModel.Option("Select", "select"));
+            items.add(new ListBoxModel.Option(ApplicationConstants.DEFAULT_DROPDOWN_OPTION_NAME, "select"));
 
             for (SecurityProduct product : SecurityProduct.values()) {
                 String label = product.getProductLabel();
@@ -777,7 +774,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         public ListBoxModel doFillMark_build_statusItems() {
             ListBoxModel items = new ListBoxModel();
 
-            items.add("Select", "");
+            items.add(ApplicationConstants.DEFAULT_DROPDOWN_OPTION_NAME, "");
             items.add(BuildStatus.FAILURE.name(), BuildStatus.FAILURE.name());
             items.add(BuildStatus.UNSTABLE.name(), BuildStatus.UNSTABLE.name());
             items.add(BuildStatus.SUCCESS.name(), BuildStatus.SUCCESS.name());
@@ -788,7 +785,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
         public ListBoxModel doFillPolaris_assessment_modeItems() {
             ListBoxModel items = new ListBoxModel();
-            items.add(new ListBoxModel.Option("Select", ""));
+            items.add(new ListBoxModel.Option(ApplicationConstants.DEFAULT_DROPDOWN_OPTION_NAME, ""));
             items.add(new ListBoxModel.Option("CI", "CI"));
             items.add(new ListBoxModel.Option("SOURCE_UPLOAD", "SOURCE_UPLOAD"));
             return items;
