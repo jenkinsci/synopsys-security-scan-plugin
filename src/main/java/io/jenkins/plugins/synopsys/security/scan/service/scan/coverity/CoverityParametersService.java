@@ -166,7 +166,7 @@ public class CoverityParametersService {
             setCleanCommand(coverityParameters, coverity);
         }
 
-        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_BUILD_COMMAND_KEY)) {
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_CONFIG_PATH_KEY)) {
             setConfigCommand(coverityParameters, coverity);
         }
 
