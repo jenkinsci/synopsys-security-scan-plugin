@@ -158,6 +158,25 @@ public class CoverityParametersService {
             setCoverityLocal(coverityParameters, coverity);
         }
 
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_BUILD_COMMAND_KEY)) {
+            setBuildCommand(coverityParameters, coverity);
+        }
+
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY)) {
+            setCleanCommand(coverityParameters, coverity);
+        }
+
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_BUILD_COMMAND_KEY)) {
+            setConfigCommand(coverityParameters, coverity);
+        }
+
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_ARGS_KEY)) {
+            coverity.setArgs(coverityParameters
+                    .get(ApplicationConstants.COVERITY_ARGS_KEY)
+                    .toString()
+                    .trim());
+        }
+
         return coverity;
     }
 
@@ -209,6 +228,42 @@ public class CoverityParametersService {
             Policy policy = new Policy();
             policy.setView(value);
             coverity.getConnect().setPolicy(policy);
+        }
+    }
+
+    private void setBuildCommand(Map<String, Object> coverityParameters, Coverity coverity) {
+        String value = coverityParameters
+                .get(ApplicationConstants.COVERITY_BUILD_COMMAND_KEY)
+                .toString()
+                .trim();
+        if (!value.isBlank()) {
+            Build build = new Build();
+            build.setCommand(value);
+            coverity.setBuild(build);
+        }
+    }
+
+    private void setCleanCommand(Map<String, Object> coverityParameters, Coverity coverity) {
+        String value = coverityParameters
+                .get(ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY)
+                .toString()
+                .trim();
+        if (!value.isBlank()) {
+            Clean clean = new Clean();
+            clean.setCommand(value);
+            coverity.setClean(clean);
+        }
+    }
+
+    private void setConfigCommand(Map<String, Object> coverityParameters, Coverity coverity) {
+        String value = coverityParameters
+                .get(ApplicationConstants.COVERITY_CONFIG_PATH_KEY)
+                .toString()
+                .trim();
+        if (!value.isBlank()) {
+            Config config = new Config();
+            config.setPath(value);
+            coverity.setConfig(config);
         }
     }
 

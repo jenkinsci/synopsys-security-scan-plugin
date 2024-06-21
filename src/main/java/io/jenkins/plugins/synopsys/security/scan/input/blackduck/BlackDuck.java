@@ -26,6 +26,15 @@ public class BlackDuck {
     @JsonProperty("reports")
     private Reports reports;
 
+    @JsonProperty("search")
+    private Search search;
+
+    @JsonProperty("config")
+    private Config config;
+
+    @JsonProperty("args")
+    private String args;
+
     public String getUrl() {
         return url;
     }
@@ -80,5 +89,29 @@ public class BlackDuck {
 
     public void setReports(Reports reports) {
         this.reports = reports;
+    }
+
+    public Search getSearch() {
+        return search;
+    }
+
+    public void setSearch(Search search) {
+        this.search = search;
+    }
+
+    public Config getConfig() {
+        return config;
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
+    }
+
+    public String getArgs() {
+        return args;
+    }
+
+    public void setArgs(String args) {
+        this.args = args;
     }
 }
