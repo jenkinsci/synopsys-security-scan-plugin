@@ -659,7 +659,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setProject_source_preserveSymLinks(Boolean project_source_preserveSymLinks) {
         this.project_source_preserveSymLinks =
-                this.project_source_preserveSymLinks_actualValue = project_source_preserveSymLinks;
+                this.project_source_preserveSymLinks_actualValue = project_source_preserveSymLinks ? true : null;
     }
 
     @DataBoundSetter

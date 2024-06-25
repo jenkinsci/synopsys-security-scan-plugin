@@ -125,9 +125,9 @@
             <f:entry field="project_source_excludes" title="Project Source Excludes (Optional)">
                 <f:textbox/>
             </f:entry>
-<!--            <f:entry field="project_source_preserveSymLinks" title="Project Source Preserve Sym Links (Optional)">-->
-<!--                <f:checkbox checked="${instance.isProject_source_preserveSymLinks() == true}"/>-->
-<!--            </f:entry>-->
+            <f:entry field="project_source_preserveSymLinks" title="Project Source Preserve Sym Links (Optional)">
+                <f:checkbox checked="${instance.isProject_source_preserveSymLinks() == true}"/>
+            </f:entry>
         </f:section>
     </div>
 
