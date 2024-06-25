@@ -53,7 +53,9 @@ public class ApplicationConstants {
     public static final String BLACKDUCK_REPORTS_SARIF_FILE_PATH_KEY = "blackduck_reports_sarif_file_path";
     public static final String BLACKDUCK_REPORTS_SARIF_GROUPSCAISSUES_KEY = "blackduck_reports_sarif_groupSCAIssues";
     public static final String BLACKDUCK_REPORTS_SARIF_SEVERITIES_KEY = "blackduck_reports_sarif_severities";
-
+    public static final String BLACKDUCK_SEARCH_DEPTH_KEY = "blackduck_search_depth";
+    public static final String BLACKDUCK_CONFIG_PATH_KEY = "blackduck_config_path";
+    public static final String BLACKDUCK_ARGS_KEY = "blackduck_args";
     public static final String COVERITY_URL_KEY = "coverity_url";
     public static final String COVERITY_USER_KEY = "coverity_user";
     public static final String COVERITY_PASSPHRASE_KEY = "coverity_passphrase";
@@ -61,6 +63,10 @@ public class ApplicationConstants {
     public static final String COVERITY_STREAM_NAME_KEY = "coverity_stream_name";
     public static final String COVERITY_POLICY_VIEW_KEY = "coverity_policy_view";
     public static final String COVERITY_INSTALL_DIRECTORY_KEY = "coverity_install_directory";
+    public static final String COVERITY_BUILD_COMMAND_KEY = "coverity_build_command";
+    public static final String COVERITY_CLEAN_COMMAND_KEY = "coverity_clean_command";
+    public static final String COVERITY_CONFIG_PATH_KEY = "coverity_config_path";
+    public static final String COVERITY_ARGS_KEY = "coverity_args";
 
     @Deprecated
     public static final String COVERITY_AUTOMATION_PRCOMMENT_KEY = "coverity_automation_prcomment";

@@ -23,6 +23,12 @@ public interface SecurityScan {
 
     public String getBlackduck_download_url();
 
+    public Integer getBlackduck_search_depth();
+
+    public String getBlackduck_config_path();
+
+    public String getBlackduck_args();
+
     public String getCoverity_url();
 
     public String getCoverity_user();
@@ -42,6 +48,14 @@ public interface SecurityScan {
     public Boolean isCoverity_prComment_enabled();
 
     public Boolean isCoverity_prComment_enabled_temporary();
+
+    public String getCoverity_build_command();
+
+    public String getCoverity_clean_command();
+
+    public String getCoverity_config_path();
+
+    public String getCoverity_args();
 
     public String getCoverity_version();
 

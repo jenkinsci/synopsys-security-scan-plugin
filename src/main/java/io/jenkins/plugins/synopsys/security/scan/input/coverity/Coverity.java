@@ -19,6 +19,18 @@ public class Coverity {
     @JsonProperty("local")
     private Boolean local;
 
+    @JsonProperty("build")
+    private Build build;
+
+    @JsonProperty("clean")
+    private Clean clean;
+
+    @JsonProperty("config")
+    private Config config;
+
+    @JsonProperty("args")
+    private String args;
+
     public Coverity() {
         connect = new Connect();
     }
@@ -61,5 +73,37 @@ public class Coverity {
 
     public void setLocal(Boolean local) {
         this.local = local;
+    }
+
+    public Build getBuild() {
+        return build;
+    }
+
+    public void setBuild(Build build) {
+        this.build = build;
+    }
+
+    public Clean getClean() {
+        return clean;
+    }
+
+    public void setClean(Clean clean) {
+        this.clean = clean;
+    }
+
+    public Config getConfig() {
+        return config;
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
+    }
+
+    public String getArgs() {
+        return args;
+    }
+
+    public void setArgs(String args) {
+        this.args = args;
     }
 }

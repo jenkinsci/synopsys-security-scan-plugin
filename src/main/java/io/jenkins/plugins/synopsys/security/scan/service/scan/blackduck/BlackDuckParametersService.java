@@ -113,7 +113,31 @@ public class BlackDuckParametersService {
                     .get(ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY)
                     .toString()
                     .trim();
-            setDownloadUrl(blackDuck, value);
+            setDownloadUrl(blackDuck, String.valueOf(Integer.parseInt(value)));
+        }
+
+        if (blackDuckParameters.containsKey(ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY)) {
+            String value = blackDuckParameters
+                    .get(ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY)
+                    .toString()
+                    .trim();
+            setSearchDepth(blackDuck, Integer.parseInt(value));
+        }
+
+        if (blackDuckParameters.containsKey(ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY)) {
+            String value = blackDuckParameters
+                    .get(ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY)
+                    .toString()
+                    .trim();
+            setConfigPath(blackDuck, value);
+        }
+
+        if (blackDuckParameters.containsKey(ApplicationConstants.BLACKDUCK_ARGS_KEY)) {
+            String value = blackDuckParameters
+                    .get(ApplicationConstants.BLACKDUCK_ARGS_KEY)
+                    .toString()
+                    .trim();
+            blackDuck.setArgs(value);
         }
 
         return blackDuck;
@@ -175,6 +199,22 @@ public class BlackDuckParametersService {
             Download download = new Download();
             download.setUrl(value);
             blackDuck.setDownload(download);
+        }
+    }
+
+    private void setSearchDepth(BlackDuck blackDuck, Integer value) {
+        if (value != null) {
+            Search search = new Search();
+            search.setDepth(value);
+            blackDuck.setSearch(search);
+        }
+    }
+
+    private void setConfigPath(BlackDuck blackDuck, String value) {
+        if (value != null) {
+            Config config = new Config();
+            config.setPath(value);
+            blackDuck.setConfig(config);
         }
     }
 

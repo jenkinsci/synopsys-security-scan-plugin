@@ -24,6 +24,10 @@ public class CoverityParametersServiceTest {
     private final String TEST_COVERITY_URL = "https://fake.coverity.url";
     private final String TEST_COVERITY_USER_NAME = "fake-user";
     private final String TEST_COVERITY_USER_PASSWORD = "fakeUserPassword";
+    private final String TEST_COVERITY_CLEAN_COMMAND = "mvn clean";
+    private final String TEST_COVERITY_BUILD_COMMAND = "mvn clean install";
+    private final String TEST_COVERITY_ARGS = "-o capture.build.clean-command=\"mvn clean\" -- mvn clean install";
+    private final String TEST_COVERITY_CONFIG_FILE_PATH = "DIR/CONFIG/coverity.yml";
 
     @BeforeEach
     void setUp() {
@@ -128,5 +132,29 @@ public class CoverityParametersServiceTest {
         assertEquals(coverity.getConnect().getProject().getName(), "fake-repo");
         assertEquals(coverity.getConnect().getStream().getName(), "fake-repo-branch");
         assertEquals(project.getDirectory(), "DIR/TEST");
+    }
+
+    @Test
+    void prepareScanBridgeInputForCoverityArbitraryParamsTest() {
+        Map<String, Object> coverityParameters = new HashMap<>();
+
+        coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, TEST_COVERITY_URL);
+        coverityParameters.put(ApplicationConstants.COVERITY_USER_KEY, TEST_COVERITY_USER_NAME);
+        coverityParameters.put(ApplicationConstants.COVERITY_PASSPHRASE_KEY, TEST_COVERITY_USER_PASSWORD);
+
+        coverityParameters.put(ApplicationConstants.COVERITY_BUILD_COMMAND_KEY, TEST_COVERITY_BUILD_COMMAND);
+        coverityParameters.put(ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY, TEST_COVERITY_CLEAN_COMMAND);
+        coverityParameters.put(ApplicationConstants.COVERITY_CONFIG_PATH_KEY, TEST_COVERITY_CONFIG_FILE_PATH);
+        coverityParameters.put(ApplicationConstants.COVERITY_ARGS_KEY, TEST_COVERITY_ARGS);
+
+        Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(coverityParameters);
+
+        assertEquals(coverity.getConnect().getUrl(), TEST_COVERITY_URL);
+        assertEquals(coverity.getConnect().getUser().getName(), TEST_COVERITY_USER_NAME);
+        assertEquals(coverity.getConnect().getUser().getPassword(), TEST_COVERITY_USER_PASSWORD);
+        assertEquals(coverity.getBuild().getCommand(), TEST_COVERITY_BUILD_COMMAND);
+        assertEquals(coverity.getClean().getCommand(), TEST_COVERITY_CLEAN_COMMAND);
+        assertEquals(coverity.getConfig().getPath(), TEST_COVERITY_CONFIG_FILE_PATH);
+        assertEquals(coverity.getArgs(), TEST_COVERITY_ARGS);
     }
 }
