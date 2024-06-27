@@ -88,6 +88,13 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String coverity_project_directory;
     private String blackduck_project_directory;
     private String polaris_project_directory;
+    private Integer polaris_sca_search_depth;
+    private String polaris_sca_config_path;
+    private String polaris_sca_args;
+    private String polaris_sast_build_command;
+    private String polaris_sast_clean_command;
+    private String polaris_sast_config_path;
+    private String polaris_sast_args;
 
     private String bitbucket_username;
     private transient String bitbucket_token;
@@ -316,6 +323,34 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public String getPolaris_assessment_mode() {
         return polaris_assessment_mode;
+    }
+
+    public Integer getPolaris_sca_search_depth() {
+        return polaris_sca_search_depth;
+    }
+
+    public String getPolaris_sca_config_path() {
+        return polaris_sca_config_path;
+    }
+
+    public String getPolaris_sca_args() {
+        return polaris_sca_args;
+    }
+
+    public String getPolaris_sast_build_command() {
+        return polaris_sast_build_command;
+    }
+
+    public String getPolaris_sast_clean_command() {
+        return polaris_sast_clean_command;
+    }
+
+    public String getPolaris_sast_config_path() {
+        return polaris_sast_config_path;
+    }
+
+    public String getPolaris_sast_args() {
+        return polaris_sast_args;
     }
 
     public String getProject_source_archive() {
@@ -652,6 +687,41 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setPolaris_assessment_mode(String polaris_assessment_mode) {
         this.polaris_assessment_mode = Util.fixEmptyAndTrim(polaris_assessment_mode);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_sca_search_depth(Integer polaris_sca_search_depth) {
+        this.polaris_sca_search_depth = polaris_sca_search_depth;
+    }
+
+    @DataBoundSetter
+    public void setPolaris_sca_config_path(String polaris_sca_config_path) {
+        this.polaris_sca_config_path = Util.fixEmptyAndTrim(polaris_sca_config_path);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_sca_args(String polaris_sca_args) {
+        this.polaris_sca_args = Util.fixEmptyAndTrim(polaris_sca_args);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_sast_build_command(String polaris_sast_build_command) {
+        this.polaris_sast_build_command = Util.fixEmptyAndTrim(polaris_sast_build_command);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_sast_clean_command(String polaris_sast_clean_command) {
+        this.polaris_sast_clean_command = Util.fixEmptyAndTrim(polaris_sast_clean_command);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_sast_config_path(String polaris_sast_config_path) {
+        this.polaris_sast_config_path = Util.fixEmptyAndTrim(polaris_sast_config_path);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_sast_args(String polaris_sast_args) {
+        this.polaris_sast_args = Util.fixEmptyAndTrim(polaris_sast_args);
     }
 
     @DataBoundSetter

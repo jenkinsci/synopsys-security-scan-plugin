@@ -18,7 +18,7 @@ public class Connect {
     @JsonProperty("policy")
     private Policy policy;
 
-    Connect() {
+    public Connect() {
         user = new User();
         project = new Project();
         stream = new Stream();
