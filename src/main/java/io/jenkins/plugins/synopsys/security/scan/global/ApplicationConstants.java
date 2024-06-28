@@ -141,9 +141,6 @@ public class ApplicationConstants {
     public static final String MULTIBRANCH_JOB_TYPE_NAME = "WorkflowMultiBranchProject";
     public static final String FREESTYLE_JOB_TYPE_NAME = "FreeStyleProject";
 
-    public static final String ASSESSMENT_MODE_SCA = "SCA";
-    public static final String ASSESSMENT_MODE_SAST = "SAST";
-
     public static final List<String> ARBITRARY_PARAM_KEYS = Collections.unmodifiableList(Arrays.asList(
             BLACKDUCK_SEARCH_DEPTH_KEY,
             BLACKDUCK_CONFIG_PATH_KEY,

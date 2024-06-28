@@ -272,19 +272,8 @@ public class ScannerArgumentService {
             setDefaultValuesForPolarisParams(polaris, scmObject);
         }
 
-        if (scanParameters.containsKey(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY)) {
-            String assessmentTypes = scanParameters
-                    .get(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY)
-                    .toString()
-                    .trim();
-
-            if (assessmentTypes.toUpperCase().contains(ApplicationConstants.ASSESSMENT_MODE_SCA)) {
-                handlePolarisAssessmentModeSCA(bridgeInput, scanParameters);
-            }
-            if (assessmentTypes.toUpperCase().contains(ApplicationConstants.ASSESSMENT_MODE_SAST)) {
-                handlePolarisAssessmentModeSAST(bridgeInput, scanParameters);
-            }
-        }
+        handlePolarisAssessmentModeSCA(bridgeInput, scanParameters);
+        handlePolarisAssessmentModeSAST(bridgeInput, scanParameters);
 
         bridgeInput.setPolaris(polaris);
     }
