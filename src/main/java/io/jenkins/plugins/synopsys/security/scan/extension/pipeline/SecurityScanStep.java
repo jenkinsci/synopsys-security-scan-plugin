@@ -711,7 +711,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setProject_source_preserveSymLinks(Boolean project_source_preserveSymLinks) {
         this.project_source_preserveSymLinks = project_source_preserveSymLinks ? true : null;
-        this.project_source_preserveSymLinks_actualValue = project_source_preserveSymLinks ? true : false;
+        this.project_source_preserveSymLinks_actualValue = project_source_preserveSymLinks;
     }
 
     @DataBoundSetter
@@ -874,7 +874,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
             ListBoxModel items = new ListBoxModel();
             Map<String, String> customLabels = new HashMap<>();
 
-            items.add(new Option("Select", ""));
+            items.add(new Option(ApplicationConstants.DEFAULT_DROPDOWN_OPTION_NAME, ""));
             customLabels.put(SecurityProduct.BLACKDUCK.name().toLowerCase(), "Black Duck");
             customLabels.put(SecurityProduct.COVERITY.name().toLowerCase(), "Coverity");
             customLabels.put(SecurityProduct.POLARIS.name().toLowerCase(), "Polaris");
@@ -891,7 +891,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         public ListBoxModel doFillMark_build_statusItems() {
             ListBoxModel items = new ListBoxModel();
 
-            items.add("Select", "");
+            items.add(ApplicationConstants.DEFAULT_DROPDOWN_OPTION_NAME, "");
             items.add(BuildStatus.FAILURE.name(), BuildStatus.FAILURE.name());
             items.add(BuildStatus.UNSTABLE.name(), BuildStatus.UNSTABLE.name());
             items.add(BuildStatus.SUCCESS.name(), BuildStatus.SUCCESS.name());
@@ -902,7 +902,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
         public ListBoxModel doFillPolaris_assessment_modeItems() {
             ListBoxModel items = new ListBoxModel();
-            items.add(new ListBoxModel.Option("Select", ""));
+            items.add(new ListBoxModel.Option(ApplicationConstants.DEFAULT_DROPDOWN_OPTION_NAME, ""));
             items.add(new ListBoxModel.Option("CI", "CI"));
             items.add(new ListBoxModel.Option("SOURCE_UPLOAD", "SOURCE_UPLOAD"));
             return items;
