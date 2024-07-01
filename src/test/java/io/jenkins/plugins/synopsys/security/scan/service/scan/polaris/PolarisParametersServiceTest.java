@@ -5,8 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import hudson.EnvVars;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
+import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
+import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.input.project.Project;
+import io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck.BlackDuckParametersService;
+import io.jenkins.plugins.synopsys.security.scan.service.scan.coverity.CoverityParametersService;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,6 +21,8 @@ import org.mockito.Mockito;
 
 public class PolarisParametersServiceTest {
     private PolarisParametersService polarisParametersService;
+    private BlackDuckParametersService blackDuckParametersService;
+    private CoverityParametersService coverityParametersService;
     private final TaskListener listenerMock = Mockito.mock(TaskListener.class);
     private final EnvVars envVarsMock = Mockito.mock(EnvVars.class);
     private final String TEST_POLARIS_SERVER_URL = "https://fake.polaris-server.url";
@@ -33,6 +39,12 @@ public class PolarisParametersServiceTest {
     private final String TEST_PROJECT_SOURCE_ARCHIVE = "TEST.ZIP";
     private final String TEST_PROJECT_SOURCE_EXCLUDES = "TEST1, TEST2";
     private final Boolean TEST_PROJECT_SOURCE_PRESERVE_SYM_LINKS = true;
+    private final String TEST_BLACKDUCK_ARGS = "--detect.diagnostic=true";
+    private final String TEST_BLACKDUCK_CONFIG_FILE_PATH = "DIR/CONFIG/application.properties";
+    private final String TEST_COVERITY_CLEAN_COMMAND = "mvn clean";
+    private final String TEST_COVERITY_BUILD_COMMAND = "mvn clean install";
+    private final String TEST_COVERITY_ARGS = "-o capture.build.clean-command=\"mvn clean\" -- mvn clean install";
+    private final String TEST_COVERITY_CONFIG_FILE_PATH = "DIR/CONFIG/coverity.yml";
 
     @BeforeEach
     void setUp() {
@@ -164,5 +176,43 @@ public class PolarisParametersServiceTest {
         assertEquals(project.getSource().getArchive(), TEST_PROJECT_SOURCE_ARCHIVE);
         assertEquals(project.getSource().getExcludes(), Arrays.asList("TEST"));
         assertTrue(project.getSource().getPreserveSymLinks());
+    }
+
+    @Test
+    void prepareScanInputForBridgeForPolaris_SCA_SAST_ArbitraryParamsTest() {
+        Map<String, Object> polarisParameters = new HashMap<>();
+
+        polarisParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
+        polarisParameters.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, TEST_POLARIS_ACCESS_TOKEN);
+        polarisParameters.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
+        polarisParameters.put(ApplicationConstants.POLARIS_PROJECT_NAME_KEY, "fake-project-name");
+        polarisParameters.put(ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, "SAST");
+        polarisParameters.put(ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY, 2);
+        polarisParameters.put(ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY, TEST_BLACKDUCK_CONFIG_FILE_PATH);
+        polarisParameters.put(ApplicationConstants.BLACKDUCK_ARGS_KEY, TEST_BLACKDUCK_ARGS);
+        polarisParameters.put(ApplicationConstants.COVERITY_BUILD_COMMAND_KEY, TEST_COVERITY_BUILD_COMMAND);
+        polarisParameters.put(ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY, TEST_COVERITY_CLEAN_COMMAND);
+        polarisParameters.put(ApplicationConstants.COVERITY_CONFIG_PATH_KEY, TEST_COVERITY_CONFIG_FILE_PATH);
+        polarisParameters.put(ApplicationConstants.COVERITY_ARGS_KEY, TEST_COVERITY_ARGS);
+
+        blackDuckParametersService = new BlackDuckParametersService(listenerMock, envVarsMock);
+        coverityParametersService = new CoverityParametersService(listenerMock, envVarsMock);
+
+        Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(polarisParameters);
+        BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckObjectForBridge(polarisParameters);
+        Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(polarisParameters);
+
+        assertEquals(polaris.getServerUrl(), TEST_POLARIS_SERVER_URL);
+        assertEquals(polaris.getAccessToken(), TEST_POLARIS_ACCESS_TOKEN);
+        assertEquals(polaris.getApplicationName().getName(), TEST_APPLICATION_NAME);
+        assertEquals(polaris.getProjectName().getName(), "fake-project-name");
+        assertEquals(polaris.getAssessmentTypes().getTypes(), Arrays.asList("SAST"));
+        assertEquals(2, blackDuck.getSearch().getDepth());
+        assertEquals(TEST_BLACKDUCK_CONFIG_FILE_PATH, blackDuck.getConfig().getPath());
+        assertEquals(TEST_BLACKDUCK_ARGS, blackDuck.getArgs());
+        assertEquals(coverity.getBuild().getCommand(), TEST_COVERITY_BUILD_COMMAND);
+        assertEquals(coverity.getClean().getCommand(), TEST_COVERITY_CLEAN_COMMAND);
+        assertEquals(coverity.getConfig().getPath(), TEST_COVERITY_CONFIG_FILE_PATH);
+        assertEquals(coverity.getArgs(), TEST_COVERITY_ARGS);
     }
 }

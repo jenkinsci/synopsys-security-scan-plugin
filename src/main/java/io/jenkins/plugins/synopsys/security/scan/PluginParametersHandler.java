@@ -13,10 +13,7 @@ import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.bridge.BridgeDownloadParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class PluginParametersHandler {
     private final SecurityScanner scanner;
@@ -132,6 +129,8 @@ public class PluginParametersHandler {
             Map<String, Object> filteredParameters = filterParameter(scanParameters);
             for (Map.Entry<String, Object> entry : filteredParameters.entrySet()) {
                 String key = entry.getKey();
+                List<String> arbitraryParamList = ApplicationConstants.ARBITRARY_PARAM_KEYS;
+
                 if (key.contains(securityProduct) || key.equals("project_directory")) {
                     Object value = entry.getValue();
                     if (key.equals(ApplicationConstants.BLACKDUCK_TOKEN_KEY)
@@ -141,7 +140,7 @@ public class PluginParametersHandler {
                     }
                     logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
                 } else if (securityProduct.equals(SecurityProduct.POLARIS.name().toLowerCase())
-                        && key.startsWith("project_")) {
+                        && (key.startsWith("project_") || arbitraryParamList.contains(key))) {
                     Object value = entry.getValue();
                     logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
                 }

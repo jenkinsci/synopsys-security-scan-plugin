@@ -31,10 +31,6 @@ public class Coverity {
     @JsonProperty("args")
     private String args;
 
-    public Coverity() {
-        connect = new Connect();
-    }
-
     public Connect getConnect() {
         return connect;
     }

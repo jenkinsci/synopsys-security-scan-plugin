@@ -90,6 +90,7 @@ public class CoverityParametersService {
 
     public Coverity prepareCoverityObjectForBridge(Map<String, Object> coverityParameters) {
         Coverity coverity = new Coverity();
+        coverity.setConnect(new Connect());
 
         if (coverityParameters.containsKey(ApplicationConstants.COVERITY_URL_KEY)) {
             coverity.getConnect()
