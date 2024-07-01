@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jenkins.scm.api.SCMSource;
 import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
 import org.jenkinsci.plugins.workflow.actions.WarningAction;
@@ -301,30 +302,37 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return polaris_prComment_severities;
     }
 
+    @Nullable
     public Integer getPolaris_sca_search_depth() {
         return null;
     }
 
+    @Nullable
     public String getPolaris_sca_config_path() {
         return null;
     }
 
+    @Nullable
     public String getPolaris_sca_args() {
         return null;
     }
 
+    @Nullable
     public String getPolaris_sast_build_command() {
         return null;
     }
 
+    @Nullable
     public String getPolaris_sast_clean_command() {
         return null;
     }
 
+    @Nullable
     public String getPolaris_sast_config_path() {
         return null;
     }
 
+    @Nullable
     public String getPolaris_sast_args() {
         return null;
     }
@@ -443,18 +451,21 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     // Returning the null value because if we return any other value, blackduck_project_directory field will be visible
     // in the pipeline syntax script
+    @Nullable
     public String getBlackduck_project_directory() {
         return null;
     }
 
     // Returning the null value because if we return any other value, coverity_project_directory field will be visible
     // in the pipeline syntax script
+    @Nullable
     public String getCoverity_project_directory() {
         return null;
     }
 
     // Returning the null value because if we return any other value, polaris_project_directory field will be visible in
     // the pipeline syntax script
+    @Nullable
     public String getPolaris_project_directory() {
         return null;
     }
