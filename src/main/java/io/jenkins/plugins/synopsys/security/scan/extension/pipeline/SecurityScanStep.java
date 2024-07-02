@@ -366,10 +366,6 @@ public class SecurityScanStep extends Step implements SecurityScan, PrcommentSca
         return synopsys_bridge_install_directory;
     }
 
-    public String test() {
-        return "success";
-    }
-
     public Boolean isInclude_diagnostics() {
         return include_diagnostics;
     }
