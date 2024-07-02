@@ -11,6 +11,7 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.PluginParametersHandler;
 import io.jenkins.plugins.synopsys.security.scan.SecurityScanner;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
+import io.jenkins.plugins.synopsys.security.scan.extension.PrcommentScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.global.ScannerGlobalConfig;
 import io.jenkins.plugins.synopsys.security.scan.global.*;
@@ -54,6 +55,14 @@ public class ScanParametersFactory {
             SecurityScan securityScan, Map<String, Object> parametersMap, TaskListener listener)
             throws PluginExceptionHandler {
         String product = securityScan.getProduct();
+
+//        if(securityScan instanceof PrcommentScan) {
+//            PrcommentScan prcommentScan = (PrcommentScan) securityScan;
+//            Boolean prcomment1 = prcommentScan.isPolaris_prComment_enabled();
+//            Boolean prcomment2 = prcommentScan.isPolarisPrCommentEnabledActualValue();
+//            listener.getLogger().println("isPolaris_prComment_enabled(): " + prcomment1);
+//            listener.getLogger().println("isPolarisPrCommentEnabledActualValue(): " + prcomment2);
+//        }
 
         if (validateProduct(product, listener)) {
             parametersMap.put(
@@ -222,17 +231,20 @@ public class ScanParametersFactory {
         // securityScan.isBlackduck_automation_fixpr());
         //        }
 
-        if (securityScan.isBlackduck_prComment_enabled_temporary() != null) {
-            blackDuckParameters.put(
-                    ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
-                    securityScan.isBlackduck_prComment_enabled_temporary());
-            blackDuckParameters.put(
-                    ApplicationConstants.BLACKDUCK_PRCOMMENT_ENABLED_KEY,
-                    securityScan.isBlackduck_prComment_enabled_temporary());
-        } else if (securityScan.isBlackduck_automation_prcomment() != null) {
-            blackDuckParameters.put(
-                    ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
-                    securityScan.isBlackduck_automation_prcomment());
+        if(securityScan instanceof PrcommentScan) {
+            PrcommentScan prcommentScan = (PrcommentScan) securityScan;
+            if (prcommentScan.isBlackduck_prComment_enabled_temporary() != null) {
+                blackDuckParameters.put(
+                        ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
+                        prcommentScan.isBlackduck_prComment_enabled_temporary());
+                blackDuckParameters.put(
+                        ApplicationConstants.BLACKDUCK_PRCOMMENT_ENABLED_KEY,
+                        prcommentScan.isBlackduck_prComment_enabled_temporary());
+            } else if (prcommentScan.isBlackduck_automation_prcomment() != null) {
+                blackDuckParameters.put(
+                        ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
+                        prcommentScan.isBlackduck_automation_prcomment());
+            }
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_download_url())) {
@@ -296,17 +308,20 @@ public class ScanParametersFactory {
             coverityParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
         }
 
-        if (securityScan.isCoverity_prComment_enabled_temporary() != null) {
-            coverityParameters.put(
-                    ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
-                    securityScan.isCoverity_prComment_enabled_temporary());
-            coverityParameters.put(
-                    ApplicationConstants.COVERITY_PRCOMMENT_ENABLED_KEY,
-                    securityScan.isCoverity_prComment_enabled_temporary());
-        } else if (securityScan.isCoverity_automation_prcomment() != null) {
-            coverityParameters.put(
-                    ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
-                    securityScan.isCoverity_automation_prcomment());
+        if(securityScan instanceof PrcommentScan) {
+            PrcommentScan prcommentScan = (PrcommentScan) securityScan;
+            if (prcommentScan.isCoverity_prComment_enabled_temporary() != null) {
+                coverityParameters.put(
+                        ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
+                        prcommentScan.isCoverity_prComment_enabled_temporary());
+                coverityParameters.put(
+                        ApplicationConstants.COVERITY_PRCOMMENT_ENABLED_KEY,
+                        prcommentScan.isCoverity_prComment_enabled_temporary());
+            } else if (prcommentScan.isCoverity_automation_prcomment() != null) {
+                coverityParameters.put(
+                        ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
+                        prcommentScan.isCoverity_automation_prcomment());
+            }
         }
 
         prepareCoverityToolConfigurationParametersMap(coverityParameters, securityScan);
@@ -355,10 +370,13 @@ public class ScanParametersFactory {
                     ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY, securityScan.getPolaris_branch_parent_name());
         }
 
-        if (securityScan.isPolarisPrCommentEnabledActualValue() != null) {
-            polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY,
-                    securityScan.isPolarisPrCommentEnabledActualValue());
+        if(securityScan instanceof PrcommentScan) {
+            PrcommentScan prcommentScan = (PrcommentScan) securityScan;
+            if (prcommentScan.isPolarisPrCommentEnabledActualValue() != null) {
+                polarisParametersMap.put(
+                        ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY,
+                        prcommentScan.isPolarisPrCommentEnabledActualValue());
+            }
         }
 
         if (!Utility.isStringNullOrBlank(securityScan.getPolaris_prComment_severities())) {
