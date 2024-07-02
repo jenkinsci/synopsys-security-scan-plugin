@@ -15,12 +15,6 @@ public interface SecurityScan {
 
     public String getBlackduck_scan_failure_severities();
 
-//    public Boolean isBlackduck_automation_prcomment();
-//
-//    public Boolean isBlackduck_prComment_enabled();
-//
-//    public Boolean isBlackduck_prComment_enabled_temporary();
-
     public String getBlackduck_download_url();
 
     public Integer getBlackduck_search_depth();
@@ -42,12 +36,6 @@ public interface SecurityScan {
     public String getCoverity_policy_view();
 
     public String getCoverity_install_directory();
-
-//    public Boolean isCoverity_automation_prcomment();
-//
-//    public Boolean isCoverity_prComment_enabled();
-//
-//    public Boolean isCoverity_prComment_enabled_temporary();
 
     public String getCoverity_build_command();
 
@@ -74,10 +62,6 @@ public interface SecurityScan {
     public String getPolaris_triage();
 
     public String getPolaris_branch_name();
-
-//    public Boolean isPolaris_prComment_enabled();
-//
-//    public Boolean isPolarisPrCommentEnabledActualValue();
 
     public String getPolaris_prComment_severities();
 

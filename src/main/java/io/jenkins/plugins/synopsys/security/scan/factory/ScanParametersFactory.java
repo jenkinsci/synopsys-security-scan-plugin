@@ -56,14 +56,6 @@ public class ScanParametersFactory {
             throws PluginExceptionHandler {
         String product = securityScan.getProduct();
 
-//        if(securityScan instanceof PrcommentScan) {
-//            PrcommentScan prcommentScan = (PrcommentScan) securityScan;
-//            Boolean prcomment1 = prcommentScan.isPolaris_prComment_enabled();
-//            Boolean prcomment2 = prcommentScan.isPolarisPrCommentEnabledActualValue();
-//            listener.getLogger().println("isPolaris_prComment_enabled(): " + prcomment1);
-//            listener.getLogger().println("isPolarisPrCommentEnabledActualValue(): " + prcomment2);
-//        }
-
         if (validateProduct(product, listener)) {
             parametersMap.put(
                     ApplicationConstants.PRODUCT_KEY,
@@ -231,7 +223,7 @@ public class ScanParametersFactory {
         // securityScan.isBlackduck_automation_fixpr());
         //        }
 
-        if(securityScan instanceof PrcommentScan) {
+        if (securityScan instanceof PrcommentScan) {
             PrcommentScan prcommentScan = (PrcommentScan) securityScan;
             if (prcommentScan.isBlackduck_prComment_enabled_temporary() != null) {
                 blackDuckParameters.put(
@@ -308,7 +300,7 @@ public class ScanParametersFactory {
             coverityParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
         }
 
-        if(securityScan instanceof PrcommentScan) {
+        if (securityScan instanceof PrcommentScan) {
             PrcommentScan prcommentScan = (PrcommentScan) securityScan;
             if (prcommentScan.isCoverity_prComment_enabled_temporary() != null) {
                 coverityParameters.put(
@@ -370,7 +362,7 @@ public class ScanParametersFactory {
                     ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY, securityScan.getPolaris_branch_parent_name());
         }
 
-        if(securityScan instanceof PrcommentScan) {
+        if (securityScan instanceof PrcommentScan) {
             PrcommentScan prcommentScan = (PrcommentScan) securityScan;
             if (prcommentScan.isPolarisPrCommentEnabledActualValue() != null) {
                 polarisParametersMap.put(
