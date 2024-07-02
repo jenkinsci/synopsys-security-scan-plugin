@@ -141,20 +141,6 @@
         </f:section>
     </div>
 
-    <div id="blackduck-tool-configuration" style="display: none;">
-        <f:section title="Black Duck (SCA) Tool Configuration Options">
-            <f:entry field="blackduck_search_depth" title="Black Duck Search Depth (Optional)">
-                <f:textbox/>
-            </f:entry>
-            <f:entry field="blackduck_config_path" title="Black Duck Config Path (Optional)">
-                <f:textbox/>
-            </f:entry>
-            <f:entry field="blackduck_args" title="Black Duck Arguments (Optional)">
-                <f:textbox/>
-            </f:entry>
-        </f:section>
-    </div>
-
     <div id="coverity-tool-configuration" style="display: none;">
         <f:section title="Coverity (SAST) Tool Configuration Options">
             <f:entry field="coverity_build_command" title="Coverity Build Command (Optional)">
@@ -163,10 +149,24 @@
             <f:entry field="coverity_clean_command" title="Coverity Clean Command (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="coverity_config_path" title="Coverity Config Path (Optional)">
+            <f:entry field="coverity_config_path" title="Coverity Config File Path (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="coverity_args" title="Coverity Arguments (Optional)">
+            <f:entry field="coverity_args" title="Coverity Additional Arguments (Optional)">
+                <f:textbox/>
+            </f:entry>
+        </f:section>
+    </div>
+
+    <div id="blackduck-tool-configuration" style="display: none;">
+        <f:section title="Black Duck (SCA) Tool Configuration Options">
+            <f:entry field="blackduck_search_depth" title="Black Duck Search Depth (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="blackduck_config_path" title="Black Duck Config File Path (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="blackduck_args" title="Black Duck Additional Arguments (Optional)">
                 <f:textbox/>
             </f:entry>
         </f:section>
