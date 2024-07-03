@@ -83,20 +83,6 @@ public interface SecurityScan {
 
     public String getPolaris_assessment_mode();
 
-    public Integer getPolaris_sca_search_depth();
-
-    public String getPolaris_sca_config_path();
-
-    public String getPolaris_sca_args();
-
-    public String getPolaris_sast_build_command();
-
-    public String getPolaris_sast_clean_command();
-
-    public String getPolaris_sast_config_path();
-
-    public String getPolaris_sast_args();
-
     public String getProject_source_archive();
 
     public Boolean isProject_source_preserveSymLinks();

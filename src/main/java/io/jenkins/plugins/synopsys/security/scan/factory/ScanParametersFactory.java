@@ -11,6 +11,7 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.PluginParametersHandler;
 import io.jenkins.plugins.synopsys.security.scan.SecurityScanner;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
+import io.jenkins.plugins.synopsys.security.scan.extension.FreestyleScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.PrcommentScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.global.ScannerGlobalConfig;
@@ -401,7 +402,10 @@ public class ScanParametersFactory {
                     securityScan.isProject_source_preserveSymLinks_actualValue());
         }
 
-        preparePolarisToolConfigurationParametersMap(polarisParametersMap, securityScan);
+        if (securityScan instanceof FreestyleScan) {
+            FreestyleScan freestyleScan = (FreestyleScan) securityScan;
+            preparePolarisToolConfigurationParametersMap(polarisParametersMap, freestyleScan);
+        }
 
         return polarisParametersMap;
     }
@@ -446,38 +450,38 @@ public class ScanParametersFactory {
     }
 
     private static void preparePolarisToolConfigurationParametersMap(
-            Map<String, Object> polarisParametersMap, SecurityScan securityScan) {
-        if (securityScan.getPolaris_sca_search_depth() != null) {
+            Map<String, Object> polarisParametersMap, FreestyleScan freestyleScan) {
+        if (freestyleScan.getPolaris_sca_search_depth() != null) {
             polarisParametersMap.put(
-                    ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY, securityScan.getPolaris_sca_search_depth());
+                    ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY, freestyleScan.getPolaris_sca_search_depth());
         }
 
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_sca_config_path())) {
+        if (!Utility.isStringNullOrBlank(freestyleScan.getPolaris_sca_config_path())) {
             polarisParametersMap.put(
-                    ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY, securityScan.getPolaris_sca_config_path());
+                    ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY, freestyleScan.getPolaris_sca_config_path());
         }
 
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_sca_args())) {
-            polarisParametersMap.put(ApplicationConstants.BLACKDUCK_ARGS_KEY, securityScan.getPolaris_sca_args());
+        if (!Utility.isStringNullOrBlank(freestyleScan.getPolaris_sca_args())) {
+            polarisParametersMap.put(ApplicationConstants.BLACKDUCK_ARGS_KEY, freestyleScan.getPolaris_sca_args());
         }
 
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_sast_build_command())) {
+        if (!Utility.isStringNullOrBlank(freestyleScan.getPolaris_sast_build_command())) {
             polarisParametersMap.put(
-                    ApplicationConstants.COVERITY_BUILD_COMMAND_KEY, securityScan.getPolaris_sast_build_command());
+                    ApplicationConstants.COVERITY_BUILD_COMMAND_KEY, freestyleScan.getPolaris_sast_build_command());
         }
 
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_sast_clean_command())) {
+        if (!Utility.isStringNullOrBlank(freestyleScan.getPolaris_sast_clean_command())) {
             polarisParametersMap.put(
-                    ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY, securityScan.getPolaris_sast_clean_command());
+                    ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY, freestyleScan.getPolaris_sast_clean_command());
         }
 
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_sast_config_path())) {
+        if (!Utility.isStringNullOrBlank(freestyleScan.getPolaris_sast_config_path())) {
             polarisParametersMap.put(
-                    ApplicationConstants.COVERITY_CONFIG_PATH_KEY, securityScan.getPolaris_sast_config_path());
+                    ApplicationConstants.COVERITY_CONFIG_PATH_KEY, freestyleScan.getPolaris_sast_config_path());
         }
 
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_sast_args())) {
-            polarisParametersMap.put(ApplicationConstants.COVERITY_ARGS_KEY, securityScan.getPolaris_sast_args());
+        if (!Utility.isStringNullOrBlank(freestyleScan.getPolaris_sast_args())) {
+            polarisParametersMap.put(ApplicationConstants.COVERITY_ARGS_KEY, freestyleScan.getPolaris_sast_args());
         }
     }
 
