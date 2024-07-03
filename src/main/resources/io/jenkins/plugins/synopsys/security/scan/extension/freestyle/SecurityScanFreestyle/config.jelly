@@ -157,7 +157,7 @@
         <f:entry field="network_airgap" title="Network Airgap (Optional)">
             <f:checkbox checked="${instance.isNetwork_airgap() == true}"/>
         </f:entry>
-        <f:entry field="mark_build_status" title="Mark build status if issues are present (Optional)">
+        <f:entry field="mark_build_status" title="Mark Build Status (Optional)">
             <f:select/>
         </f:entry>
     </f:section>
