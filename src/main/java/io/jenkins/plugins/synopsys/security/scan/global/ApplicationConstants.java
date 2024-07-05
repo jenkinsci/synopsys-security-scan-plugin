@@ -1,5 +1,9 @@
 package io.jenkins.plugins.synopsys.security.scan.global;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class ApplicationConstants {
     public static final String DISPLAY_NAME = "Synopsys Security Scan";
     public static final String PIPELINE_NAME = "synopsys_scan";
@@ -138,4 +142,13 @@ public class ApplicationConstants {
     public static final String FREESTYLE_JOB_TYPE_NAME = "FreeStyleProject";
 
     public static final String DEFAULT_DROPDOWN_OPTION_NAME = "Select";
+
+    public static final List<String> ARBITRARY_PARAM_KEYS = Collections.unmodifiableList(Arrays.asList(
+            BLACKDUCK_SEARCH_DEPTH_KEY,
+            BLACKDUCK_CONFIG_PATH_KEY,
+            BLACKDUCK_ARGS_KEY,
+            COVERITY_BUILD_COMMAND_KEY,
+            COVERITY_CLEAN_COMMAND_KEY,
+            COVERITY_CONFIG_PATH_KEY,
+            COVERITY_ARGS_KEY));
 }

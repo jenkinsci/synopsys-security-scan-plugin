@@ -14,6 +14,10 @@ import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.input.BridgeInput;
 import io.jenkins.plugins.synopsys.security.scan.input.NetworkAirGap;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.BlackDuck;
+import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Config;
+import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Search;
+import io.jenkins.plugins.synopsys.security.scan.input.coverity.Build;
+import io.jenkins.plugins.synopsys.security.scan.input.coverity.Clean;
 import io.jenkins.plugins.synopsys.security.scan.input.coverity.Coverity;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Parent;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
@@ -121,6 +125,7 @@ public class ScannerArgumentService {
             scanCommands.add(BridgeParams.BLACKDUCK_STAGE);
             scanCommands.add(BridgeParams.INPUT_OPTION);
             scanCommands.add(createBridgeInputJson(
+                    scanParameters,
                     blackDuck,
                     scmObject,
                     isPrCommentSet,
@@ -138,6 +143,7 @@ public class ScannerArgumentService {
             scanCommands.add(BridgeParams.COVERITY_STAGE);
             scanCommands.add(BridgeParams.INPUT_OPTION);
             scanCommands.add(createBridgeInputJson(
+                    scanParameters,
                     coverity,
                     scmObject,
                     isPrCommentSet,
@@ -165,6 +171,7 @@ public class ScannerArgumentService {
             scanCommands.add(BridgeParams.POLARIS_STAGE);
             scanCommands.add(BridgeParams.INPUT_OPTION);
             scanCommands.add(createBridgeInputJson(
+                    scanParameters,
                     polaris,
                     scmObject,
                     isPrCommentSet,
@@ -178,6 +185,7 @@ public class ScannerArgumentService {
     }
 
     public String createBridgeInputJson(
+            Map<String, Object> scanParameters,
             Object scanObject,
             Object scmObject,
             boolean isPrCommentSet,
@@ -187,7 +195,7 @@ public class ScannerArgumentService {
             Project project) {
         BridgeInput bridgeInput = new BridgeInput();
 
-        setScanObject(bridgeInput, scanObject, scmObject, sarif);
+        setScanObject(bridgeInput, scanObject, scmObject, sarif, scanParameters);
 
         if (project != null) {
             setProjectObject(bridgeInput, project);
@@ -223,7 +231,12 @@ public class ScannerArgumentService {
         bridgeInput.setProject(project);
     }
 
-    private void setScanObject(BridgeInput bridgeInput, Object scanObject, Object scmObject, Sarif sarifObject) {
+    private void setScanObject(
+            BridgeInput bridgeInput,
+            Object scanObject,
+            Object scmObject,
+            Sarif sarifObject,
+            Map<String, Object> scanParameters) {
 
         if (scanObject instanceof BlackDuck) {
             BlackDuck blackDuck = (BlackDuck) scanObject;
@@ -239,16 +252,164 @@ public class ScannerArgumentService {
             }
             bridgeInput.setCoverity(coverity);
         } else if (scanObject instanceof Polaris) {
-            Polaris polaris = (Polaris) scanObject;
-            if (sarifObject != null) {
-                polaris.setReports(new Reports());
-                polaris.getReports().setSarif(sarifObject);
-            }
-            if (scmObject != null) {
-                setDefaultValuesForPolarisParams(polaris, scmObject);
-            }
-            bridgeInput.setPolaris(polaris);
+            handlePolarisScan(bridgeInput, (Polaris) scanObject, scmObject, sarifObject, scanParameters);
         }
+    }
+
+    private void handlePolarisScan(
+            BridgeInput bridgeInput,
+            Polaris polaris,
+            Object scmObject,
+            Sarif sarifObject,
+            Map<String, Object> scanParameters) {
+
+        if (sarifObject != null) {
+            polaris.setReports(new Reports());
+            polaris.getReports().setSarif(sarifObject);
+        }
+
+        if (scmObject != null) {
+            setDefaultValuesForPolarisParams(polaris, scmObject);
+        }
+
+        handlePolarisAssessmentModeSCA(bridgeInput, scanParameters);
+        handlePolarisAssessmentModeSAST(bridgeInput, scanParameters);
+
+        bridgeInput.setPolaris(polaris);
+    }
+
+    private void handlePolarisAssessmentModeSCA(BridgeInput bridgeInput, Map<String, Object> scanParameters) {
+        BlackDuck blackDuck = null;
+
+        blackDuck = setSearchDepth(scanParameters, blackDuck);
+        blackDuck = setConfigPath(scanParameters, blackDuck);
+        blackDuck = setBlackDuckArgs(scanParameters, blackDuck);
+
+        if (blackDuck != null) {
+            bridgeInput.setBlackDuck(blackDuck);
+        }
+    }
+
+    private void handlePolarisAssessmentModeSAST(BridgeInput bridgeInput, Map<String, Object> scanParameters) {
+        Coverity coverity = null;
+
+        coverity = setBuildCommand(scanParameters, coverity);
+        coverity = setCleanCommand(scanParameters, coverity);
+        coverity = setConfigPath(scanParameters, coverity);
+        coverity = setCoverityArgs(scanParameters, coverity);
+
+        if (coverity != null) {
+            bridgeInput.setCoverity(coverity);
+        }
+    }
+
+    private BlackDuck setSearchDepth(Map<String, Object> scanParameters, BlackDuck blackDuck) {
+        if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY)) {
+            String searchDepth = scanParameters
+                    .get(ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY)
+                    .toString()
+                    .trim();
+            if (searchDepth != null && !searchDepth.isBlank()) {
+                if (blackDuck == null) blackDuck = new BlackDuck();
+                Search search = new Search();
+                search.setDepth(Integer.parseInt(searchDepth));
+                blackDuck.setSearch(search);
+            }
+        }
+        return blackDuck;
+    }
+
+    private BlackDuck setConfigPath(Map<String, Object> scanParameters, BlackDuck blackDuck) {
+        if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY)) {
+            String configPath = scanParameters
+                    .get(ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY)
+                    .toString()
+                    .trim();
+            if (configPath != null && !configPath.isBlank()) {
+                if (blackDuck == null) blackDuck = new BlackDuck();
+                Config config = new Config();
+                config.setPath(configPath);
+                blackDuck.setConfig(config);
+            }
+        }
+        return blackDuck;
+    }
+
+    private BlackDuck setBlackDuckArgs(Map<String, Object> scanParameters, BlackDuck blackDuck) {
+        if (scanParameters.containsKey(ApplicationConstants.BLACKDUCK_ARGS_KEY)) {
+            String blackduckArgs = scanParameters
+                    .get(ApplicationConstants.BLACKDUCK_ARGS_KEY)
+                    .toString()
+                    .trim();
+            if (blackduckArgs != null && !blackduckArgs.isBlank()) {
+                if (blackDuck == null) blackDuck = new BlackDuck();
+                blackDuck.setArgs(blackduckArgs);
+            }
+        }
+        return blackDuck;
+    }
+
+    private Coverity setBuildCommand(Map<String, Object> scanParameters, Coverity coverity) {
+        if (scanParameters.containsKey(ApplicationConstants.COVERITY_BUILD_COMMAND_KEY)) {
+            String buildCommand = scanParameters
+                    .get(ApplicationConstants.COVERITY_BUILD_COMMAND_KEY)
+                    .toString()
+                    .trim();
+            if (!buildCommand.isBlank()) {
+                if (coverity == null) coverity = new Coverity();
+                Build build = new Build();
+                build.setCommand(buildCommand);
+                coverity.setBuild(build);
+            }
+        }
+        return coverity;
+    }
+
+    private Coverity setCleanCommand(Map<String, Object> scanParameters, Coverity coverity) {
+        if (scanParameters.containsKey(ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY)) {
+            String cleanCommand = scanParameters
+                    .get(ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY)
+                    .toString()
+                    .trim();
+            if (!cleanCommand.isBlank()) {
+                if (coverity == null) coverity = new Coverity();
+                Clean clean = new Clean();
+                clean.setCommand(cleanCommand);
+                coverity.setClean(clean);
+            }
+        }
+        return coverity;
+    }
+
+    private Coverity setConfigPath(Map<String, Object> scanParameters, Coverity coverity) {
+        if (scanParameters.containsKey(ApplicationConstants.COVERITY_CONFIG_PATH_KEY)) {
+            String configPath = scanParameters
+                    .get(ApplicationConstants.COVERITY_CONFIG_PATH_KEY)
+                    .toString()
+                    .trim();
+            if (!configPath.isBlank()) {
+                if (coverity == null) coverity = new Coverity();
+                io.jenkins.plugins.synopsys.security.scan.input.coverity.Config config =
+                        new io.jenkins.plugins.synopsys.security.scan.input.coverity.Config();
+                config.setPath(configPath);
+                coverity.setConfig(config);
+            }
+        }
+        return coverity;
+    }
+
+    private Coverity setCoverityArgs(Map<String, Object> scanParameters, Coverity coverity) {
+        if (scanParameters.containsKey(ApplicationConstants.COVERITY_ARGS_KEY)) {
+            String coverityArgs = scanParameters
+                    .get(ApplicationConstants.COVERITY_ARGS_KEY)
+                    .toString()
+                    .trim();
+            if (!coverityArgs.isBlank()) {
+                if (coverity == null) coverity = new Coverity();
+                coverity.setArgs(coverityArgs);
+            }
+        }
+        return coverity;
     }
 
     private void setCoverityProjectNameAndStreamName(Coverity coverity, Object scmObject) {

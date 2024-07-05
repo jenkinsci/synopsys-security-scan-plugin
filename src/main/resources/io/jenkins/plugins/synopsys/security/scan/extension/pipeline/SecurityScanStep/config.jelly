@@ -24,15 +24,6 @@
             <f:entry field="blackduck_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="blackduck_search_depth" title="Black Duck Search Depth (Optional)">
-                <f:textbox/>
-            </f:entry>
-            <f:entry field="blackduck_config_path" title="Black Duck Config Path (Optional)">
-                <f:textbox/>
-            </f:entry>
-            <f:entry field="blackduck_args" title="Black Duck Arguments (Optional)">
-                <f:textbox/>
-            </f:entry>
             <!--        <f:entry field="bridge_blackduck_automation_fixpr" title="Create Fix Pull Requests">-->
             <!--            <f:checkbox/>-->
             <!--        </f:entry>-->
@@ -75,18 +66,6 @@
                 <f:checkbox/>
             </f:entry>
             <f:entry field="coverity_project_directory" title="Project Directory (Optional)">
-                <f:textbox/>
-            </f:entry>
-            <f:entry field="coverity_build_command" title="Coverity Build Command (Optional)">
-                <f:textbox/>
-            </f:entry>
-            <f:entry field="coverity_clean_command" title="Coverity Clean Command (Optional)">
-                <f:textbox/>
-            </f:entry>
-            <f:entry field="coverity_config_path" title="Coverity Config Path (Optional)">
-                <f:textbox/>
-            </f:entry>
-            <f:entry field="coverity_args" title="Coverity Arguments (Optional)">
                 <f:textbox/>
             </f:entry>
         </f:section>
@@ -162,6 +141,37 @@
         </f:section>
     </div>
 
+    <div id="coverity-tool-configuration" style="display: none;">
+        <f:section title="Coverity (SAST) Tool Configuration Options">
+            <f:entry field="coverity_build_command" title="Coverity Build Command (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_clean_command" title="Coverity Clean Command (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_config_path" title="Coverity Config File Path (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_args" title="Coverity Additional Arguments (Optional)">
+                <f:textbox/>
+            </f:entry>
+        </f:section>
+    </div>
+
+    <div id="blackduck-tool-configuration" style="display: none;">
+        <f:section title="Black Duck (SCA) Tool Configuration Options">
+            <f:entry field="blackduck_search_depth" title="Black Duck Search Depth (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="blackduck_config_path" title="Black Duck Config File Path (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="blackduck_args" title="Black Duck Additional Arguments (Optional)">
+                <f:textbox/>
+            </f:entry>
+        </f:section>
+    </div>
+
     <f:section title="Additional Options">
         <f:entry field="include_diagnostics" title="Include Diagnostics (Optional)">
             <f:checkbox/>
@@ -182,35 +192,32 @@
         var blackduckDiv = document.getElementById('blackduck');
         var coverityDiv = document.getElementById('coverity');
         var polarisDiv = document.getElementById('polaris');
-
-        function hideAllDivs(blackduckDiv, coverityDiv, polarisDiv) {
-            if(blackduckDiv) {
-                blackduckDiv.style.display='none';
-            }
-            if(coverityDiv) {
-                coverityDiv.style.display='none';
-            }
-            if(polarisDiv) {
-                polarisDiv.style.display='none';
-            }
-        }
+        var blackduckToolConfigDiv = document.getElementById('blackduck-tool-configuration');
+        var coverityToolConfigDiv = document.getElementById('coverity-tool-configuration');
 
         function hideAllDivs() {
             blackduckDiv.style.display = 'none';
             coverityDiv.style.display = 'none';
             polarisDiv.style.display = 'none';
+            blackduckToolConfigDiv.style.display = 'none';
+            coverityToolConfigDiv.style.display = 'none';
+        }
+
+        function clearAllFields() {
             clearInputFields(blackduckDiv);
             clearInputFields(coverityDiv);
             clearInputFields(polarisDiv);
+            clearInputFields(blackduckToolConfigDiv);
+            clearInputFields(coverityToolConfigDiv);
         }
 
-        function showDiv(div) {
+        function showParticularDiv(div) {
             if (div) {
                 div.style.display = 'block';
             }
         }
 
-        function hideAParticularDiv(div) {
+        function hideParticularDiv(div) {
             if(div) {
                 div.style.display = 'none';
             }
@@ -248,27 +255,27 @@
 
         synopsysSecurityProduct.addEventListener('change', function () {
             var selectedOption = synopsysSecurityProduct.value;
-
+            clearAllFields();
             if (selectedOption == 'blackduck') {
-                clearInputFields(coverityDiv);
-                hideAParticularDiv(coverityDiv);
-                clearInputFields(polarisDiv);
-                hideAParticularDiv(polarisDiv);
-                showDiv(blackduckDiv);
-                setCheckboxToDefaultTrue(['_.blackduck_reports_sarif_groupSCAIssues'])
+                hideParticularDiv(coverityDiv);
+                hideParticularDiv(polarisDiv);
+                showParticularDiv(blackduckDiv);
+                hideParticularDiv(coverityToolConfigDiv);
+                showParticularDiv(blackduckToolConfigDiv);
+                setCheckboxToDefaultTrue(['_.blackduck_reports_sarif_groupSCAIssues']);
             } else if (selectedOption == 'coverity') {
-                clearInputFields(blackduckDiv);
-                hideAParticularDiv(blackduckDiv);
-                clearInputFields(polarisDiv);
-                hideAParticularDiv(polarisDiv);
-                showDiv(coverityDiv);
+                hideParticularDiv(blackduckDiv);
+                hideParticularDiv(polarisDiv);
+                showParticularDiv(coverityDiv);
+                hideParticularDiv(blackduckToolConfigDiv);
+                showParticularDiv(coverityToolConfigDiv);
             } else if (selectedOption == 'polaris') {
-                clearInputFields(blackduckDiv);
-                hideAParticularDiv(blackduckDiv);
-                clearInputFields(coverityDiv);
-                hideAParticularDiv(coverityDiv);
-                showDiv(polarisDiv);
-                setCheckboxToDefaultTrue(['_.polaris_reports_sarif_groupSCAIssues'])
+                hideParticularDiv(blackduckDiv);
+                hideParticularDiv(coverityDiv);
+                showParticularDiv(polarisDiv);
+                showParticularDiv(blackduckToolConfigDiv);
+                showParticularDiv(coverityToolConfigDiv);
+                setCheckboxToDefaultTrue(['_.polaris_reports_sarif_groupSCAIssues']);
             }else if (selectedOption == '') {
                 hideAllDivs();
             }
@@ -279,12 +286,12 @@
             var sourceUploadDiv = document.getElementById('source_upload');
 
             if(polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
-                showDiv(sourceUploadDiv);
+                showParticularDiv(sourceUploadDiv);
             }
 
             if(polarisAssessmentModeOption === 'CI' || polarisAssessmentModeOption === '') {
                 clearInputFields(sourceUploadDiv);
-                hideAParticularDiv(sourceUploadDiv);
+                hideParticularDiv(sourceUploadDiv);
             }
         });
 

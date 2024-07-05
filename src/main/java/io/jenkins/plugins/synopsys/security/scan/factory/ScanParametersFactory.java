@@ -244,19 +244,7 @@ public class ScanParametersFactory {
             blackDuckParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
         }
 
-        if (securityScan.getBlackduck_search_depth() != null) {
-            blackDuckParameters.put(
-                    ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY, securityScan.getBlackduck_search_depth());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_config_path())) {
-            blackDuckParameters.put(
-                    ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY, securityScan.getBlackduck_config_path());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_args())) {
-            blackDuckParameters.put(ApplicationConstants.BLACKDUCK_ARGS_KEY, securityScan.getBlackduck_args());
-        }
+        prepareBlackDuckToolConfigurationParametersMap(blackDuckParameters, securityScan);
 
         return blackDuckParameters;
     }
@@ -308,25 +296,6 @@ public class ScanParametersFactory {
             coverityParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
         }
 
-        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_build_command())) {
-            coverityParameters.put(
-                    ApplicationConstants.COVERITY_BUILD_COMMAND_KEY, securityScan.getCoverity_build_command());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_clean_command())) {
-            coverityParameters.put(
-                    ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY, securityScan.getCoverity_clean_command());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_config_path())) {
-            coverityParameters.put(
-                    ApplicationConstants.COVERITY_CONFIG_PATH_KEY, securityScan.getCoverity_config_path());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_args())) {
-            coverityParameters.put(ApplicationConstants.COVERITY_ARGS_KEY, securityScan.getCoverity_args());
-        }
-
         if (securityScan.isCoverity_prComment_enabled_temporary() != null) {
             coverityParameters.put(
                     ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
@@ -340,42 +309,9 @@ public class ScanParametersFactory {
                     securityScan.isCoverity_automation_prcomment());
         }
 
+        prepareCoverityToolConfigurationParametersMap(coverityParameters, securityScan);
+
         return coverityParameters;
-    }
-
-    public static Map<String, Object> prepareAddtionalParametersMap(SecurityScan securityScan) {
-        Map<String, Object> bridgeParameters = new HashMap<>();
-
-        if (!Utility.isStringNullOrBlank(securityScan.getSynopsys_bridge_download_url())) {
-            bridgeParameters.put(
-                    ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, securityScan.getSynopsys_bridge_download_url());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getSynopsys_bridge_download_version())) {
-            bridgeParameters.put(
-                    ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION,
-                    securityScan.getSynopsys_bridge_download_version());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getSynopsys_bridge_install_directory())) {
-            bridgeParameters.put(
-                    ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY,
-                    securityScan.getSynopsys_bridge_install_directory());
-        }
-
-        if (securityScan.isInclude_diagnostics() != null) {
-            bridgeParameters.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, securityScan.isInclude_diagnostics());
-        }
-
-        if (securityScan.isNetwork_airgap() != null) {
-            bridgeParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, securityScan.isNetwork_airgap());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getMark_build_status())) {
-            bridgeParameters.put(ApplicationConstants.MARK_BUILD_STATUS, securityScan.getMark_build_status());
-        }
-
-        return bridgeParameters;
     }
 
     public static Map<String, Object> preparePolarisParametersMap(SecurityScan securityScan) {
@@ -455,7 +391,119 @@ public class ScanParametersFactory {
                     securityScan.isProject_source_preserveSymLinks_actualValue());
         }
 
+        preparePolarisToolConfigurationParametersMap(polarisParametersMap, securityScan);
+
         return polarisParametersMap;
+    }
+
+    private static void prepareCoverityToolConfigurationParametersMap(
+            Map<String, Object> coverityParameters, SecurityScan securityScan) {
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_build_command())) {
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_BUILD_COMMAND_KEY, securityScan.getCoverity_build_command());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_clean_command())) {
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY, securityScan.getCoverity_clean_command());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_config_path())) {
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_CONFIG_PATH_KEY, securityScan.getCoverity_config_path());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getCoverity_args())) {
+            coverityParameters.put(ApplicationConstants.COVERITY_ARGS_KEY, securityScan.getCoverity_args());
+        }
+    }
+
+    private static void prepareBlackDuckToolConfigurationParametersMap(
+            Map<String, Object> blackDuckParameters, SecurityScan securityScan) {
+        if (securityScan.getBlackduck_search_depth() != null) {
+            blackDuckParameters.put(
+                    ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY, securityScan.getBlackduck_search_depth());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_config_path())) {
+            blackDuckParameters.put(
+                    ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY, securityScan.getBlackduck_config_path());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_args())) {
+            blackDuckParameters.put(ApplicationConstants.BLACKDUCK_ARGS_KEY, securityScan.getBlackduck_args());
+        }
+    }
+
+    private static void preparePolarisToolConfigurationParametersMap(
+            Map<String, Object> polarisParametersMap, SecurityScan securityScan) {
+        if (securityScan.getPolaris_sca_search_depth() != null) {
+            polarisParametersMap.put(
+                    ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY, securityScan.getPolaris_sca_search_depth());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_sca_config_path())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY, securityScan.getPolaris_sca_config_path());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_sca_args())) {
+            polarisParametersMap.put(ApplicationConstants.BLACKDUCK_ARGS_KEY, securityScan.getPolaris_sca_args());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_sast_build_command())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.COVERITY_BUILD_COMMAND_KEY, securityScan.getPolaris_sast_build_command());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_sast_clean_command())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY, securityScan.getPolaris_sast_clean_command());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_sast_config_path())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.COVERITY_CONFIG_PATH_KEY, securityScan.getPolaris_sast_config_path());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_sast_args())) {
+            polarisParametersMap.put(ApplicationConstants.COVERITY_ARGS_KEY, securityScan.getPolaris_sast_args());
+        }
+    }
+
+    public static Map<String, Object> prepareAddtionalParametersMap(SecurityScan securityScan) {
+        Map<String, Object> bridgeParameters = new HashMap<>();
+
+        if (!Utility.isStringNullOrBlank(securityScan.getSynopsys_bridge_download_url())) {
+            bridgeParameters.put(
+                    ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_URL, securityScan.getSynopsys_bridge_download_url());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getSynopsys_bridge_download_version())) {
+            bridgeParameters.put(
+                    ApplicationConstants.SYNOPSYS_BRIDGE_DOWNLOAD_VERSION,
+                    securityScan.getSynopsys_bridge_download_version());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getSynopsys_bridge_install_directory())) {
+            bridgeParameters.put(
+                    ApplicationConstants.SYNOPSYS_BRIDGE_INSTALL_DIRECTORY,
+                    securityScan.getSynopsys_bridge_install_directory());
+        }
+
+        if (securityScan.isInclude_diagnostics() != null) {
+            bridgeParameters.put(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY, securityScan.isInclude_diagnostics());
+        }
+
+        if (securityScan.isNetwork_airgap() != null) {
+            bridgeParameters.put(ApplicationConstants.NETWORK_AIRGAP_KEY, securityScan.isNetwork_airgap());
+        }
+
+        if (!Utility.isStringNullOrBlank(securityScan.getMark_build_status())) {
+            bridgeParameters.put(ApplicationConstants.MARK_BUILD_STATUS, securityScan.getMark_build_status());
+        }
+
+        return bridgeParameters;
     }
 
     public static Map<String, Object> prepareSarifReportParametersMap(SecurityScan securityScan) {
