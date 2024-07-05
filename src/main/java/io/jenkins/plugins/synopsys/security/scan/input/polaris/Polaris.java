@@ -121,5 +121,4 @@ public class Polaris {
     public void setTest(Test test) {
         this.test = test;
     }
-
 }

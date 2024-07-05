@@ -148,8 +148,12 @@ public class PolarisParametersService {
         if (polarisParameters.containsKey(ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY)) {
             Test test = new Test();
             polaris.setTest(test);
-            polaris.getTest().getSca().setType(polarisParameters
-                    .get(ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY).toString().trim());
+            polaris.getTest()
+                    .getSca()
+                    .setType(polarisParameters
+                            .get(ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY)
+                            .toString()
+                            .trim());
         }
 
         if (polarisParameters.containsKey(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY)) {
