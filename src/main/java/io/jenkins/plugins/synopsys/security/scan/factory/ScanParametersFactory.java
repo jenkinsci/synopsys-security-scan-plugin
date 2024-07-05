@@ -372,6 +372,11 @@ public class ScanParametersFactory {
                     ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY, securityScan.getPolaris_assessment_mode());
         }
 
+        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_test_sca_type())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY, securityScan.getPolaris_test_sca_type());
+        }
+
         if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
             polarisParametersMap.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
         }

@@ -82,6 +82,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private Boolean project_source_preserveSymLinks;
     private Boolean project_source_preserveSymLinks_actualValue;
     private String project_directory;
+    private String polaris_test_sca_type;
     private String coverity_project_directory;
     private String blackduck_project_directory;
     private String polaris_project_directory;
@@ -320,6 +321,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public String getPolaris_assessment_mode() {
         return polaris_assessment_mode;
+    }
+
+    public String getPolaris_test_sca_type() {
+        return polaris_test_sca_type;
     }
 
     public Integer getPolaris_sca_search_depth() {
@@ -684,6 +689,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setPolaris_assessment_mode(String polaris_assessment_mode) {
         this.polaris_assessment_mode = Util.fixEmptyAndTrim(polaris_assessment_mode);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_test_sca_type(String polaris_test_sca_type) {
+        this.polaris_test_sca_type = Util.fixEmptyAndTrim(polaris_test_sca_type);
     }
 
     @DataBoundSetter

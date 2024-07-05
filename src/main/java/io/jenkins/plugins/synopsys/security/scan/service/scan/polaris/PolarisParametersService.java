@@ -8,6 +8,7 @@ import io.jenkins.plugins.synopsys.security.scan.global.Utility;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Parent;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Polaris;
 import io.jenkins.plugins.synopsys.security.scan.input.polaris.Prcomment;
+import io.jenkins.plugins.synopsys.security.scan.input.polaris.Test;
 import io.jenkins.plugins.synopsys.security.scan.input.project.Project;
 import io.jenkins.plugins.synopsys.security.scan.input.project.Source;
 import java.util.ArrayList;
@@ -142,6 +143,13 @@ public class PolarisParametersService {
                             .get(ApplicationConstants.POLARIS_BRANCH_NAME_KEY)
                             .toString()
                             .trim());
+        }
+
+        if (polarisParameters.containsKey(ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY)) {
+            Test test = new Test();
+            polaris.setTest(test);
+            polaris.getTest().getSca().setType(polarisParameters
+                    .get(ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY).toString().trim());
         }
 
         if (polarisParameters.containsKey(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY)) {

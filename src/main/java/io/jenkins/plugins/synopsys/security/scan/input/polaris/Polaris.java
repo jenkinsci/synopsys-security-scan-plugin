@@ -29,6 +29,9 @@ public class Polaris {
     @JsonProperty("prComment")
     private Prcomment prcomment;
 
+    @JsonProperty("test")
+    private Test test;
+
     @JsonProperty("reports")
     private Reports reports;
 
@@ -110,4 +113,13 @@ public class Polaris {
     public void setPrcomment(Prcomment prcomment) {
         this.prcomment = prcomment;
     }
+
+    public Test getTest() {
+        return test;
+    }
+
+    public void setTest(Test test) {
+        this.test = test;
+    }
+
 }

@@ -101,6 +101,7 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String polaris_reports_sarif_severities;
     private Boolean polaris_reports_sarif_groupSCAIssues_temporary;
     private String polaris_assessment_mode;
+    private String polaris_test_sca_type;
     private String project_source_archive;
     private String project_source_excludes;
     private Boolean project_source_preserveSymLinks;
@@ -300,6 +301,10 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public String getPolaris_prComment_severities() {
         return polaris_prComment_severities;
+    }
+
+    public String getPolaris_test_sca_type() {
+        return polaris_test_sca_type;
     }
 
     @Nullable
@@ -667,6 +672,11 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setPolaris_prComment_severities(String polaris_prComment_severities) {
         this.polaris_prComment_severities = Util.fixEmptyAndTrim(polaris_prComment_severities);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_test_sca_type(String polaris_test_sca_type) {
+        this.polaris_test_sca_type = Util.fixEmptyAndTrim(polaris_test_sca_type);
     }
 
     @DataBoundSetter

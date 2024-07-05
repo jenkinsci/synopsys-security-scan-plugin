@@ -102,6 +102,7 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY, "test-parent-branch");
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, true);
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY, "HIGH");
+        polarisParameters.put(ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY, "SCA-PACKAGE");
 
         Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(polarisParameters);
 
@@ -112,6 +113,7 @@ public class PolarisParametersServiceTest {
         assertEquals(polaris.getAssessmentTypes().getTypes(), Arrays.asList("SAST"));
         assertEquals(polaris.getTriage(), "REQUIRED");
         assertEquals(polaris.getBranch().getName(), "test-branch");
+        assertEquals(polaris.getTest().getSca().getType(), "SCA-PACKAGE");
         assertNull(polaris.getBranch().getParent());
         assertNull(polaris.getPrcomment());
     }
@@ -130,6 +132,7 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY, "test-parent-branch");
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, true);
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY, "HIGH");
+        polarisParameters.put(ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY, "SCA-SIGNATURE");
 
         Mockito.when(envVarsMock.get(ApplicationConstants.ENV_CHANGE_ID_KEY)).thenReturn("1");
 
@@ -145,6 +148,7 @@ public class PolarisParametersServiceTest {
         assertEquals(polaris.getBranch().getParent().getName(), "test-parent-branch");
         assertEquals(polaris.getPrcomment().getEnabled(), true);
         assertEquals(polaris.getPrcomment().getSeverities(), Arrays.asList("HIGH"));
+        assertEquals(polaris.getTest().getSca().getType(), "SCA-SIGNATURE");
     }
 
     @Test

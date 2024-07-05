@@ -99,6 +99,8 @@ public interface SecurityScan {
 
     public String getPolaris_assessment_mode();
 
+    public String getPolaris_test_sca_type();
+
     public Integer getPolaris_sca_search_depth();
 
     public String getPolaris_sca_config_path();
