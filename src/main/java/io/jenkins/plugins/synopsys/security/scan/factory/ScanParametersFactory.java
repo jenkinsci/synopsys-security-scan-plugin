@@ -325,81 +325,29 @@ public class ScanParametersFactory {
     public static Map<String, Object> preparePolarisParametersMap(SecurityScan securityScan) {
         Map<String, Object> polarisParametersMap = new HashMap<>();
 
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_server_url())) {
-            polarisParametersMap.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, securityScan.getPolaris_server_url());
-        }
+        putIfNotNullOrBlank(polarisParametersMap, ApplicationConstants.POLARIS_SERVER_URL_KEY, securityScan.getPolaris_server_url());
+        putIfNotNullOrBlank(polarisParametersMap, ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, securityScan.getPolaris_access_token());
+        putIfNotNullOrBlank(polarisParametersMap, ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, securityScan.getPolaris_application_name());
+        putIfNotNullOrBlank(polarisParametersMap, ApplicationConstants.POLARIS_PROJECT_NAME_KEY, securityScan.getPolaris_project_name());
+        putIfNotNullOrBlank(polarisParametersMap, ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, securityScan.getPolaris_assessment_types());
+        putIfNotNullOrBlank(polarisParametersMap, ApplicationConstants.POLARIS_TRIAGE_KEY, securityScan.getPolaris_triage());
+        putIfNotNullOrBlank(polarisParametersMap, ApplicationConstants.POLARIS_BRANCH_NAME_KEY, securityScan.getPolaris_branch_name());
+        putIfNotNullOrBlank(polarisParametersMap, ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY, securityScan.getPolaris_branch_parent_name());
+        putIfNotNullOrBlank(polarisParametersMap, ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY, securityScan.getPolaris_prComment_severities());
+        putIfNotNullOrBlank(polarisParametersMap, ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY, securityScan.getPolaris_assessment_mode());
+        putIfNotNullOrBlank(polarisParametersMap, ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
+        putIfNotNullOrBlank(polarisParametersMap, ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY, securityScan.getProject_source_archive());
+        putIfNotNullOrBlank(polarisParametersMap, ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY, securityScan.getProject_source_excludes());
 
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_access_token())) {
-            polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, securityScan.getPolaris_access_token());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_application_name())) {
-            polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, securityScan.getPolaris_application_name());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_project_name())) {
-            polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_PROJECT_NAME_KEY, securityScan.getPolaris_project_name());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_assessment_types())) {
-            polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY, securityScan.getPolaris_assessment_types());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_triage())) {
-            polarisParametersMap.put(ApplicationConstants.POLARIS_TRIAGE_KEY, securityScan.getPolaris_triage());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_branch_name())) {
-            polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_BRANCH_NAME_KEY, securityScan.getPolaris_branch_name());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_branch_parent_name())) {
-            polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY, securityScan.getPolaris_branch_parent_name());
+        if (securityScan.isProject_source_preserveSymLinks_actualValue() != null) {
+            polarisParametersMap.put(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY, securityScan.isProject_source_preserveSymLinks_actualValue());
         }
 
         if (securityScan instanceof PrcommentScan) {
             PrcommentScan prcommentScan = (PrcommentScan) securityScan;
             if (prcommentScan.isPolarisPrCommentEnabledActualValue() != null) {
-                polarisParametersMap.put(
-                        ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY,
-                        prcommentScan.isPolarisPrCommentEnabledActualValue());
+                polarisParametersMap.put(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, prcommentScan.isPolarisPrCommentEnabledActualValue());
             }
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_prComment_severities())) {
-            polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY,
-                    securityScan.getPolaris_prComment_severities());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getPolaris_assessment_mode())) {
-            polarisParametersMap.put(
-                    ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY, securityScan.getPolaris_assessment_mode());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
-            polarisParametersMap.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getProject_source_archive())) {
-            polarisParametersMap.put(
-                    ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY, securityScan.getProject_source_archive());
-        }
-
-        if (!Utility.isStringNullOrBlank(securityScan.getProject_source_excludes())) {
-            polarisParametersMap.put(
-                    ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY, securityScan.getProject_source_excludes());
-        }
-        if (securityScan.isProject_source_preserveSymLinks_actualValue() != null) {
-            polarisParametersMap.put(
-                    ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY,
-                    securityScan.isProject_source_preserveSymLinks_actualValue());
         }
 
         if (securityScan instanceof FreestyleScan) {
@@ -408,6 +356,12 @@ public class ScanParametersFactory {
         }
 
         return polarisParametersMap;
+    }
+
+    private static void putIfNotNullOrBlank(Map<String, Object> map, String key, String value) {
+        if (!Utility.isStringNullOrBlank(value)) {
+            map.put(key, value);
+        }
     }
 
     private static void prepareCoverityToolConfigurationParametersMap(
