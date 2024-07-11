@@ -55,7 +55,9 @@ public class SecurityScanStep extends Step implements SecurityScan, PrcommentSca
     private String blackduck_scan_failure_severities;
     //    private Boolean blackduck_automation_fixpr;
     private Boolean blackduck_automation_prcomment;
+    private Boolean blackduck_automation_prcomment_actualValue;
     private Boolean blackduck_prComment_enabled;
+    private Boolean blackduck_prComment_enabled_actualValue;
     private String blackduck_download_url;
     private Boolean blackduck_reports_sarif_create;
     private String blackduck_reports_sarif_file_path;
@@ -74,7 +76,9 @@ public class SecurityScanStep extends Step implements SecurityScan, PrcommentSca
     private String coverity_policy_view;
     private String coverity_install_directory;
     private Boolean coverity_automation_prcomment;
+    private Boolean coverity_automation_prcomment_actualValue;
     private Boolean coverity_prComment_enabled;
+    private Boolean coverity_prComment_enabled_actualValue;
     private String coverity_version;
     private Boolean coverity_local;
     private String coverity_build_command;
@@ -91,6 +95,7 @@ public class SecurityScanStep extends Step implements SecurityScan, PrcommentSca
     private String polaris_branch_name;
     private String polaris_branch_parent_name;
     private Boolean polaris_prComment_enabled;
+    private Boolean polaris_prComment_enabled_actualValue;
     private String polaris_prComment_severities;
     private Boolean polaris_reports_sarif_create;
     private String polaris_reports_sarif_file_path;
@@ -161,8 +166,16 @@ public class SecurityScanStep extends Step implements SecurityScan, PrcommentSca
         return blackduck_automation_prcomment;
     }
 
+    public Boolean isBlackduck_automation_prcomment_actualValue() {
+        return blackduck_automation_prcomment_actualValue;
+    }
+
     public Boolean isBlackduck_prComment_enabled() {
         return blackduck_prComment_enabled;
+    }
+
+    public Boolean isBlackduck_prComment_enabled_actualValue() {
+        return blackduck_prComment_enabled_actualValue;
     }
 
     public String getBlackduck_download_url() {
@@ -213,8 +226,16 @@ public class SecurityScanStep extends Step implements SecurityScan, PrcommentSca
         return coverity_automation_prcomment;
     }
 
+    public Boolean isCoverity_automation_prcomment_actualValue() {
+        return coverity_automation_prcomment_actualValue;
+    }
+
     public Boolean isCoverity_prComment_enabled() {
         return coverity_prComment_enabled;
+    }
+
+    public Boolean isCoverity_prComment_enabled_actualValue() {
+        return coverity_prComment_enabled_actualValue;
     }
 
     public String getCoverity_version() {
@@ -275,6 +296,10 @@ public class SecurityScanStep extends Step implements SecurityScan, PrcommentSca
 
     public Boolean isPolaris_prComment_enabled() {
         return polaris_prComment_enabled;
+    }
+
+    public Boolean isPolaris_prComment_enabled_actualValue() {
+        return polaris_prComment_enabled_actualValue;
     }
 
     public String getPolaris_prComment_severities() {
@@ -453,11 +478,13 @@ public class SecurityScanStep extends Step implements SecurityScan, PrcommentSca
     @DataBoundSetter
     public void setBlackduck_automation_prcomment(Boolean blackduck_automation_prcomment) {
         this.blackduck_automation_prcomment = blackduck_automation_prcomment ? true : null;
+        this.blackduck_automation_prcomment_actualValue = blackduck_automation_prcomment ? true : false;
     }
 
     @DataBoundSetter
     public void setBlackduck_prComment_enabled(Boolean blackduck_prComment_enabled) {
         this.blackduck_prComment_enabled = blackduck_prComment_enabled ? true : null;
+        this.blackduck_prComment_enabled_actualValue = blackduck_prComment_enabled ? true : false;
     }
 
     @DataBoundSetter
@@ -518,11 +545,13 @@ public class SecurityScanStep extends Step implements SecurityScan, PrcommentSca
     @DataBoundSetter
     public void setCoverity_automation_prcomment(Boolean coverity_automation_prcomment) {
         this.coverity_automation_prcomment = coverity_automation_prcomment ? true : null;
+        this.coverity_automation_prcomment_actualValue = coverity_automation_prcomment ? true : false;
     }
 
     @DataBoundSetter
     public void setCoverity_prComment_enabled(Boolean coverity_prComment_enabled) {
         this.coverity_prComment_enabled = coverity_prComment_enabled ? true : null;
+        this.coverity_prComment_enabled_actualValue = coverity_prComment_enabled ? true : false;
     }
 
     @DataBoundSetter
@@ -598,6 +627,7 @@ public class SecurityScanStep extends Step implements SecurityScan, PrcommentSca
     @DataBoundSetter
     public void setPolaris_prComment_enabled(Boolean polaris_prComment_enabled) {
         this.polaris_prComment_enabled = polaris_prComment_enabled ? true : null;
+        this.polaris_prComment_enabled_actualValue = polaris_prComment_enabled ? true : false;
     }
 
     @DataBoundSetter

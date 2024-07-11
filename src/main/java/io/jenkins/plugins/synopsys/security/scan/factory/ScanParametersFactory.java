@@ -226,17 +226,17 @@ public class ScanParametersFactory {
 
         if (securityScan instanceof PrcommentScan) {
             PrcommentScan prcommentScan = (PrcommentScan) securityScan;
-            if (prcommentScan.isBlackduck_prComment_enabled() != null) {
+            if (prcommentScan.isBlackduck_prComment_enabled_actualValue() != null) {
                 blackDuckParameters.put(
                         ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
-                        prcommentScan.isBlackduck_prComment_enabled());
+                        prcommentScan.isBlackduck_prComment_enabled_actualValue());
                 blackDuckParameters.put(
                         ApplicationConstants.BLACKDUCK_PRCOMMENT_ENABLED_KEY,
-                        prcommentScan.isBlackduck_prComment_enabled());
-            } else if (prcommentScan.isBlackduck_automation_prcomment() != null) {
+                        prcommentScan.isBlackduck_prComment_enabled_actualValue());
+            } else if (prcommentScan.isBlackduck_automation_prcomment_actualValue() != null) {
                 blackDuckParameters.put(
                         ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
-                        prcommentScan.isBlackduck_automation_prcomment());
+                        prcommentScan.isBlackduck_automation_prcomment_actualValue());
             }
         }
 
@@ -303,17 +303,17 @@ public class ScanParametersFactory {
 
         if (securityScan instanceof PrcommentScan) {
             PrcommentScan prcommentScan = (PrcommentScan) securityScan;
-            if (prcommentScan.isCoverity_prComment_enabled() != null) {
+            if (prcommentScan.isCoverity_prComment_enabled_actualValue() != null) {
                 coverityParameters.put(
                         ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
-                        prcommentScan.isCoverity_prComment_enabled());
+                        prcommentScan.isCoverity_prComment_enabled_actualValue());
                 coverityParameters.put(
                         ApplicationConstants.COVERITY_PRCOMMENT_ENABLED_KEY,
-                        prcommentScan.isCoverity_prComment_enabled());
-            } else if (prcommentScan.isCoverity_automation_prcomment() != null) {
+                        prcommentScan.isCoverity_prComment_enabled_actualValue());
+            } else if (prcommentScan.isCoverity_automation_prcomment_actualValue() != null) {
                 coverityParameters.put(
                         ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
-                        prcommentScan.isCoverity_automation_prcomment());
+                        prcommentScan.isCoverity_automation_prcomment_actualValue());
             }
         }
 
@@ -382,10 +382,10 @@ public class ScanParametersFactory {
 
         if (securityScan instanceof PrcommentScan) {
             PrcommentScan prcommentScan = (PrcommentScan) securityScan;
-            if (prcommentScan.isPolaris_prComment_enabled() != null) {
+            if (prcommentScan.isPolaris_prComment_enabled_actualValue() != null) {
                 polarisParametersMap.put(
                         ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY,
-                        prcommentScan.isPolaris_prComment_enabled());
+                        prcommentScan.isPolaris_prComment_enabled_actualValue());
             }
         }
 
