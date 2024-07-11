@@ -325,51 +325,51 @@ public class ScanParametersFactory {
     public static Map<String, Object> preparePolarisParametersMap(SecurityScan securityScan) {
         Map<String, Object> polarisParametersMap = new HashMap<>();
 
-        putIfNotNullOrBlank(
+        addParameterIfNotBlank(
                 polarisParametersMap,
                 ApplicationConstants.POLARIS_SERVER_URL_KEY,
                 securityScan.getPolaris_server_url());
-        putIfNotNullOrBlank(
+        addParameterIfNotBlank(
                 polarisParametersMap,
                 ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY,
                 securityScan.getPolaris_access_token());
-        putIfNotNullOrBlank(
+        addParameterIfNotBlank(
                 polarisParametersMap,
                 ApplicationConstants.POLARIS_APPLICATION_NAME_KEY,
                 securityScan.getPolaris_application_name());
-        putIfNotNullOrBlank(
+        addParameterIfNotBlank(
                 polarisParametersMap,
                 ApplicationConstants.POLARIS_PROJECT_NAME_KEY,
                 securityScan.getPolaris_project_name());
-        putIfNotNullOrBlank(
+        addParameterIfNotBlank(
                 polarisParametersMap,
                 ApplicationConstants.POLARIS_ASSESSMENT_TYPES_KEY,
                 securityScan.getPolaris_assessment_types());
-        putIfNotNullOrBlank(
+        addParameterIfNotBlank(
                 polarisParametersMap, ApplicationConstants.POLARIS_TRIAGE_KEY, securityScan.getPolaris_triage());
-        putIfNotNullOrBlank(
+        addParameterIfNotBlank(
                 polarisParametersMap,
                 ApplicationConstants.POLARIS_BRANCH_NAME_KEY,
                 securityScan.getPolaris_branch_name());
-        putIfNotNullOrBlank(
+        addParameterIfNotBlank(
                 polarisParametersMap,
                 ApplicationConstants.POLARIS_BRANCH_PARENT_NAME_KEY,
                 securityScan.getPolaris_branch_parent_name());
-        putIfNotNullOrBlank(
+        addParameterIfNotBlank(
                 polarisParametersMap,
                 ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY,
                 securityScan.getPolaris_prComment_severities());
-        putIfNotNullOrBlank(
+        addParameterIfNotBlank(
                 polarisParametersMap,
                 ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY,
                 securityScan.getPolaris_assessment_mode());
-        putIfNotNullOrBlank(
+        addParameterIfNotBlank(
                 polarisParametersMap, ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
-        putIfNotNullOrBlank(
+        addParameterIfNotBlank(
                 polarisParametersMap,
                 ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY,
                 securityScan.getProject_source_archive());
-        putIfNotNullOrBlank(
+        addParameterIfNotBlank(
                 polarisParametersMap,
                 ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY,
                 securityScan.getProject_source_excludes());
@@ -395,12 +395,6 @@ public class ScanParametersFactory {
         }
 
         return polarisParametersMap;
-    }
-
-    private static void putIfNotNullOrBlank(Map<String, Object> map, String key, String value) {
-        if (!Utility.isStringNullOrBlank(value)) {
-            map.put(key, value);
-        }
     }
 
     private static void prepareCoverityToolConfigurationParametersMap(
