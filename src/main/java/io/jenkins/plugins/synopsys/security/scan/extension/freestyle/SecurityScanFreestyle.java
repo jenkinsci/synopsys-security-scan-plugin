@@ -8,6 +8,7 @@ import hudson.tasks.Builder;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
+import io.jenkins.plugins.synopsys.security.scan.extension.FreestyleScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
 import io.jenkins.plugins.synopsys.security.scan.global.*;
@@ -18,7 +19,7 @@ import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-public class SecurityScanFreestyle extends Builder implements SecurityScan, SimpleBuildStep {
+public class SecurityScanFreestyle extends Builder implements SecurityScan, FreestyleScan, SimpleBuildStep {
     private String product;
     private String blackduck_url;
     private transient String blackduck_token;
@@ -29,9 +30,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private Boolean blackduckIntelligentScan;
     private String blackduck_scan_failure_severities;
     //    private Boolean blackduck_automation_fixpr;
-    private Boolean blackduck_automation_prcomment;
-    private Boolean blackduck_prComment_enabled;
-    private Boolean blackduck_prComment_enabled_temporary;
     private String blackduck_download_url;
     private Boolean blackduck_reports_sarif_create;
     private String blackduck_reports_sarif_file_path;
@@ -49,9 +47,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String coverity_stream_name;
     private String coverity_policy_view;
     private String coverity_install_directory;
-    private Boolean coverity_automation_prcomment;
-    private Boolean coverity_prComment_enabled;
-    private Boolean coverity_prComment_enabled_temporary;
     private String coverity_version;
     private Boolean coverity_local;
     private String coverity_build_command;
@@ -67,8 +62,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     private String polaris_triage;
     private String polaris_branch_name;
     private String polaris_branch_parent_name;
-    private Boolean polaris_prComment_enabled;
-    private Boolean polarisPrCommentEnabledActualValue;
     private String polaris_prComment_severities;
     private Boolean polaris_reports_sarif_create;
     private String polaris_reports_sarif_file_path;
@@ -138,18 +131,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         return blackduck_scan_failure_severities;
     }
 
-    public Boolean isBlackduck_automation_prcomment() {
-        return blackduck_automation_prcomment;
-    }
-
-    public Boolean isBlackduck_prComment_enabled() {
-        return blackduck_prComment_enabled;
-    }
-
-    public Boolean isBlackduck_prComment_enabled_temporary() {
-        return blackduck_prComment_enabled_temporary;
-    }
-
     public String getBlackduck_download_url() {
         return blackduck_download_url;
     }
@@ -214,18 +195,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
         return coverity_install_directory;
     }
 
-    public Boolean isCoverity_automation_prcomment() {
-        return coverity_automation_prcomment;
-    }
-
-    public Boolean isCoverity_prComment_enabled() {
-        return coverity_prComment_enabled;
-    }
-
-    public Boolean isCoverity_prComment_enabled_temporary() {
-        return coverity_prComment_enabled_temporary;
-    }
-
     public String getCoverity_version() {
         return coverity_version;
     }
@@ -280,14 +249,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
 
     public String getPolaris_branch_parent_name() {
         return polaris_branch_parent_name;
-    }
-
-    public Boolean isPolaris_prComment_enabled() {
-        return polaris_prComment_enabled;
-    }
-
-    public Boolean isPolarisPrCommentEnabledActualValue() {
-        return polarisPrCommentEnabledActualValue;
     }
 
     public String getPolaris_prComment_severities() {
@@ -463,17 +424,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     }
 
     @DataBoundSetter
-    public void setBlackduck_automation_prcomment(Boolean blackduck_automation_prcomment) {
-        this.blackduck_automation_prcomment = blackduck_automation_prcomment ? true : null;
-    }
-
-    @DataBoundSetter
-    public void setBlackduck_prComment_enabled(Boolean blackduck_prComment_enabled) {
-        this.blackduck_prComment_enabled =
-                this.blackduck_prComment_enabled_temporary = blackduck_prComment_enabled ? true : false;
-    }
-
-    @DataBoundSetter
     public void setBlackduck_download_url(String blackduck_download_url) {
         this.blackduck_download_url = Util.fixEmptyAndTrim(blackduck_download_url);
     }
@@ -550,22 +500,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     }
 
     @DataBoundSetter
-    public void setCoverity_automation_prcomment(Boolean coverity_automation_prcomment) {
-        this.coverity_automation_prcomment = coverity_automation_prcomment ? true : null;
-    }
-
-    @DataBoundSetter
-    public void setCoverity_prComment_enabled(Boolean coverity_prComment_enabled) {
-        this.coverity_prComment_enabled =
-                this.coverity_prComment_enabled_temporary = coverity_prComment_enabled ? true : false;
-    }
-
-    @DataBoundSetter
-    public void setCoverity_prComment_enabled_temporary(Boolean coverity_prComment_enabled_temporary) {
-        this.coverity_prComment_enabled_temporary = coverity_prComment_enabled_temporary ? true : null;
-    }
-
-    @DataBoundSetter
     public void setCoverity_version(String coverity_version) {
         this.coverity_version = Util.fixEmptyAndTrim(coverity_version);
     }
@@ -633,16 +567,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Simp
     @DataBoundSetter
     public void setPolaris_branch_parent_name(String polaris_branch_parent_name) {
         this.polaris_branch_parent_name = polaris_branch_parent_name;
-    }
-
-    @DataBoundSetter
-    public void setPolaris_prComment_enabled(Boolean polaris_prComment_enabled) {
-        this.polaris_prComment_enabled = polaris_prComment_enabled ? true : null;
-    }
-
-    @DataBoundSetter
-    public void setPolarisPrCommentEnabledActualValue(Boolean polarisPrCommentEnabledActualValue) {
-        this.polarisPrCommentEnabledActualValue = polarisPrCommentEnabledActualValue;
     }
 
     @DataBoundSetter

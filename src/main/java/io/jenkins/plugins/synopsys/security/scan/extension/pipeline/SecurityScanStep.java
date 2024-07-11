@@ -9,6 +9,7 @@ import hudson.util.ListBoxModel.Option;
 import io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
+import io.jenkins.plugins.synopsys.security.scan.extension.PrcommentScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
@@ -41,7 +42,7 @@ import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-public class SecurityScanStep extends Step implements SecurityScan, Serializable {
+public class SecurityScanStep extends Step implements SecurityScan, PrcommentScan, Serializable {
     private static final long serialVersionUID = 6294070801130995534L;
 
     private String product;
@@ -109,13 +110,6 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String coverity_project_directory;
     private String blackduck_project_directory;
     private String polaris_project_directory;
-    private Integer polaris_sca_search_depth;
-    private String polaris_sca_config_path;
-    private String polaris_sca_args;
-    private String polaris_sast_build_command;
-    private String polaris_sast_clean_command;
-    private String polaris_sast_config_path;
-    private String polaris_sast_args;
 
     private String bitbucket_username;
     private transient String bitbucket_token;
@@ -300,41 +294,6 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public String getPolaris_prComment_severities() {
         return polaris_prComment_severities;
-    }
-
-    @Nullable
-    public Integer getPolaris_sca_search_depth() {
-        return null;
-    }
-
-    @Nullable
-    public String getPolaris_sca_config_path() {
-        return null;
-    }
-
-    @Nullable
-    public String getPolaris_sca_args() {
-        return null;
-    }
-
-    @Nullable
-    public String getPolaris_sast_build_command() {
-        return null;
-    }
-
-    @Nullable
-    public String getPolaris_sast_clean_command() {
-        return null;
-    }
-
-    @Nullable
-    public String getPolaris_sast_config_path() {
-        return null;
-    }
-
-    @Nullable
-    public String getPolaris_sast_args() {
-        return null;
     }
 
     public String getBitbucket_username() {
@@ -667,41 +626,6 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setPolaris_prComment_severities(String polaris_prComment_severities) {
         this.polaris_prComment_severities = Util.fixEmptyAndTrim(polaris_prComment_severities);
-    }
-
-    @DataBoundSetter
-    public void setPolaris_sca_search_depth(Integer polaris_sca_search_depth) {
-        this.polaris_sca_search_depth = polaris_sca_search_depth;
-    }
-
-    @DataBoundSetter
-    public void setPolaris_sca_config_path(String polaris_sca_config_path) {
-        this.polaris_sca_config_path = Util.fixEmptyAndTrim(polaris_sca_config_path);
-    }
-
-    @DataBoundSetter
-    public void setPolaris_sca_args(String polaris_sca_args) {
-        this.polaris_sca_args = Util.fixEmptyAndTrim(polaris_sca_args);
-    }
-
-    @DataBoundSetter
-    public void setPolaris_sast_build_command(String polaris_sast_build_command) {
-        this.polaris_sast_build_command = Util.fixEmptyAndTrim(polaris_sast_build_command);
-    }
-
-    @DataBoundSetter
-    public void setPolaris_sast_clean_command(String polaris_sast_clean_command) {
-        this.polaris_sast_clean_command = Util.fixEmptyAndTrim(polaris_sast_clean_command);
-    }
-
-    @DataBoundSetter
-    public void setPolaris_sast_config_path(String polaris_sast_config_path) {
-        this.polaris_sast_config_path = Util.fixEmptyAndTrim(polaris_sast_config_path);
-    }
-
-    @DataBoundSetter
-    public void setPolaris_sast_args(String polaris_sast_args) {
-        this.polaris_sast_args = Util.fixEmptyAndTrim(polaris_sast_args);
     }
 
     @DataBoundSetter
