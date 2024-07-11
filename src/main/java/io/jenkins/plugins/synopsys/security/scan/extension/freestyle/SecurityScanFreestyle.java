@@ -29,7 +29,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private Boolean blackduck_scan_full;
     private Boolean blackduckIntelligentScan;
     private String blackduck_scan_failure_severities;
-    //    private Boolean blackduck_automation_fixpr;
     private String blackduck_download_url;
     private Boolean blackduck_reports_sarif_create;
     private String blackduck_reports_sarif_file_path;

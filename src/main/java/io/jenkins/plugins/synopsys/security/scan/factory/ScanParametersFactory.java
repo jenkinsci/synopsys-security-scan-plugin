@@ -226,13 +226,13 @@ public class ScanParametersFactory {
 
         if (securityScan instanceof PrcommentScan) {
             PrcommentScan prcommentScan = (PrcommentScan) securityScan;
-            if (prcommentScan.isBlackduck_prComment_enabled_temporary() != null) {
+            if (prcommentScan.isBlackduck_prComment_enabled() != null) {
                 blackDuckParameters.put(
                         ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
-                        prcommentScan.isBlackduck_prComment_enabled_temporary());
+                        prcommentScan.isBlackduck_prComment_enabled());
                 blackDuckParameters.put(
                         ApplicationConstants.BLACKDUCK_PRCOMMENT_ENABLED_KEY,
-                        prcommentScan.isBlackduck_prComment_enabled_temporary());
+                        prcommentScan.isBlackduck_prComment_enabled());
             } else if (prcommentScan.isBlackduck_automation_prcomment() != null) {
                 blackDuckParameters.put(
                         ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
@@ -303,13 +303,13 @@ public class ScanParametersFactory {
 
         if (securityScan instanceof PrcommentScan) {
             PrcommentScan prcommentScan = (PrcommentScan) securityScan;
-            if (prcommentScan.isCoverity_prComment_enabled_temporary() != null) {
+            if (prcommentScan.isCoverity_prComment_enabled() != null) {
                 coverityParameters.put(
                         ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
-                        prcommentScan.isCoverity_prComment_enabled_temporary());
+                        prcommentScan.isCoverity_prComment_enabled());
                 coverityParameters.put(
                         ApplicationConstants.COVERITY_PRCOMMENT_ENABLED_KEY,
-                        prcommentScan.isCoverity_prComment_enabled_temporary());
+                        prcommentScan.isCoverity_prComment_enabled());
             } else if (prcommentScan.isCoverity_automation_prcomment() != null) {
                 coverityParameters.put(
                         ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
@@ -382,10 +382,10 @@ public class ScanParametersFactory {
 
         if (securityScan instanceof PrcommentScan) {
             PrcommentScan prcommentScan = (PrcommentScan) securityScan;
-            if (prcommentScan.isPolarisPrCommentEnabledActualValue() != null) {
+            if (prcommentScan.isPolaris_prComment_enabled() != null) {
                 polarisParametersMap.put(
                         ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY,
-                        prcommentScan.isPolarisPrCommentEnabledActualValue());
+                        prcommentScan.isPolaris_prComment_enabled());
             }
         }
 
