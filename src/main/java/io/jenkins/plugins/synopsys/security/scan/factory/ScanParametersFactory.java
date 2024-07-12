@@ -12,7 +12,7 @@ import io.jenkins.plugins.synopsys.security.scan.PluginParametersHandler;
 import io.jenkins.plugins.synopsys.security.scan.SecurityScanner;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.extension.FreestyleScan;
-import io.jenkins.plugins.synopsys.security.scan.extension.PrcommentScan;
+import io.jenkins.plugins.synopsys.security.scan.extension.PrCommentScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.global.ScannerGlobalConfig;
 import io.jenkins.plugins.synopsys.security.scan.global.*;
@@ -224,19 +224,19 @@ public class ScanParametersFactory {
         // securityScan.isBlackduck_automation_fixpr());
         //        }
 
-        if (securityScan instanceof PrcommentScan) {
-            PrcommentScan prcommentScan = (PrcommentScan) securityScan;
-            if (prcommentScan.isBlackduck_prComment_enabled_actualValue() != null) {
+        if (securityScan instanceof PrCommentScan) {
+            PrCommentScan prCommentScan = (PrCommentScan) securityScan;
+            if (prCommentScan.isBlackduck_prComment_enabled_actualValue() != null) {
                 blackDuckParameters.put(
                         ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
-                        prcommentScan.isBlackduck_prComment_enabled_actualValue());
+                        prCommentScan.isBlackduck_prComment_enabled_actualValue());
                 blackDuckParameters.put(
                         ApplicationConstants.BLACKDUCK_PRCOMMENT_ENABLED_KEY,
-                        prcommentScan.isBlackduck_prComment_enabled_actualValue());
-            } else if (prcommentScan.isBlackduck_automation_prcomment_actualValue() != null) {
+                        prCommentScan.isBlackduck_prComment_enabled_actualValue());
+            } else if (prCommentScan.isBlackduck_automation_prcomment_actualValue() != null) {
                 blackDuckParameters.put(
                         ApplicationConstants.BLACKDUCK_AUTOMATION_PRCOMMENT_KEY,
-                        prcommentScan.isBlackduck_automation_prcomment_actualValue());
+                        prCommentScan.isBlackduck_automation_prcomment_actualValue());
             }
         }
 
@@ -301,19 +301,19 @@ public class ScanParametersFactory {
             coverityParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
         }
 
-        if (securityScan instanceof PrcommentScan) {
-            PrcommentScan prcommentScan = (PrcommentScan) securityScan;
-            if (prcommentScan.isCoverity_prComment_enabled_actualValue() != null) {
+        if (securityScan instanceof PrCommentScan) {
+            PrCommentScan prCommentScan = (PrCommentScan) securityScan;
+            if (prCommentScan.isCoverity_prComment_enabled_actualValue() != null) {
                 coverityParameters.put(
                         ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
-                        prcommentScan.isCoverity_prComment_enabled_actualValue());
+                        prCommentScan.isCoverity_prComment_enabled_actualValue());
                 coverityParameters.put(
                         ApplicationConstants.COVERITY_PRCOMMENT_ENABLED_KEY,
-                        prcommentScan.isCoverity_prComment_enabled_actualValue());
-            } else if (prcommentScan.isCoverity_automation_prcomment_actualValue() != null) {
+                        prCommentScan.isCoverity_prComment_enabled_actualValue());
+            } else if (prCommentScan.isCoverity_automation_prcomment_actualValue() != null) {
                 coverityParameters.put(
                         ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY,
-                        prcommentScan.isCoverity_automation_prcomment_actualValue());
+                        prCommentScan.isCoverity_automation_prcomment_actualValue());
             }
         }
 
@@ -380,12 +380,12 @@ public class ScanParametersFactory {
                     securityScan.isProject_source_preserveSymLinks_actualValue());
         }
 
-        if (securityScan instanceof PrcommentScan) {
-            PrcommentScan prcommentScan = (PrcommentScan) securityScan;
-            if (prcommentScan.isPolaris_prComment_enabled_actualValue() != null) {
+        if (securityScan instanceof PrCommentScan) {
+            PrCommentScan prCommentScan = (PrCommentScan) securityScan;
+            if (prCommentScan.isPolaris_prComment_enabled_actualValue() != null) {
                 polarisParametersMap.put(
                         ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY,
-                        prcommentScan.isPolaris_prComment_enabled_actualValue());
+                        prCommentScan.isPolaris_prComment_enabled_actualValue());
             }
         }
 

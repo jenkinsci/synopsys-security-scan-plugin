@@ -9,7 +9,7 @@ import hudson.util.ListBoxModel.Option;
 import io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
-import io.jenkins.plugins.synopsys.security.scan.extension.PrcommentScan;
+import io.jenkins.plugins.synopsys.security.scan.extension.PrCommentScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
@@ -42,7 +42,7 @@ import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-public class SecurityScanStep extends Step implements SecurityScan, PrcommentScan, Serializable {
+public class SecurityScanStep extends Step implements SecurityScan, PrCommentScan, Serializable {
     private static final long serialVersionUID = 6294070801130995534L;
 
     private String product;
