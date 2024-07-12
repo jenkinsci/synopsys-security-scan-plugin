@@ -8,7 +8,6 @@ import hudson.tasks.Builder;
 import hudson.util.ListBoxModel;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
 import io.jenkins.plugins.synopsys.security.scan.exception.ScannerException;
-import io.jenkins.plugins.synopsys.security.scan.extension.FreestyleScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
 import io.jenkins.plugins.synopsys.security.scan.factory.ScanParametersFactory;
 import io.jenkins.plugins.synopsys.security.scan.global.*;
@@ -93,7 +92,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private String synopsys_bridge_install_directory;
     private Boolean include_diagnostics;
     private Boolean network_airgap;
-    private Boolean return_status;
 
     private String mark_build_status;
 
@@ -376,10 +374,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
 
     public Boolean isNetwork_airgap() {
         return network_airgap;
-    }
-
-    public Boolean isReturn_status() {
-        return return_status;
     }
 
     public String getMark_build_status() {
@@ -722,11 +716,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     @DataBoundSetter
     public void setNetwork_airgap(Boolean network_airgap) {
         this.network_airgap = network_airgap ? true : null;
-    }
-
-    @DataBoundSetter
-    public void setReturn_status(Boolean return_status) {
-        this.return_status = return_status ? true : null;
     }
 
     @DataBoundSetter

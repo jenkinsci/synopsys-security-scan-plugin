@@ -1,4 +1,4 @@
-package io.jenkins.plugins.synopsys.security.scan.extension;
+package io.jenkins.plugins.synopsys.security.scan.extension.freestyle;
 
 public interface FreestyleScan {
     public Integer getPolaris_sca_search_depth();

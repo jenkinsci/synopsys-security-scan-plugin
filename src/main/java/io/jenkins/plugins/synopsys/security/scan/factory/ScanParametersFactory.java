@@ -11,10 +11,11 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.PluginParametersHandler;
 import io.jenkins.plugins.synopsys.security.scan.SecurityScanner;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
-import io.jenkins.plugins.synopsys.security.scan.extension.FreestyleScan;
-import io.jenkins.plugins.synopsys.security.scan.extension.PrCommentScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.SecurityScan;
+import io.jenkins.plugins.synopsys.security.scan.extension.freestyle.FreestyleScan;
 import io.jenkins.plugins.synopsys.security.scan.extension.global.ScannerGlobalConfig;
+import io.jenkins.plugins.synopsys.security.scan.extension.pipeline.PrCommentScan;
+import io.jenkins.plugins.synopsys.security.scan.extension.pipeline.ReturnStatusScan;
 import io.jenkins.plugins.synopsys.security.scan.global.*;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.BuildStatus;
 import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
@@ -83,8 +84,11 @@ public class ScanParametersFactory {
 
             parametersMap.putAll(prepareAddtionalParametersMap(securityScan));
 
-            if (securityScan.isReturn_status() != null) {
-                parametersMap.put(ApplicationConstants.RETURN_STATUS_KEY, securityScan.isReturn_status());
+            if (securityScan instanceof ReturnStatusScan) {
+                ReturnStatusScan returnStatusScan = (ReturnStatusScan) securityScan;
+                if (returnStatusScan.isReturn_status() != null) {
+                    parametersMap.put(ApplicationConstants.RETURN_STATUS_KEY, returnStatusScan.isReturn_status());
+                }
             }
 
             return parametersMap;

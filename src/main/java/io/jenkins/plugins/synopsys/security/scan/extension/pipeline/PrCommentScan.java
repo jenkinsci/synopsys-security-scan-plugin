@@ -1,4 +1,4 @@
-package io.jenkins.plugins.synopsys.security.scan.extension;
+package io.jenkins.plugins.synopsys.security.scan.extension.pipeline;
 
 public interface PrCommentScan {
     public Boolean isBlackduck_automation_prcomment();

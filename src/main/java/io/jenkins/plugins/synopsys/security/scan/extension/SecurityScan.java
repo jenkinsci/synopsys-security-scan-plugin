@@ -119,7 +119,5 @@ public interface SecurityScan {
 
     public Boolean isBlackduck_reports_sarif_groupSCAIssues_temporary();
 
-    public Boolean isReturn_status();
-
     public String getMark_build_status();
 }
