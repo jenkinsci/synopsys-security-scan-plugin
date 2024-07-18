@@ -41,7 +41,7 @@ import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-public class SecurityScanStep extends Step implements SecurityScan, Serializable {
+public class SecurityScanStep extends Step implements SecurityScan, PrCommentScan, ReturnStatusScan, Serializable {
     private static final long serialVersionUID = 6294070801130995534L;
 
     private String product;
@@ -54,8 +54,9 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String blackduck_scan_failure_severities;
     //    private Boolean blackduck_automation_fixpr;
     private Boolean blackduck_automation_prcomment;
+    private Boolean blackduck_automation_prcomment_actualValue;
     private Boolean blackduck_prComment_enabled;
-    private Boolean blackduck_prComment_enabled_temporary;
+    private Boolean blackduck_prComment_enabled_actualValue;
     private String blackduck_download_url;
     private Boolean blackduck_reports_sarif_create;
     private String blackduck_reports_sarif_file_path;
@@ -74,8 +75,9 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String coverity_policy_view;
     private String coverity_install_directory;
     private Boolean coverity_automation_prcomment;
+    private Boolean coverity_automation_prcomment_actualValue;
     private Boolean coverity_prComment_enabled;
-    private Boolean coverity_prComment_enabled_temporary;
+    private Boolean coverity_prComment_enabled_actualValue;
     private String coverity_version;
     private Boolean coverity_local;
     private String coverity_build_command;
@@ -91,8 +93,8 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String polaris_triage;
     private String polaris_branch_name;
     private String polaris_branch_parent_name;
-    private Boolean polarisPrCommentEnabledActualValue;
     private Boolean polaris_prComment_enabled;
+    private Boolean polaris_prComment_enabled_actualValue;
     private String polaris_prComment_severities;
     private Boolean polaris_reports_sarif_create;
     private String polaris_reports_sarif_file_path;
@@ -110,13 +112,6 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     private String coverity_project_directory;
     private String blackduck_project_directory;
     private String polaris_project_directory;
-    private Integer polaris_sca_search_depth;
-    private String polaris_sca_config_path;
-    private String polaris_sca_args;
-    private String polaris_sast_build_command;
-    private String polaris_sast_clean_command;
-    private String polaris_sast_config_path;
-    private String polaris_sast_args;
 
     private String bitbucket_username;
     private transient String bitbucket_token;
@@ -171,12 +166,16 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return blackduck_automation_prcomment;
     }
 
+    public Boolean isBlackduck_automation_prcomment_actualValue() {
+        return blackduck_automation_prcomment_actualValue;
+    }
+
     public Boolean isBlackduck_prComment_enabled() {
         return blackduck_prComment_enabled;
     }
 
-    public Boolean isBlackduck_prComment_enabled_temporary() {
-        return blackduck_prComment_enabled_temporary;
+    public Boolean isBlackduck_prComment_enabled_actualValue() {
+        return blackduck_prComment_enabled_actualValue;
     }
 
     public String getBlackduck_download_url() {
@@ -227,12 +226,16 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return coverity_automation_prcomment;
     }
 
+    public Boolean isCoverity_automation_prcomment_actualValue() {
+        return coverity_automation_prcomment_actualValue;
+    }
+
     public Boolean isCoverity_prComment_enabled() {
         return coverity_prComment_enabled;
     }
 
-    public Boolean isCoverity_prComment_enabled_temporary() {
-        return coverity_prComment_enabled_temporary;
+    public Boolean isCoverity_prComment_enabled_actualValue() {
+        return coverity_prComment_enabled_actualValue;
     }
 
     public String getCoverity_version() {
@@ -295,8 +298,8 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
         return polaris_prComment_enabled;
     }
 
-    public Boolean isPolarisPrCommentEnabledActualValue() {
-        return polarisPrCommentEnabledActualValue;
+    public Boolean isPolaris_prComment_enabled_actualValue() {
+        return polaris_prComment_enabled_actualValue;
     }
 
     public String getPolaris_prComment_severities() {
@@ -305,41 +308,6 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     public String getPolaris_test_sca_type() {
         return polaris_test_sca_type;
-    }
-
-    @Nullable
-    public Integer getPolaris_sca_search_depth() {
-        return null;
-    }
-
-    @Nullable
-    public String getPolaris_sca_config_path() {
-        return null;
-    }
-
-    @Nullable
-    public String getPolaris_sca_args() {
-        return null;
-    }
-
-    @Nullable
-    public String getPolaris_sast_build_command() {
-        return null;
-    }
-
-    @Nullable
-    public String getPolaris_sast_clean_command() {
-        return null;
-    }
-
-    @Nullable
-    public String getPolaris_sast_config_path() {
-        return null;
-    }
-
-    @Nullable
-    public String getPolaris_sast_args() {
-        return null;
     }
 
     public String getBitbucket_username() {
@@ -514,12 +482,13 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setBlackduck_automation_prcomment(Boolean blackduck_automation_prcomment) {
         this.blackduck_automation_prcomment = blackduck_automation_prcomment ? true : null;
+        this.blackduck_automation_prcomment_actualValue = blackduck_automation_prcomment ? true : false;
     }
 
     @DataBoundSetter
     public void setBlackduck_prComment_enabled(Boolean blackduck_prComment_enabled) {
         this.blackduck_prComment_enabled = blackduck_prComment_enabled ? true : null;
-        this.blackduck_prComment_enabled_temporary = blackduck_prComment_enabled ? true : false;
+        this.blackduck_prComment_enabled_actualValue = blackduck_prComment_enabled ? true : false;
     }
 
     @DataBoundSetter
@@ -580,12 +549,13 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setCoverity_automation_prcomment(Boolean coverity_automation_prcomment) {
         this.coverity_automation_prcomment = coverity_automation_prcomment ? true : null;
+        this.coverity_automation_prcomment_actualValue = coverity_automation_prcomment ? true : false;
     }
 
     @DataBoundSetter
     public void setCoverity_prComment_enabled(Boolean coverity_prComment_enabled) {
         this.coverity_prComment_enabled = coverity_prComment_enabled ? true : null;
-        this.coverity_prComment_enabled_temporary = coverity_prComment_enabled ? true : false;
+        this.coverity_prComment_enabled_actualValue = coverity_prComment_enabled ? true : false;
     }
 
     @DataBoundSetter
@@ -660,13 +630,8 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
 
     @DataBoundSetter
     public void setPolaris_prComment_enabled(Boolean polaris_prComment_enabled) {
-        if (polaris_prComment_enabled) {
-            this.polarisPrCommentEnabledActualValue = true;
-        }
-        if (!polaris_prComment_enabled) {
-            this.polarisPrCommentEnabledActualValue = false;
-        }
         this.polaris_prComment_enabled = polaris_prComment_enabled ? true : null;
+        this.polaris_prComment_enabled_actualValue = polaris_prComment_enabled ? true : false;
     }
 
     @DataBoundSetter
@@ -677,41 +642,6 @@ public class SecurityScanStep extends Step implements SecurityScan, Serializable
     @DataBoundSetter
     public void setPolaris_test_sca_type(String polaris_test_sca_type) {
         this.polaris_test_sca_type = Util.fixEmptyAndTrim(polaris_test_sca_type);
-    }
-
-    @DataBoundSetter
-    public void setPolaris_sca_search_depth(Integer polaris_sca_search_depth) {
-        this.polaris_sca_search_depth = polaris_sca_search_depth;
-    }
-
-    @DataBoundSetter
-    public void setPolaris_sca_config_path(String polaris_sca_config_path) {
-        this.polaris_sca_config_path = Util.fixEmptyAndTrim(polaris_sca_config_path);
-    }
-
-    @DataBoundSetter
-    public void setPolaris_sca_args(String polaris_sca_args) {
-        this.polaris_sca_args = Util.fixEmptyAndTrim(polaris_sca_args);
-    }
-
-    @DataBoundSetter
-    public void setPolaris_sast_build_command(String polaris_sast_build_command) {
-        this.polaris_sast_build_command = Util.fixEmptyAndTrim(polaris_sast_build_command);
-    }
-
-    @DataBoundSetter
-    public void setPolaris_sast_clean_command(String polaris_sast_clean_command) {
-        this.polaris_sast_clean_command = Util.fixEmptyAndTrim(polaris_sast_clean_command);
-    }
-
-    @DataBoundSetter
-    public void setPolaris_sast_config_path(String polaris_sast_config_path) {
-        this.polaris_sast_config_path = Util.fixEmptyAndTrim(polaris_sast_config_path);
-    }
-
-    @DataBoundSetter
-    public void setPolaris_sast_args(String polaris_sast_args) {
-        this.polaris_sast_args = Util.fixEmptyAndTrim(polaris_sast_args);
     }
 
     @DataBoundSetter
