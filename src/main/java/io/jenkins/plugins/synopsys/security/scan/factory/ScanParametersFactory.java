@@ -365,6 +365,10 @@ public class ScanParametersFactory {
                 securityScan.getPolaris_prComment_severities());
         addParameterIfNotBlank(
                 polarisParametersMap,
+                ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY,
+                securityScan.getPolaris_test_sca_type());
+        addParameterIfNotBlank(
+                polarisParametersMap,
                 ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY,
                 securityScan.getPolaris_assessment_mode());
         addParameterIfNotBlank(

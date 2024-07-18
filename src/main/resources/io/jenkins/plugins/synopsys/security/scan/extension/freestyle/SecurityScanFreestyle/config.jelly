@@ -113,6 +113,9 @@
             <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
                 <f:textbox/>
             </f:entry>
+            <f:entry field="polaris_test_sca_type" title="Polaris Test SCA Type (Optional)">
+                <f:textbox/>
+            </f:entry>
             <f:entry field="polaris_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
             </f:entry>

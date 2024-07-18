@@ -67,6 +67,8 @@ public interface SecurityScan {
 
     public String getPolaris_branch_parent_name();
 
+    public String getPolaris_test_sca_type();
+
     public String getBitbucket_username();
 
     public Boolean isPolaris_reports_sarif_create();

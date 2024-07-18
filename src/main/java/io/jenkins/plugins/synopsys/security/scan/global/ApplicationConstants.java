@@ -99,6 +99,7 @@ public class ApplicationConstants {
     public static final String POLARIS_REPORTS_SARIF_SEVERITIES_KEY = "polaris_reports_sarif_severities";
     public static final String POLARIS_REPORTS_SARIF_ISSUE_TYPES_KEY = "polaris_reports_sarif_issue_types";
     public static final String POLARIS_ASSESSMENT_MODE_KEY = "polaris_assessment_mode";
+    public static final String POLARIS_TEST_SCA_TYPE_KEY = "polaris_test_sca_type";
 
     public static final String PROJECT_DIRECTORY_KEY = "project_directory";
     public static final String PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
