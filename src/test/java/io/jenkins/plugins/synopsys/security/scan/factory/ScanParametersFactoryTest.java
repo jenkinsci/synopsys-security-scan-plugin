@@ -7,6 +7,7 @@ import hudson.FilePath;
 import hudson.model.Result;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.exception.PluginExceptionHandler;
+import io.jenkins.plugins.synopsys.security.scan.extension.freestyle.SecurityScanFreestyle;
 import io.jenkins.plugins.synopsys.security.scan.extension.pipeline.SecurityScanStep;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.ErrorCode;
@@ -24,6 +25,7 @@ public class ScanParametersFactoryTest {
     private FilePath workspace;
     private EnvVars envVarsMock;
     private SecurityScanStep securityScanStep;
+    private SecurityScanFreestyle securityScanFreestyle;
 
     @BeforeEach
     public void setUp() {
@@ -31,6 +33,7 @@ public class ScanParametersFactoryTest {
         listenerMock = Mockito.mock(TaskListener.class);
         envVarsMock = Mockito.mock(EnvVars.class);
         securityScanStep = new SecurityScanStep();
+        securityScanFreestyle = new SecurityScanFreestyle();
         Mockito.when(listenerMock.getLogger()).thenReturn(Mockito.mock(PrintStream.class));
     }
 
@@ -75,11 +78,14 @@ public class ScanParametersFactoryTest {
         securityScanStep.setBlackduck_download_url("https://fake.blackduck-download-url");
         securityScanStep.setBlackduck_scan_failure_severities("MAJOR");
         securityScanStep.setProject_directory("test/directory");
+        securityScanStep.setBlackduck_search_depth(2);
+        securityScanStep.setBlackduck_config_path("fake/directory/application.properties");
+        securityScanStep.setBlackduck_args("--o");
 
         Map<String, Object> blackDuckParametersMap =
                 ScanParametersFactory.prepareBlackDuckParametersMap(securityScanStep);
 
-        assertEquals(8, blackDuckParametersMap.size());
+        assertEquals(11, blackDuckParametersMap.size());
         assertEquals("https://fake.blackduck-url", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_URL_KEY));
         assertEquals("fake-token", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_TOKEN_KEY));
         assertEquals("/fake/path", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY));
@@ -90,6 +96,11 @@ public class ScanParametersFactoryTest {
                 blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY));
         assertEquals("MAJOR", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY));
         assertEquals("test/directory", blackDuckParametersMap.get(ApplicationConstants.PROJECT_DIRECTORY_KEY));
+        assertEquals(2, blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY));
+        assertEquals(
+                "fake/directory/application.properties",
+                blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY));
+        assertEquals("--o", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_ARGS_KEY));
         Map<String, Object> emptyBlackDuckParametersMap =
                 ScanParametersFactory.prepareBlackDuckParametersMap(new SecurityScanStep());
 
@@ -109,11 +120,15 @@ public class ScanParametersFactoryTest {
         securityScanStep.setCoverity_version("1.0.0");
         securityScanStep.setCoverity_local(true);
         securityScanStep.setProject_directory("test/directory");
+        securityScanStep.setCoverity_build_command("fake-build-command");
+        securityScanStep.setCoverity_clean_command("fake-clean-command");
+        securityScanStep.setCoverity_config_path("fake-config-path");
+        securityScanStep.setCoverity_args("--o");
 
         Map<String, Object> coverityParametersMap =
                 ScanParametersFactory.prepareCoverityParametersMap(securityScanStep);
 
-        assertEquals(11, coverityParametersMap.size());
+        assertEquals(15, coverityParametersMap.size());
         assertEquals("https://fake.coverity-url", coverityParametersMap.get(ApplicationConstants.COVERITY_URL_KEY));
         assertEquals("fake-user", coverityParametersMap.get(ApplicationConstants.COVERITY_USER_KEY));
         assertEquals("fake-passphrase", coverityParametersMap.get(ApplicationConstants.COVERITY_PASSPHRASE_KEY));
@@ -125,6 +140,10 @@ public class ScanParametersFactoryTest {
         assertEquals("1.0.0", coverityParametersMap.get(ApplicationConstants.COVERITY_VERSION_KEY));
         assertTrue(coverityParametersMap.containsKey(ApplicationConstants.COVERITY_LOCAL_KEY));
         assertEquals("test/directory", coverityParametersMap.get(ApplicationConstants.PROJECT_DIRECTORY_KEY));
+        assertEquals("fake-build-command", coverityParametersMap.get(ApplicationConstants.COVERITY_BUILD_COMMAND_KEY));
+        assertEquals("fake-clean-command", coverityParametersMap.get(ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY));
+        assertEquals("fake-config-path", coverityParametersMap.get(ApplicationConstants.COVERITY_CONFIG_PATH_KEY));
+        assertEquals("--o", coverityParametersMap.get(ApplicationConstants.COVERITY_ARGS_KEY));
 
         Map<String, Object> emptyCoverityParametersMap =
                 ScanParametersFactory.prepareCoverityParametersMap(new SecurityScanStep());
@@ -157,7 +176,7 @@ public class ScanParametersFactoryTest {
     }
 
     @Test
-    public void preparePolarisParametersMapTest() {
+    public void preparePolarisParametersMapForMultibranchTest() {
         securityScanStep.setPolaris_server_url("https://fake.polaris-server.url");
         securityScanStep.setPolaris_access_token("fake-access-token");
         securityScanStep.setPolaris_application_name("fake-application-name");
@@ -191,6 +210,46 @@ public class ScanParametersFactoryTest {
         assertEquals("fake-source-archive", polarisParametersMap.get(ApplicationConstants.PROJECT_SOURCE_ARCHIVE_KEY));
         assertEquals("test_exclude", polarisParametersMap.get(ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY));
         assertTrue((Boolean) polarisParametersMap.get(ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY));
+    }
+
+    @Test
+    public void preparePolarisParametersMapForFreestyleTest() {
+        securityScanFreestyle.setProduct("POLARIS");
+        securityScanFreestyle.setBitbucket_token("FAKETOKEN");
+        securityScanFreestyle.setGithub_token("faketoken-github");
+        securityScanFreestyle.setGitlab_token("fakeTokeN-gItlAb");
+        securityScanFreestyle.setPolaris_server_url("https://fake.polaris-server.url");
+        securityScanFreestyle.setPolaris_access_token("fake-access-token");
+        securityScanFreestyle.setPolaris_application_name("fake-application-name");
+        securityScanFreestyle.setPolaris_project_name("fake-project-name");
+        securityScanFreestyle.setPolaris_assessment_types("SCA");
+        securityScanFreestyle.setPolaris_branch_name("test");
+        securityScanFreestyle.setPolaris_sast_build_command("mvn clean install");
+        securityScanFreestyle.setPolaris_sast_clean_command("mvn clean install");
+        securityScanFreestyle.setPolaris_sast_config_path("fake/path/config.yml");
+        securityScanFreestyle.setPolaris_sast_args("--o");
+        securityScanFreestyle.setPolaris_sca_search_depth(2);
+        securityScanFreestyle.setPolaris_sca_config_path("fake/path/application.properties");
+        securityScanFreestyle.setPolaris_sca_args("--o");
+
+        Map<String, Object> polarisParametersMap =
+                ScanParametersFactory.preparePolarisParametersMap(securityScanFreestyle);
+
+        assertEquals(13, polarisParametersMap.size());
+        assertEquals(
+                "https://fake.polaris-server.url",
+                polarisParametersMap.get(ApplicationConstants.POLARIS_SERVER_URL_KEY));
+        assertEquals("fake-access-token", polarisParametersMap.get(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY));
+        assertEquals("test", polarisParametersMap.get(ApplicationConstants.POLARIS_BRANCH_NAME_KEY));
+        assertEquals("mvn clean install", polarisParametersMap.get(ApplicationConstants.COVERITY_BUILD_COMMAND_KEY));
+        assertEquals("mvn clean install", polarisParametersMap.get(ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY));
+        assertEquals("fake/path/config.yml", polarisParametersMap.get(ApplicationConstants.COVERITY_CONFIG_PATH_KEY));
+        assertEquals("--o", polarisParametersMap.get(ApplicationConstants.COVERITY_ARGS_KEY));
+        assertEquals(2, polarisParametersMap.get(ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY));
+        assertEquals(
+                "fake/path/application.properties",
+                polarisParametersMap.get(ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY));
+        assertEquals("--o", polarisParametersMap.get(ApplicationConstants.BLACKDUCK_ARGS_KEY));
     }
 
     @Test
