@@ -69,7 +69,7 @@ public class ScanParametersFactoryTest {
     }
 
     @Test
-    public void prepareBlackDuckParametersMapTest() {
+    public void prepareBlackDuckParametersMapTestForMultibranchTest() {
         securityScanStep.setBlackduck_url("https://fake.blackduck-url");
         securityScanStep.setBlackduck_token("fake-token");
         securityScanStep.setBlackduck_install_directory("/fake/path");
@@ -108,7 +108,44 @@ public class ScanParametersFactoryTest {
     }
 
     @Test
-    public void prepareCoverityParametersMapTest() {
+    public void prepareBlackDuckParametersMapTestsMapForFreestyleTest() {
+        securityScanFreestyle.setBlackduck_url("https://fake.blackduck-url");
+        securityScanFreestyle.setBlackduck_token("fake-token");
+        securityScanFreestyle.setBlackduck_install_directory("/fake/path");
+        securityScanFreestyle.setBlackduck_scan_full(true);
+        securityScanFreestyle.setBlackduck_download_url("https://fake.blackduck-download-url");
+        securityScanFreestyle.setBlackduck_scan_failure_severities("MAJOR");
+        securityScanFreestyle.setProject_directory("test/directory");
+        securityScanFreestyle.setBlackduck_search_depth(2);
+        securityScanFreestyle.setBlackduck_config_path("fake/directory/application.properties");
+        securityScanFreestyle.setBlackduck_args("--o");
+
+        Map<String, Object> blackDuckParametersMap =
+                ScanParametersFactory.prepareBlackDuckParametersMap(securityScanFreestyle);
+
+        assertEquals(10, blackDuckParametersMap.size());
+        assertEquals("https://fake.blackduck-url", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_URL_KEY));
+        assertEquals("fake-token", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_TOKEN_KEY));
+        assertEquals("/fake/path", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_INSTALL_DIRECTORY_KEY));
+        assertTrue((boolean) blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY));
+        assertEquals(
+                "https://fake.blackduck-download-url",
+                blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY));
+        assertEquals("MAJOR", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY));
+        assertEquals("test/directory", blackDuckParametersMap.get(ApplicationConstants.PROJECT_DIRECTORY_KEY));
+        assertEquals(2, blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY));
+        assertEquals(
+                "fake/directory/application.properties",
+                blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY));
+        assertEquals("--o", blackDuckParametersMap.get(ApplicationConstants.BLACKDUCK_ARGS_KEY));
+        Map<String, Object> emptyBlackDuckParametersMap =
+                ScanParametersFactory.prepareBlackDuckParametersMap(new SecurityScanStep());
+
+        assertEquals(0, emptyBlackDuckParametersMap.size());
+    }
+
+    @Test
+    public void prepareCoverityParametersMapTestForMultibranchTest() {
         securityScanStep.setCoverity_url("https://fake.coverity-url");
         securityScanStep.setCoverity_user("fake-user");
         securityScanStep.setCoverity_passphrase("fake-passphrase");
@@ -137,6 +174,47 @@ public class ScanParametersFactoryTest {
         assertEquals("fake-policy", coverityParametersMap.get(ApplicationConstants.COVERITY_POLICY_VIEW_KEY));
         assertEquals("/fake/path", coverityParametersMap.get(ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY));
         assertTrue((boolean) coverityParametersMap.get(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY));
+        assertEquals("1.0.0", coverityParametersMap.get(ApplicationConstants.COVERITY_VERSION_KEY));
+        assertTrue(coverityParametersMap.containsKey(ApplicationConstants.COVERITY_LOCAL_KEY));
+        assertEquals("test/directory", coverityParametersMap.get(ApplicationConstants.PROJECT_DIRECTORY_KEY));
+        assertEquals("fake-build-command", coverityParametersMap.get(ApplicationConstants.COVERITY_BUILD_COMMAND_KEY));
+        assertEquals("fake-clean-command", coverityParametersMap.get(ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY));
+        assertEquals("fake-config-path", coverityParametersMap.get(ApplicationConstants.COVERITY_CONFIG_PATH_KEY));
+        assertEquals("--o", coverityParametersMap.get(ApplicationConstants.COVERITY_ARGS_KEY));
+
+        Map<String, Object> emptyCoverityParametersMap =
+                ScanParametersFactory.prepareCoverityParametersMap(new SecurityScanStep());
+        assertEquals(0, emptyCoverityParametersMap.size());
+    }
+
+    @Test
+    public void prepareCoverityParametersMapForFreestyleTest() {
+        securityScanFreestyle.setCoverity_url("https://fake.coverity-url");
+        securityScanFreestyle.setCoverity_user("fake-user");
+        securityScanFreestyle.setCoverity_passphrase("fake-passphrase");
+        securityScanFreestyle.setCoverity_project_name("fake-project");
+        securityScanFreestyle.setCoverity_stream_name("fake-stream");
+        securityScanFreestyle.setCoverity_policy_view("fake-policy");
+        securityScanFreestyle.setCoverity_install_directory("/fake/path");
+        securityScanFreestyle.setCoverity_version("1.0.0");
+        securityScanFreestyle.setCoverity_local(true);
+        securityScanFreestyle.setProject_directory("test/directory");
+        securityScanFreestyle.setCoverity_build_command("fake-build-command");
+        securityScanFreestyle.setCoverity_clean_command("fake-clean-command");
+        securityScanFreestyle.setCoverity_config_path("fake-config-path");
+        securityScanFreestyle.setCoverity_args("--o");
+
+        Map<String, Object> coverityParametersMap =
+                ScanParametersFactory.prepareCoverityParametersMap(securityScanFreestyle);
+
+        assertEquals(14, coverityParametersMap.size());
+        assertEquals("https://fake.coverity-url", coverityParametersMap.get(ApplicationConstants.COVERITY_URL_KEY));
+        assertEquals("fake-user", coverityParametersMap.get(ApplicationConstants.COVERITY_USER_KEY));
+        assertEquals("fake-passphrase", coverityParametersMap.get(ApplicationConstants.COVERITY_PASSPHRASE_KEY));
+        assertEquals("fake-project", coverityParametersMap.get(ApplicationConstants.COVERITY_PROJECT_NAME_KEY));
+        assertEquals("fake-stream", coverityParametersMap.get(ApplicationConstants.COVERITY_STREAM_NAME_KEY));
+        assertEquals("fake-policy", coverityParametersMap.get(ApplicationConstants.COVERITY_POLICY_VIEW_KEY));
+        assertEquals("/fake/path", coverityParametersMap.get(ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY));
         assertEquals("1.0.0", coverityParametersMap.get(ApplicationConstants.COVERITY_VERSION_KEY));
         assertTrue(coverityParametersMap.containsKey(ApplicationConstants.COVERITY_LOCAL_KEY));
         assertEquals("test/directory", coverityParametersMap.get(ApplicationConstants.PROJECT_DIRECTORY_KEY));
