@@ -37,6 +37,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private Integer blackduck_search_depth;
     private String blackduck_config_path;
     private String blackduck_args;
+    private String blackduck_execution_path;
 
     private String coverity_url;
     private String coverity_user;
@@ -51,6 +52,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private String coverity_clean_command;
     private String coverity_config_path;
     private String coverity_args;
+    private String coverity_execution_path;
 
     private String polaris_server_url;
     private transient String polaris_access_token;
@@ -84,6 +86,13 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private String polaris_sast_clean_command;
     private String polaris_sast_config_path;
     private String polaris_sast_args;
+
+    private String srm_url;
+    private String srm_apikey;
+    private String srm_assessment_types;
+    private String srm_project_name;
+    private String srm_branch_name;
+    private String srm_branch_parent;
 
     private String bitbucket_username;
     private transient String bitbucket_token;
@@ -165,6 +174,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
         return blackduck_args;
     }
 
+    public String getBlackduck_execution_path() {
+        return blackduck_execution_path;
+    }
+
     public String getCoverity_url() {
         return coverity_url;
     }
@@ -215,6 +228,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
 
     public String getCoverity_args() {
         return coverity_args;
+    }
+
+    public String getCoverity_execution_path() {
+        return coverity_execution_path;
     }
 
     public String getPolaris_server_url() {
@@ -385,6 +402,30 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
         return mark_build_status;
     }
 
+    public String getSrm_url() {
+        return srm_url;
+    }
+
+    public String getSrm_apikey() {
+        return srm_apikey;
+    }
+
+    public String getSrm_project_name() {
+        return srm_project_name;
+    }
+
+    public String getSrm_assessment_types() {
+        return srm_assessment_types;
+    }
+
+    public String getSrm_branch_name() {
+        return srm_branch_name;
+    }
+
+    public String getSrm_branch_parent() {
+        return srm_branch_parent;
+    }
+
     @DataBoundSetter
     public void setProduct(String product) {
         this.product = product;
@@ -463,6 +504,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     }
 
     @DataBoundSetter
+    public void setBlackduck_execution_path(String blackduck_execution_path) {
+        this.blackduck_execution_path = Util.fixEmptyAndTrim(blackduck_execution_path);
+    }
+
+    @DataBoundSetter
     public void setCoverity_url(String coverity_url) {
         this.coverity_url = coverity_url;
     }
@@ -525,6 +571,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     @DataBoundSetter
     public void setCoverity_args(String coverity_args) {
         this.coverity_args = Util.fixEmptyAndTrim(coverity_args);
+    }
+
+    @DataBoundSetter
+    public void setCoverity_execution_path(String coverity_execution_path) {
+        this.coverity_execution_path = Util.fixEmptyAndTrim(coverity_execution_path);
     }
 
     @DataBoundSetter
@@ -731,6 +782,36 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     @DataBoundSetter
     public void setMark_build_status(String mark_build_status) {
         this.mark_build_status = mark_build_status;
+    }
+
+    @DataBoundSetter
+    public void setSrm_url(String srm_url) {
+        this.srm_url = srm_url;
+    }
+
+    @DataBoundSetter
+    public void setSrm_apikey(String srm_apikey) {
+        this.srm_apikey = srm_apikey;
+    }
+
+    @DataBoundSetter
+    public void setSrm_assessment_types(String srm_assessment_types) {
+        this.srm_assessment_types = Util.fixEmptyAndTrim(srm_assessment_types);
+    }
+
+    @DataBoundSetter
+    public void setSrm_project_name(String srm_project_name) {
+        this.srm_project_name = Util.fixEmptyAndTrim(srm_project_name);
+    }
+
+    @DataBoundSetter
+    public void setSrm_branch_name(String srm_branch_name) {
+        this.srm_branch_name = Util.fixEmptyAndTrim(srm_branch_name);
+    }
+
+    @DataBoundSetter
+    public void setSrm_branch_parent(String srm_branch_parent) {
+        this.srm_branch_parent = Util.fixEmptyAndTrim(srm_branch_parent);
     }
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)

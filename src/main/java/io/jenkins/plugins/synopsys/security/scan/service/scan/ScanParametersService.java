@@ -9,6 +9,7 @@ import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck.BlackDuckParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.coverity.CoverityParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.polaris.PolarisParametersService;
+import io.jenkins.plugins.synopsys.security.scan.service.scan.srm.SRMParametersService;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +44,12 @@ public class ScanParametersService {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener, envVars);
             if (!polarisParametersService.isValidPolarisParameters(scanParameters)) {
                 throw new PluginExceptionHandler(ErrorCode.INVALID_POLARIS_PARAMETERS);
+            }
+        }
+        if (securityProducts.contains(SecurityProduct.SRM.name())) {
+            SRMParametersService srmParametersService = new SRMParametersService(listener, envVars);
+            if (!srmParametersService.isValidSRMParameters(scanParameters)) {
+                throw new PluginExceptionHandler(ErrorCode.INVALID_SRM_PARAMETERS);
             }
         }
 

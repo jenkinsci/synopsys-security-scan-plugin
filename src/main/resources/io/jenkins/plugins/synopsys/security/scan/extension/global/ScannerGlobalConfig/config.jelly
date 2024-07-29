@@ -13,6 +13,8 @@
             <div class="scan-tab" onclick="showScanType('COVERITYSection')">Coverity</div>
             <!-- Polaris Tab -->
             <div class="scan-tab" onclick="showScanType('POLARISSection')">Polaris</div>
+            <!-- SRM Tab -->
+            <div class="scan-tab" onclick="showScanType('SRMSection')">Software Risk Manager (SRM)</div>
         </div>
 
         <!-- Black Duck Configuration -->
@@ -73,6 +75,22 @@
                     <button type="button" class="jenkins-button ml-7" onclick="clearTabFieldsAndTestConnectionMessages('POLARISSection')">Clear</button>
                 </f:entry>
             </div>
+        </div>
+
+        <!-- SRM Configuration -->
+        <div class="scan-type-section" id="SRMSection" style="display: block;"> <!-- Set display to block -->
+            <f:entry field="srmUrl" title="SRM Server URL">
+                <f:textbox name="srmUrl" />
+            </f:entry>
+            <f:entry field="srmCredentialsId" title="SRM API Key">
+                <c:select/>
+            </f:entry>
+            <f:entry field="srmSCAInstallationPath" title="Black Duck Install Directory(Optional)">
+                <f:textbox name="srmSCAInstallationPath" />
+            </f:entry>
+            <f:entry field="srmSASTInstallationPath" title="Coverity Install Directory(Optional)">
+                <f:textbox name="srmSASTInstallationPath" />
+            </f:entry>
         </div>
 
         <div>

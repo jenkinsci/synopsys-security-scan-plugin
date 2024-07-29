@@ -29,10 +29,12 @@ import io.jenkins.plugins.synopsys.security.scan.input.report.Sarif;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
+import io.jenkins.plugins.synopsys.security.scan.input.srm.SRM;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck.BlackDuckParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.coverity.CoverityParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.polaris.PolarisParametersService;
+import io.jenkins.plugins.synopsys.security.scan.service.scan.srm.SRMParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.SCMRepositoryService;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -180,6 +182,23 @@ public class ScannerArgumentService {
                     ApplicationConstants.POLARIS_INPUT_JSON_PREFIX,
                     project));
         }
+        if (securityProducts.contains(SecurityProduct.SRM.name())) {
+            SRMParametersService srmParametersService = new SRMParametersService(listener, envVars);
+            SRM srm = srmParametersService.prepareSrmObjectForBridge(scanParameters);
+
+            scanCommands.add(BridgeParams.STAGE_OPTION);
+            scanCommands.add(BridgeParams.SRM_STAGE);
+            scanCommands.add(BridgeParams.INPUT_OPTION);
+            scanCommands.add(createBridgeInputJson(
+                    scanParameters,
+                    srm,
+                    scmObject,
+                    isPrCommentSet,
+                    networkAirGap,
+                    sarif,
+                    ApplicationConstants.SRM_INPUT_JSON_PREFIX,
+                    null));
+        }
 
         return scanCommands;
     }
@@ -253,6 +272,52 @@ public class ScannerArgumentService {
             bridgeInput.setCoverity(coverity);
         } else if (scanObject instanceof Polaris) {
             handlePolarisScan(bridgeInput, (Polaris) scanObject, scmObject, sarifObject, scanParameters);
+        } else if (scanObject instanceof SRM) {
+            SRM srm = (SRM) scanObject;
+            if (scmObject != null) {
+                setDefaultValueSrmParams(srm, scmObject);
+            }
+            handleSrmSCAInstallationPath(bridgeInput, scanParameters);
+            handleSrmSASTInstallationPath(bridgeInput, scanParameters);
+            bridgeInput.setSrm(srm);
+        }
+    }
+
+    private void handleSrmSCAInstallationPath(BridgeInput bridgeInput, Map<String, Object> scanParameters) {
+        BlackDuck blackDuck = null;
+
+        if (scanParameters.containsKey(ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY)) {
+            String installationPath = scanParameters
+                    .get(ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY)
+                    .toString()
+                    .trim();
+            if (installationPath != null && !installationPath.isBlank()) {
+                if (blackDuck == null) blackDuck = new BlackDuck();
+                io.jenkins.plugins.synopsys.security.scan.input.blackduck.Execution execution =
+                        new io.jenkins.plugins.synopsys.security.scan.input.blackduck.Execution();
+                execution.setPath(installationPath);
+                blackDuck.setExecution(execution);
+                bridgeInput.setBlackDuck(blackDuck);
+            }
+        }
+    }
+
+    private void handleSrmSASTInstallationPath(BridgeInput bridgeInput, Map<String, Object> scanParameters) {
+        Coverity coverity = null;
+
+        if (scanParameters.containsKey(ApplicationConstants.SRM_SAST_EXECUTION_PATH_KEY)) {
+            String installationPath = scanParameters
+                    .get(ApplicationConstants.SRM_SAST_EXECUTION_PATH_KEY)
+                    .toString()
+                    .trim();
+            if (installationPath != null && !installationPath.isBlank()) {
+                if (coverity == null) coverity = new Coverity();
+                io.jenkins.plugins.synopsys.security.scan.input.coverity.Execution execution =
+                        new io.jenkins.plugins.synopsys.security.scan.input.coverity.Execution();
+                execution.setPath(installationPath);
+                coverity.setExecution(execution);
+                bridgeInput.setCoverity(coverity);
+            }
         }
     }
 
@@ -430,6 +495,14 @@ public class ScannerArgumentService {
             String coveritySteamName = repositoryName.concat("-").concat(defaultStreamName);
             coverity.getConnect().getStream().setName(coveritySteamName);
             logger.info("Coverity Stream Name: " + coveritySteamName);
+        }
+    }
+
+    private void setDefaultValueSrmParams(SRM srm, Object scmObject) {
+        String repositoryName = getRepositoryName(scmObject);
+        if (Utility.isStringNullOrBlank(srm.getProjectName().getName()) && repositoryName != null) {
+            srm.getProjectName().setName(repositoryName);
+            logger.info("SRM Project Name: " + repositoryName);
         }
     }
 

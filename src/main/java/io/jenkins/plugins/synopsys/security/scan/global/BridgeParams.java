@@ -8,4 +8,5 @@ public class BridgeParams {
     public static final String BLACKDUCK_STAGE = "blackduck";
     public static final String POLARIS_STAGE = "polaris";
     public static final String COVERITY_STAGE = "connect";
+    public static final String SRM_STAGE = "srm";
 }

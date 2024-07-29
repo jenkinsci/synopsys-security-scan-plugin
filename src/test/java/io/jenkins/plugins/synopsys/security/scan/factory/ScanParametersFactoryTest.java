@@ -331,6 +331,64 @@ public class ScanParametersFactoryTest {
     }
 
     @Test
+    public void prepareSRMParametersMapTestForMultibranchTest() {
+        securityScanStep.setSrm_url("https://fake.srm-url");
+        securityScanStep.setSrm_apikey("fake-api-key");
+        securityScanStep.setSrm_assessment_types("SCA");
+        securityScanStep.setSrm_project_name("test-project");
+        securityScanStep.setSrm_branch_name("test");
+        securityScanStep.setSrm_branch_parent("main");
+        securityScanStep.setBlackduck_execution_path("/fake/path/bd");
+        securityScanStep.setCoverity_execution_path("/fake/path/cov");
+
+        Map<String, Object> srmParametersMap = ScanParametersFactory.prepareSrmParametersMap(securityScanStep);
+
+        assertEquals(8, srmParametersMap.size());
+        assertEquals("https://fake.srm-url", srmParametersMap.get(ApplicationConstants.SRM_URL_KEY));
+        assertEquals("fake-api-key", srmParametersMap.get(ApplicationConstants.SRM_APIKEY_KEY));
+        assertEquals("SCA", srmParametersMap.get(ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY));
+        assertEquals("test-project", srmParametersMap.get(ApplicationConstants.SRM_PROJECT_NAME_KEY));
+        assertEquals("test", srmParametersMap.get(ApplicationConstants.SRM_BRANCH_NAME_KEY));
+        assertEquals("main", srmParametersMap.get(ApplicationConstants.SRM_BRANCH_PARENT_KEY));
+        assertEquals("/fake/path/bd", srmParametersMap.get(ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY));
+        assertEquals("/fake/path/cov", srmParametersMap.get(ApplicationConstants.SRM_SAST_EXECUTION_PATH_KEY));
+
+        Map<String, Object> emptySrmParametersMap =
+                ScanParametersFactory.prepareSrmParametersMap(new SecurityScanStep());
+
+        assertEquals(0, emptySrmParametersMap.size());
+    }
+
+    @Test
+    public void prepareSRMParametersMapTestsMapForFreestyleTest() {
+        securityScanFreestyle.setSrm_url("https://fake.srm-url");
+        securityScanFreestyle.setSrm_apikey("fake-api-key");
+        securityScanFreestyle.setSrm_assessment_types("SCA");
+        securityScanFreestyle.setSrm_project_name("test-project");
+        securityScanFreestyle.setSrm_branch_name("test");
+        securityScanFreestyle.setSrm_branch_parent("main");
+        securityScanFreestyle.setBlackduck_execution_path("/fake/path/bd");
+        securityScanFreestyle.setCoverity_execution_path("/fake/path/cov");
+
+        Map<String, Object> srmParametersMap = ScanParametersFactory.prepareSrmParametersMap(securityScanFreestyle);
+
+        assertEquals(8, srmParametersMap.size());
+        assertEquals("https://fake.srm-url", srmParametersMap.get(ApplicationConstants.SRM_URL_KEY));
+        assertEquals("fake-api-key", srmParametersMap.get(ApplicationConstants.SRM_APIKEY_KEY));
+        assertEquals("SCA", srmParametersMap.get(ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY));
+        assertEquals("test-project", srmParametersMap.get(ApplicationConstants.SRM_PROJECT_NAME_KEY));
+        assertEquals("test", srmParametersMap.get(ApplicationConstants.SRM_BRANCH_NAME_KEY));
+        assertEquals("main", srmParametersMap.get(ApplicationConstants.SRM_BRANCH_PARENT_KEY));
+        assertEquals("/fake/path/bd", srmParametersMap.get(ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY));
+        assertEquals("/fake/path/cov", srmParametersMap.get(ApplicationConstants.SRM_SAST_EXECUTION_PATH_KEY));
+
+        Map<String, Object> emptySrmParametersMap =
+                ScanParametersFactory.prepareSrmParametersMap(new SecurityScanStep());
+
+        assertEquals(0, emptySrmParametersMap.size());
+    }
+
+    @Test
     public void prepareSarifReportParametersMap() {
         securityScanStep.setBlackduck_reports_sarif_create(true);
         securityScanStep.setBlackduck_reports_sarif_file_path("/fake/path");
@@ -377,6 +435,8 @@ public class ScanParametersFactoryTest {
         assertTrue(ScanParametersFactory.validateProduct("POLARIS", listenerMock));
         assertTrue(ScanParametersFactory.validateProduct("COveRiTy", listenerMock));
         assertFalse(ScanParametersFactory.validateProduct("polar1s", listenerMock));
+        assertTrue(ScanParametersFactory.validateProduct("sRm", listenerMock));
+        assertTrue(ScanParametersFactory.validateProduct("SRM", listenerMock));
     }
 
     @Test

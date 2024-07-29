@@ -126,29 +126,45 @@ public class PluginParametersHandler {
         for (String product : securityProducts) {
             String securityProduct = product.toLowerCase();
             logger.info("Parameters for %s:", securityProduct);
-            Map<String, Object> filteredParameters = filterParameter(scanParameters);
-            for (Map.Entry<String, Object> entry : filteredParameters.entrySet()) {
-                String key = entry.getKey();
-                List<String> arbitraryParamList = ApplicationConstants.ARBITRARY_PARAM_KEYS;
 
-                if (key.contains(securityProduct) || key.equals("project_directory")) {
-                    Object value = entry.getValue();
-                    if (key.equals(ApplicationConstants.BLACKDUCK_TOKEN_KEY)
-                            || key.equals(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY)
-                            || key.equals(ApplicationConstants.COVERITY_PASSPHRASE_KEY)) {
-                        value = LogMessages.ASTERISKS;
-                    }
-                    logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
-                } else if (securityProduct.equals(SecurityProduct.POLARIS.name().toLowerCase())
-                        && (key.startsWith("project_") || arbitraryParamList.contains(key))) {
-                    Object value = entry.getValue();
-                    logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
-                }
-                logDeprecatedParameterWarning(key);
-            }
+            Map<String, Object> filteredParameters = filterParameter(scanParameters);
+            logFilteredParameters(filteredParameters, securityProduct);
 
             logger.println(LogMessages.DASHES);
         }
+    }
+
+    private void logFilteredParameters(Map<String, Object> filteredParameters, String securityProduct) {
+        for (Map.Entry<String, Object> entry : filteredParameters.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            if (shouldLogParameter(securityProduct, key)) {
+                if (isSensitiveKey(key)) {
+                    value = LogMessages.ASTERISKS;
+                }
+                logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
+            }
+            logDeprecatedParameterWarning(key);
+        }
+    }
+
+    private boolean shouldLogParameter(String securityProduct, String key) {
+        List<String> arbitraryParamList = ApplicationConstants.ARBITRARY_PARAM_KEYS;
+        return key.contains(securityProduct)
+                || key.equals(ApplicationConstants.PROJECT_DIRECTORY_KEY)
+                || (securityProduct.equals(SecurityProduct.POLARIS.name().toLowerCase())
+                        && (key.startsWith("project_") || arbitraryParamList.contains(key)))
+                || (securityProduct.equals(SecurityProduct.SRM.name().toLowerCase())
+                        && (key.equals(ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY)
+                                || key.equals(ApplicationConstants.SRM_SAST_EXECUTION_PATH_KEY)));
+    }
+
+    private boolean isSensitiveKey(String key) {
+        return key.equals(ApplicationConstants.BLACKDUCK_TOKEN_KEY)
+                || key.equals(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY)
+                || key.equals(ApplicationConstants.COVERITY_PASSPHRASE_KEY)
+                || key.equals(ApplicationConstants.SRM_APIKEY_KEY);
     }
 
     private void logMessagesForAdditionalParameters(Map<String, Object> scanParameters) {

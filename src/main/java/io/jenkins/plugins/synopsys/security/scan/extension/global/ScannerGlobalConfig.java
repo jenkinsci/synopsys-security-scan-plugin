@@ -33,7 +33,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     private String CONNECTION_SUCCESSFUL = "Connection successful.";
 
     private String blackDuckUrl;
-
     private String blackDuckCredentialsId;
     private String blackDuckInstallationPath;
     private String coverityConnectUrl;
@@ -46,6 +45,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     private String synopsysBridgeInstallationPath;
     private String polarisServerUrl;
     private String polarisCredentialsId;
+    private String srmUrl;
+    private String srmCredentialsId;
+    private String srmSCAInstallationPath;
+    private String srmSASTInstallationPath;
     private String bitbucketCredentialsId;
     private String githubCredentialsId;
     private String gitlabCredentialsId;
@@ -151,6 +154,28 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         save();
     }
 
+    @DataBoundSetter
+    public void setSrmUrl(String srmUrl) {
+        this.srmUrl = srmUrl;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setSrmCredentialsId(String srmCredentialsId) {
+        this.srmCredentialsId = srmCredentialsId;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setSrmSCAInstallationPath(String srmSCAInstallationPath) {
+        this.srmSCAInstallationPath = srmSCAInstallationPath;
+    }
+
+    @DataBoundSetter
+    public void setSrmSASTInstallationPath(String srmSASTInstallationPath) {
+        this.srmSASTInstallationPath = srmSASTInstallationPath;
+    }
+
     public String getBlackDuckUrl() {
         return blackDuckUrl;
     }
@@ -215,6 +240,22 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         return gitlabCredentialsId;
     }
 
+    public String getSrmUrl() {
+        return srmUrl;
+    }
+
+    public String getSrmCredentialsId() {
+        return srmCredentialsId;
+    }
+
+    public String getSrmSCAInstallationPath() {
+        return srmSCAInstallationPath;
+    }
+
+    public String getSrmSASTInstallationPath() {
+        return srmSASTInstallationPath;
+    }
+
     private ListBoxModel getOptionsWithApiTokenCredentials() {
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
@@ -253,6 +294,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
                         BaseStandardCredentials.class,
                         Collections.emptyList(),
                         ScanCredentialsHelper.USERNAME_PASSWORD_CREDENTIALS);
+    }
+
+    public ListBoxModel doFillSrmCredentialsIdItems() {
+        return getOptionsWithApiTokenCredentials();
     }
 
     @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
