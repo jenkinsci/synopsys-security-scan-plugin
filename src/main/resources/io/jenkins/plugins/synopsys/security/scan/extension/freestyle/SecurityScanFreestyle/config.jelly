@@ -205,6 +205,33 @@
                 <f:textbox/>
             </f:entry>
         </f:section>
+
+        <f:section title="Coverity (SAST) Tool Configuration Options">
+            <f:entry field="srm_sast_build_command" title="Coverity Build Command (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_sast_clean_command" title="Coverity Clean Command (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_sast_config_path" title="Coverity Config File Path (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_sast_args" title="Coverity Additional Arguments (Optional)">
+                <f:textbox/>
+            </f:entry>
+        </f:section>
+
+        <f:section title="Black Duck (SCA) Tool Configuration Options">
+            <f:entry field="srm_sca_search_depth" title="Black Duck Search Depth (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_sca_config_path" title="Black Duck Config File Path (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_sca_args" title="Black Duck Additional Arguments (Optional)">
+                <f:textbox/>
+            </f:entry>
+        </f:section>
     </div>
 
     <f:section title="Additional Options">

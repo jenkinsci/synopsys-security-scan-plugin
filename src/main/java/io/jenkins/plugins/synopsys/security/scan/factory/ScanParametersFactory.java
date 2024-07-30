@@ -445,6 +445,11 @@ public class ScanParametersFactory {
                 ApplicationConstants.SRM_SAST_EXECUTION_PATH_KEY,
                 securityScan.getCoverity_execution_path());
 
+        if (securityScan instanceof FreestyleScan) {
+            FreestyleScan freestyleScan = (FreestyleScan) securityScan;
+            prepareSrmToolConfigurationParametersMap(srmParametersMap, freestyleScan);
+        }
+
         return srmParametersMap;
     }
 
@@ -520,6 +525,42 @@ public class ScanParametersFactory {
 
         if (!Utility.isStringNullOrBlank(freestyleScan.getPolaris_sast_args())) {
             polarisParametersMap.put(ApplicationConstants.COVERITY_ARGS_KEY, freestyleScan.getPolaris_sast_args());
+        }
+    }
+
+    private static void prepareSrmToolConfigurationParametersMap(
+            Map<String, Object> polarisParametersMap, FreestyleScan freestyleScan) {
+        if (freestyleScan.getSrm_sca_search_depth() != null) {
+            polarisParametersMap.put(
+                    ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY, freestyleScan.getSrm_sca_search_depth());
+        }
+
+        if (!Utility.isStringNullOrBlank(freestyleScan.getSrm_sca_config_path())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY, freestyleScan.getSrm_sca_config_path());
+        }
+
+        if (!Utility.isStringNullOrBlank(freestyleScan.getSrm_sca_args())) {
+            polarisParametersMap.put(ApplicationConstants.BLACKDUCK_ARGS_KEY, freestyleScan.getSrm_sca_args());
+        }
+
+        if (!Utility.isStringNullOrBlank(freestyleScan.getSrm_sast_build_command())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.COVERITY_BUILD_COMMAND_KEY, freestyleScan.getSrm_sast_build_command());
+        }
+
+        if (!Utility.isStringNullOrBlank(freestyleScan.getSrm_sast_clean_command())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY, freestyleScan.getSrm_sast_clean_command());
+        }
+
+        if (!Utility.isStringNullOrBlank(freestyleScan.getSrm_sast_config_path())) {
+            polarisParametersMap.put(
+                    ApplicationConstants.COVERITY_CONFIG_PATH_KEY, freestyleScan.getSrm_sast_config_path());
+        }
+
+        if (!Utility.isStringNullOrBlank(freestyleScan.getSrm_sast_args())) {
+            polarisParametersMap.put(ApplicationConstants.COVERITY_ARGS_KEY, freestyleScan.getSrm_sast_args());
         }
     }
 

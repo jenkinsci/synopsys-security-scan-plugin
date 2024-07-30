@@ -93,6 +93,13 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private String srm_project_name;
     private String srm_branch_name;
     private String srm_branch_parent;
+    private Integer srm_sca_search_depth;
+    private String srm_sca_config_path;
+    private String srm_sca_args;
+    private String srm_sast_build_command;
+    private String srm_sast_clean_command;
+    private String srm_sast_config_path;
+    private String srm_sast_args;
 
     private String bitbucket_username;
     private transient String bitbucket_token;
@@ -424,6 +431,34 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
 
     public String getSrm_branch_parent() {
         return srm_branch_parent;
+    }
+
+    public Integer getSrm_sca_search_depth() {
+        return srm_sca_search_depth;
+    }
+
+    public String getSrm_sca_config_path() {
+        return srm_sca_config_path;
+    }
+
+    public String getSrm_sca_args() {
+        return srm_sca_args;
+    }
+
+    public String getSrm_sast_build_command() {
+        return srm_sast_build_command;
+    }
+
+    public String getSrm_sast_clean_command() {
+        return srm_sast_clean_command;
+    }
+
+    public String getSrm_sast_config_path() {
+        return srm_sast_config_path;
+    }
+
+    public String getSrm_sast_args() {
+        return srm_sast_args;
     }
 
     @DataBoundSetter
@@ -812,6 +847,41 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     @DataBoundSetter
     public void setSrm_branch_parent(String srm_branch_parent) {
         this.srm_branch_parent = Util.fixEmptyAndTrim(srm_branch_parent);
+    }
+
+    @DataBoundSetter
+    public void setSrm_sca_search_depth(Integer srm_sca_search_depth) {
+        this.srm_sca_search_depth = srm_sca_search_depth;
+    }
+
+    @DataBoundSetter
+    public void setSrm_sca_config_path(String srm_sca_config_path) {
+        this.srm_sca_config_path = srm_sca_config_path;
+    }
+
+    @DataBoundSetter
+    public void setSrm_sca_args(String srm_sca_args) {
+        this.srm_sca_args = srm_sca_args;
+    }
+
+    @DataBoundSetter
+    public void setSrm_sast_build_command(String srm_sast_build_command) {
+        this.srm_sast_build_command = srm_sast_build_command;
+    }
+
+    @DataBoundSetter
+    public void setSrm_sast_clean_command(String srm_sast_clean_command) {
+        this.srm_sast_clean_command = srm_sast_clean_command;
+    }
+
+    @DataBoundSetter
+    public void setSrm_sast_config_path(String srm_sast_config_path) {
+        this.srm_sast_config_path = srm_sast_config_path;
+    }
+
+    @DataBoundSetter
+    public void setSrm_sast_args(String srm_sast_args) {
+        this.srm_sast_args = srm_sast_args;
     }
 
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)

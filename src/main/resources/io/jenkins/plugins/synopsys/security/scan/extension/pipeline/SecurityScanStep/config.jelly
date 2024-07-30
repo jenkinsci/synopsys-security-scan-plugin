@@ -313,8 +313,8 @@
                 hideParticularDiv(coverityDiv);
                 hideParticularDiv(polarisDiv);
                 showParticularDiv(srmDiv);
-                hideParticularDiv(blackduckToolConfigDiv);
-                hideParticularDiv(coverityToolConfigDiv);
+                showParticularDiv(blackduckToolConfigDiv);
+                showParticularDiv(coverityToolConfigDiv);
             } else if (selectedOption == '') {
                 hideAllDivs();
             }
