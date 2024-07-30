@@ -445,6 +445,40 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         return FormValidation.ok(CONNECTION_SUCCESSFUL);
     }
 
+    @POST
+    public FormValidation doTestSrmConnection(
+            @QueryParameter("srmUrl") String srmUrl, @QueryParameter("srmCredentialsId") String srmCredentialsId) {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return FormValidation.warning(LogMessages.JENKINS_INSTANCE_MISSING_WARNING);
+        }
+        jenkins.checkPermission(Jenkins.ADMINISTER);
+
+        if (Utility.isStringNullOrBlank(srmUrl)) {
+            return FormValidation.error("The SRM server url must be specified");
+        }
+        if (Utility.isStringNullOrBlank(srmCredentialsId)) {
+            return FormValidation.error("The SRM credentials must be specified");
+        }
+
+        try {
+            AuthenticationSupport authenticationSupport = new AuthenticationSupport();
+            HttpResponse response = authenticationSupport.attemptSrmAuthentication(
+                    srmUrl, srmCredentialsId, CONNECTION_TIMEOUT_IN_SECONDS);
+
+            if (response.getCode() != HttpURLConnection.HTTP_OK) {
+                String validationMessage = getValidationMessage(response.getCode());
+
+                return FormValidation.error(String.join(" ", validationMessage));
+            }
+        } catch (Exception e) {
+            return FormValidation.error(AUTHORIZATION_FAILURE
+                    + getFormattedExceptionMessage(e.getCause().getMessage()));
+        }
+
+        return FormValidation.ok(CONNECTION_SUCCESSFUL);
+    }
+
     private String getFormattedExceptionMessage(String message) {
         Pattern pattern = Pattern.compile("failed: (.*)");
         Matcher matcher = pattern.matcher(message);

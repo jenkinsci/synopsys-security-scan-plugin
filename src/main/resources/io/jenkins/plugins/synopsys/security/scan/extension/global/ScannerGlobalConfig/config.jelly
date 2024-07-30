@@ -91,6 +91,14 @@
             <f:entry field="srmSASTInstallationPath" title="Coverity Install Directory(Optional)">
                 <f:textbox name="srmSASTInstallationPath" />
             </f:entry>
+            <div class="button-container">
+                <div class="flex-1">
+                    <f:validateButton method="testSrmConnection" title="Test Connection" progress="Testing..." with="srmUrl,srmCredentialsId"/>
+                </div>
+                <f:entry>
+                    <button type="button" class="jenkins-button ml-7" onclick="clearTabFieldsAndTestConnectionMessages('SRMSection')">Clear</button>
+                </f:entry>
+            </div>
         </div>
 
         <div>
@@ -348,6 +356,7 @@
             var blackDuckUrl = document.querySelector("input[name='blackDuckUrl']").value;
             var coverityConnectUrl = document.querySelector("input[name='coverityConnectUrl']").value;
             var polarisServerUrl = document.querySelector("input[name='polarisServerUrl']").value;
+            var srmUrl = document.querySelector("input[name='srmUrl']").value;
 
             var synopsysBridgeDownloadUrlForWindows = document.querySelector("input[name='synopsysBridgeDownloadUrlForWindows']").value;
             var synopsysBridgeDownloadUrlForLinux = document.querySelector("input[name='synopsysBridgeDownloadUrlForLinux']").value;
@@ -361,7 +370,9 @@
                 selectScanType("COVERITY"); // Show Coverity box if there is a value
             } else if (polarisServerUrl) {
                 selectScanType("POLARIS"); // Show Polaris box if there is a value
-            } else {
+            }  else if (srmUrl) {
+                selectScanType("SRM"); // Show Polaris box if there is a value
+            }  else {
                 // If none of the URLs have a value, default to Black Duck
                 selectScanType("BLACKDUCK");
             }
