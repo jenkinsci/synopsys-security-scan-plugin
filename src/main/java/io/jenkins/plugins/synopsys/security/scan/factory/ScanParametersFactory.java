@@ -433,6 +433,8 @@ public class ScanParametersFactory {
         addParameterIfNotBlank(
                 srmParametersMap, ApplicationConstants.SRM_PROJECT_NAME_KEY, securityScan.getSrm_project_name());
         addParameterIfNotBlank(
+                srmParametersMap, ApplicationConstants.SRM_PROJECT_ID_KEY, securityScan.getSrm_project_id());
+        addParameterIfNotBlank(
                 srmParametersMap, ApplicationConstants.SRM_BRANCH_NAME_KEY, securityScan.getSrm_branch_name());
         addParameterIfNotBlank(
                 srmParametersMap, ApplicationConstants.SRM_BRANCH_PARENT_KEY, securityScan.getSrm_branch_parent());

@@ -114,11 +114,13 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     private String coverity_project_directory;
     private String blackduck_project_directory;
     private String polaris_project_directory;
+    private String srm_project_directory;
 
     private String srm_url;
     private String srm_apikey;
     private String srm_assessment_types;
     private String srm_project_name;
+    private String srm_project_id;
     private String srm_branch_name;
     private String srm_branch_parent;
 
@@ -451,6 +453,10 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
         return srm_project_name;
     }
 
+    public String getSrm_project_id() {
+        return srm_project_id;
+    }
+
     public String getSrm_assessment_types() {
         return srm_assessment_types;
     }
@@ -481,6 +487,13 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     // the pipeline syntax script
     @Nullable
     public String getPolaris_project_directory() {
+        return null;
+    }
+
+    // Returning the null value because if we return any other value, srm_project_directory field will be visible in
+    // the pipeline syntax script
+    @Nullable
+    public String getSrm_project_directory() {
         return null;
     }
 
@@ -745,6 +758,12 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     }
 
     @DataBoundSetter
+    public void setSrm_project_directory(String srm_project_directory) {
+        if (getProduct().contentEquals(SecurityProduct.SRM.name().toLowerCase()))
+            this.project_directory = Util.fixEmptyAndTrim(srm_project_directory);
+    }
+
+    @DataBoundSetter
     public void setBitbucket_token(String bitbucket_token) {
         this.bitbucket_token = bitbucket_token;
     }
@@ -859,6 +878,11 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     @DataBoundSetter
     public void setSrm_project_name(String srm_project_name) {
         this.srm_project_name = Util.fixEmptyAndTrim(srm_project_name);
+    }
+
+    @DataBoundSetter
+    public void setSrm_project_id(String srm_project_id) {
+        this.srm_project_id = Util.fixEmptyAndTrim(srm_project_id);
     }
 
     @DataBoundSetter

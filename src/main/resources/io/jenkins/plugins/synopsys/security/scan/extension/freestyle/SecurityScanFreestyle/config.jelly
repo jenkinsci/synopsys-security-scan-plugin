@@ -196,12 +196,19 @@
             </f:entry>
             <f:entry field="srm_project_name" title="SRM Project Name (Mandatory)">
                 <f:textbox/>
-                <div id="error_srm_project_name" style="display: block;" class="error error-margin">SRM Project Name are missing</div>
+                <div id="error_srm_project_name" style="display: block;" class="error error-margin">SRM Project Name is missing</div>
+            </f:entry>
+            <f:entry field="srm_project_id" title="SRM Project Id (Mandatory)">
+                <f:textbox/>
+                <div id="error_srm_project_id" style="display: block;" class="error error-margin">SRM Project Id is missing</div>
             </f:entry>
             <f:entry field="srm_branch_name" title="SRM Parent Branch Name (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="srm_branch_parent_name" title="SRM Parent Branch Name (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
             </f:entry>
         </f:section>
@@ -443,13 +450,17 @@
         function validateSrmFields() {
             var srmProjectName = document.querySelector('input[name="_.srm_project_name"]')?.value;
             var srmAssessmentTypes = document.querySelector('input[name="_.srm_assessment_types"]')?.value;
+            var srmProjectId = document.querySelector('input[name="_.srm_project_id"]')?.value;
             var errorSrmProjectNameDiv = document.getElementById("error_srm_project_name");
+            var errorSrmProjectIdDiv = document.getElementById("error_srm_project_id");
             var errorSrmAssessmentTypesDiv = document.getElementById("error_srm_assessment_types");
 
-            if (!srmProjectName) {
+            if (!srmProjectName &amp;&amp; !srmProjectId) {
                 errorSrmProjectNameDiv.style.display = "block";
+                errorSrmProjectIdDiv.style.display = "block";
             } else {
                 errorSrmProjectNameDiv.style.display = "none";
+                errorSrmProjectIdDiv.style.display = "none";
             }
 
             if (!srmAssessmentTypes) {

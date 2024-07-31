@@ -24,6 +24,7 @@ public class SRMParametersServiceTest {
     private final String TEST_SRM_SERVER_URL = "https://fake.srm-server.url";
     private final String TEST_SRM_API_KEY_TOKEN = "fakeSrmAPIKey";
     private final String TEST_SRM_PROJECT_NAME = "fake-srm-project-name";
+    private final String TEST_SRM_PROJECT_ID = "fake-srm-project-id";
     private final String TEST_SRM_ASSESSMENT_TYPES = "SCA, SAST";
     private final String TEST_SRM_BRANCH_NAME = "test-branch";
     private final String TEST_SRM_BRANCH_PARENT_NAME = "test-parent-branch";
@@ -40,12 +41,12 @@ public class SRMParametersServiceTest {
     void invalidScanParametersTest() {
         Map<String, Object> srmParameters = new HashMap<>();
 
-        assertFalse(srmParametersService.isValidSRMParameters(srmParameters));
+        assertFalse(srmParametersService.hasAllMandatorySrmParams(srmParameters));
 
         srmParameters.put(ApplicationConstants.SRM_URL_KEY, TEST_SRM_SERVER_URL);
         srmParameters.put(ApplicationConstants.SRM_APIKEY_KEY, TEST_SRM_API_KEY_TOKEN);
 
-        assertFalse(srmParametersService.isValidSRMParameters(srmParameters));
+        assertFalse(srmParametersService.hasAllMandatorySrmParams(srmParameters));
     }
 
     @Test
@@ -55,10 +56,11 @@ public class SRMParametersServiceTest {
         srmParameters.put(ApplicationConstants.SRM_URL_KEY, TEST_SRM_SERVER_URL);
         srmParameters.put(ApplicationConstants.SRM_APIKEY_KEY, TEST_SRM_API_KEY_TOKEN);
         srmParameters.put(ApplicationConstants.SRM_PROJECT_NAME_KEY, TEST_SRM_PROJECT_NAME);
+        srmParameters.put(ApplicationConstants.SRM_PROJECT_ID_KEY, TEST_SRM_PROJECT_ID);
         srmParameters.put(ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY, TEST_SRM_ASSESSMENT_TYPES);
-        srmParameters.put(ApplicationConstants.POLARIS_BRANCH_NAME_KEY, TEST_SRM_BRANCH_NAME);
+        srmParameters.put(ApplicationConstants.SRM_BRANCH_NAME_KEY, TEST_SRM_BRANCH_NAME);
         srmParameters.put(ApplicationConstants.SRM_BRANCH_PARENT_KEY, TEST_SRM_BRANCH_PARENT_NAME);
 
-        assertTrue(srmParametersService.isValidSRMParameters(srmParameters));
+        assertTrue(srmParametersService.hasAllMandatorySrmParams(srmParameters));
     }
 }

@@ -73,6 +73,7 @@ public class ScanParametersServiceTest {
         parameters.put(ApplicationConstants.SRM_APIKEY_KEY, "MDJDSROSVC56FAKEKEY");
         parameters.put(ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY, "SCA");
         parameters.put(ApplicationConstants.SRM_PROJECT_NAME_KEY, "test-project");
+        parameters.put(ApplicationConstants.SRM_PROJECT_ID_KEY, "fake-id");
         parameters.put(ApplicationConstants.SRM_BRANCH_NAME_KEY, "test");
         parameters.put(ApplicationConstants.SRM_BRANCH_PARENT_KEY, "main");
 

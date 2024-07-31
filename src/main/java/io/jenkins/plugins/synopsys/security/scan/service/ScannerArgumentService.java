@@ -275,7 +275,10 @@ public class ScannerArgumentService {
         } else if (scanObject instanceof SRM) {
             SRM srm = (SRM) scanObject;
             if (scmObject != null) {
-                setDefaultValueSrmParams(srm, scmObject);
+                if (Utility.isStringNullOrBlank(srm.getProject().getName())
+                        && Utility.isStringNullOrBlank(srm.getProject().getId())) {
+                    setDefaultValueSrmParams(srm, scmObject);
+                }
             }
             handleSrmSCAInstallationPath(bridgeInput, scanParameters);
             handleSrmSASTInstallationPath(bridgeInput, scanParameters);
@@ -500,8 +503,8 @@ public class ScannerArgumentService {
 
     private void setDefaultValueSrmParams(SRM srm, Object scmObject) {
         String repositoryName = getRepositoryName(scmObject);
-        if (Utility.isStringNullOrBlank(srm.getProjectName().getName()) && repositoryName != null) {
-            srm.getProjectName().setName(repositoryName);
+        if (Utility.isStringNullOrBlank(srm.getProject().getName()) && repositoryName != null) {
+            srm.getProject().setName(repositoryName);
             logger.info("SRM Project Name: " + repositoryName);
         }
     }

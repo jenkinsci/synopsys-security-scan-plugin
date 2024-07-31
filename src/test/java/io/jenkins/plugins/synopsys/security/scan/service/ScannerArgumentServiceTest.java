@@ -683,19 +683,20 @@ public class ScannerArgumentServiceTest {
 
     @Test
     public void getCommandLineArgsForSrmTest() throws PluginExceptionHandler {
-        Map<String, Object> polarisParameters = new HashMap<>();
-        polarisParameters.put(ApplicationConstants.PRODUCT_KEY, "srm");
-        polarisParameters.put(ApplicationConstants.SRM_URL_KEY, "https://fake.srm.url");
-        polarisParameters.put(ApplicationConstants.SRM_APIKEY_KEY, "fake-api-key");
-        polarisParameters.put(ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY, "SCA");
-        polarisParameters.put(ApplicationConstants.SRM_PROJECT_NAME_KEY, "fake-project-name");
+        Map<String, Object> srmParameters = new HashMap<>();
+        srmParameters.put(ApplicationConstants.PRODUCT_KEY, "srm");
+        srmParameters.put(ApplicationConstants.SRM_URL_KEY, "https://fake.srm.url");
+        srmParameters.put(ApplicationConstants.SRM_APIKEY_KEY, "fake-api-key");
+        srmParameters.put(ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY, "SCA");
+        srmParameters.put(ApplicationConstants.SRM_PROJECT_NAME_KEY, "fake-project-name");
+        srmParameters.put(ApplicationConstants.SRM_PROJECT_ID_KEY, "fake-project-id");
 
         Map<String, Boolean> installedDependencies = new HashMap<>();
         installedDependencies.put(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, true);
 
         List<String> commandLineArgs =
-                scannerArgumentService.getCommandLineArgs(installedDependencies, polarisParameters, workspace);
-        scannerArgumentService.getCommandLineArgs(installedDependencies, polarisParameters, workspace);
+                scannerArgumentService.getCommandLineArgs(installedDependencies, srmParameters, workspace);
+        scannerArgumentService.getCommandLineArgs(installedDependencies, srmParameters, workspace);
 
         if (getOSNameForTest().contains("win")) {
             assertEquals(

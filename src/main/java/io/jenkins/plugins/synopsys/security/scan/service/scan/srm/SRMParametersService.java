@@ -22,25 +22,31 @@ public class SRMParametersService {
         this.envVars = envVars;
     }
 
-    public boolean isValidSRMParameters(Map<String, Object> srmParameters) {
+    public boolean hasAllMandatorySrmParams(Map<String, Object> srmParameters) {
         if (srmParameters == null || srmParameters.isEmpty()) {
             return false;
         }
 
-        List<String> invalidParams = getInvalidSrmParamsForAllJobTypes(srmParameters);
+        List<String> missingMandatoryParams = getSrmMissingMandatoryParams(srmParameters);
 
-        if (invalidParams.isEmpty()) {
+        if (missingMandatoryParams.isEmpty()) {
             logger.info("SRM parameters are validated successfully");
             return true;
         } else {
-            logger.error("SRM parameters are not valid");
-            logger.error("Invalid SRM parameters: " + invalidParams);
+            String message;
+            if (missingMandatoryParams.size() == 1) {
+                message = "Required parameter for SRM is missing: " + missingMandatoryParams.get(0);
+            } else {
+                message = "Required parameters for SRM are missing: " + String.join(", ", missingMandatoryParams);
+            }
+
+            logger.error(message);
             return false;
         }
     }
 
-    private List<String> getInvalidSrmParamsForAllJobTypes(Map<String, Object> srmParameters) {
-        List<String> invalidParams = new ArrayList<>();
+    private List<String> getSrmMissingMandatoryParams(Map<String, Object> srmParameters) {
+        List<String> missingMandatoryParams = new ArrayList<>();
 
         Arrays.asList(
                         ApplicationConstants.SRM_URL_KEY,
@@ -52,40 +58,46 @@ public class SRMParametersService {
                             && !srmParameters.get(key).toString().isEmpty();
 
                     if (!isKeyValid) {
-                        invalidParams.add(key);
+                        missingMandatoryParams.add(key);
                     }
                 });
 
-        invalidParams.addAll(getInvalidMandatoryParamsForFreeStyleAndPipeline(srmParameters));
-
-        return invalidParams;
-    }
-
-    private List<String> getInvalidMandatoryParamsForFreeStyleAndPipeline(Map<String, Object> srmParameters) {
-        List<String> invalidParamsForPipelineOrFreeStyle = new ArrayList<>();
-
         String jobType = Utility.jenkinsJobType(envVars);
         if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
-            Arrays.asList(ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY, ApplicationConstants.SRM_PROJECT_NAME_KEY)
-                    .forEach(key -> {
-                        boolean isKeyValid = srmParameters.containsKey(key)
-                                && srmParameters.get(key) != null
-                                && !srmParameters.get(key).toString().isEmpty();
-
-                        if (!isKeyValid) {
-                            invalidParamsForPipelineOrFreeStyle.add(key);
-                        }
-                    });
-            if (!invalidParamsForPipelineOrFreeStyle.isEmpty()) {
-                logger.error(invalidParamsForPipelineOrFreeStyle + " is mandatory parameter for "
-                        + (jobType.equalsIgnoreCase(ApplicationConstants.FREESTYLE_JOB_TYPE_NAME)
-                                ? "FreeStyle"
-                                : "Pipeline")
-                        + " job type");
-            }
+            missingMandatoryParams.addAll(getFreeStyleAndPipelineSrmMissingMandatoryParams(srmParameters));
         }
 
-        return invalidParamsForPipelineOrFreeStyle;
+        if (!missingMandatoryParams.isEmpty()) {
+            String jobTypeName;
+            if (jobType.equalsIgnoreCase(ApplicationConstants.FREESTYLE_JOB_TYPE_NAME)) {
+                jobTypeName = "FreeStyle";
+            } else if (jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
+                jobTypeName = "Multibranch Pipeline";
+            } else {
+                jobTypeName = "Pipeline";
+            }
+
+            logger.error(missingMandatoryParams + " is mandatory parameter for " + jobTypeName + " job type");
+        }
+
+        return missingMandatoryParams;
+    }
+
+    private List<String> getFreeStyleAndPipelineSrmMissingMandatoryParams(Map<String, Object> srmParameters) {
+        List<String> missingParamsForFreeStyleAndPipeline = new ArrayList<>();
+
+        Arrays.asList(ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY, ApplicationConstants.SRM_PROJECT_NAME_KEY)
+                .forEach(key -> {
+                    boolean isKeyValid = srmParameters.containsKey(key)
+                            && srmParameters.get(key) != null
+                            && !srmParameters.get(key).toString().isEmpty();
+
+                    if (!isKeyValid) {
+                        missingParamsForFreeStyleAndPipeline.add(key);
+                    }
+                });
+
+        return missingParamsForFreeStyleAndPipeline;
     }
 
     public SRM prepareSrmObjectForBridge(Map<String, Object> srmParameters) {
@@ -110,9 +122,17 @@ public class SRMParametersService {
         }
 
         if (srmParameters.containsKey(ApplicationConstants.SRM_PROJECT_NAME_KEY)) {
-            srm.getProjectName()
+            srm.getProject()
                     .setName(srmParameters
                             .get(ApplicationConstants.SRM_PROJECT_NAME_KEY)
+                            .toString()
+                            .trim());
+        }
+
+        if (srmParameters.containsKey(ApplicationConstants.SRM_PROJECT_ID_KEY)) {
+            srm.getProject()
+                    .setId(srmParameters
+                            .get(ApplicationConstants.SRM_PROJECT_ID_KEY)
                             .toString()
                             .trim());
         }

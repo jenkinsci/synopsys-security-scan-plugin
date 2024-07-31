@@ -105,6 +105,7 @@ public class ApplicationConstants {
     public static final String SRM_APIKEY_KEY = "srm_apikey";
     public static final String SRM_ASSESSMENT_TYPES_KEY = "srm_assessment_types";
     public static final String SRM_PROJECT_NAME_KEY = "srm_project_name";
+    public static final String SRM_PROJECT_ID_KEY = "srm_project_id";
     public static final String SRM_BRANCH_NAME_KEY = "srm_branch_name";
     public static final String SRM_BRANCH_PARENT_KEY = "srm_branch_parent";
     public static final String SRM_SCA_EXECUTION_PATH_KEY = "blackduck_execution_path";

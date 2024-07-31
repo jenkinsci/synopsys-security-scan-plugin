@@ -14,14 +14,14 @@ public class SRM {
     private AssessmentTypes assessmentTypes;
 
     @JsonProperty("project")
-    private ProjectName projectName;
+    private Project project;
 
     @JsonProperty("branch")
     private Branch branch;
 
     public SRM() {
         assessmentTypes = new AssessmentTypes();
-        projectName = new ProjectName();
+        project = new Project();
         branch = new Branch();
     }
 
@@ -49,12 +49,12 @@ public class SRM {
         this.assessmentTypes = assessmentTypes;
     }
 
-    public ProjectName getProjectName() {
-        return projectName;
+    public Project getProject() {
+        return project;
     }
 
-    public void setProjectName(ProjectName projectName) {
-        this.projectName = projectName;
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     public Branch getBranch() {

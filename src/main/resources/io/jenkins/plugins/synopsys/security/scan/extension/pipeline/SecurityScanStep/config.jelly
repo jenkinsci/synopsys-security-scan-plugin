@@ -158,10 +158,16 @@
             <f:entry field="srm_project_name" title="SRM Project Name">
                 <f:textbox/>
             </f:entry>
+            <f:entry field="srm_project_id" title="SRM Project Id (Optional)">
+                <f:textbox/>
+            </f:entry>
             <f:entry field="srm_branch_name" title="SRM Branch Name (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="srm_branch_parent_name" title="SRM Parent Branch Name (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
             </f:entry>
         </f:section>

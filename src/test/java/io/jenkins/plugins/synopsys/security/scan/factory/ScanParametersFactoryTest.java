@@ -336,6 +336,7 @@ public class ScanParametersFactoryTest {
         securityScanStep.setSrm_apikey("fake-api-key");
         securityScanStep.setSrm_assessment_types("SCA");
         securityScanStep.setSrm_project_name("test-project");
+        securityScanStep.setSrm_project_id("fake-id");
         securityScanStep.setSrm_branch_name("test");
         securityScanStep.setSrm_branch_parent("main");
         securityScanStep.setBlackduck_execution_path("/fake/path/bd");
@@ -343,11 +344,12 @@ public class ScanParametersFactoryTest {
 
         Map<String, Object> srmParametersMap = ScanParametersFactory.prepareSrmParametersMap(securityScanStep);
 
-        assertEquals(8, srmParametersMap.size());
+        assertEquals(9, srmParametersMap.size());
         assertEquals("https://fake.srm-url", srmParametersMap.get(ApplicationConstants.SRM_URL_KEY));
         assertEquals("fake-api-key", srmParametersMap.get(ApplicationConstants.SRM_APIKEY_KEY));
         assertEquals("SCA", srmParametersMap.get(ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY));
         assertEquals("test-project", srmParametersMap.get(ApplicationConstants.SRM_PROJECT_NAME_KEY));
+        assertEquals("fake-id", srmParametersMap.get(ApplicationConstants.SRM_PROJECT_ID_KEY));
         assertEquals("test", srmParametersMap.get(ApplicationConstants.SRM_BRANCH_NAME_KEY));
         assertEquals("main", srmParametersMap.get(ApplicationConstants.SRM_BRANCH_PARENT_KEY));
         assertEquals("/fake/path/bd", srmParametersMap.get(ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY));
@@ -365,6 +367,7 @@ public class ScanParametersFactoryTest {
         securityScanFreestyle.setSrm_apikey("fake-api-key");
         securityScanFreestyle.setSrm_assessment_types("SCA");
         securityScanFreestyle.setSrm_project_name("test-project");
+        securityScanFreestyle.setSrm_project_id("fake-id");
         securityScanFreestyle.setSrm_branch_name("test");
         securityScanFreestyle.setSrm_branch_parent("main");
         securityScanFreestyle.setBlackduck_execution_path("/fake/path/bd");
@@ -372,11 +375,12 @@ public class ScanParametersFactoryTest {
 
         Map<String, Object> srmParametersMap = ScanParametersFactory.prepareSrmParametersMap(securityScanFreestyle);
 
-        assertEquals(8, srmParametersMap.size());
+        assertEquals(9, srmParametersMap.size());
         assertEquals("https://fake.srm-url", srmParametersMap.get(ApplicationConstants.SRM_URL_KEY));
         assertEquals("fake-api-key", srmParametersMap.get(ApplicationConstants.SRM_APIKEY_KEY));
         assertEquals("SCA", srmParametersMap.get(ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY));
         assertEquals("test-project", srmParametersMap.get(ApplicationConstants.SRM_PROJECT_NAME_KEY));
+        assertEquals("fake-id", srmParametersMap.get(ApplicationConstants.SRM_PROJECT_ID_KEY));
         assertEquals("test", srmParametersMap.get(ApplicationConstants.SRM_BRANCH_NAME_KEY));
         assertEquals("main", srmParametersMap.get(ApplicationConstants.SRM_BRANCH_PARENT_KEY));
         assertEquals("/fake/path/bd", srmParametersMap.get(ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY));

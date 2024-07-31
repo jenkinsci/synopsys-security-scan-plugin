@@ -105,6 +105,8 @@ public interface SecurityScan {
 
     public String getSrm_project_name();
 
+    public String getSrm_project_id();
+
     public String getSrm_assessment_types();
 
     public String getSrm_branch_name();

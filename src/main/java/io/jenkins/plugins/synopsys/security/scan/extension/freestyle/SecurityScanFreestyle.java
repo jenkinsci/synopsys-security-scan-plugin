@@ -91,8 +91,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private String srm_apikey;
     private String srm_assessment_types;
     private String srm_project_name;
+    private String srm_project_id;
     private String srm_branch_name;
     private String srm_branch_parent;
+    private String srm_project_directory;
     private Integer srm_sca_search_depth;
     private String srm_sca_config_path;
     private String srm_sca_args;
@@ -369,6 +371,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
         return polaris_project_directory;
     }
 
+    public String getSrm_project_directory() {
+        return srm_project_directory;
+    }
+
     public String getBitbucket_username() {
         return bitbucket_username;
     }
@@ -419,6 +425,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
 
     public String getSrm_project_name() {
         return srm_project_name;
+    }
+
+    public String getSrm_project_id() {
+        return srm_project_id;
     }
 
     public String getSrm_assessment_types() {
@@ -775,6 +785,12 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     }
 
     @DataBoundSetter
+    public void setSrm_project_directory(String srm_project_directory) {
+        if (getProduct().contentEquals(SecurityProduct.SRM.name().toLowerCase()))
+            this.srm_project_directory = this.project_directory = Util.fixEmptyAndTrim(srm_project_directory);
+    }
+
+    @DataBoundSetter
     public void setBitbucket_token(String bitbucket_token) {
         this.bitbucket_token = bitbucket_token;
     }
@@ -837,6 +853,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     @DataBoundSetter
     public void setSrm_project_name(String srm_project_name) {
         this.srm_project_name = Util.fixEmptyAndTrim(srm_project_name);
+    }
+
+    @DataBoundSetter
+    public void setSrm_project_id(String srm_project_id) {
+        this.srm_project_id = Util.fixEmptyAndTrim(srm_project_id);
     }
 
     @DataBoundSetter
