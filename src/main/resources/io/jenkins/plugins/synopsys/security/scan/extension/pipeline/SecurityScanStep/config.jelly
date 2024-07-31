@@ -146,12 +146,6 @@
 
     <div id="srm" style="display: none;">
         <f:section title="SRM Parameters">
-            <f:entry field="srm_url" title="SRM Server URL (Mandatory)">
-                <f:textbox/>
-            </f:entry>
-            <f:entry field="srm_apikey" title="SRM API Key (Mandatory)">
-                <f:textbox/>
-            </f:entry>
             <f:entry field="srm_assessment_types" title="SRM Assessment Types (Mandatory)">
                 <f:textbox/>
             </f:entry>
