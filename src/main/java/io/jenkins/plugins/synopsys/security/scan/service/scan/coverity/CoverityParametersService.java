@@ -280,13 +280,13 @@ public class CoverityParametersService {
         }
     }
 
-    public Project prepareProjectObjectForBridge(Map<String, Object> polarisParameters) {
+    public Project prepareProjectObjectForBridge(Map<String, Object> coverityParameters) {
         Project project = null;
 
-        if (polarisParameters.containsKey(ApplicationConstants.PROJECT_DIRECTORY_KEY)) {
+        if (coverityParameters.containsKey(ApplicationConstants.PROJECT_DIRECTORY_KEY)) {
             project = new Project();
 
-            String projectDirectory = polarisParameters
+            String projectDirectory = coverityParameters
                     .get(ApplicationConstants.PROJECT_DIRECTORY_KEY)
                     .toString()
                     .trim();

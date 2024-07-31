@@ -5,6 +5,7 @@ import hudson.model.TaskListener;
 import io.jenkins.plugins.synopsys.security.scan.global.ApplicationConstants;
 import io.jenkins.plugins.synopsys.security.scan.global.LoggerWrapper;
 import io.jenkins.plugins.synopsys.security.scan.global.Utility;
+import io.jenkins.plugins.synopsys.security.scan.input.project.Project;
 import io.jenkins.plugins.synopsys.security.scan.input.srm.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -168,5 +169,20 @@ public class SRMParametersService {
                     .collect(Collectors.toList());
             srm.getAssessmentTypes().setTypes(assessmentTypes);
         }
+    }
+
+    public Project prepareProjectObjectForBridge(Map<String, Object> srmParameters) {
+        Project project = null;
+
+        if (srmParameters.containsKey(ApplicationConstants.PROJECT_DIRECTORY_KEY)) {
+            project = new Project();
+
+            String projectDirectory = srmParameters
+                    .get(ApplicationConstants.PROJECT_DIRECTORY_KEY)
+                    .toString()
+                    .trim();
+            project.setDirectory(projectDirectory);
+        }
+        return project;
     }
 }

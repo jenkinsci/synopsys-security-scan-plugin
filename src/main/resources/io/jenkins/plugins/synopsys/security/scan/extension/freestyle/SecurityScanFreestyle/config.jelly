@@ -205,7 +205,7 @@
             <f:entry field="srm_branch_name" title="SRM Parent Branch Name (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="srm_branch_parent_name" title="SRM Parent Branch Name (Optional)">
+            <f:entry field="srm_branch_parent" title="SRM Parent Branch Name (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="srm_project_directory" title="Project Directory (Optional)">

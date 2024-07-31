@@ -185,6 +185,7 @@ public class ScannerArgumentService {
         if (securityProducts.contains(SecurityProduct.SRM.name())) {
             SRMParametersService srmParametersService = new SRMParametersService(listener, envVars);
             SRM srm = srmParametersService.prepareSrmObjectForBridge(scanParameters);
+            Project project = srmParametersService.prepareProjectObjectForBridge(scanParameters);
 
             scanCommands.add(BridgeParams.STAGE_OPTION);
             scanCommands.add(BridgeParams.SRM_STAGE);
@@ -197,7 +198,7 @@ public class ScannerArgumentService {
                     networkAirGap,
                     sarif,
                     ApplicationConstants.SRM_INPUT_JSON_PREFIX,
-                    null));
+                    project));
         }
 
         return scanCommands;
@@ -280,15 +281,16 @@ public class ScannerArgumentService {
                     setDefaultValueSrmParams(srm, scmObject);
                 }
             }
-            handleSrmSCAInstallationPath(bridgeInput, scanParameters);
-            handleSrmSASTInstallationPath(bridgeInput, scanParameters);
+            BlackDuck blackDuck = handleScaArbitary(bridgeInput, scanParameters);
+            Coverity coverity = handleSastArbitary(bridgeInput, scanParameters);
+            handleSrmSCAInstallationPath(bridgeInput, scanParameters, blackDuck);
+            handleSrmSASTInstallationPath(bridgeInput, scanParameters, coverity);
             bridgeInput.setSrm(srm);
         }
     }
 
-    private void handleSrmSCAInstallationPath(BridgeInput bridgeInput, Map<String, Object> scanParameters) {
-        BlackDuck blackDuck = null;
-
+    private void handleSrmSCAInstallationPath(
+            BridgeInput bridgeInput, Map<String, Object> scanParameters, BlackDuck blackDuck) {
         if (scanParameters.containsKey(ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY)) {
             String installationPath = scanParameters
                     .get(ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY)
@@ -305,8 +307,8 @@ public class ScannerArgumentService {
         }
     }
 
-    private void handleSrmSASTInstallationPath(BridgeInput bridgeInput, Map<String, Object> scanParameters) {
-        Coverity coverity = null;
+    private void handleSrmSASTInstallationPath(
+            BridgeInput bridgeInput, Map<String, Object> scanParameters, Coverity coverity) {
 
         if (scanParameters.containsKey(ApplicationConstants.SRM_SAST_EXECUTION_PATH_KEY)) {
             String installationPath = scanParameters
@@ -340,13 +342,13 @@ public class ScannerArgumentService {
             setDefaultValuesForPolarisParams(polaris, scmObject);
         }
 
-        handlePolarisAssessmentModeSCA(bridgeInput, scanParameters);
-        handlePolarisAssessmentModeSAST(bridgeInput, scanParameters);
+        handleScaArbitary(bridgeInput, scanParameters);
+        handleSastArbitary(bridgeInput, scanParameters);
 
         bridgeInput.setPolaris(polaris);
     }
 
-    private void handlePolarisAssessmentModeSCA(BridgeInput bridgeInput, Map<String, Object> scanParameters) {
+    private BlackDuck handleScaArbitary(BridgeInput bridgeInput, Map<String, Object> scanParameters) {
         BlackDuck blackDuck = null;
 
         blackDuck = setSearchDepth(scanParameters, blackDuck);
@@ -356,9 +358,10 @@ public class ScannerArgumentService {
         if (blackDuck != null) {
             bridgeInput.setBlackDuck(blackDuck);
         }
+        return blackDuck;
     }
 
-    private void handlePolarisAssessmentModeSAST(BridgeInput bridgeInput, Map<String, Object> scanParameters) {
+    private Coverity handleSastArbitary(BridgeInput bridgeInput, Map<String, Object> scanParameters) {
         Coverity coverity = null;
 
         coverity = setBuildCommand(scanParameters, coverity);
@@ -369,6 +372,7 @@ public class ScannerArgumentService {
         if (coverity != null) {
             bridgeInput.setCoverity(coverity);
         }
+        return coverity;
     }
 
     private BlackDuck setSearchDepth(Map<String, Object> scanParameters, BlackDuck blackDuck) {
