@@ -169,7 +169,7 @@ public class PluginParametersHandler {
     }
 
     private void logMessagesForAdditionalParameters(Map<String, Object> scanParameters) {
-        logger.info("Parameters for additional configuration:");
+        boolean additionalParamsFound = false;
 
         for (Map.Entry<String, Object> entry : scanParameters.entrySet()) {
             String key = entry.getKey();
@@ -179,6 +179,10 @@ public class PluginParametersHandler {
                     || key.equals(ApplicationConstants.INCLUDE_DIAGNOSTICS_KEY)
                     || key.equals(ApplicationConstants.NETWORK_AIRGAP_KEY)
                     || key.equals(ApplicationConstants.MARK_BUILD_STATUS)) {
+                if (!additionalParamsFound) {
+                    logger.info("Parameters for additional configuration:");
+                    additionalParamsFound = true;
+                }
                 Object value = entry.getValue();
                 logger.info(LogMessages.LOG_DASH + key + " = " + value.toString());
             }
