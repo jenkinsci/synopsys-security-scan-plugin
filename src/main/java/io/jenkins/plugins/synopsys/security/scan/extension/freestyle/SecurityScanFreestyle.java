@@ -88,7 +88,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private String polaris_sast_args;
 
     private String srm_url;
-    private String srm_apikey;
+    private transient String srm_apikey;
     private String srm_assessment_types;
     private String srm_project_name;
     private String srm_project_id;

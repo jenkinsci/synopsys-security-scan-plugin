@@ -7,6 +7,7 @@ public class SRM {
     @JsonProperty("url")
     private String url;
 
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     @JsonProperty("apikey")
     private String apikey;
 

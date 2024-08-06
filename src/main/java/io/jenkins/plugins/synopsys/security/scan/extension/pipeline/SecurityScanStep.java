@@ -117,7 +117,7 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     private String srm_project_directory;
 
     private String srm_url;
-    private String srm_apikey;
+    private transient String srm_apikey;
     private String srm_assessment_types;
     private String srm_project_name;
     private String srm_project_id;
