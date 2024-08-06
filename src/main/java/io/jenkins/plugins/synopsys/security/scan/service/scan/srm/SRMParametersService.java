@@ -65,7 +65,25 @@ public class SRMParametersService {
 
         String jobType = Utility.jenkinsJobType(envVars);
         if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
-            missingMandatoryParams.addAll(getFreeStyleAndPipelineSrmMissingMandatoryParams(srmParameters));
+            boolean isProjectNameValid = srmParameters.containsKey(ApplicationConstants.SRM_PROJECT_NAME_KEY)
+                    && srmParameters.get(ApplicationConstants.SRM_PROJECT_NAME_KEY) != null
+                    && !srmParameters
+                            .get(ApplicationConstants.SRM_PROJECT_NAME_KEY)
+                            .toString()
+                            .isEmpty();
+
+            boolean isProjectIdValid = srmParameters.containsKey(ApplicationConstants.SRM_PROJECT_ID_KEY)
+                    && srmParameters.get(ApplicationConstants.SRM_PROJECT_ID_KEY) != null
+                    && !srmParameters
+                            .get(ApplicationConstants.SRM_PROJECT_ID_KEY)
+                            .toString()
+                            .isEmpty();
+
+            if (!isProjectNameValid && !isProjectIdValid) {
+                logger.error("One of " + ApplicationConstants.SRM_PROJECT_NAME_KEY + " or "
+                        + ApplicationConstants.SRM_PROJECT_ID_KEY + " must be present.");
+                missingMandatoryParams.add(ApplicationConstants.SRM_PROJECT_ID_KEY);
+            }
         }
 
         if (!missingMandatoryParams.isEmpty()) {
@@ -77,32 +95,23 @@ public class SRMParametersService {
             } else {
                 jobTypeName = "Pipeline";
             }
+            String message;
+            if (missingMandatoryParams.size() == 1) {
+                message = missingMandatoryParams.get(0) + " is mandatory parameter for " + jobTypeName + " job type";
+            } else {
+                message = String.join(", ", missingMandatoryParams) + " is mandatory parameter for " + jobTypeName
+                        + " job type";
+            }
 
-            logger.error(missingMandatoryParams + " is mandatory parameter for " + jobTypeName + " job type");
+            logger.error(message);
         }
 
         return missingMandatoryParams;
     }
 
-    private List<String> getFreeStyleAndPipelineSrmMissingMandatoryParams(Map<String, Object> srmParameters) {
-        List<String> missingParamsForFreeStyleAndPipeline = new ArrayList<>();
-
-        Arrays.asList(ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY, ApplicationConstants.SRM_PROJECT_NAME_KEY)
-                .forEach(key -> {
-                    boolean isKeyValid = srmParameters.containsKey(key)
-                            && srmParameters.get(key) != null
-                            && !srmParameters.get(key).toString().isEmpty();
-
-                    if (!isKeyValid) {
-                        missingParamsForFreeStyleAndPipeline.add(key);
-                    }
-                });
-
-        return missingParamsForFreeStyleAndPipeline;
-    }
-
     public SRM prepareSrmObjectForBridge(Map<String, Object> srmParameters) {
         SRM srm = new SRM();
+        Branch branch = new Branch();
 
         if (srmParameters.containsKey(ApplicationConstants.SRM_URL_KEY)) {
             srm.setUrl(srmParameters
@@ -139,19 +148,19 @@ public class SRMParametersService {
         }
 
         if (srmParameters.containsKey(ApplicationConstants.SRM_BRANCH_NAME_KEY)) {
-            srm.getBranch()
-                    .setName(srmParameters
-                            .get(ApplicationConstants.SRM_BRANCH_NAME_KEY)
-                            .toString()
-                            .trim());
+            branch.setName(srmParameters
+                    .get(ApplicationConstants.SRM_BRANCH_NAME_KEY)
+                    .toString()
+                    .trim());
+            srm.setBranch(branch);
         }
 
         if (srmParameters.containsKey(ApplicationConstants.SRM_BRANCH_PARENT_KEY)) {
-            srm.getBranch()
-                    .setParent(srmParameters
-                            .get(ApplicationConstants.SRM_BRANCH_PARENT_KEY)
-                            .toString()
-                            .trim());
+            branch.setParent(srmParameters
+                    .get(ApplicationConstants.SRM_BRANCH_PARENT_KEY)
+                    .toString()
+                    .trim());
+            srm.setBranch(branch);
         }
 
         return srm;

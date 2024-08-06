@@ -51,7 +51,7 @@ public class PolarisParametersService {
     }
 
     private List<String> getPolarisMissingMandatoryParams(Map<String, Object> polarisParameters) {
-        List<String> missingMandatoryParamsForAllJobTypes = new ArrayList<>();
+        List<String> missingMandatoryParams = new ArrayList<>();
 
         Arrays.asList(
                         ApplicationConstants.POLARIS_SERVER_URL_KEY,
@@ -63,17 +63,16 @@ public class PolarisParametersService {
                             && !polarisParameters.get(key).toString().isEmpty();
 
                     if (!isKeyValid) {
-                        missingMandatoryParamsForAllJobTypes.add(key);
+                        missingMandatoryParams.add(key);
                     }
                 });
 
         String jobType = Utility.jenkinsJobType(envVars);
         if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
-            missingMandatoryParamsForAllJobTypes.addAll(
-                    getFreeStyleAndPipelinePolarisMissingMandatoryParams(polarisParameters));
+            missingMandatoryParams.addAll(getPolarisMissingMandatoryParamsForFreeStyleAndPipeline(polarisParameters));
         }
 
-        if (!missingMandatoryParamsForAllJobTypes.isEmpty()) {
+        if (!missingMandatoryParams.isEmpty()) {
             String jobTypeName;
             if (jobType.equalsIgnoreCase(ApplicationConstants.FREESTYLE_JOB_TYPE_NAME)) {
                 jobTypeName = "FreeStyle";
@@ -83,14 +82,22 @@ public class PolarisParametersService {
                 jobTypeName = "Pipeline";
             }
 
-            logger.error(
-                    missingMandatoryParamsForAllJobTypes + " is mandatory parameter for " + jobTypeName + " job type");
+            String message;
+            if (missingMandatoryParams.size() == 1) {
+                message = missingMandatoryParams.get(0) + " is mandatory parameter for " + jobTypeName + " job type";
+            } else {
+                message = String.join(", ", missingMandatoryParams) + " is mandatory parameter for " + jobTypeName
+                        + " job type";
+            }
+
+            logger.error(message);
         }
 
-        return missingMandatoryParamsForAllJobTypes;
+        return missingMandatoryParams;
     }
 
-    private List<String> getFreeStyleAndPipelinePolarisMissingMandatoryParams(Map<String, Object> polarisParameters) {
+    private List<String> getPolarisMissingMandatoryParamsForFreeStyleAndPipeline(
+            Map<String, Object> polarisParameters) {
         List<String> missingParamsForFreeStyleAndPipeline = new ArrayList<>();
 
         Arrays.asList(

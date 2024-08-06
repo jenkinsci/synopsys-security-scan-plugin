@@ -64,7 +64,7 @@ public class CoverityParametersService {
 
         String jobType = Utility.jenkinsJobType(envVars);
         if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
-            missingMandatoryParams.addAll(getFreeStyleAndPipelineCoverityMissingMandatoryParams(coverityParameters));
+            missingMandatoryParams.addAll(getCoverityMissingMandatoryParamsForFreeStyleAndPipeline(coverityParameters));
         }
 
         if (!missingMandatoryParams.isEmpty()) {
@@ -77,13 +77,22 @@ public class CoverityParametersService {
                 jobTypeName = "Pipeline";
             }
 
-            logger.error(missingMandatoryParams + " is mandatory parameter for " + jobTypeName + " job type");
+            String message;
+            if (missingMandatoryParams.size() == 1) {
+                message = missingMandatoryParams.get(0) + " is mandatory parameter for " + jobTypeName + " job type";
+            } else {
+                message = String.join(", ", missingMandatoryParams) + " is mandatory parameter for " + jobTypeName
+                        + " job type";
+            }
+
+            logger.error(message);
         }
 
         return missingMandatoryParams;
     }
 
-    private List<String> getFreeStyleAndPipelineCoverityMissingMandatoryParams(Map<String, Object> coverityParameters) {
+    private List<String> getCoverityMissingMandatoryParamsForFreeStyleAndPipeline(
+            Map<String, Object> coverityParameters) {
         List<String> missingParamsForFreeStyleAndPipeline = new ArrayList<>();
 
         Arrays.asList(ApplicationConstants.COVERITY_PROJECT_NAME_KEY, ApplicationConstants.COVERITY_STREAM_NAME_KEY)

@@ -23,7 +23,6 @@ public class SRM {
     public SRM() {
         assessmentTypes = new AssessmentTypes();
         project = new Project();
-        branch = new Branch();
     }
 
     public String getUrl() {
