@@ -23,6 +23,8 @@ public interface SecurityScan {
 
     public String getBlackduck_args();
 
+    public String getBlackduck_execution_path();
+
     public String getCoverity_url();
 
     public String getCoverity_user();
@@ -48,6 +50,8 @@ public interface SecurityScan {
     public String getCoverity_version();
 
     public Boolean isCoverity_local();
+
+    public String getCoverity_execution_path();
 
     public String getPolaris_server_url();
 
@@ -94,6 +98,20 @@ public interface SecurityScan {
     public String getProject_source_excludes();
 
     public String getProject_directory();
+
+    public String getSrm_url();
+
+    public String getSrm_apikey();
+
+    public String getSrm_project_name();
+
+    public String getSrm_project_id();
+
+    public String getSrm_assessment_types();
+
+    public String getSrm_branch_name();
+
+    public String getSrm_branch_parent();
 
     public String getBitbucket_token();
 

@@ -56,13 +56,13 @@ public class PolarisParametersServiceTest {
     void invalidScanParametersTest() {
         Map<String, Object> polarisParameters = new HashMap<>();
 
-        assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters));
+        assertFalse(polarisParametersService.hasAllMandatoryCoverityParams(polarisParameters));
 
         polarisParameters.put(ApplicationConstants.POLARIS_SERVER_URL_KEY, TEST_POLARIS_SERVER_URL);
         polarisParameters.put(ApplicationConstants.POLARIS_ACCESS_TOKEN_KEY, TEST_POLARIS_ACCESS_TOKEN);
         polarisParameters.put(ApplicationConstants.POLARIS_APPLICATION_NAME_KEY, TEST_APPLICATION_NAME);
 
-        assertFalse(polarisParametersService.isValidPolarisParameters(polarisParameters));
+        assertFalse(polarisParametersService.hasAllMandatoryCoverityParams(polarisParameters));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(
                 ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY, TEST_PROJECT_SOURCE_PRESERVE_SYM_LINKS);
 
-        assertTrue(polarisParametersService.isValidPolarisParameters(polarisParameters));
+        assertTrue(polarisParametersService.hasAllMandatoryCoverityParams(polarisParameters));
     }
 
     @Test

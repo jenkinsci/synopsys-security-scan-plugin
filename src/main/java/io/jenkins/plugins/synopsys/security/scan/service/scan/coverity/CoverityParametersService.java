@@ -22,25 +22,31 @@ public class CoverityParametersService {
         this.envVars = envVars;
     }
 
-    public boolean isValidCoverityParameters(Map<String, Object> coverityParameters) {
+    public boolean hasAllMandatoryCoverityParams(Map<String, Object> coverityParameters) {
         if (coverityParameters == null || coverityParameters.isEmpty()) {
             return false;
         }
 
-        List<String> invalidParams = getInvalidCoverityParamsForAllJobTypes(coverityParameters);
+        List<String> missingMandatoryParams = getCoverityMissingMandatoryParams(coverityParameters);
 
-        if (invalidParams.isEmpty()) {
+        if (missingMandatoryParams.isEmpty()) {
             logger.info("Coverity parameters are validated successfully");
             return true;
         } else {
-            logger.error("Coverity parameters are not valid");
-            logger.error("Invalid Coverity parameters: " + invalidParams);
+            String message;
+            if (missingMandatoryParams.size() == 1) {
+                message = "Required parameter Coverity is missing: " + missingMandatoryParams.get(0);
+            } else {
+                message = "Required parameters Coverity are missing: " + String.join(", ", missingMandatoryParams);
+            }
+
+            logger.error(message);
             return false;
         }
     }
 
-    private List<String> getInvalidCoverityParamsForAllJobTypes(Map<String, Object> coverityParameters) {
-        List<String> invalidParams = new ArrayList<>();
+    private List<String> getCoverityMissingMandatoryParams(Map<String, Object> coverityParameters) {
+        List<String> missingMandatoryParams = new ArrayList<>();
 
         Arrays.asList(
                         ApplicationConstants.COVERITY_URL_KEY,
@@ -52,40 +58,55 @@ public class CoverityParametersService {
                             && !coverityParameters.get(key).toString().isEmpty();
 
                     if (!isKeyValid) {
-                        invalidParams.add(key);
+                        missingMandatoryParams.add(key);
                     }
                 });
 
-        invalidParams.addAll(getInvalidMandatoryParamsForFreeStyleAndPipeline(coverityParameters));
-
-        return invalidParams;
-    }
-
-    private List<String> getInvalidMandatoryParamsForFreeStyleAndPipeline(Map<String, Object> coverityParameters) {
-        List<String> invalidParamsForPipelineOrFreeStyle = new ArrayList<>();
-
         String jobType = Utility.jenkinsJobType(envVars);
         if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
-            Arrays.asList(ApplicationConstants.COVERITY_PROJECT_NAME_KEY, ApplicationConstants.COVERITY_STREAM_NAME_KEY)
-                    .forEach(key -> {
-                        boolean isKeyValid = coverityParameters.containsKey(key)
-                                && coverityParameters.get(key) != null
-                                && !coverityParameters.get(key).toString().isEmpty();
-
-                        if (!isKeyValid) {
-                            invalidParamsForPipelineOrFreeStyle.add(key);
-                        }
-                    });
-            if (!invalidParamsForPipelineOrFreeStyle.isEmpty()) {
-                logger.error(invalidParamsForPipelineOrFreeStyle + " is mandatory parameter for "
-                        + (jobType.equalsIgnoreCase(ApplicationConstants.FREESTYLE_JOB_TYPE_NAME)
-                                ? "FreeStyle"
-                                : "Pipeline")
-                        + " job type");
-            }
+            missingMandatoryParams.addAll(getCoverityMissingMandatoryParamsForFreeStyleAndPipeline(coverityParameters));
         }
 
-        return invalidParamsForPipelineOrFreeStyle;
+        if (!missingMandatoryParams.isEmpty()) {
+            String jobTypeName;
+            if (jobType.equalsIgnoreCase(ApplicationConstants.FREESTYLE_JOB_TYPE_NAME)) {
+                jobTypeName = "FreeStyle";
+            } else if (jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
+                jobTypeName = "Multibranch Pipeline";
+            } else {
+                jobTypeName = "Pipeline";
+            }
+
+            String message;
+            if (missingMandatoryParams.size() == 1) {
+                message = missingMandatoryParams.get(0) + " is mandatory parameter for " + jobTypeName + " job type";
+            } else {
+                message = String.join(", ", missingMandatoryParams) + " is mandatory parameter for " + jobTypeName
+                        + " job type";
+            }
+
+            logger.error(message);
+        }
+
+        return missingMandatoryParams;
+    }
+
+    private List<String> getCoverityMissingMandatoryParamsForFreeStyleAndPipeline(
+            Map<String, Object> coverityParameters) {
+        List<String> missingParamsForFreeStyleAndPipeline = new ArrayList<>();
+
+        Arrays.asList(ApplicationConstants.COVERITY_PROJECT_NAME_KEY, ApplicationConstants.COVERITY_STREAM_NAME_KEY)
+                .forEach(key -> {
+                    boolean isKeyValid = coverityParameters.containsKey(key)
+                            && coverityParameters.get(key) != null
+                            && !coverityParameters.get(key).toString().isEmpty();
+
+                    if (!isKeyValid) {
+                        missingParamsForFreeStyleAndPipeline.add(key);
+                    }
+                });
+
+        return missingParamsForFreeStyleAndPipeline;
     }
 
     public Coverity prepareCoverityObjectForBridge(Map<String, Object> coverityParameters) {
@@ -268,13 +289,13 @@ public class CoverityParametersService {
         }
     }
 
-    public Project prepareProjectObjectForBridge(Map<String, Object> polarisParameters) {
+    public Project prepareProjectObjectForBridge(Map<String, Object> coverityParameters) {
         Project project = null;
 
-        if (polarisParameters.containsKey(ApplicationConstants.PROJECT_DIRECTORY_KEY)) {
+        if (coverityParameters.containsKey(ApplicationConstants.PROJECT_DIRECTORY_KEY)) {
             project = new Project();
 
-            String projectDirectory = polarisParameters
+            String projectDirectory = coverityParameters
                     .get(ApplicationConstants.PROJECT_DIRECTORY_KEY)
                     .toString()
                     .trim();

@@ -9,6 +9,7 @@ import io.jenkins.plugins.synopsys.security.scan.global.enums.SecurityProduct;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck.BlackDuckParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.coverity.CoverityParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.polaris.PolarisParametersService;
+import io.jenkins.plugins.synopsys.security.scan.service.scan.srm.SRMParametersService;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -35,14 +36,20 @@ public class ScanParametersService {
         }
         if (securityProducts.contains(SecurityProduct.COVERITY.name())) {
             CoverityParametersService coverityParametersService = new CoverityParametersService(listener, envVars);
-            if (!coverityParametersService.isValidCoverityParameters(scanParameters)) {
+            if (!coverityParametersService.hasAllMandatoryCoverityParams(scanParameters)) {
                 throw new PluginExceptionHandler(ErrorCode.INVALID_COVERITY_PARAMETERS);
             }
         }
         if (securityProducts.contains(SecurityProduct.POLARIS.name())) {
             PolarisParametersService polarisParametersService = new PolarisParametersService(listener, envVars);
-            if (!polarisParametersService.isValidPolarisParameters(scanParameters)) {
+            if (!polarisParametersService.hasAllMandatoryCoverityParams(scanParameters)) {
                 throw new PluginExceptionHandler(ErrorCode.INVALID_POLARIS_PARAMETERS);
+            }
+        }
+        if (securityProducts.contains(SecurityProduct.SRM.name())) {
+            SRMParametersService srmParametersService = new SRMParametersService(listener, envVars);
+            if (!srmParametersService.hasAllMandatorySrmParams(scanParameters)) {
+                throw new PluginExceptionHandler(ErrorCode.INVALID_SRM_PARAMETERS);
             }
         }
 

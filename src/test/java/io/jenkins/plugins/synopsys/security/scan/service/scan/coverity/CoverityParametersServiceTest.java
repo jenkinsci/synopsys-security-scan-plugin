@@ -39,12 +39,12 @@ public class CoverityParametersServiceTest {
     void invalidScanParametersTest() {
         Map<String, Object> coverityParameters = new HashMap<>();
 
-        assertFalse(coverityParametersService.isValidCoverityParameters(coverityParameters));
+        assertFalse(coverityParametersService.hasAllMandatoryCoverityParams(coverityParameters));
 
         coverityParameters.put(ApplicationConstants.COVERITY_URL_KEY, TEST_COVERITY_URL);
         coverityParameters.put(ApplicationConstants.COVERITY_USER_KEY, TEST_COVERITY_USER_NAME);
 
-        assertFalse(coverityParametersService.isValidCoverityParameters(coverityParameters));
+        assertFalse(coverityParametersService.hasAllMandatoryCoverityParams(coverityParameters));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class CoverityParametersServiceTest {
         coverityParameters.put(ApplicationConstants.COVERITY_PROJECT_NAME_KEY, "fake-repo");
         coverityParameters.put(ApplicationConstants.COVERITY_STREAM_NAME_KEY, "fake-repo-branch");
 
-        assertTrue(coverityParametersService.isValidCoverityParameters(coverityParameters));
+        assertTrue(coverityParametersService.hasAllMandatoryCoverityParams(coverityParameters));
     }
 
     @Test

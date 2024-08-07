@@ -31,6 +31,9 @@ public class Coverity {
     @JsonProperty("args")
     private String args;
 
+    @JsonProperty("execution")
+    private Execution execution;
+
     public Connect getConnect() {
         return connect;
     }
@@ -101,5 +104,13 @@ public class Coverity {
 
     public void setArgs(String args) {
         this.args = args;
+    }
+
+    public Execution getExecution() {
+        return execution;
+    }
+
+    public void setExecution(Execution execution) {
+        this.execution = execution;
     }
 }

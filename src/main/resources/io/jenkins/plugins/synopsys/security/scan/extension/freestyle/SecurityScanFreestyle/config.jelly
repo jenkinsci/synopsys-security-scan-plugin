@@ -188,6 +188,59 @@
 
     </div>
 
+    <div id="srm" style="display: none;">
+        <f:section title="SRM Parameters">
+            <f:entry field="srm_assessment_types" title="SRM Assessment Types (Mandatory)">
+                <f:textbox/>
+                <div id="error_srm_assessment_types" style="display: block;" class="error error-margin">SRM Assessment Types are missing</div>
+            </f:entry>
+            <f:entry field="srm_project_name" title="SRM Project Name (Mandatory)">
+                <f:textbox/>
+                <div id="error_srm_project_name" style="display: block;" class="error error-margin">SRM Project Name is missing</div>
+            </f:entry>
+            <f:entry field="srm_project_id" title="SRM Project Id (Mandatory)">
+                <f:textbox/>
+                <div id="error_srm_project_id" style="display: block;" class="error error-margin">SRM Project Id is missing</div>
+            </f:entry>
+            <f:entry field="srm_branch_name" title="SRM Parent Branch Name (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_branch_parent" title="SRM Parent Branch Name (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_project_directory" title="Project Directory (Optional)">
+                <f:textbox/>
+            </f:entry>
+        </f:section>
+
+        <f:section title="Coverity (SAST) Tool Configuration Options">
+            <f:entry field="srm_sast_build_command" title="Coverity Build Command (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_sast_clean_command" title="Coverity Clean Command (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_sast_config_path" title="Coverity Config File Path (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_sast_args" title="Coverity Additional Arguments (Optional)">
+                <f:textbox/>
+            </f:entry>
+        </f:section>
+
+        <f:section title="Black Duck (SCA) Tool Configuration Options">
+            <f:entry field="srm_sca_search_depth" title="Black Duck Search Depth (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_sca_config_path" title="Black Duck Config File Path (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_sca_args" title="Black Duck Additional Arguments (Optional)">
+                <f:textbox/>
+            </f:entry>
+        </f:section>
+    </div>
+
     <f:section title="Additional Options">
         <f:entry field="include_diagnostics" title="Include Diagnostics (Optional)">
             <f:checkbox checked="${instance.isInclude_diagnostics() == true}"/>
@@ -216,6 +269,7 @@
             validateProductField();
             validateCoverityFields();
             validatePolarisFields();
+            validateSrmFields();
 
             if(selectedOption === 'polaris' &amp;&amp; polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
                 showParticularDiv(sourceUploadDiv);
@@ -263,6 +317,7 @@
             var blackduckDiv = document.getElementById('blackduck');
             var coverityDiv = document.getElementById('coverity');
             var polarisDiv = document.getElementById('polaris');
+            var srmDiv = document.getElementById('srm');
             var sourceUploadDiv = document.getElementById('source_upload');
 
             if(polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
@@ -279,6 +334,8 @@
                 hideParticularDiv(coverityDiv);
                 clearInputFields(polarisDiv);
                 hideParticularDiv(polarisDiv);
+                clearInputFields(srmDiv);
+                hideParticularDiv(srmDiv);
                 showParticularDiv(blackduckDiv);
                 validateProductField();
             } else if (selectedOption === 'coverity') {
@@ -286,6 +343,8 @@
                 hideParticularDiv(blackduckDiv);
                 clearInputFields(polarisDiv);
                 hideParticularDiv(polarisDiv);
+                clearInputFields(srmDiv);
+                hideParticularDiv(srmDiv);
                 showParticularDiv(coverityDiv);
                 validateProductField();
                 validateCoverityFields();
@@ -294,16 +353,30 @@
                 hideParticularDiv(blackduckDiv);
                 clearInputFields(coverityDiv);
                 hideParticularDiv(coverityDiv);
+                clearInputFields(srmDiv);
+                hideParticularDiv(srmDiv);
                 showParticularDiv(polarisDiv);
                 validateProductField();
                 validatePolarisFields();
+            } else if (selectedOption === 'srm') {
+                clearInputFields(blackduckDiv);
+                hideParticularDiv(blackduckDiv);
+                clearInputFields(coverityDiv);
+                hideParticularDiv(coverityDiv);
+                clearInputFields(polarisDiv);
+                hideParticularDiv(polarisDiv);
+                showParticularDiv(srmDiv);
+                validateProductField();
+                validateSrmFields();
             } else if (selectedOption === 'select') {
                 clearInputFields(blackduckDiv);
                 clearInputFields(coverityDiv);
                 clearInputFields(polarisDiv);
+                clearInputFields(srmDiv);
                 hideParticularDiv(blackduckDiv);
                 hideParticularDiv(coverityDiv);
                 hideParticularDiv(polarisDiv);
+                hideParticularDiv(srmDiv);
                 validateProductField();
             }
 
@@ -372,6 +445,29 @@
                 errorPolarisBranchNameDiv.style.display = "none";
             }
 
+        }
+
+        function validateSrmFields() {
+            var srmProjectName = document.querySelector('input[name="_.srm_project_name"]')?.value;
+            var srmAssessmentTypes = document.querySelector('input[name="_.srm_assessment_types"]')?.value;
+            var srmProjectId = document.querySelector('input[name="_.srm_project_id"]')?.value;
+            var errorSrmProjectNameDiv = document.getElementById("error_srm_project_name");
+            var errorSrmProjectIdDiv = document.getElementById("error_srm_project_id");
+            var errorSrmAssessmentTypesDiv = document.getElementById("error_srm_assessment_types");
+
+            if (!srmProjectName &amp;&amp; !srmProjectId) {
+                errorSrmProjectNameDiv.style.display = "block";
+                errorSrmProjectIdDiv.style.display = "block";
+            } else {
+                errorSrmProjectNameDiv.style.display = "none";
+                errorSrmProjectIdDiv.style.display = "none";
+            }
+
+            if (!srmAssessmentTypes) {
+                errorSrmAssessmentTypesDiv.style.display = "block";
+            } else {
+                errorSrmAssessmentTypesDiv.style.display = "none";
+            }
         }
 
     </script>

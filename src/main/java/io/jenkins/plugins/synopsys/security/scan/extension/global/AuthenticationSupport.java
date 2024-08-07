@@ -70,6 +70,20 @@ public class AuthenticationSupport {
         return executeRequest(httpGet, timeoutInSeconds);
     }
 
+    public final HttpResponse attemptSrmAuthentication(String srmUrl, String srmCredentialsId, int timeoutInSeconds) {
+        String srmAuthApi = srmUrl.endsWith("/")
+                ? srmUrl.concat(ApplicationConstants.SRM_SYSTEM_INFO_API)
+                : srmUrl.concat("/").concat(ApplicationConstants.SRM_SYSTEM_INFO_API);
+        String srmApiKey = scanCredentialsHelper
+                .getApiTokenByCredentialsId(srmCredentialsId)
+                .orElse(null);
+
+        HttpGet httpGet = new HttpGet(srmAuthApi);
+        httpGet.setHeader("API-Key", srmApiKey);
+
+        return executeRequest(httpGet, timeoutInSeconds);
+    }
+
     public HttpResponse executeRequest(HttpUriRequest httpUriRequest, int timeoutInSeconds) {
         try {
             RequestConfig requestConfig = getRequestConfig(timeoutInSeconds);

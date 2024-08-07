@@ -144,6 +144,29 @@
         </f:section>
     </div>
 
+    <div id="srm" style="display: none;">
+        <f:section title="SRM Parameters">
+            <f:entry field="srm_assessment_types" title="SRM Assessment Types (Mandatory)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_project_name" title="SRM Project Name">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_project_id" title="SRM Project Id (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_branch_name" title="SRM Branch Name (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_branch_parent" title="SRM Parent Branch Name (Optional)">
+                <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_project_directory" title="Project Directory (Optional)">
+                <f:textbox/>
+            </f:entry>
+        </f:section>
+    </div>
+
     <div id="coverity-tool-configuration" style="display: none;">
         <f:section title="Coverity (SAST) Tool Configuration Options">
             <f:entry field="coverity_build_command" title="Coverity Build Command (Optional)">
@@ -195,6 +218,7 @@
         var blackduckDiv = document.getElementById('blackduck');
         var coverityDiv = document.getElementById('coverity');
         var polarisDiv = document.getElementById('polaris');
+        var srmDiv = document.getElementById('srm');
         var blackduckToolConfigDiv = document.getElementById('blackduck-tool-configuration');
         var coverityToolConfigDiv = document.getElementById('coverity-tool-configuration');
 
@@ -202,6 +226,7 @@
             blackduckDiv.style.display = 'none';
             coverityDiv.style.display = 'none';
             polarisDiv.style.display = 'none';
+            srmDiv.style.display = 'none';
             blackduckToolConfigDiv.style.display = 'none';
             coverityToolConfigDiv.style.display = 'none';
         }
@@ -210,6 +235,7 @@
             clearInputFields(blackduckDiv);
             clearInputFields(coverityDiv);
             clearInputFields(polarisDiv);
+            clearInputFields(srmDiv);
             clearInputFields(blackduckToolConfigDiv);
             clearInputFields(coverityToolConfigDiv);
         }
@@ -262,6 +288,7 @@
             if (selectedOption == 'blackduck') {
                 hideParticularDiv(coverityDiv);
                 hideParticularDiv(polarisDiv);
+                hideParticularDiv(srmDiv);
                 showParticularDiv(blackduckDiv);
                 hideParticularDiv(coverityToolConfigDiv);
                 showParticularDiv(blackduckToolConfigDiv);
@@ -269,17 +296,26 @@
             } else if (selectedOption == 'coverity') {
                 hideParticularDiv(blackduckDiv);
                 hideParticularDiv(polarisDiv);
+                hideParticularDiv(srmDiv);
                 showParticularDiv(coverityDiv);
                 hideParticularDiv(blackduckToolConfigDiv);
                 showParticularDiv(coverityToolConfigDiv);
             } else if (selectedOption == 'polaris') {
                 hideParticularDiv(blackduckDiv);
                 hideParticularDiv(coverityDiv);
+                hideParticularDiv(srmDiv);
                 showParticularDiv(polarisDiv);
                 showParticularDiv(blackduckToolConfigDiv);
                 showParticularDiv(coverityToolConfigDiv);
                 setCheckboxToDefaultTrue(['_.polaris_reports_sarif_groupSCAIssues']);
-            }else if (selectedOption == '') {
+            } else if (selectedOption == 'srm') {
+                hideParticularDiv(blackduckDiv);
+                hideParticularDiv(coverityDiv);
+                hideParticularDiv(polarisDiv);
+                showParticularDiv(srmDiv);
+                showParticularDiv(blackduckToolConfigDiv);
+                showParticularDiv(coverityToolConfigDiv);
+            } else if (selectedOption == '') {
                 hideAllDivs();
             }
         });

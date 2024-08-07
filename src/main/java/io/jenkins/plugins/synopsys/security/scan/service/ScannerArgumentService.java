@@ -29,10 +29,12 @@ import io.jenkins.plugins.synopsys.security.scan.input.report.Sarif;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
+import io.jenkins.plugins.synopsys.security.scan.input.srm.SRM;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.ScanParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.blackduck.BlackDuckParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.coverity.CoverityParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scan.polaris.PolarisParametersService;
+import io.jenkins.plugins.synopsys.security.scan.service.scan.srm.SRMParametersService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.SCMRepositoryService;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -180,6 +182,24 @@ public class ScannerArgumentService {
                     ApplicationConstants.POLARIS_INPUT_JSON_PREFIX,
                     project));
         }
+        if (securityProducts.contains(SecurityProduct.SRM.name())) {
+            SRMParametersService srmParametersService = new SRMParametersService(listener, envVars);
+            SRM srm = srmParametersService.prepareSrmObjectForBridge(scanParameters);
+            Project project = srmParametersService.prepareProjectObjectForBridge(scanParameters);
+
+            scanCommands.add(BridgeParams.STAGE_OPTION);
+            scanCommands.add(BridgeParams.SRM_STAGE);
+            scanCommands.add(BridgeParams.INPUT_OPTION);
+            scanCommands.add(createBridgeInputJson(
+                    scanParameters,
+                    srm,
+                    scmObject,
+                    isPrCommentSet,
+                    networkAirGap,
+                    sarif,
+                    ApplicationConstants.SRM_INPUT_JSON_PREFIX,
+                    project));
+        }
 
         return scanCommands;
     }
@@ -253,6 +273,56 @@ public class ScannerArgumentService {
             bridgeInput.setCoverity(coverity);
         } else if (scanObject instanceof Polaris) {
             handlePolarisScan(bridgeInput, (Polaris) scanObject, scmObject, sarifObject, scanParameters);
+        } else if (scanObject instanceof SRM) {
+            SRM srm = (SRM) scanObject;
+            if (scmObject != null) {
+                if (Utility.isStringNullOrBlank(srm.getProject().getName())
+                        && Utility.isStringNullOrBlank(srm.getProject().getId())) {
+                    setDefaultValueSrmParams(srm, scmObject);
+                }
+            }
+            BlackDuck blackDuck = handleScaArbitary(bridgeInput, scanParameters);
+            Coverity coverity = handleSastArbitary(bridgeInput, scanParameters);
+            handleSrmSCAInstallationPath(bridgeInput, scanParameters, blackDuck);
+            handleSrmSASTInstallationPath(bridgeInput, scanParameters, coverity);
+            bridgeInput.setSrm(srm);
+        }
+    }
+
+    private void handleSrmSCAInstallationPath(
+            BridgeInput bridgeInput, Map<String, Object> scanParameters, BlackDuck blackDuck) {
+        if (scanParameters.containsKey(ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY)) {
+            String installationPath = scanParameters
+                    .get(ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY)
+                    .toString()
+                    .trim();
+            if (installationPath != null && !installationPath.isBlank()) {
+                if (blackDuck == null) blackDuck = new BlackDuck();
+                io.jenkins.plugins.synopsys.security.scan.input.blackduck.Execution execution =
+                        new io.jenkins.plugins.synopsys.security.scan.input.blackduck.Execution();
+                execution.setPath(installationPath);
+                blackDuck.setExecution(execution);
+                bridgeInput.setBlackDuck(blackDuck);
+            }
+        }
+    }
+
+    private void handleSrmSASTInstallationPath(
+            BridgeInput bridgeInput, Map<String, Object> scanParameters, Coverity coverity) {
+
+        if (scanParameters.containsKey(ApplicationConstants.SRM_SAST_EXECUTION_PATH_KEY)) {
+            String installationPath = scanParameters
+                    .get(ApplicationConstants.SRM_SAST_EXECUTION_PATH_KEY)
+                    .toString()
+                    .trim();
+            if (installationPath != null && !installationPath.isBlank()) {
+                if (coverity == null) coverity = new Coverity();
+                io.jenkins.plugins.synopsys.security.scan.input.coverity.Execution execution =
+                        new io.jenkins.plugins.synopsys.security.scan.input.coverity.Execution();
+                execution.setPath(installationPath);
+                coverity.setExecution(execution);
+                bridgeInput.setCoverity(coverity);
+            }
         }
     }
 
@@ -272,13 +342,13 @@ public class ScannerArgumentService {
             setDefaultValuesForPolarisParams(polaris, scmObject);
         }
 
-        handlePolarisAssessmentModeSCA(bridgeInput, scanParameters);
-        handlePolarisAssessmentModeSAST(bridgeInput, scanParameters);
+        handleScaArbitary(bridgeInput, scanParameters);
+        handleSastArbitary(bridgeInput, scanParameters);
 
         bridgeInput.setPolaris(polaris);
     }
 
-    private void handlePolarisAssessmentModeSCA(BridgeInput bridgeInput, Map<String, Object> scanParameters) {
+    private BlackDuck handleScaArbitary(BridgeInput bridgeInput, Map<String, Object> scanParameters) {
         BlackDuck blackDuck = null;
 
         blackDuck = setSearchDepth(scanParameters, blackDuck);
@@ -288,9 +358,10 @@ public class ScannerArgumentService {
         if (blackDuck != null) {
             bridgeInput.setBlackDuck(blackDuck);
         }
+        return blackDuck;
     }
 
-    private void handlePolarisAssessmentModeSAST(BridgeInput bridgeInput, Map<String, Object> scanParameters) {
+    private Coverity handleSastArbitary(BridgeInput bridgeInput, Map<String, Object> scanParameters) {
         Coverity coverity = null;
 
         coverity = setBuildCommand(scanParameters, coverity);
@@ -301,6 +372,7 @@ public class ScannerArgumentService {
         if (coverity != null) {
             bridgeInput.setCoverity(coverity);
         }
+        return coverity;
     }
 
     private BlackDuck setSearchDepth(Map<String, Object> scanParameters, BlackDuck blackDuck) {
@@ -430,6 +502,16 @@ public class ScannerArgumentService {
             String coveritySteamName = repositoryName.concat("-").concat(defaultStreamName);
             coverity.getConnect().getStream().setName(coveritySteamName);
             logger.info("Coverity Stream Name: " + coveritySteamName);
+        }
+    }
+
+    private void setDefaultValueSrmParams(SRM srm, Object scmObject) {
+        String repositoryName = getRepositoryName(scmObject);
+        if ((Utility.isStringNullOrBlank(srm.getProject().getName())
+                        && Utility.isStringNullOrBlank(srm.getProject().getId()))
+                && repositoryName != null) {
+            srm.getProject().setName(repositoryName);
+            logger.info("SRM Project Name: " + repositoryName);
         }
     }
 

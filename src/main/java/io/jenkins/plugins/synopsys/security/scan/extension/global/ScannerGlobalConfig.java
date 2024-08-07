@@ -33,7 +33,6 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     private String CONNECTION_SUCCESSFUL = "Connection successful.";
 
     private String blackDuckUrl;
-
     private String blackDuckCredentialsId;
     private String blackDuckInstallationPath;
     private String coverityConnectUrl;
@@ -46,6 +45,10 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
     private String synopsysBridgeInstallationPath;
     private String polarisServerUrl;
     private String polarisCredentialsId;
+    private String srmUrl;
+    private String srmCredentialsId;
+    private String srmSCAInstallationPath;
+    private String srmSASTInstallationPath;
     private String bitbucketCredentialsId;
     private String githubCredentialsId;
     private String gitlabCredentialsId;
@@ -151,6 +154,28 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         save();
     }
 
+    @DataBoundSetter
+    public void setSrmUrl(String srmUrl) {
+        this.srmUrl = srmUrl;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setSrmCredentialsId(String srmCredentialsId) {
+        this.srmCredentialsId = srmCredentialsId;
+        save();
+    }
+
+    @DataBoundSetter
+    public void setSrmSCAInstallationPath(String srmSCAInstallationPath) {
+        this.srmSCAInstallationPath = srmSCAInstallationPath;
+    }
+
+    @DataBoundSetter
+    public void setSrmSASTInstallationPath(String srmSASTInstallationPath) {
+        this.srmSASTInstallationPath = srmSASTInstallationPath;
+    }
+
     public String getBlackDuckUrl() {
         return blackDuckUrl;
     }
@@ -215,6 +240,22 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
         return gitlabCredentialsId;
     }
 
+    public String getSrmUrl() {
+        return srmUrl;
+    }
+
+    public String getSrmCredentialsId() {
+        return srmCredentialsId;
+    }
+
+    public String getSrmSCAInstallationPath() {
+        return srmSCAInstallationPath;
+    }
+
+    public String getSrmSASTInstallationPath() {
+        return srmSASTInstallationPath;
+    }
+
     private ListBoxModel getOptionsWithApiTokenCredentials() {
         Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
@@ -253,6 +294,11 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
                         BaseStandardCredentials.class,
                         Collections.emptyList(),
                         ScanCredentialsHelper.USERNAME_PASSWORD_CREDENTIALS);
+    }
+
+    @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
+    public ListBoxModel doFillSrmCredentialsIdItems() {
+        return getOptionsWithApiTokenCredentials();
     }
 
     @SuppressWarnings({"lgtm[jenkins/no-permission-check]", "lgtm[jenkins/csrf]"})
@@ -386,6 +432,40 @@ public class ScannerGlobalConfig extends GlobalConfiguration implements Serializ
             AuthenticationSupport authenticationSupport = new AuthenticationSupport();
             HttpResponse response = authenticationSupport.attemptCoverityAuthentication(
                     coverityConnectUrl, coverityCredentialsId, CONNECTION_TIMEOUT_IN_SECONDS);
+
+            if (response.getCode() != HttpURLConnection.HTTP_OK) {
+                String validationMessage = getValidationMessage(response.getCode());
+
+                return FormValidation.error(String.join(" ", validationMessage));
+            }
+        } catch (Exception e) {
+            return FormValidation.error(AUTHORIZATION_FAILURE
+                    + getFormattedExceptionMessage(e.getCause().getMessage()));
+        }
+
+        return FormValidation.ok(CONNECTION_SUCCESSFUL);
+    }
+
+    @POST
+    public FormValidation doTestSrmConnection(
+            @QueryParameter("srmUrl") String srmUrl, @QueryParameter("srmCredentialsId") String srmCredentialsId) {
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return FormValidation.warning(LogMessages.JENKINS_INSTANCE_MISSING_WARNING);
+        }
+        jenkins.checkPermission(Jenkins.ADMINISTER);
+
+        if (Utility.isStringNullOrBlank(srmUrl)) {
+            return FormValidation.error("The SRM server url must be specified");
+        }
+        if (Utility.isStringNullOrBlank(srmCredentialsId)) {
+            return FormValidation.error("The SRM credentials must be specified");
+        }
+
+        try {
+            AuthenticationSupport authenticationSupport = new AuthenticationSupport();
+            HttpResponse response = authenticationSupport.attemptSrmAuthentication(
+                    srmUrl, srmCredentialsId, CONNECTION_TIMEOUT_IN_SECONDS);
 
             if (response.getCode() != HttpURLConnection.HTTP_OK) {
                 String validationMessage = getValidationMessage(response.getCode());

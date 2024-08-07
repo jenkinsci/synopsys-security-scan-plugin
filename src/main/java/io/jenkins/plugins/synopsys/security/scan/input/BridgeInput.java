@@ -9,6 +9,7 @@ import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
+import io.jenkins.plugins.synopsys.security.scan.input.srm.SRM;
 
 public class BridgeInput {
     @JsonProperty("blackduck")
@@ -19,6 +20,9 @@ public class BridgeInput {
 
     @JsonProperty("polaris")
     private Polaris polaris;
+
+    @JsonProperty("srm")
+    private SRM srm;
 
     @JsonProperty("project")
     private Project project;
@@ -68,6 +72,14 @@ public class BridgeInput {
 
     public void setPolaris(Polaris polaris) {
         this.polaris = polaris;
+    }
+
+    public SRM getSrm() {
+        return srm;
+    }
+
+    public void setSrm(SRM srm) {
+        this.srm = srm;
     }
 
     public Bitbucket getBitbucket() {
