@@ -507,7 +507,9 @@ public class ScannerArgumentService {
 
     private void setDefaultValueSrmParams(SRM srm, Object scmObject) {
         String repositoryName = getRepositoryName(scmObject);
-        if (Utility.isStringNullOrBlank(srm.getProject().getName()) && repositoryName != null) {
+        if ((Utility.isStringNullOrBlank(srm.getProject().getName())
+                        && Utility.isStringNullOrBlank(srm.getProject().getId()))
+                && repositoryName != null) {
             srm.getProject().setName(repositoryName);
             logger.info("SRM Project Name: " + repositoryName);
         }
