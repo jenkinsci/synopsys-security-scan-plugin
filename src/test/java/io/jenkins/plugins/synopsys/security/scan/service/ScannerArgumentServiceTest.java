@@ -568,7 +568,6 @@ public class ScannerArgumentServiceTest {
 
         List<String> commandLineArgs =
                 scannerArgumentService.getCommandLineArgs(installedDependencies, polarisParameters, workspace);
-        scannerArgumentService.getCommandLineArgs(installedDependencies, polarisParameters, workspace);
 
         if (getOSNameForTest().contains("win")) {
             assertEquals(
