@@ -115,6 +115,11 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     private String blackduck_project_directory;
     private String polaris_project_directory;
     private String srm_project_directory;
+    private Boolean wait_for_scan;
+    private Boolean blackduck_wait_for_scan;
+    private Boolean coverity_wait_for_scan;
+    private Boolean polaris_wait_for_scan;
+    private Boolean srm_wait_for_scan;
 
     private String srm_url;
     private transient String srm_apikey;
@@ -441,6 +446,10 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
         return project_directory;
     }
 
+    public Boolean isWait_for_scan() {
+        return wait_for_scan;
+    }
+
     public String getSrm_url() {
         return srm_url;
     }
@@ -494,6 +503,26 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     // the pipeline syntax script
     @Nullable
     public String getSrm_project_directory() {
+        return null;
+    }
+
+    @Nullable
+    public Boolean getPolaris_wait_for_scan() {
+        return null;
+    }
+
+    @Nullable
+    public Boolean getCoverity_wait_for_scan() {
+        return null;
+    }
+
+    @Nullable
+    public Boolean getBlackduck_wait_for_scan() {
+        return null;
+    }
+
+    @Nullable
+    public Boolean getSrm_wait_for_scan() {
         return null;
     }
 
@@ -761,6 +790,35 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     public void setSrm_project_directory(String srm_project_directory) {
         if (getProduct().contentEquals(SecurityProduct.SRM.name().toLowerCase()))
             this.project_directory = Util.fixEmptyAndTrim(srm_project_directory);
+    }
+
+    @DataBoundSetter
+    public void setWait_for_scan(Boolean wait_for_scan) {
+        this.wait_for_scan = wait_for_scan;
+    }
+
+    @DataBoundSetter
+    public void setPolaris_wait_for_scan(Boolean polaris_wait_for_scan) {
+        if (getProduct().contentEquals(SecurityProduct.POLARIS.name().toLowerCase()))
+            this.wait_for_scan = polaris_wait_for_scan ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_wait_for_scan(Boolean coverity_wait_for_scan) {
+        if (getProduct().contentEquals(SecurityProduct.COVERITY.name().toLowerCase()))
+            this.wait_for_scan = coverity_wait_for_scan ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_wait_for_scan(Boolean blackduck_wait_for_scan) {
+        if (getProduct().contentEquals(SecurityProduct.BLACKDUCK.name().toLowerCase()))
+            this.wait_for_scan = blackduck_wait_for_scan ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setSrm_wait_for_scan(Boolean srm_wait_for_scan) {
+        if (getProduct().contentEquals(SecurityProduct.SRM.name().toLowerCase()))
+            this.wait_for_scan = srm_wait_for_scan ? true : null;
     }
 
     @DataBoundSetter
