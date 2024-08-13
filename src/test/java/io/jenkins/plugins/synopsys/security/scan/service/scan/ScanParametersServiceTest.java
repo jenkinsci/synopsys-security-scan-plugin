@@ -66,6 +66,32 @@ public class ScanParametersServiceTest {
     }
 
     @Test
+    void performScanParameterValidationSuccessForSrmTest() throws PluginExceptionHandler {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(ApplicationConstants.PRODUCT_KEY, "srm");
+        parameters.put(ApplicationConstants.SRM_URL_KEY, "https://fake.srm.url");
+        parameters.put(ApplicationConstants.SRM_APIKEY_KEY, "MDJDSROSVC56FAKEKEY");
+        parameters.put(ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY, "SCA");
+        parameters.put(ApplicationConstants.SRM_PROJECT_NAME_KEY, "test-project");
+        parameters.put(ApplicationConstants.SRM_PROJECT_ID_KEY, "fake-id");
+        parameters.put(ApplicationConstants.SRM_BRANCH_NAME_KEY, "test");
+        parameters.put(ApplicationConstants.SRM_BRANCH_PARENT_KEY, "main");
+
+        assertTrue(scanParametersService.performScanParameterValidation(parameters, envVarsMock));
+    }
+
+    @Test
+    void performScanParameterValidationFailureForSrmTest() {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(ApplicationConstants.PRODUCT_KEY, "srm");
+        parameters.put(ApplicationConstants.SRM_URL_KEY, "https://fake.srm.url");
+
+        assertThrows(
+                PluginExceptionHandler.class,
+                () -> scanParametersService.performScanParameterValidation(parameters, envVarsMock));
+    }
+
+    @Test
     public void getSynopsysSecurityPlatformsTest() {
         Map<String, Object> scanParametersWithMultiplePlatforms = new HashMap<>();
         Map<String, Object> scanParametersWithSinglePlatform = new HashMap<>();

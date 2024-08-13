@@ -25,5 +25,6 @@ public class ErrorCode {
     public static final int INVALID_GITHUB_URL = 113;
     public static final int INVALID_GITLAB_URL = 114;
     public static final int REQUIRED_BRANCH_SOURCE_PLUGIN_NOT_INSTALLED = 115;
+    public static final int INVALID_SRM_PARAMETERS = 116;
     public static final int UNDEFINED_PLUGIN_ERROR = 999;
 }

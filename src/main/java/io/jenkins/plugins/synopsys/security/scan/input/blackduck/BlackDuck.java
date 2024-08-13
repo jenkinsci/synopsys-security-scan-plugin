@@ -35,6 +35,9 @@ public class BlackDuck {
     @JsonProperty("args")
     private String args;
 
+    @JsonProperty("execution")
+    private Execution execution;
+
     public String getUrl() {
         return url;
     }
@@ -113,5 +116,13 @@ public class BlackDuck {
 
     public void setArgs(String args) {
         this.args = args;
+    }
+
+    public Execution getExecution() {
+        return execution;
+    }
+
+    public void setExecution(Execution execution) {
+        this.execution = execution;
     }
 }

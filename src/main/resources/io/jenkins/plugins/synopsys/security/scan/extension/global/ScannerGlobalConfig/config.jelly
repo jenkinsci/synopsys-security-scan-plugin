@@ -13,6 +13,8 @@
             <div class="scan-tab" onclick="showScanType('COVERITYSection')">Coverity</div>
             <!-- Polaris Tab -->
             <div class="scan-tab" onclick="showScanType('POLARISSection')">Polaris</div>
+            <!-- SRM Tab -->
+            <div class="scan-tab" onclick="showScanType('SRMSection')">Software Risk Manager (SRM)</div>
         </div>
 
         <!-- Black Duck Configuration -->
@@ -71,6 +73,30 @@
                 </div>
                 <f:entry>
                     <button type="button" class="jenkins-button ml-7" onclick="clearTabFieldsAndTestConnectionMessages('POLARISSection')">Clear</button>
+                </f:entry>
+            </div>
+        </div>
+
+        <!-- SRM Configuration -->
+        <div class="scan-type-section" id="SRMSection" style="display: block;"> <!-- Set display to block -->
+            <f:entry field="srmUrl" title="SRM Server URL">
+                <f:textbox name="srmUrl" />
+            </f:entry>
+            <f:entry field="srmCredentialsId" title="SRM API Key">
+                <c:select/>
+            </f:entry>
+            <f:entry field="srmSCAInstallationPath" title="Black Duck Install Directory(Optional)">
+                <f:textbox name="srmSCAInstallationPath" />
+            </f:entry>
+            <f:entry field="srmSASTInstallationPath" title="Coverity Install Directory(Optional)">
+                <f:textbox name="srmSASTInstallationPath" />
+            </f:entry>
+            <div class="button-container">
+                <div class="flex-1">
+                    <f:validateButton method="testSrmConnection" title="Test Connection" progress="Testing..." with="srmUrl,srmCredentialsId"/>
+                </div>
+                <f:entry>
+                    <button type="button" class="jenkins-button ml-7" onclick="clearTabFieldsAndTestConnectionMessages('SRMSection')">Clear</button>
                 </f:entry>
             </div>
         </div>
@@ -330,6 +356,7 @@
             var blackDuckUrl = document.querySelector("input[name='blackDuckUrl']").value;
             var coverityConnectUrl = document.querySelector("input[name='coverityConnectUrl']").value;
             var polarisServerUrl = document.querySelector("input[name='polarisServerUrl']").value;
+            var srmUrl = document.querySelector("input[name='srmUrl']").value;
 
             var synopsysBridgeDownloadUrlForWindows = document.querySelector("input[name='synopsysBridgeDownloadUrlForWindows']").value;
             var synopsysBridgeDownloadUrlForLinux = document.querySelector("input[name='synopsysBridgeDownloadUrlForLinux']").value;
@@ -343,7 +370,9 @@
                 selectScanType("COVERITY"); // Show Coverity box if there is a value
             } else if (polarisServerUrl) {
                 selectScanType("POLARIS"); // Show Polaris box if there is a value
-            } else {
+            }  else if (srmUrl) {
+                selectScanType("SRM"); // Show Polaris box if there is a value
+            }  else {
                 // If none of the URLs have a value, default to Black Duck
                 selectScanType("BLACKDUCK");
             }

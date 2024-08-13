@@ -23,6 +23,7 @@ import io.jenkins.plugins.synopsys.security.scan.input.report.Sarif;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.bitbucket.Bitbucket;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.github.Github;
 import io.jenkins.plugins.synopsys.security.scan.input.scm.gitlab.Gitlab;
+import io.jenkins.plugins.synopsys.security.scan.input.srm.SRM;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.bitbucket.BitbucketRepositoryService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.github.GithubRepositoryService;
 import io.jenkins.plugins.synopsys.security.scan.service.scm.gitlab.GitlabRepositoryService;
@@ -237,6 +238,93 @@ public class ScannerArgumentServiceTest {
                     null,
                     null,
                     ApplicationConstants.POLARIS_INPUT_JSON_PREFIX,
+                    null);
+            Path filePath = Paths.get(inputJsonPathForPrComment);
+
+            JsonNode expectedJsonNode = objectMapper.readTree(jsonStringForPrComment);
+
+            String actualJsonString = new String(Files.readAllBytes(Paths.get(inputJsonPathForPrComment)));
+            JsonNode actualJsonNode = objectMapper.readTree(actualJsonString);
+
+            assertEquals(expectedJsonNode, actualJsonNode);
+            Utility.removeFile(filePath.toString(), workspace, listenerMock);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void createSrmInputJsonTest() {
+        SRM srm = new SRM();
+        srm.setUrl("https://fake.srm.url");
+        srm.setApikey(TOKEN);
+        srm.getAssessmentTypes().setTypes(List.of("SCA"));
+        Map<String, Object> scanParameters = new HashMap<>();
+
+        String inputJsonPath = scannerArgumentService.createBridgeInputJson(
+                scanParameters, srm, bitBucket, false, null, null, ApplicationConstants.SRM_INPUT_JSON_PREFIX, null);
+        Path filePath = Paths.get(inputJsonPath);
+
+        assertTrue(
+                Files.exists(filePath),
+                String.format(
+                        "File %s does not exist at the specified path.",
+                        ApplicationConstants.SRM_INPUT_JSON_PREFIX.concat(".json")));
+        Utility.removeFile(filePath.toString(), workspace, listenerMock);
+    }
+
+    @Test
+    void bitbucket_SrmInputJsonTest() {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        SRM srm = new SRM();
+        srm.setUrl("https://fake.srm.url");
+        srm.setApikey(TOKEN);
+        srm.getAssessmentTypes().setTypes(List.of("SCA"));
+        Map<String, Object> scanParameters = new HashMap<>();
+
+        Bitbucket bitbucketObject = BitbucketRepositoryService.createBitbucketObject(
+                "https://bitbucket.org", TOKEN, 12, "test", "abc", "fake-user");
+
+        try {
+            String jsonStringNonPrCommentOrFixPr =
+                    "{\"data\":{\"srm\":{\"url\":\"https://fake.srm.url\",\"apikey\":\"MDJDSROSVC56FAKEKEY\",\"assessment\":{\"types\":[\"SCA\"]},\"project\":{\"name\":\"test\"}}}}";
+
+            String inputJsonPathForNonFixPr = scannerArgumentService.createBridgeInputJson(
+                    scanParameters,
+                    srm,
+                    bitbucketObject,
+                    false,
+                    null,
+                    null,
+                    ApplicationConstants.SRM_INPUT_JSON_PREFIX,
+                    null);
+            Path filePath = Paths.get(inputJsonPathForNonFixPr);
+
+            String actualJsonString = new String(Files.readAllBytes(filePath));
+
+            JsonNode expectedJsonNode = objectMapper.readTree(jsonStringNonPrCommentOrFixPr);
+            JsonNode actualJsonNode = objectMapper.readTree(actualJsonString);
+
+            assertEquals(expectedJsonNode, actualJsonNode);
+            Utility.removeFile(filePath.toString(), workspace, listenerMock);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String jsonStringForPrComment =
+                    "{\"data\":{\"srm\":{\"url\":\"https://fake.srm.url\",\"apikey\":\"MDJDSROSVC56FAKEKEY\",\"assessment\":{\"types\":[\"SCA\"]},\"project\":{\"name\":\"test\"}},\"bitbucket\":{\"api\":{\"url\":\"\",\"user\":{\"name\":\"fake-user\"},\"token\":\"MDJDSROSVC56FAKEKEY\"},\"project\":{\"repository\":{\"pull\":{\"number\":12},\"name\":\"test\"},\"key\":\"abc\"}}}}";
+            String inputJsonPathForPrComment = scannerArgumentService.createBridgeInputJson(
+                    scanParameters,
+                    srm,
+                    bitbucketObject,
+                    true,
+                    null,
+                    null,
+                    ApplicationConstants.SRM_INPUT_JSON_PREFIX,
                     null);
             Path filePath = Paths.get(inputJsonPathForPrComment);
 
@@ -582,6 +670,47 @@ public class ScannerArgumentServiceTest {
         assertEquals(commandLineArgs.get(2), BridgeParams.POLARIS_STAGE);
         assertNotEquals(commandLineArgs.get(2), BridgeParams.COVERITY_STAGE);
         assertNotEquals(commandLineArgs.get(2), BridgeParams.BLACKDUCK_STAGE);
+        assertEquals(commandLineArgs.get(3), BridgeParams.INPUT_OPTION);
+        assertTrue(
+                Files.exists(Path.of(commandLineArgs.get(4))),
+                String.format(
+                        "File %s does not exist at the specified path.",
+                        ApplicationConstants.POLARIS_INPUT_JSON_PREFIX.concat(".json")));
+
+        Utility.removeFile(commandLineArgs.get(4), workspace, listenerMock);
+    }
+
+    @Test
+    public void getCommandLineArgsForSrmTest() throws PluginExceptionHandler {
+        Map<String, Object> srmParameters = new HashMap<>();
+        srmParameters.put(ApplicationConstants.PRODUCT_KEY, "srm");
+        srmParameters.put(ApplicationConstants.SRM_URL_KEY, "https://fake.srm.url");
+        srmParameters.put(ApplicationConstants.SRM_APIKEY_KEY, "fake-api-key");
+        srmParameters.put(ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY, "SCA");
+        srmParameters.put(ApplicationConstants.SRM_PROJECT_NAME_KEY, "fake-project-name");
+        srmParameters.put(ApplicationConstants.SRM_PROJECT_ID_KEY, "fake-project-id");
+
+        Map<String, Boolean> installedDependencies = new HashMap<>();
+        installedDependencies.put(ApplicationConstants.BITBUCKET_BRANCH_SOURCE_PLUGIN_NAME, true);
+
+        List<String> commandLineArgs =
+                scannerArgumentService.getCommandLineArgs(installedDependencies, srmParameters, workspace);
+        scannerArgumentService.getCommandLineArgs(installedDependencies, srmParameters, workspace);
+
+        if (getOSNameForTest().contains("win")) {
+            assertEquals(
+                    commandLineArgs.get(0),
+                    workspace.child(ApplicationConstants.BRIDGE_BINARY_WINDOWS).getRemote());
+        } else {
+            assertEquals(
+                    commandLineArgs.get(0),
+                    workspace.child(ApplicationConstants.BRIDGE_BINARY).getRemote());
+        }
+        assertEquals(commandLineArgs.get(1), BridgeParams.STAGE_OPTION);
+        assertEquals(commandLineArgs.get(2), BridgeParams.SRM_STAGE);
+        assertNotEquals(commandLineArgs.get(2), BridgeParams.COVERITY_STAGE);
+        assertNotEquals(commandLineArgs.get(2), BridgeParams.BLACKDUCK_STAGE);
+        assertNotEquals(commandLineArgs.get(2), BridgeParams.POLARIS_STAGE);
         assertEquals(commandLineArgs.get(3), BridgeParams.INPUT_OPTION);
         assertTrue(
                 Files.exists(Path.of(commandLineArgs.get(4))),

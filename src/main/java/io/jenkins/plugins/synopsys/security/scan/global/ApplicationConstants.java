@@ -101,6 +101,16 @@ public class ApplicationConstants {
     public static final String POLARIS_ASSESSMENT_MODE_KEY = "polaris_assessment_mode";
     public static final String POLARIS_TEST_SCA_TYPE_KEY = "polaris_test_sca_type";
 
+    public static final String SRM_URL_KEY = "srm_url";
+    public static final String SRM_APIKEY_KEY = "srm_apikey";
+    public static final String SRM_ASSESSMENT_TYPES_KEY = "srm_assessment_types";
+    public static final String SRM_PROJECT_NAME_KEY = "srm_project_name";
+    public static final String SRM_PROJECT_ID_KEY = "srm_project_id";
+    public static final String SRM_BRANCH_NAME_KEY = "srm_branch_name";
+    public static final String SRM_BRANCH_PARENT_KEY = "srm_branch_parent";
+    public static final String SRM_SCA_EXECUTION_PATH_KEY = "blackduck_execution_path";
+    public static final String SRM_SAST_EXECUTION_PATH_KEY = "coverity_execution_path";
+
     public static final String PROJECT_DIRECTORY_KEY = "project_directory";
     public static final String PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
     public static final String PROJECT_SOURCE_EXCLUDES_KEY = "project_source_excludes";
@@ -122,6 +132,7 @@ public class ApplicationConstants {
     public static final String BLACKDUCK_INPUT_JSON_PREFIX = "blackduck_input";
     public static final String COVERITY_INPUT_JSON_PREFIX = "coverity_input";
     public static final String POLARIS_INPUT_JSON_PREFIX = "polaris_input";
+    public static final String SRM_INPUT_JSON_PREFIX = "srm_input";
 
     public static final String HTTPS_PROXY = "HTTPS_PROXY";
     public static final String HTTP_PROXY = "HTTP_PROXY";
@@ -130,6 +141,7 @@ public class ApplicationConstants {
     public static final String BLACKDUCK_AUTH_API = "api/tokens/authenticate";
     public static final String POLARIS_PORTFOLIO_API = "api/portfolio/portfolios";
     public static final String COVERITY_VIEWS_API = "api/v2/views";
+    public static final String SRM_SYSTEM_INFO_API = "srm/api/system-info";
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
 
     public static final String BRANCH_NAME = "BRANCH_NAME";

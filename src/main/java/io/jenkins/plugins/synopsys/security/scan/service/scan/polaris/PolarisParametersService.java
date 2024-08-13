@@ -27,25 +27,31 @@ public class PolarisParametersService {
         this.envVars = envVars;
     }
 
-    public boolean isValidPolarisParameters(Map<String, Object> polarisParameters) {
+    public boolean hasAllMandatoryCoverityParams(Map<String, Object> polarisParameters) {
         if (polarisParameters == null || polarisParameters.isEmpty()) {
             return false;
         }
 
-        List<String> invalidParams = getInvalidPolarisParamsForAllJobTypes(polarisParameters);
+        List<String> missingMandatoryParams = getPolarisMissingMandatoryParams(polarisParameters);
 
-        if (invalidParams.isEmpty()) {
+        if (missingMandatoryParams.isEmpty()) {
             logger.info("Polaris parameters are validated successfully");
             return true;
         } else {
-            logger.error("Polaris parameters are not valid");
-            logger.error("Invalid Polaris parameters: " + invalidParams);
+            String message;
+            if (missingMandatoryParams.size() == 1) {
+                message = "Required parameter Polaris is missing: " + missingMandatoryParams.get(0);
+            } else {
+                message = "Required parameters Polaris are missing: " + String.join(", ", missingMandatoryParams);
+            }
+
+            logger.error(message);
             return false;
         }
     }
 
-    private List<String> getInvalidPolarisParamsForAllJobTypes(Map<String, Object> polarisParameters) {
-        List<String> invalidParams = new ArrayList<>();
+    private List<String> getPolarisMissingMandatoryParams(Map<String, Object> polarisParameters) {
+        List<String> missingMandatoryParams = new ArrayList<>();
 
         Arrays.asList(
                         ApplicationConstants.POLARIS_SERVER_URL_KEY,
@@ -57,43 +63,58 @@ public class PolarisParametersService {
                             && !polarisParameters.get(key).toString().isEmpty();
 
                     if (!isKeyValid) {
-                        invalidParams.add(key);
+                        missingMandatoryParams.add(key);
                     }
                 });
 
-        invalidParams.addAll(getInvalidMandatoryParamsForFreeStyleAndPipeline(polarisParameters));
-
-        return invalidParams;
-    }
-
-    private List<String> getInvalidMandatoryParamsForFreeStyleAndPipeline(Map<String, Object> polarisParameters) {
-        List<String> invalidParamsForPipelineOrFreeStyle = new ArrayList<>();
-
         String jobType = Utility.jenkinsJobType(envVars);
         if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
-            Arrays.asList(
-                            ApplicationConstants.POLARIS_APPLICATION_NAME_KEY,
-                            ApplicationConstants.POLARIS_PROJECT_NAME_KEY,
-                            ApplicationConstants.POLARIS_BRANCH_NAME_KEY)
-                    .forEach(key -> {
-                        boolean isKeyValid = polarisParameters.containsKey(key)
-                                && polarisParameters.get(key) != null
-                                && !polarisParameters.get(key).toString().isEmpty();
-
-                        if (!isKeyValid) {
-                            invalidParamsForPipelineOrFreeStyle.add(key);
-                        }
-                    });
-            if (!invalidParamsForPipelineOrFreeStyle.isEmpty()) {
-                logger.error(invalidParamsForPipelineOrFreeStyle + " is mandatory parameter for "
-                        + (jobType.equalsIgnoreCase(ApplicationConstants.FREESTYLE_JOB_TYPE_NAME)
-                                ? "FreeStyle"
-                                : "Pipeline")
-                        + " job type");
-            }
+            missingMandatoryParams.addAll(getPolarisMissingMandatoryParamsForFreeStyleAndPipeline(polarisParameters));
         }
 
-        return invalidParamsForPipelineOrFreeStyle;
+        if (!missingMandatoryParams.isEmpty()) {
+            String jobTypeName;
+            if (jobType.equalsIgnoreCase(ApplicationConstants.FREESTYLE_JOB_TYPE_NAME)) {
+                jobTypeName = "FreeStyle";
+            } else if (jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
+                jobTypeName = "Multibranch Pipeline";
+            } else {
+                jobTypeName = "Pipeline";
+            }
+
+            String message;
+            if (missingMandatoryParams.size() == 1) {
+                message = missingMandatoryParams.get(0) + " is mandatory parameter for " + jobTypeName + " job type";
+            } else {
+                message = String.join(", ", missingMandatoryParams) + " is mandatory parameter for " + jobTypeName
+                        + " job type";
+            }
+
+            logger.error(message);
+        }
+
+        return missingMandatoryParams;
+    }
+
+    private List<String> getPolarisMissingMandatoryParamsForFreeStyleAndPipeline(
+            Map<String, Object> polarisParameters) {
+        List<String> missingParamsForFreeStyleAndPipeline = new ArrayList<>();
+
+        Arrays.asList(
+                        ApplicationConstants.POLARIS_APPLICATION_NAME_KEY,
+                        ApplicationConstants.POLARIS_PROJECT_NAME_KEY,
+                        ApplicationConstants.POLARIS_BRANCH_NAME_KEY)
+                .forEach(key -> {
+                    boolean isKeyValid = polarisParameters.containsKey(key)
+                            && polarisParameters.get(key) != null
+                            && !polarisParameters.get(key).toString().isEmpty();
+
+                    if (!isKeyValid) {
+                        missingParamsForFreeStyleAndPipeline.add(key);
+                    }
+                });
+
+        return missingParamsForFreeStyleAndPipeline;
     }
 
     public Polaris preparePolarisObjectForBridge(Map<String, Object> polarisParameters) {

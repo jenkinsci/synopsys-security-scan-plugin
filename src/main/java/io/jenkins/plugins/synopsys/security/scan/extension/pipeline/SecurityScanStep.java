@@ -66,6 +66,7 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     private Integer blackduck_search_depth;
     private String blackduck_config_path;
     private String blackduck_args;
+    private String blackduck_execution_path;
 
     private String coverity_url;
     private String coverity_user;
@@ -84,6 +85,7 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     private String coverity_clean_command;
     private String coverity_config_path;
     private String coverity_args;
+    private String coverity_execution_path;
 
     private String polaris_server_url;
     private transient String polaris_access_token;
@@ -112,6 +114,15 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     private String coverity_project_directory;
     private String blackduck_project_directory;
     private String polaris_project_directory;
+    private String srm_project_directory;
+
+    private String srm_url;
+    private transient String srm_apikey;
+    private String srm_assessment_types;
+    private String srm_project_name;
+    private String srm_project_id;
+    private String srm_branch_name;
+    private String srm_branch_parent;
 
     private String bitbucket_username;
     private transient String bitbucket_token;
@@ -194,6 +205,10 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
         return blackduck_args;
     }
 
+    public String getBlackduck_execution_path() {
+        return blackduck_execution_path;
+    }
+
     public String getCoverity_url() {
         return coverity_url;
     }
@@ -260,6 +275,10 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
 
     public String getCoverity_args() {
         return coverity_args;
+    }
+
+    public String getCoverity_execution_path() {
+        return coverity_execution_path;
     }
 
     public String getPolaris_server_url() {
@@ -422,6 +441,34 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
         return project_directory;
     }
 
+    public String getSrm_url() {
+        return srm_url;
+    }
+
+    public String getSrm_apikey() {
+        return srm_apikey;
+    }
+
+    public String getSrm_project_name() {
+        return srm_project_name;
+    }
+
+    public String getSrm_project_id() {
+        return srm_project_id;
+    }
+
+    public String getSrm_assessment_types() {
+        return srm_assessment_types;
+    }
+
+    public String getSrm_branch_name() {
+        return srm_branch_name;
+    }
+
+    public String getSrm_branch_parent() {
+        return srm_branch_parent;
+    }
+
     // Returning the null value because if we return any other value, blackduck_project_directory field will be visible
     // in the pipeline syntax script
     @Nullable
@@ -440,6 +487,13 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     // the pipeline syntax script
     @Nullable
     public String getPolaris_project_directory() {
+        return null;
+    }
+
+    // Returning the null value because if we return any other value, srm_project_directory field will be visible in
+    // the pipeline syntax script
+    @Nullable
+    public String getSrm_project_directory() {
         return null;
     }
 
@@ -509,6 +563,11 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     @DataBoundSetter
     public void setBlackduck_args(String blackduck_args) {
         this.blackduck_args = Util.fixEmptyAndTrim(blackduck_args);
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_execution_path(String blackduck_execution_path) {
+        this.blackduck_execution_path = Util.fixEmptyAndTrim(blackduck_execution_path);
     }
 
     @DataBoundSetter
@@ -586,6 +645,11 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     @DataBoundSetter
     public void setCoverity_args(String coverity_args) {
         this.coverity_args = Util.fixEmptyAndTrim(coverity_args);
+    }
+
+    @DataBoundSetter
+    public void setCoverity_execution_path(String coverity_execution_path) {
+        this.coverity_execution_path = Util.fixEmptyAndTrim(coverity_execution_path);
     }
 
     @DataBoundSetter
@@ -694,6 +758,12 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
     }
 
     @DataBoundSetter
+    public void setSrm_project_directory(String srm_project_directory) {
+        if (getProduct().contentEquals(SecurityProduct.SRM.name().toLowerCase()))
+            this.project_directory = Util.fixEmptyAndTrim(srm_project_directory);
+    }
+
+    @DataBoundSetter
     public void setBitbucket_token(String bitbucket_token) {
         this.bitbucket_token = bitbucket_token;
     }
@@ -790,6 +860,41 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
         this.polaris_reports_sarif_issue_types = Util.fixEmptyAndTrim(polaris_reports_sarif_issue_types);
     }
 
+    @DataBoundSetter
+    public void setSrm_url(String srm_url) {
+        this.srm_url = srm_url;
+    }
+
+    @DataBoundSetter
+    public void setSrm_apikey(String srm_apikey) {
+        this.srm_apikey = Util.fixEmptyAndTrim(srm_apikey);
+    }
+
+    @DataBoundSetter
+    public void setSrm_assessment_types(String srm_assessment_types) {
+        this.srm_assessment_types = Util.fixEmptyAndTrim(srm_assessment_types);
+    }
+
+    @DataBoundSetter
+    public void setSrm_project_name(String srm_project_name) {
+        this.srm_project_name = Util.fixEmptyAndTrim(srm_project_name);
+    }
+
+    @DataBoundSetter
+    public void setSrm_project_id(String srm_project_id) {
+        this.srm_project_id = Util.fixEmptyAndTrim(srm_project_id);
+    }
+
+    @DataBoundSetter
+    public void setSrm_branch_name(String srm_branch_name) {
+        this.srm_branch_name = Util.fixEmptyAndTrim(srm_branch_name);
+    }
+
+    @DataBoundSetter
+    public void setSrm_branch_parent(String srm_branch_parent) {
+        this.srm_branch_parent = Util.fixEmptyAndTrim(srm_branch_parent);
+    }
+
     private Map<String, Object> getParametersMap(FilePath workspace, TaskListener listener)
             throws PluginExceptionHandler {
         return ScanParametersFactory.preparePipelineParametersMap(
@@ -829,6 +934,7 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
             customLabels.put(SecurityProduct.BLACKDUCK.name().toLowerCase(), "Black Duck");
             customLabels.put(SecurityProduct.COVERITY.name().toLowerCase(), "Coverity");
             customLabels.put(SecurityProduct.POLARIS.name().toLowerCase(), "Polaris");
+            customLabels.put(SecurityProduct.SRM.name().toLowerCase(), "Software Risk Manager (SRM)");
 
             for (SecurityProduct product : SecurityProduct.values()) {
                 String value = product.name().toLowerCase();

@@ -66,6 +66,7 @@ public class ScanParametersFactory {
             parametersMap.putAll(prepareCoverityParametersMap(securityScan));
             parametersMap.putAll(preparePolarisParametersMap(securityScan));
             parametersMap.putAll(prepareBlackDuckParametersMap(securityScan));
+            parametersMap.putAll(prepareSrmParametersMap(securityScan));
             parametersMap.putAll(prepareSarifReportParametersMap(securityScan));
 
             if (!Utility.isStringNullOrBlank(securityScan.getBitbucket_username())) {
@@ -140,6 +141,21 @@ public class ScanParametersFactory {
                     globalParameters,
                     ApplicationConstants.COVERITY_INSTALL_DIRECTORY_KEY,
                     config.getCoverityInstallationPath());
+            addParameterIfNotBlank(globalParameters, ApplicationConstants.SRM_URL_KEY, config.getSrmUrl());
+            addParameterIfNotBlank(
+                    globalParameters,
+                    ApplicationConstants.SRM_APIKEY_KEY,
+                    scanCredentialsHelper
+                            .getApiTokenByCredentialsId(config.getSrmCredentialsId())
+                            .orElse(null));
+            addParameterIfNotBlank(
+                    globalParameters,
+                    ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY,
+                    config.getSrmSCAInstallationPath());
+            addParameterIfNotBlank(
+                    globalParameters,
+                    ApplicationConstants.SRM_SAST_EXECUTION_PATH_KEY,
+                    config.getSrmSASTInstallationPath());
             addParameterIfNotBlank(
                     globalParameters,
                     ApplicationConstants.BITBUCKET_USERNAME_KEY,
@@ -405,6 +421,40 @@ public class ScanParametersFactory {
         return polarisParametersMap;
     }
 
+    public static Map<String, Object> prepareSrmParametersMap(SecurityScan securityScan) {
+        Map<String, Object> srmParametersMap = new HashMap<>();
+
+        addParameterIfNotBlank(srmParametersMap, ApplicationConstants.SRM_URL_KEY, securityScan.getSrm_url());
+        addParameterIfNotBlank(srmParametersMap, ApplicationConstants.SRM_APIKEY_KEY, securityScan.getSrm_apikey());
+        addParameterIfNotBlank(
+                srmParametersMap,
+                ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY,
+                securityScan.getSrm_assessment_types());
+        addParameterIfNotBlank(
+                srmParametersMap, ApplicationConstants.SRM_PROJECT_NAME_KEY, securityScan.getSrm_project_name());
+        addParameterIfNotBlank(
+                srmParametersMap, ApplicationConstants.SRM_PROJECT_ID_KEY, securityScan.getSrm_project_id());
+        addParameterIfNotBlank(
+                srmParametersMap, ApplicationConstants.SRM_BRANCH_NAME_KEY, securityScan.getSrm_branch_name());
+        addParameterIfNotBlank(
+                srmParametersMap, ApplicationConstants.SRM_BRANCH_PARENT_KEY, securityScan.getSrm_branch_parent());
+        addParameterIfNotBlank(
+                srmParametersMap,
+                ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY,
+                securityScan.getBlackduck_execution_path());
+        addParameterIfNotBlank(
+                srmParametersMap,
+                ApplicationConstants.SRM_SAST_EXECUTION_PATH_KEY,
+                securityScan.getCoverity_execution_path());
+
+        if (securityScan instanceof FreestyleScan) {
+            FreestyleScan freestyleScan = (FreestyleScan) securityScan;
+            prepareSrmToolConfigurationParametersMap(srmParametersMap, freestyleScan);
+        }
+
+        return srmParametersMap;
+    }
+
     private static void prepareCoverityToolConfigurationParametersMap(
             Map<String, Object> coverityParameters, SecurityScan securityScan) {
         if (!Utility.isStringNullOrBlank(securityScan.getCoverity_build_command())) {
@@ -477,6 +527,42 @@ public class ScanParametersFactory {
 
         if (!Utility.isStringNullOrBlank(freestyleScan.getPolaris_sast_args())) {
             polarisParametersMap.put(ApplicationConstants.COVERITY_ARGS_KEY, freestyleScan.getPolaris_sast_args());
+        }
+    }
+
+    private static void prepareSrmToolConfigurationParametersMap(
+            Map<String, Object> srmParametersMap, FreestyleScan freestyleScan) {
+        if (freestyleScan.getSrm_sca_search_depth() != null) {
+            srmParametersMap.put(
+                    ApplicationConstants.BLACKDUCK_SEARCH_DEPTH_KEY, freestyleScan.getSrm_sca_search_depth());
+        }
+
+        if (!Utility.isStringNullOrBlank(freestyleScan.getSrm_sca_config_path())) {
+            srmParametersMap.put(
+                    ApplicationConstants.BLACKDUCK_CONFIG_PATH_KEY, freestyleScan.getSrm_sca_config_path());
+        }
+
+        if (!Utility.isStringNullOrBlank(freestyleScan.getSrm_sca_args())) {
+            srmParametersMap.put(ApplicationConstants.BLACKDUCK_ARGS_KEY, freestyleScan.getSrm_sca_args());
+        }
+
+        if (!Utility.isStringNullOrBlank(freestyleScan.getSrm_sast_build_command())) {
+            srmParametersMap.put(
+                    ApplicationConstants.COVERITY_BUILD_COMMAND_KEY, freestyleScan.getSrm_sast_build_command());
+        }
+
+        if (!Utility.isStringNullOrBlank(freestyleScan.getSrm_sast_clean_command())) {
+            srmParametersMap.put(
+                    ApplicationConstants.COVERITY_CLEAN_COMMAND_KEY, freestyleScan.getSrm_sast_clean_command());
+        }
+
+        if (!Utility.isStringNullOrBlank(freestyleScan.getSrm_sast_config_path())) {
+            srmParametersMap.put(
+                    ApplicationConstants.COVERITY_CONFIG_PATH_KEY, freestyleScan.getSrm_sast_config_path());
+        }
+
+        if (!Utility.isStringNullOrBlank(freestyleScan.getSrm_sast_args())) {
+            srmParametersMap.put(ApplicationConstants.COVERITY_ARGS_KEY, freestyleScan.getSrm_sast_args());
         }
     }
 
@@ -600,7 +686,8 @@ public class ScanParametersFactory {
                         .map(String::toUpperCase)
                         .allMatch(p -> p.equals(SecurityProduct.BLACKDUCK.name())
                                 || p.equals(SecurityProduct.POLARIS.name())
-                                || p.equals(SecurityProduct.COVERITY.name()));
+                                || p.equals(SecurityProduct.COVERITY.name())
+                                || p.equals(SecurityProduct.SRM.name()));
 
         if (!isValid) {
             logger.error("Invalid Synopsys Security Product");
