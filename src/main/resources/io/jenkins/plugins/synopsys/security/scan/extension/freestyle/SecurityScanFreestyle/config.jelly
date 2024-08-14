@@ -32,7 +32,7 @@
                 <f:checkbox checked="${instance.isBlackduck_reports_sarif_create() == true}"/>
             </f:entry>
             <f:entry field="blackduck_reports_sarif_groupSCAIssues" title="Group SCA Issues by Component (Optional)">
-                <f:checkbox checked="${instance.isBlackduck_reports_sarif_groupSCAIssues() == true}"/>
+                <f:checkbox checked="${instance.isBlackduck_reports_sarif_groupSCAIssues() == null || instance.isBlackduck_reports_sarif_groupSCAIssues() == true}"/>
             </f:entry>
             <f:entry field="blackduck_reports_sarif_file_path" title="Black Duck SARIF Report File Path (Optional)">
                 <f:textbox/>
@@ -155,7 +155,7 @@
                 <f:checkbox checked="${instance.isPolaris_reports_sarif_create() == true}"/>
             </f:entry>
             <f:entry field="polaris_reports_sarif_groupSCAIssues" title="Group SCA Issues by Component (Optional)">
-                <f:checkbox checked="${instance.isPolaris_reports_sarif_groupSCAIssues() == true}"/>
+                <f:checkbox checked="${instance.isPolaris_reports_sarif_groupSCAIssues() == null || instance.isPolaris_reports_sarif_groupSCAIssues() == true}"/>
             </f:entry>
             <f:entry field="polaris_reports_sarif_file_path" title="Polaris SARIF Report File Path (Optional)">
                 <f:textbox/>
@@ -276,20 +276,20 @@
         var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]')?.value;
         var sourceUploadDiv = document.getElementById('source_upload');
 
-        if(selectedOption &amp;&amp; selectedOption !== 'select') {
+        if (selectedOption &amp;&amp; selectedOption !== 'select') {
             document.getElementById(selectedOption).style.display = 'block';
             validateProductField();
             validateCoverityFields();
             validatePolarisFields();
             validateSrmFields();
 
-            if(selectedOption === 'polaris' &amp;&amp; polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
+            if (selectedOption === 'polaris' &amp;&amp; polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
                 showParticularDiv(sourceUploadDiv);
             }
         }
 
         function hideParticularDiv(div) {
-            if(div) {
+            if (div) {
                 div.style.display = 'none';
             }
         }
@@ -306,17 +306,17 @@
                 inputFields.forEach(function (field) {
                     if (field.type === 'text') {
                         field.value = '';
-                    }  else if (field.type === 'checkbox') {
-                        if (field.name !== "_.srm_wait_for_scan" &amp;&amp; field.name !== "_.polaris_wait_for_scan" &amp;&amp; field.name !== "_.blackduck_wait_for_scan" &amp;&amp; field.name !== "_.coverity_wait_for_scan") {
+                    } else if (field.type === 'checkbox') {
+                        if (field.name !== "_.srm_wait_for_scan" &amp;&amp; field.name !== "_.polaris_wait_for_scan" &amp;&amp; field.name !== "_.blackduck_wait_for_scan" &amp;&amp; field.name !== "_.coverity_wait_for_scan" &amp;&amp; field.name !== "_.polaris_reports_sarif_groupSCAIssues" &amp;&amp; field.name !== "_.blackduck_reports_sarif_groupSCAIssues") {
                             field.checked = false;
                         }
                     }
                 });
                 // clears polaris assessment mode dropdown value
                 var selectedOption = document.querySelector('select[name="_.product"]')?.value;
-                if(selectedOption !== 'polaris') {
+                if (selectedOption !== 'polaris') {
                     var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]');
-                    if(polarisAssessmentModeOption) {
+                    if (polarisAssessmentModeOption) {
                         polarisAssessmentModeOption.value = ""
                     }
                 }
@@ -324,7 +324,7 @@
         }
 
 
-        document.addEventListener('change', function() {
+        document.addEventListener('change', function () {
             var selectedOption = document.querySelector('select[name="_.product"]')?.value;
             var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]')?.value;
 
@@ -334,11 +334,11 @@
             var srmDiv = document.getElementById('srm');
             var sourceUploadDiv = document.getElementById('source_upload');
 
-            if(polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
+            if (polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
                 showParticularDiv(sourceUploadDiv);
             }
 
-            if(polarisAssessmentModeOption === 'CI' || polarisAssessmentModeOption === '') {
+            if (polarisAssessmentModeOption === 'CI' || polarisAssessmentModeOption === '') {
                 clearInputFields(sourceUploadDiv);
                 hideParticularDiv(sourceUploadDiv);
             }
@@ -399,7 +399,7 @@
         function validateProductField() {
             var errorProductDiv = document.getElementById("error_product_name");
             var selectedOption = document.querySelector('select[name="_.product"]')?.value;
-            if(selectedOption === 'select') {
+            if (selectedOption === 'select') {
                 errorProductDiv.style.display = "block";
             } else {
                 errorProductDiv.style.display = "none";

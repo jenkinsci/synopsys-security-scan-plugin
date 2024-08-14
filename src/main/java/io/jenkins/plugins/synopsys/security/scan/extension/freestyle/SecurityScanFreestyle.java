@@ -551,7 +551,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     @DataBoundSetter
     public void setBlackduck_reports_sarif_groupSCAIssues(Boolean blackduck_reports_sarif_groupSCAIssues) {
         this.blackduck_reports_sarif_groupSCAIssues = this.blackduck_reports_sarif_groupSCAIssues_temporary =
-                blackduck_reports_sarif_groupSCAIssues ? true : false;
+                blackduck_reports_sarif_groupSCAIssues;
     }
 
     @DataBoundSetter
@@ -707,7 +707,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     @DataBoundSetter
     public void setPolaris_reports_sarif_groupSCAIssues(Boolean polaris_reports_sarif_groupSCAIssues) {
         this.polaris_reports_sarif_groupSCAIssues = this.polaris_reports_sarif_groupSCAIssues_temporary =
-                polaris_reports_sarif_groupSCAIssues ? true : false;
+                polaris_reports_sarif_groupSCAIssues;
     }
 
     @DataBoundSetter
