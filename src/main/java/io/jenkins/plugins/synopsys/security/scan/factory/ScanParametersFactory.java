@@ -269,6 +269,10 @@ public class ScanParametersFactory {
             blackDuckParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
         }
 
+        if (securityScan.isWait_for_scan() != null) {
+            blackDuckParameters.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, securityScan.isWait_for_scan());
+        }
+
         prepareBlackDuckToolConfigurationParametersMap(blackDuckParameters, securityScan);
 
         return blackDuckParameters;
@@ -319,6 +323,10 @@ public class ScanParametersFactory {
 
         if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
             coverityParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
+        }
+
+        if (securityScan.isWait_for_scan() != null) {
+            coverityParameters.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, securityScan.isWait_for_scan());
         }
 
         if (securityScan instanceof PrCommentScan) {
@@ -404,6 +412,10 @@ public class ScanParametersFactory {
                     securityScan.isProject_source_preserveSymLinks_actualValue());
         }
 
+        if (securityScan.isWait_for_scan() != null) {
+            polarisParametersMap.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, securityScan.isWait_for_scan());
+        }
+
         if (securityScan instanceof PrCommentScan) {
             PrCommentScan prCommentScan = (PrCommentScan) securityScan;
             if (prCommentScan.isPolaris_prComment_enabled_actualValue() != null) {
@@ -446,6 +458,10 @@ public class ScanParametersFactory {
                 srmParametersMap,
                 ApplicationConstants.SRM_SAST_EXECUTION_PATH_KEY,
                 securityScan.getCoverity_execution_path());
+
+        if (securityScan.isWait_for_scan() != null) {
+            srmParametersMap.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, securityScan.isWait_for_scan());
+        }
 
         if (securityScan instanceof FreestyleScan) {
             FreestyleScan freestyleScan = (FreestyleScan) securityScan;

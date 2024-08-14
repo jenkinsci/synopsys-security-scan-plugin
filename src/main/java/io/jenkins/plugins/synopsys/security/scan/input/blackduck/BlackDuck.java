@@ -1,9 +1,10 @@
 package io.jenkins.plugins.synopsys.security.scan.input.blackduck;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.jenkins.plugins.synopsys.security.scan.input.AsyncMode;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
 
-public class BlackDuck {
+public class BlackDuck extends AsyncMode {
     @JsonProperty("url")
     private String url;
 

@@ -140,6 +140,16 @@ public class BlackDuckParametersService {
             blackDuck.setArgs(value);
         }
 
+        if (blackDuckParameters.containsKey(ApplicationConstants.WAIT_FOR_SCAN_KEY)) {
+            String value = blackDuckParameters
+                    .get(ApplicationConstants.WAIT_FOR_SCAN_KEY)
+                    .toString()
+                    .trim();
+            if (value.equals("true") || value.equals("false")) {
+                blackDuck.setWaitForScan(Boolean.parseBoolean(value));
+            }
+        }
+
         return blackDuck;
     }
 

@@ -189,6 +189,16 @@ public class PolarisParametersService {
             setAssessmentMode(polarisParameters, polaris);
         }
 
+        if (polarisParameters.containsKey(ApplicationConstants.WAIT_FOR_SCAN_KEY)) {
+            String value = polarisParameters
+                    .get(ApplicationConstants.WAIT_FOR_SCAN_KEY)
+                    .toString()
+                    .trim();
+            if (value.equals("true") || value.equals("false")) {
+                polaris.setWaitForScan(Boolean.parseBoolean(value));
+            }
+        }
+
         return polaris;
     }
 

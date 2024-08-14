@@ -1,9 +1,13 @@
 package io.jenkins.plugins.synopsys.security.scan.input.polaris;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.jenkins.plugins.synopsys.security.scan.input.AsyncMode;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
 
-public class Polaris {
+public class Polaris extends AsyncMode {
+    @JsonProperty("serverUrl")
+    private String serverUrl;
+
     @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     @JsonProperty("accesstoken")
     private String accessToken;
@@ -16,9 +20,6 @@ public class Polaris {
 
     @JsonProperty("assessment")
     private AssessmentTypes assessmentTypes;
-
-    @JsonProperty("serverUrl")
-    private String serverUrl;
 
     @JsonProperty("triage")
     private String triage;

@@ -1,8 +1,9 @@
 package io.jenkins.plugins.synopsys.security.scan.input.srm;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.jenkins.plugins.synopsys.security.scan.input.AsyncMode;
 
-public class SRM {
+public class SRM extends AsyncMode {
     @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     @JsonProperty("url")
     private String url;

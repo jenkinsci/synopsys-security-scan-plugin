@@ -111,6 +111,7 @@ public class ApplicationConstants {
     public static final String SRM_SCA_EXECUTION_PATH_KEY = "blackduck_execution_path";
     public static final String SRM_SAST_EXECUTION_PATH_KEY = "coverity_execution_path";
 
+    public static final String WAIT_FOR_SCAN_KEY = "wait_for_scan";
     public static final String PROJECT_DIRECTORY_KEY = "project_directory";
     public static final String PROJECT_SOURCE_ARCHIVE_KEY = "project_source_archive";
     public static final String PROJECT_SOURCE_EXCLUDES_KEY = "project_source_excludes";

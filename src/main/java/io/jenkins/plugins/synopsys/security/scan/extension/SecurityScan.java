@@ -99,6 +99,8 @@ public interface SecurityScan {
 
     public String getProject_directory();
 
+    public Boolean isWait_for_scan();
+
     public String getSrm_url();
 
     public String getSrm_apikey();

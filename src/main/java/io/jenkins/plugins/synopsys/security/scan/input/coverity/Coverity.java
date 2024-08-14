@@ -1,9 +1,10 @@
 package io.jenkins.plugins.synopsys.security.scan.input.coverity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.jenkins.plugins.synopsys.security.scan.input.AsyncMode;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Install;
 
-public class Coverity {
+public class Coverity extends AsyncMode {
     @JsonProperty("connect")
     private Connect connect;
 
