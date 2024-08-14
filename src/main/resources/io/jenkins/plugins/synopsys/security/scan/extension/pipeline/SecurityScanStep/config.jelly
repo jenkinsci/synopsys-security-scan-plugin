@@ -21,6 +21,9 @@
             <f:entry field="blackduck_prComment_enabled" title="Add Comments to Pull Requests (Optional)">
                 <f:checkbox/>
             </f:entry>
+            <f:entry field="blackduck_wait_for_scan" title="Wait For Scan (Optional)">
+                <f:checkbox/>
+            </f:entry>
             <f:entry field="blackduck_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
             </f:entry>
@@ -65,6 +68,9 @@
             <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
                 <f:checkbox/>
             </f:entry>
+            <f:entry field="coverity_wait_for_scan" title="Wait For Scan (Optional)">
+                <f:checkbox/>
+            </f:entry>
             <f:entry field="coverity_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
             </f:entry>
@@ -99,6 +105,9 @@
             </f:entry>
             <f:entry field="polaris_test_sca_type" title="Polaris Test SCA Type (Optional)">
                 <f:textbox/>
+            </f:entry>
+            <f:entry field="polaris_wait_for_scan" title="Wait For Scan (Optional)">
+                <f:checkbox/>
             </f:entry>
             <f:entry field="polaris_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
@@ -160,6 +169,9 @@
             </f:entry>
             <f:entry field="srm_branch_parent" title="SRM Parent Branch Name (Optional)">
                 <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_wait_for_scan" title="Wait For Scan (Optional)">
+                <f:checkbox/>
             </f:entry>
             <f:entry field="srm_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
@@ -292,7 +304,7 @@
                 showParticularDiv(blackduckDiv);
                 hideParticularDiv(coverityToolConfigDiv);
                 showParticularDiv(blackduckToolConfigDiv);
-                setCheckboxToDefaultTrue(['_.blackduck_reports_sarif_groupSCAIssues']);
+                setCheckboxToDefaultTrue(['_.blackduck_reports_sarif_groupSCAIssues','_.blackduck_wait_for_scan']);
             } else if (selectedOption == 'coverity') {
                 hideParticularDiv(blackduckDiv);
                 hideParticularDiv(polarisDiv);
@@ -300,6 +312,7 @@
                 showParticularDiv(coverityDiv);
                 hideParticularDiv(blackduckToolConfigDiv);
                 showParticularDiv(coverityToolConfigDiv);
+                setCheckboxToDefaultTrue(['_.coverity_wait_for_scan']);
             } else if (selectedOption == 'polaris') {
                 hideParticularDiv(blackduckDiv);
                 hideParticularDiv(coverityDiv);
@@ -307,7 +320,7 @@
                 showParticularDiv(polarisDiv);
                 showParticularDiv(blackduckToolConfigDiv);
                 showParticularDiv(coverityToolConfigDiv);
-                setCheckboxToDefaultTrue(['_.polaris_reports_sarif_groupSCAIssues']);
+                setCheckboxToDefaultTrue(['_.polaris_reports_sarif_groupSCAIssues', '_.polaris_wait_for_scan']);
             } else if (selectedOption == 'srm') {
                 hideParticularDiv(blackduckDiv);
                 hideParticularDiv(coverityDiv);
@@ -315,6 +328,7 @@
                 showParticularDiv(srmDiv);
                 showParticularDiv(blackduckToolConfigDiv);
                 showParticularDiv(coverityToolConfigDiv);
+                setCheckboxToDefaultTrue(['_.srm_wait_for_scan']);
             } else if (selectedOption == '') {
                 hideAllDivs();
             }

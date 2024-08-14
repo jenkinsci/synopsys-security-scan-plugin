@@ -87,6 +87,12 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private String polaris_sast_config_path;
     private String polaris_sast_args;
 
+    private Boolean wait_for_scan;
+    private Boolean blackduck_wait_for_scan;
+    private Boolean coverity_wait_for_scan;
+    private Boolean polaris_wait_for_scan;
+    private Boolean srm_wait_for_scan;
+
     private String srm_url;
     private transient String srm_apikey;
     private String srm_assessment_types;
@@ -373,6 +379,26 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
 
     public String getSrm_project_directory() {
         return srm_project_directory;
+    }
+
+    public Boolean isWait_for_scan() {
+        return wait_for_scan;
+    }
+
+    public Boolean isPolaris_wait_for_scan() {
+        return polaris_wait_for_scan;
+    }
+
+    public Boolean isCoverity_wait_for_scan() {
+        return coverity_wait_for_scan;
+    }
+
+    public Boolean isSrm_wait_for_scan() {
+        return srm_wait_for_scan;
+    }
+
+    public Boolean isBlackduck_wait_for_scan() {
+        return blackduck_wait_for_scan;
     }
 
     public String getBitbucket_username() {
@@ -788,6 +814,35 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     public void setSrm_project_directory(String srm_project_directory) {
         if (getProduct().contentEquals(SecurityProduct.SRM.name().toLowerCase()))
             this.srm_project_directory = this.project_directory = Util.fixEmptyAndTrim(srm_project_directory);
+    }
+
+    @DataBoundSetter
+    public void setWait_for_scan(Boolean wait_for_scan) {
+        this.wait_for_scan = wait_for_scan;
+    }
+
+    @DataBoundSetter
+    public void setSrm_wait_for_scan(Boolean srm_wait_for_scan) {
+        if (getProduct().contentEquals(SecurityProduct.SRM.name().toLowerCase()))
+            this.srm_wait_for_scan = this.wait_for_scan = srm_wait_for_scan;
+    }
+
+    @DataBoundSetter
+    public void setPolaris_wait_for_scan(Boolean polaris_wait_for_scan) {
+        if (getProduct().contentEquals(SecurityProduct.POLARIS.name().toLowerCase()))
+            this.polaris_wait_for_scan = this.wait_for_scan = polaris_wait_for_scan;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_wait_for_scan(Boolean coverity_wait_for_scan) {
+        if (getProduct().contentEquals(SecurityProduct.COVERITY.name().toLowerCase()))
+            this.coverity_wait_for_scan = this.wait_for_scan = coverity_wait_for_scan;
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_wait_for_scan(Boolean blackduck_wait_for_scan) {
+        if (getProduct().contentEquals(SecurityProduct.BLACKDUCK.name().toLowerCase()))
+            this.blackduck_wait_for_scan = this.wait_for_scan = blackduck_wait_for_scan;
     }
 
     @DataBoundSetter
