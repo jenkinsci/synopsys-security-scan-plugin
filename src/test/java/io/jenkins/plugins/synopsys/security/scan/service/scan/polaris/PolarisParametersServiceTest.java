@@ -45,6 +45,7 @@ public class PolarisParametersServiceTest {
     private final String TEST_COVERITY_BUILD_COMMAND = "mvn clean install";
     private final String TEST_COVERITY_ARGS = "-o capture.build.clean-command=\"mvn clean\" -- mvn clean install";
     private final String TEST_COVERITY_CONFIG_FILE_PATH = "DIR/CONFIG/coverity.yml";
+    private final Boolean TEST_POLARIS_WAIT_FOR_SCAN = true;
 
     @BeforeEach
     void setUp() {
@@ -84,6 +85,7 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.PROJECT_SOURCE_EXCLUDES_KEY, TEST_PROJECT_SOURCE_EXCLUDES);
         polarisParameters.put(
                 ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY, TEST_PROJECT_SOURCE_PRESERVE_SYM_LINKS);
+        polarisParameters.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, TEST_POLARIS_WAIT_FOR_SCAN);
 
         assertTrue(polarisParametersService.hasAllMandatoryCoverityParams(polarisParameters));
     }
@@ -103,6 +105,7 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, true);
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY, "HIGH");
         polarisParameters.put(ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY, "SCA-PACKAGE");
+        polarisParameters.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, TEST_POLARIS_WAIT_FOR_SCAN);
 
         Polaris polaris = polarisParametersService.preparePolarisObjectForBridge(polarisParameters);
 
@@ -116,6 +119,7 @@ public class PolarisParametersServiceTest {
         assertEquals(polaris.getTest().getSca().getType(), "SCA-PACKAGE");
         assertNull(polaris.getBranch().getParent());
         assertNull(polaris.getPrcomment());
+        assertEquals(polaris.isWaitForScan(), TEST_POLARIS_WAIT_FOR_SCAN);
     }
 
     @Test
@@ -133,6 +137,7 @@ public class PolarisParametersServiceTest {
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_ENABLED_KEY, true);
         polarisParameters.put(ApplicationConstants.POLARIS_PRCOMMENT_SEVERITIES_KEY, "HIGH");
         polarisParameters.put(ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY, "SCA-SIGNATURE");
+        polarisParameters.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, TEST_POLARIS_WAIT_FOR_SCAN);
 
         Mockito.when(envVarsMock.get(ApplicationConstants.ENV_CHANGE_ID_KEY)).thenReturn("1");
 
@@ -149,6 +154,7 @@ public class PolarisParametersServiceTest {
         assertEquals(polaris.getPrcomment().getEnabled(), true);
         assertEquals(polaris.getPrcomment().getSeverities(), Arrays.asList("HIGH"));
         assertEquals(polaris.getTest().getSca().getType(), "SCA-SIGNATURE");
+        assertEquals(polaris.isWaitForScan(), TEST_POLARIS_WAIT_FOR_SCAN);
     }
 
     @Test

@@ -25,6 +25,7 @@ public class BlackDuckParametersServiceTest {
     private final String TEST_PROJECT_DIRECTORY = "DIR/TEST";
     private final String TEST_BLACKDUCK_ARGS = "--detect.diagnostic=true";
     private final String TEST_BLACKDUCK_CONFIG_FILE_PATH = "DIR/CONFIG/application.properties";
+    private final Boolean TEST_SRM_WAIT_FOR_SCAN = true;
 
     @BeforeEach
     void setUp() {
@@ -45,6 +46,7 @@ public class BlackDuckParametersServiceTest {
         blackDuckParametersMap.put(
                 ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, "BLOCKER, CRITICAL, MAJOR, MINOR");
         blackDuckParametersMap.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, TEST_PROJECT_DIRECTORY);
+        blackDuckParametersMap.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, TEST_SRM_WAIT_FOR_SCAN);
 
         BlackDuck blackDuck = blackDuckParametersService.prepareBlackDuckObjectForBridge(blackDuckParametersMap);
 
@@ -57,6 +59,7 @@ public class BlackDuckParametersServiceTest {
         assertEquals(
                 List.of("BLOCKER", "CRITICAL", "MAJOR", "MINOR"),
                 blackDuck.getScan().getFailure().getSeverities());
+        assertEquals(blackDuck.isWaitForScan(), TEST_SRM_WAIT_FOR_SCAN);
     }
 
     @Test
@@ -71,6 +74,7 @@ public class BlackDuckParametersServiceTest {
         blackDuckParametersMap.put(ApplicationConstants.BLACKDUCK_SCAN_FULL_KEY, true);
         blackDuckParametersMap.put(
                 ApplicationConstants.BLACKDUCK_SCAN_FAILURE_SEVERITIES_KEY, "BLOCKER, CRITICAL, MAJOR, MINOR");
+        blackDuckParametersMap.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, TEST_SRM_WAIT_FOR_SCAN);
 
         Mockito.when(envVarsMock.get(ApplicationConstants.ENV_CHANGE_ID_KEY)).thenReturn("1");
 
@@ -85,6 +89,7 @@ public class BlackDuckParametersServiceTest {
         assertEquals(
                 List.of("BLOCKER", "CRITICAL", "MAJOR", "MINOR"),
                 blackDuck.getScan().getFailure().getSeverities());
+        assertEquals(blackDuck.isWaitForScan(), TEST_SRM_WAIT_FOR_SCAN);
     }
 
     @Test
