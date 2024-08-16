@@ -459,6 +459,9 @@ public class ScanParametersFactory {
                 ApplicationConstants.SRM_SAST_EXECUTION_PATH_KEY,
                 securityScan.getCoverity_execution_path());
 
+        addParameterIfNotBlank(
+                srmParametersMap, ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
+
         if (securityScan.isWait_for_scan() != null) {
             srmParametersMap.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, securityScan.isWait_for_scan());
         }
