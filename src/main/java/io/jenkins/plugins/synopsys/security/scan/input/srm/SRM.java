@@ -1,9 +1,8 @@
 package io.jenkins.plugins.synopsys.security.scan.input.srm;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.jenkins.plugins.synopsys.security.scan.input.AsyncMode;
 
-public class SRM extends AsyncMode {
+public class SRM {
     @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     @JsonProperty("url")
     private String url;
@@ -20,6 +19,9 @@ public class SRM extends AsyncMode {
 
     @JsonProperty("branch")
     private Branch branch;
+
+    @JsonProperty("waitForScan")
+    private Boolean waitForScan;
 
     public SRM() {
         assessmentTypes = new AssessmentTypes();
@@ -64,5 +66,13 @@ public class SRM extends AsyncMode {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+    public Boolean isWaitForScan() {
+        return waitForScan;
+    }
+
+    public void setWaitForScan(Boolean waitForScan) {
+        this.waitForScan = waitForScan;
     }
 }

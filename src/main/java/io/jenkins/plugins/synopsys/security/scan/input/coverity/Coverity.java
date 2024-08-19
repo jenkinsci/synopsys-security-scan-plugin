@@ -1,10 +1,9 @@
 package io.jenkins.plugins.synopsys.security.scan.input.coverity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.jenkins.plugins.synopsys.security.scan.input.AsyncMode;
 import io.jenkins.plugins.synopsys.security.scan.input.blackduck.Install;
 
-public class Coverity extends AsyncMode {
+public class Coverity {
     @JsonProperty("connect")
     private Connect connect;
 
@@ -34,6 +33,9 @@ public class Coverity extends AsyncMode {
 
     @JsonProperty("execution")
     private Execution execution;
+
+    @JsonProperty("waitForScan")
+    private Boolean waitForScan;
 
     public Connect getConnect() {
         return connect;
@@ -113,5 +115,13 @@ public class Coverity extends AsyncMode {
 
     public void setExecution(Execution execution) {
         this.execution = execution;
+    }
+
+    public Boolean isWaitForScan() {
+        return waitForScan;
+    }
+
+    public void setWaitForScan(Boolean waitForScan) {
+        this.waitForScan = waitForScan;
     }
 }

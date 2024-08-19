@@ -1,10 +1,9 @@
 package io.jenkins.plugins.synopsys.security.scan.input.polaris;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.jenkins.plugins.synopsys.security.scan.input.AsyncMode;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
 
-public class Polaris extends AsyncMode {
+public class Polaris {
     @JsonProperty("serverUrl")
     private String serverUrl;
 
@@ -35,6 +34,9 @@ public class Polaris extends AsyncMode {
 
     @JsonProperty("reports")
     private Reports reports;
+
+    @JsonProperty("waitForScan")
+    private Boolean waitForScan;
 
     public Polaris() {
         applicationName = new ApplicationName();
@@ -121,5 +123,13 @@ public class Polaris extends AsyncMode {
 
     public void setTest(Test test) {
         this.test = test;
+    }
+
+    public Boolean isWaitForScan() {
+        return waitForScan;
+    }
+
+    public void setWaitForScan(Boolean waitForScan) {
+        this.waitForScan = waitForScan;
     }
 }
