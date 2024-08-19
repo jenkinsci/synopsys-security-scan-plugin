@@ -21,7 +21,7 @@
             <f:entry field="blackduck_prComment_enabled" title="Add Comments to Pull Requests (Optional)">
                 <f:checkbox/>
             </f:entry>
-            <f:entry field="blackduck_wait_for_scan" title="Wait For Scan (Optional)">
+            <f:entry field="blackduck_wait_for_scan" title="Black Duck Wait For Scan (Optional)">
                 <f:checkbox/>
             </f:entry>
             <f:entry field="blackduck_project_directory" title="Project Directory (Optional)">
@@ -68,7 +68,7 @@
             <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
                 <f:checkbox/>
             </f:entry>
-            <f:entry field="coverity_wait_for_scan" title="Wait For Scan (Optional)">
+            <f:entry field="coverity_wait_for_scan" title="Coverity Wait For Scan (Optional)">
                 <f:checkbox/>
             </f:entry>
             <f:entry field="coverity_project_directory" title="Project Directory (Optional)">
@@ -106,7 +106,7 @@
             <f:entry field="polaris_test_sca_type" title="Polaris Test SCA Type (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="polaris_wait_for_scan" title="Wait For Scan (Optional)">
+            <f:entry field="polaris_wait_for_scan" title="Polaris Wait For Scan (Optional)">
                 <f:checkbox/>
             </f:entry>
             <f:entry field="polaris_project_directory" title="Project Directory (Optional)">
@@ -170,7 +170,7 @@
             <f:entry field="srm_branch_parent" title="SRM Parent Branch Name (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="srm_wait_for_scan" title="Wait For Scan (Optional)">
+            <f:entry field="srm_wait_for_scan" title="SRM Wait For Scan (Optional)">
                 <f:checkbox/>
             </f:entry>
             <f:entry field="srm_project_directory" title="Project Directory (Optional)">

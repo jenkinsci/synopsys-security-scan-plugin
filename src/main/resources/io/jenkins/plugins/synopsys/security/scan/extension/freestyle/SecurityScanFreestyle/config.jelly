@@ -19,7 +19,7 @@
             <f:entry field="blackduck_scan_full" title="Black Duck Full Scan (Optional)">
                 <f:checkbox checked="${instance.isBlackduck_scan_full() == true}"/>
             </f:entry>
-            <f:entry field="blackduck_wait_for_scan" title="Wait For Scan (Optional)">
+            <f:entry field="blackduck_wait_for_scan" title="Black Duck Wait For Scan (Optional)">
                 <f:checkbox checked="${instance.isBlackduck_wait_for_scan() == null || instance.isBlackduck_wait_for_scan() == true}"/>
             </f:entry>
             <f:entry field="blackduck_project_directory" title="Project Directory (Optional)">
@@ -74,7 +74,7 @@
             <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
                 <f:checkbox checked="${instance.isCoverity_local() == true}"/>
             </f:entry>
-            <f:entry field="coverity_wait_for_scan" title="Wait For Scan (Optional)">
+            <f:entry field="coverity_wait_for_scan" title="Coverity Wait For Scan (Optional)">
                 <f:checkbox checked="${instance.isCoverity_wait_for_scan() == null || instance.isCoverity_wait_for_scan() == true}" />
             </f:entry>
             <f:entry field="coverity_project_directory" title="Project Directory (Optional)">
@@ -122,7 +122,7 @@
             <f:entry field="polaris_test_sca_type" title="Polaris Test SCA Type (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="polaris_wait_for_scan" title="Wait For Scan (Optional)">
+            <f:entry field="polaris_wait_for_scan" title="Polaris Wait For Scan (Optional)">
                 <f:checkbox checked="${instance.isPolaris_wait_for_scan() == null || instance.isPolaris_wait_for_scan() == true}" />
             </f:entry>
             <f:entry field="polaris_project_directory" title="Project Directory (Optional)">
@@ -217,7 +217,7 @@
             <f:entry field="srm_branch_parent" title="SRM Parent Branch Name (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="srm_wait_for_scan" title="Wait For Scan (Optional)">
+            <f:entry field="srm_wait_for_scan" title="SRM Wait For Scan (Optional)">
                 <f:checkbox checked="${instance.isSrm_wait_for_scan() == null || instance.isSrm_wait_for_scan() == true}" />
             </f:entry>
             <f:entry field="srm_project_directory" title="Project Directory (Optional)">
