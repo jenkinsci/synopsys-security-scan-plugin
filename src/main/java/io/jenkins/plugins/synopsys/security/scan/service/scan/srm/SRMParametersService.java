@@ -64,6 +64,33 @@ public class SRMParametersService {
                 });
 
         String jobType = Utility.jenkinsJobType(envVars);
+        validateProjectParams(srmParameters, missingMandatoryParams, jobType);
+
+        if (!missingMandatoryParams.isEmpty()) {
+            String jobTypeName;
+            if (jobType.equalsIgnoreCase(ApplicationConstants.FREESTYLE_JOB_TYPE_NAME)) {
+                jobTypeName = "FreeStyle";
+            } else if (jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
+                jobTypeName = "Multibranch Pipeline";
+            } else {
+                jobTypeName = "Pipeline";
+            }
+            String message;
+            if (missingMandatoryParams.size() == 1) {
+                message = missingMandatoryParams.get(0) + " is mandatory parameter for " + jobTypeName + " job type";
+            } else {
+                message = String.join(", ", missingMandatoryParams) + " are mandatory parameter for " + jobTypeName
+                        + " job type";
+            }
+
+            logger.error(message);
+        }
+
+        return missingMandatoryParams;
+    }
+
+    private void validateProjectParams(
+            Map<String, Object> srmParameters, List<String> missingMandatoryParams, String jobType) {
         if (!jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
             boolean isProjectNameValid = srmParameters.containsKey(ApplicationConstants.SRM_PROJECT_NAME_KEY)
                     && srmParameters.get(ApplicationConstants.SRM_PROJECT_NAME_KEY) != null
@@ -85,28 +112,6 @@ public class SRMParametersService {
                 missingMandatoryParams.add(ApplicationConstants.SRM_PROJECT_ID_KEY);
             }
         }
-
-        if (!missingMandatoryParams.isEmpty()) {
-            String jobTypeName;
-            if (jobType.equalsIgnoreCase(ApplicationConstants.FREESTYLE_JOB_TYPE_NAME)) {
-                jobTypeName = "FreeStyle";
-            } else if (jobType.equalsIgnoreCase(ApplicationConstants.MULTIBRANCH_JOB_TYPE_NAME)) {
-                jobTypeName = "Multibranch Pipeline";
-            } else {
-                jobTypeName = "Pipeline";
-            }
-            String message;
-            if (missingMandatoryParams.size() == 1) {
-                message = missingMandatoryParams.get(0) + " is mandatory parameter for " + jobTypeName + " job type";
-            } else {
-                message = String.join(", ", missingMandatoryParams) + " is mandatory parameter for " + jobTypeName
-                        + " job type";
-            }
-
-            logger.error(message);
-        }
-
-        return missingMandatoryParams;
     }
 
     public SRM prepareSrmObjectForBridge(Map<String, Object> srmParameters) {

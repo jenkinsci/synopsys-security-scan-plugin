@@ -86,7 +86,7 @@ public class PolarisParametersService {
             if (missingMandatoryParams.size() == 1) {
                 message = missingMandatoryParams.get(0) + " is mandatory parameter for " + jobTypeName + " job type";
             } else {
-                message = String.join(", ", missingMandatoryParams) + " is mandatory parameter for " + jobTypeName
+                message = String.join(", ", missingMandatoryParams) + " are mandatory parameter for " + jobTypeName
                         + " job type";
             }
 
