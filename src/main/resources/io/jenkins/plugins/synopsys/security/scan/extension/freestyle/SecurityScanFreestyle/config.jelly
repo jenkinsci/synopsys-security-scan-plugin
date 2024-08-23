@@ -71,11 +71,11 @@
             <f:entry field="coverity_version" title="Coverity Version Number (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
-                <f:checkbox checked="${instance.isCoverity_local() == true}"/>
-            </f:entry>
             <f:entry field="coverity_wait_for_scan" title="Coverity Wait For Scan (Optional)">
                 <f:checkbox checked="${instance.isCoverity_wait_for_scan() == null || instance.isCoverity_wait_for_scan() == true}" />
+            </f:entry>
+            <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
+                <f:checkbox checked="${instance.isCoverity_local() == true}"/>
             </f:entry>
             <f:entry field="coverity_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
@@ -116,14 +116,14 @@
                 <f:textbox/>
                 <div id="error_polaris_branch_name" style="display: block;" class="error error-margin">Polaris Branch Name is missing</div>
             </f:entry>
+            <f:entry field="polaris_wait_for_scan" title="Polaris Wait For Scan (Optional)">
+                <f:checkbox checked="${instance.isPolaris_wait_for_scan() == null || instance.isPolaris_wait_for_scan() == true}" />
+            </f:entry>
             <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="polaris_test_sca_type" title="Polaris Test SCA Type (Optional)">
                 <f:textbox/>
-            </f:entry>
-            <f:entry field="polaris_wait_for_scan" title="Polaris Wait For Scan (Optional)">
-                <f:checkbox checked="${instance.isPolaris_wait_for_scan() == null || instance.isPolaris_wait_for_scan() == true}" />
             </f:entry>
             <f:entry field="polaris_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
