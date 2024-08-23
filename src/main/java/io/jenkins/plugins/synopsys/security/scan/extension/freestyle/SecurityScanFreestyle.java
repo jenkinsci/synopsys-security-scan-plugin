@@ -793,27 +793,30 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
 
     @DataBoundSetter
     public void setCoverity_project_directory(String coverity_project_directory) {
+        this.coverity_project_directory = Util.fixEmptyAndTrim(coverity_project_directory);
         if (getProduct().contentEquals(SecurityProduct.COVERITY.name().toLowerCase()))
-            this.coverity_project_directory = this.project_directory = Util.fixEmptyAndTrim(coverity_project_directory);
+            this.project_directory = Util.fixEmptyAndTrim(coverity_project_directory);
     }
 
     @DataBoundSetter
     public void setBlackduck_project_directory(String blackduck_project_directory) {
+        this.blackduck_project_directory = Util.fixEmptyAndTrim(blackduck_project_directory);
         if (getProduct().contentEquals(SecurityProduct.BLACKDUCK.name().toLowerCase()))
-            this.blackduck_project_directory =
-                    this.project_directory = Util.fixEmptyAndTrim(blackduck_project_directory);
+            this.project_directory = Util.fixEmptyAndTrim(blackduck_project_directory);
     }
 
     @DataBoundSetter
     public void setPolaris_project_directory(String polaris_project_directory) {
+        this.polaris_project_directory = Util.fixEmptyAndTrim(polaris_project_directory);
         if (getProduct().contentEquals(SecurityProduct.POLARIS.name().toLowerCase()))
-            this.polaris_project_directory = this.project_directory = Util.fixEmptyAndTrim(polaris_project_directory);
+           this.project_directory = Util.fixEmptyAndTrim(polaris_project_directory);
     }
 
     @DataBoundSetter
     public void setSrm_project_directory(String srm_project_directory) {
+        this.srm_project_directory = Util.fixEmptyAndTrim(srm_project_directory);
         if (getProduct().contentEquals(SecurityProduct.SRM.name().toLowerCase()))
-            this.srm_project_directory = this.project_directory = Util.fixEmptyAndTrim(srm_project_directory);
+            this.project_directory = Util.fixEmptyAndTrim(srm_project_directory);
     }
 
     @DataBoundSetter

@@ -300,28 +300,28 @@
             }
         }
 
-        function clearInputFields(div) {
-            if (div) {
-                var inputFields = div.querySelectorAll('input[type="text"], input[type="checkbox"]');
-                inputFields.forEach(function (field) {
-                    if (field.type === 'text') {
-                        field.value = '';
-                    } else if (field.type === 'checkbox') {
-                        if (field.name !== "_.srm_wait_for_scan" &amp;&amp; field.name !== "_.polaris_wait_for_scan" &amp;&amp; field.name !== "_.blackduck_wait_for_scan" &amp;&amp; field.name !== "_.coverity_wait_for_scan" &amp;&amp; field.name !== "_.polaris_reports_sarif_groupSCAIssues" &amp;&amp; field.name !== "_.blackduck_reports_sarif_groupSCAIssues") {
-                            field.checked = false;
-                        }
-                    }
-                });
-                // clears polaris assessment mode dropdown value
-                var selectedOption = document.querySelector('select[name="_.product"]')?.value;
-                if (selectedOption !== 'polaris') {
-                    var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]');
-                    if (polarisAssessmentModeOption) {
-                        polarisAssessmentModeOption.value = ""
-                    }
-                }
-            }
-        }
+        // function clearInputFields(div) {
+        //     if (div) {
+        //         var inputFields = div.querySelectorAll('input[type="text"], input[type="checkbox"]');
+        //         inputFields.forEach(function (field) {
+        //             if (field.type === 'text') {
+        //                 field.value = '';
+        //             } else if (field.type === 'checkbox') {
+        //                 if (field.name !== "_.srm_wait_for_scan" &amp;&amp; field.name !== "_.polaris_wait_for_scan" &amp;&amp; field.name !== "_.blackduck_wait_for_scan" &amp;&amp; field.name !== "_.coverity_wait_for_scan" &amp;&amp; field.name !== "_.polaris_reports_sarif_groupSCAIssues" &amp;&amp; field.name !== "_.blackduck_reports_sarif_groupSCAIssues") {
+        //                     field.checked = false;
+        //                 }
+        //             }
+        //         });
+        //         // clears polaris assessment mode dropdown value
+        //         var selectedOption = document.querySelector('select[name="_.product"]')?.value;
+        //         if (selectedOption !== 'polaris') {
+        //             var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]');
+        //             if (polarisAssessmentModeOption) {
+        //                 polarisAssessmentModeOption.value = ""
+        //             }
+        //         }
+        //     }
+        // }
 
 
         document.addEventListener('change', function () {
@@ -339,54 +339,54 @@
             }
 
             if (polarisAssessmentModeOption === 'CI' || polarisAssessmentModeOption === '') {
-                clearInputFields(sourceUploadDiv);
+                // clearInputFields(sourceUploadDiv);
                 hideParticularDiv(sourceUploadDiv);
             }
 
             if (selectedOption === 'blackduck') {
-                clearInputFields(coverityDiv);
+                // clearInputFields(coverityDiv);
                 hideParticularDiv(coverityDiv);
-                clearInputFields(polarisDiv);
+                // clearInputFields(polarisDiv);
                 hideParticularDiv(polarisDiv);
-                clearInputFields(srmDiv);
+                // clearInputFields(srmDiv);
                 hideParticularDiv(srmDiv);
                 showParticularDiv(blackduckDiv);
                 validateProductField();
             } else if (selectedOption === 'coverity') {
-                clearInputFields(blackduckDiv);
+                // clearInputFields(blackduckDiv);
                 hideParticularDiv(blackduckDiv);
-                clearInputFields(polarisDiv);
+                // clearInputFields(polarisDiv);
                 hideParticularDiv(polarisDiv);
-                clearInputFields(srmDiv);
+                // clearInputFields(srmDiv);
                 hideParticularDiv(srmDiv);
                 showParticularDiv(coverityDiv);
                 validateProductField();
                 validateCoverityFields();
             } else if (selectedOption === 'polaris') {
-                clearInputFields(blackduckDiv);
+                // clearInputFields(blackduckDiv);
                 hideParticularDiv(blackduckDiv);
-                clearInputFields(coverityDiv);
+                // clearInputFields(coverityDiv);
                 hideParticularDiv(coverityDiv);
-                clearInputFields(srmDiv);
+                // clearInputFields(srmDiv);
                 hideParticularDiv(srmDiv);
                 showParticularDiv(polarisDiv);
                 validateProductField();
                 validatePolarisFields();
             } else if (selectedOption === 'srm') {
-                clearInputFields(blackduckDiv);
+                // clearInputFields(blackduckDiv);
                 hideParticularDiv(blackduckDiv);
-                clearInputFields(coverityDiv);
+                // clearInputFields(coverityDiv);
                 hideParticularDiv(coverityDiv);
-                clearInputFields(polarisDiv);
+                // clearInputFields(polarisDiv);
                 hideParticularDiv(polarisDiv);
                 showParticularDiv(srmDiv);
                 validateProductField();
                 validateSrmFields();
             } else if (selectedOption === 'select') {
-                clearInputFields(blackduckDiv);
-                clearInputFields(coverityDiv);
-                clearInputFields(polarisDiv);
-                clearInputFields(srmDiv);
+                // clearInputFields(blackduckDiv);
+                // clearInputFields(coverityDiv);
+                // clearInputFields(polarisDiv);
+                // clearInputFields(srmDiv);
                 hideParticularDiv(blackduckDiv);
                 hideParticularDiv(coverityDiv);
                 hideParticularDiv(polarisDiv);
