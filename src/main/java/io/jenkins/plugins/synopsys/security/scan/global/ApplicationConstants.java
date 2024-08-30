@@ -140,7 +140,7 @@ public class ApplicationConstants {
 
     public static final String BLACKDUCK_AUTH_API = "api/tokens/authenticate";
     public static final String POLARIS_PORTFOLIO_API = "api/portfolio/portfolios";
-    public static final String COVERITY_VIEWS_API = "api/v2/views";
+    public static final String COVERITY_LOCALES_API = "api/v2/locales";
     public static final String SRM_SYSTEM_INFO_API = "srm/api/system-info";
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
 
