@@ -28,7 +28,7 @@ public class CoverityParametersServiceTest {
     private final String TEST_COVERITY_BUILD_COMMAND = "mvn clean install";
     private final String TEST_COVERITY_ARGS = "-o capture.build.clean-command=\"mvn clean\" -- mvn clean install";
     private final String TEST_COVERITY_CONFIG_FILE_PATH = "DIR/CONFIG/coverity.yml";
-    private final Boolean TEST_SRM_WAIT_FOR_SCAN = true;
+    private final Boolean TEST_COVERITY_WAITFORSCAN = true;
 
     @BeforeEach
     void setUp() {
@@ -73,7 +73,7 @@ public class CoverityParametersServiceTest {
         coverityParameters.put(ApplicationConstants.COVERITY_VERSION_KEY, "2023.6.0");
         coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, true);
         coverityParameters.put(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY, true);
-        coverityParameters.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, TEST_SRM_WAIT_FOR_SCAN);
+        coverityParameters.put(ApplicationConstants.COVERITY_WAITFORSCAN_KEY, TEST_COVERITY_WAITFORSCAN);
 
         Coverity coverity = coverityParametersService.prepareCoverityObjectForBridge(coverityParameters);
 
@@ -85,7 +85,7 @@ public class CoverityParametersServiceTest {
         assertEquals(coverity.getVersion(), "2023.6.0");
         assertTrue(coverity.isLocal());
         assertNull(coverity.getAutomation());
-        assertEquals(coverity.isWaitForScan(), TEST_SRM_WAIT_FOR_SCAN);
+        assertEquals(coverity.isWaitForScan(), TEST_COVERITY_WAITFORSCAN);
     }
 
     @Test
@@ -100,7 +100,7 @@ public class CoverityParametersServiceTest {
         coverityParameters.put(ApplicationConstants.COVERITY_VERSION_KEY, "2023.6.0");
         coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, true);
         coverityParameters.put(ApplicationConstants.COVERITY_AUTOMATION_PRCOMMENT_KEY, true);
-        coverityParameters.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, TEST_SRM_WAIT_FOR_SCAN);
+        coverityParameters.put(ApplicationConstants.COVERITY_WAITFORSCAN_KEY, TEST_COVERITY_WAITFORSCAN);
 
         Mockito.when(envVarsMock.get(ApplicationConstants.ENV_CHANGE_ID_KEY)).thenReturn("1");
 
@@ -114,7 +114,7 @@ public class CoverityParametersServiceTest {
         assertEquals(coverity.getVersion(), "2023.6.0");
         assertTrue(coverity.isLocal());
         assertTrue(coverity.getAutomation().getPrComment());
-        assertEquals(coverity.isWaitForScan(), TEST_SRM_WAIT_FOR_SCAN);
+        assertEquals(coverity.isWaitForScan(), TEST_COVERITY_WAITFORSCAN);
     }
 
     @Test

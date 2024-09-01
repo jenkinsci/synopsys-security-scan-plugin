@@ -199,9 +199,9 @@ public class CoverityParametersService {
                     .trim());
         }
 
-        if (coverityParameters.containsKey(ApplicationConstants.WAIT_FOR_SCAN_KEY)) {
+        if (coverityParameters.containsKey(ApplicationConstants.COVERITY_WAITFORSCAN_KEY)) {
             String value = coverityParameters
-                    .get(ApplicationConstants.WAIT_FOR_SCAN_KEY)
+                    .get(ApplicationConstants.COVERITY_WAITFORSCAN_KEY)
                     .toString()
                     .trim();
             if (value.equals("true") || value.equals("false")) {

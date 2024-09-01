@@ -260,6 +260,11 @@ public class ScanParametersFactory {
             }
         }
 
+        if (securityScan.isBlackduck_waitForScan_actualValue() != null) {
+            blackDuckParameters.put(
+                    ApplicationConstants.BLACKDUCK_WAITFORSCAN_KEY, securityScan.isBlackduck_waitForScan_actualValue());
+        }
+
         if (!Utility.isStringNullOrBlank(securityScan.getBlackduck_download_url())) {
             blackDuckParameters.put(
                     ApplicationConstants.BLACKDUCK_DOWNLOAD_URL_KEY, securityScan.getBlackduck_download_url());
@@ -267,10 +272,6 @@ public class ScanParametersFactory {
 
         if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
             blackDuckParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
-        }
-
-        if (securityScan.isWait_for_scan() != null) {
-            blackDuckParameters.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, securityScan.isWait_for_scan());
         }
 
         prepareBlackDuckToolConfigurationParametersMap(blackDuckParameters, securityScan);
@@ -321,12 +322,13 @@ public class ScanParametersFactory {
             coverityParameters.put(ApplicationConstants.COVERITY_LOCAL_KEY, securityScan.isCoverity_local());
         }
 
-        if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
-            coverityParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
+        if (securityScan.isCoverity_waitForScan_actualValue() != null) {
+            coverityParameters.put(
+                    ApplicationConstants.COVERITY_WAITFORSCAN_KEY, securityScan.isCoverity_waitForScan_actualValue());
         }
 
-        if (securityScan.isWait_for_scan() != null) {
-            coverityParameters.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, securityScan.isWait_for_scan());
+        if (!Utility.isStringNullOrBlank(securityScan.getProject_directory())) {
+            coverityParameters.put(ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
         }
 
         if (securityScan instanceof PrCommentScan) {
@@ -391,6 +393,12 @@ public class ScanParametersFactory {
                 polarisParametersMap,
                 ApplicationConstants.POLARIS_TEST_SCA_TYPE_KEY,
                 securityScan.getPolaris_test_sca_type());
+
+        if (securityScan.isPolaris_waitForScan_actualValue() != null) {
+            polarisParametersMap.put(
+                    ApplicationConstants.POLARIS_WAITFORSCAN_KEY, securityScan.isPolaris_waitForScan_actualValue());
+        }
+
         addParameterIfNotBlank(
                 polarisParametersMap,
                 ApplicationConstants.POLARIS_ASSESSMENT_MODE_KEY,
@@ -410,10 +418,6 @@ public class ScanParametersFactory {
             polarisParametersMap.put(
                     ApplicationConstants.PROJECT_SOURCE_PRESERVE_SYM_LINKS_KEY,
                     securityScan.isProject_source_preserveSymLinks_actualValue());
-        }
-
-        if (securityScan.isWait_for_scan() != null) {
-            polarisParametersMap.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, securityScan.isWait_for_scan());
         }
 
         if (securityScan instanceof PrCommentScan) {
@@ -450,6 +454,12 @@ public class ScanParametersFactory {
                 srmParametersMap, ApplicationConstants.SRM_BRANCH_NAME_KEY, securityScan.getSrm_branch_name());
         addParameterIfNotBlank(
                 srmParametersMap, ApplicationConstants.SRM_BRANCH_PARENT_KEY, securityScan.getSrm_branch_parent());
+
+        if (securityScan.isSrm_waitForScan_actualValue() != null) {
+            srmParametersMap.put(
+                    ApplicationConstants.SRM_WAITFORSCAN_KEY, securityScan.isSrm_waitForScan_actualValue());
+        }
+
         addParameterIfNotBlank(
                 srmParametersMap,
                 ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY,
@@ -461,10 +471,6 @@ public class ScanParametersFactory {
 
         addParameterIfNotBlank(
                 srmParametersMap, ApplicationConstants.PROJECT_DIRECTORY_KEY, securityScan.getProject_directory());
-
-        if (securityScan.isWait_for_scan() != null) {
-            srmParametersMap.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, securityScan.isWait_for_scan());
-        }
 
         if (securityScan instanceof FreestyleScan) {
             FreestyleScan freestyleScan = (FreestyleScan) securityScan;

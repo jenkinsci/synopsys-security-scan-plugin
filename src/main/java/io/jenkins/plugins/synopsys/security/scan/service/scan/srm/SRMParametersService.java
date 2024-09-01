@@ -163,9 +163,9 @@ public class SRMParametersService {
             srm.setBranch(branch);
         }
 
-        if (srmParameters.containsKey(ApplicationConstants.WAIT_FOR_SCAN_KEY)) {
+        if (srmParameters.containsKey(ApplicationConstants.SRM_WAITFORSCAN_KEY)) {
             String value = srmParameters
-                    .get(ApplicationConstants.WAIT_FOR_SCAN_KEY)
+                    .get(ApplicationConstants.SRM_WAITFORSCAN_KEY)
                     .toString()
                     .trim();
             if (value.equals("true") || value.equals("false")) {

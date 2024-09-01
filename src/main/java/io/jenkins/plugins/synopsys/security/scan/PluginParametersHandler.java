@@ -153,7 +153,6 @@ public class PluginParametersHandler {
         List<String> arbitraryParamList = ApplicationConstants.ARBITRARY_PARAM_KEYS;
         return key.contains(securityProduct)
                 || key.equals(ApplicationConstants.PROJECT_DIRECTORY_KEY)
-                || key.equals(ApplicationConstants.WAIT_FOR_SCAN_KEY)
                 || (securityProduct.equals(SecurityProduct.POLARIS.name().toLowerCase())
                         && (key.startsWith("project_") || arbitraryParamList.contains(key)))
                 || (securityProduct.equals(SecurityProduct.SRM.name().toLowerCase())

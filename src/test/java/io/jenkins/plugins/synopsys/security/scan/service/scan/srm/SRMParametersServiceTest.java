@@ -41,7 +41,7 @@ public class SRMParametersServiceTest {
     private final String TEST_COVERITY_CONFIG_FILE_PATH = "DIR/CONFIG/coverity.yml";
     private final String TEST_BLACKDUCK_EXECUTION_PATH = "/fake/path/bd";
     private final String TEST_COVERITY_EXECUTION_PATH = "/fake/path/cov";
-    private final Boolean TEST_SRM_WAIT_FOR_SCAN = true;
+    private final Boolean TEST_SRM_WAITFORSCAN = true;
 
     @BeforeEach
     void setUp() {
@@ -72,7 +72,7 @@ public class SRMParametersServiceTest {
         srmParameters.put(ApplicationConstants.SRM_ASSESSMENT_TYPES_KEY, TEST_SRM_ASSESSMENT_TYPES);
         srmParameters.put(ApplicationConstants.SRM_BRANCH_NAME_KEY, TEST_SRM_BRANCH_NAME);
         srmParameters.put(ApplicationConstants.SRM_BRANCH_PARENT_KEY, TEST_SRM_BRANCH_PARENT_NAME);
-        srmParameters.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, TEST_SRM_WAIT_FOR_SCAN);
+        srmParameters.put(ApplicationConstants.SRM_WAITFORSCAN_KEY, TEST_SRM_WAITFORSCAN);
 
         assertTrue(srmParametersService.hasAllMandatorySrmParams(srmParameters));
     }
@@ -97,7 +97,7 @@ public class SRMParametersServiceTest {
         srmParameters.put(ApplicationConstants.COVERITY_ARGS_KEY, TEST_COVERITY_ARGS);
         srmParameters.put(ApplicationConstants.SRM_SCA_EXECUTION_PATH_KEY, TEST_BLACKDUCK_EXECUTION_PATH);
         srmParameters.put(ApplicationConstants.SRM_SAST_EXECUTION_PATH_KEY, TEST_COVERITY_EXECUTION_PATH);
-        srmParameters.put(ApplicationConstants.WAIT_FOR_SCAN_KEY, TEST_SRM_WAIT_FOR_SCAN);
+        srmParameters.put(ApplicationConstants.SRM_WAITFORSCAN_KEY, TEST_SRM_WAITFORSCAN);
 
         blackDuckParametersService = new BlackDuckParametersService(listenerMock, envVarsMock);
         coverityParametersService = new CoverityParametersService(listenerMock, envVarsMock);
@@ -120,6 +120,6 @@ public class SRMParametersServiceTest {
         assertEquals(coverity.getClean().getCommand(), TEST_COVERITY_CLEAN_COMMAND);
         assertEquals(coverity.getConfig().getPath(), TEST_COVERITY_CONFIG_FILE_PATH);
         assertEquals(coverity.getArgs(), TEST_COVERITY_ARGS);
-        assertEquals(srm.isWaitForScan(), TEST_SRM_WAIT_FOR_SCAN);
+        assertEquals(srm.isWaitForScan(), TEST_SRM_WAITFORSCAN);
     }
 }

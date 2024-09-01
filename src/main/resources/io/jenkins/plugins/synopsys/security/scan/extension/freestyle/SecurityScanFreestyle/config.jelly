@@ -19,8 +19,8 @@
             <f:entry field="blackduck_scan_full" title="Black Duck Full Scan (Optional)">
                 <f:checkbox checked="${instance.isBlackduck_scan_full() == true}"/>
             </f:entry>
-            <f:entry field="blackduck_wait_for_scan" title="Black Duck Wait For Scan (Optional)">
-                <f:checkbox checked="${instance.isBlackduck_wait_for_scan() == null || instance.isBlackduck_wait_for_scan() == true}"/>
+            <f:entry field="blackduck_waitForScan" title="Black Duck Wait For Scan (Optional)">
+                <f:checkbox checked="${instance.isBlackduck_waitForScan() == null || instance.isBlackduck_waitForScan() == true}"/>
             </f:entry>
             <f:entry field="blackduck_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
@@ -71,8 +71,8 @@
             <f:entry field="coverity_version" title="Coverity Version Number (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="coverity_wait_for_scan" title="Coverity Wait For Scan (Optional)">
-                <f:checkbox checked="${instance.isCoverity_wait_for_scan() == null || instance.isCoverity_wait_for_scan() == true}" />
+            <f:entry field="coverity_waitForScan" title="Coverity Wait For Scan (Optional)">
+                <f:checkbox checked="${instance.isCoverity_waitForScan() == null || instance.isCoverity_waitForScan() == true}" />
             </f:entry>
             <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
                 <f:checkbox checked="${instance.isCoverity_local() == true}"/>
@@ -116,8 +116,8 @@
                 <f:textbox/>
                 <div id="error_polaris_branch_name" style="display: block;" class="error error-margin">Polaris Branch Name is missing</div>
             </f:entry>
-            <f:entry field="polaris_wait_for_scan" title="Polaris Wait For Scan (Optional)">
-                <f:checkbox checked="${instance.isPolaris_wait_for_scan() == null || instance.isPolaris_wait_for_scan() == true}" />
+            <f:entry field="polaris_waitForScan" title="Polaris Wait For Scan (Optional)">
+                <f:checkbox checked="${instance.isPolaris_waitForScan() == null || instance.isPolaris_waitForScan() == true}" />
             </f:entry>
             <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
                 <f:textbox/>
@@ -217,8 +217,8 @@
             <f:entry field="srm_branch_parent" title="SRM Parent Branch Name (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="srm_wait_for_scan" title="SRM Wait For Scan (Optional)">
-                <f:checkbox checked="${instance.isSrm_wait_for_scan() == null || instance.isSrm_wait_for_scan() == true}" />
+            <f:entry field="srm_waitForScan" title="SRM Wait For Scan (Optional)">
+                <f:checkbox checked="${instance.isSrm_waitForScan() == null || instance.isSrm_waitForScan() == true}" />
             </f:entry>
             <f:entry field="srm_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
@@ -307,7 +307,7 @@
                     if (field.type === 'text') {
                         field.value = '';
                     } else if (field.type === 'checkbox') {
-                        if (field.name !== "_.srm_wait_for_scan" &amp;&amp; field.name !== "_.polaris_wait_for_scan" &amp;&amp; field.name !== "_.blackduck_wait_for_scan" &amp;&amp; field.name !== "_.coverity_wait_for_scan" &amp;&amp; field.name !== "_.polaris_reports_sarif_groupSCAIssues" &amp;&amp; field.name !== "_.blackduck_reports_sarif_groupSCAIssues") {
+                        if (field.name !== "_.srm_waitForScan" &amp;&amp; field.name !== "_.polaris_waitForScan" &amp;&amp; field.name !== "_.blackduck_waitForScan" &amp;&amp; field.name !== "_.coverity_waitForScan" &amp;&amp; field.name !== "_.polaris_reports_sarif_groupSCAIssues" &amp;&amp; field.name !== "_.blackduck_reports_sarif_groupSCAIssues") {
                             field.checked = false;
                         }
                     }

@@ -34,6 +34,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private Boolean blackduck_reports_sarif_groupSCAIssues;
     private String blackduck_reports_sarif_severities;
     private Boolean blackduck_reports_sarif_groupSCAIssues_temporary;
+    private Boolean blackduck_waitForScan;
+    private Boolean blackduck_waitForScan_actualValue;
     private Integer blackduck_search_depth;
     private String blackduck_config_path;
     private String blackduck_args;
@@ -48,6 +50,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private String coverity_install_directory;
     private String coverity_version;
     private Boolean coverity_local;
+    private Boolean coverity_waitForScan;
+    private Boolean coverity_waitForScan_actualValue;
     private String coverity_build_command;
     private String coverity_clean_command;
     private String coverity_config_path;
@@ -69,6 +73,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private Boolean polaris_reports_sarif_groupSCAIssues;
     private String polaris_reports_sarif_severities;
     private Boolean polaris_reports_sarif_groupSCAIssues_temporary;
+    private Boolean polaris_waitForScan;
+    private Boolean polaris_waitForScan_actualValue;
     private String project_source_archive;
     private String polaris_assessment_mode;
     private String project_source_excludes;
@@ -87,12 +93,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private String polaris_sast_config_path;
     private String polaris_sast_args;
 
-    private Boolean wait_for_scan;
-    private Boolean blackduck_wait_for_scan;
-    private Boolean coverity_wait_for_scan;
-    private Boolean polaris_wait_for_scan;
-    private Boolean srm_wait_for_scan;
-
     private String srm_url;
     private transient String srm_apikey;
     private String srm_assessment_types;
@@ -100,6 +100,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private String srm_project_id;
     private String srm_branch_name;
     private String srm_branch_parent;
+    private Boolean srm_waitForScan;
+    private Boolean srm_waitForScan_actualValue;
     private String srm_project_directory;
     private Integer srm_sca_search_depth;
     private String srm_sca_config_path;
@@ -177,6 +179,14 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
         return blackduck_reports_sarif_groupSCAIssues_temporary;
     }
 
+    public Boolean isBlackduck_waitForScan() {
+        return blackduck_waitForScan;
+    }
+
+    public Boolean isBlackduck_waitForScan_actualValue() {
+        return blackduck_waitForScan_actualValue;
+    }
+
     public Integer getBlackduck_search_depth() {
         return blackduck_search_depth;
     }
@@ -227,6 +237,14 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
 
     public Boolean isCoverity_local() {
         return coverity_local;
+    }
+
+    public Boolean isCoverity_waitForScan() {
+        return coverity_waitForScan;
+    }
+
+    public Boolean isCoverity_waitForScan_actualValue() {
+        return coverity_waitForScan_actualValue;
     }
 
     public String getCoverity_build_command() {
@@ -309,6 +327,14 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
         return polaris_reports_sarif_groupSCAIssues_temporary;
     }
 
+    public Boolean isPolaris_waitForScan() {
+        return polaris_waitForScan;
+    }
+
+    public Boolean isPolaris_waitForScan_actualValue() {
+        return polaris_waitForScan_actualValue;
+    }
+
     public String getPolaris_assessment_mode() {
         return polaris_assessment_mode;
     }
@@ -381,26 +407,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
         return srm_project_directory;
     }
 
-    public Boolean isWait_for_scan() {
-        return wait_for_scan;
-    }
-
-    public Boolean isPolaris_wait_for_scan() {
-        return polaris_wait_for_scan;
-    }
-
-    public Boolean isCoverity_wait_for_scan() {
-        return coverity_wait_for_scan;
-    }
-
-    public Boolean isSrm_wait_for_scan() {
-        return srm_wait_for_scan;
-    }
-
-    public Boolean isBlackduck_wait_for_scan() {
-        return blackduck_wait_for_scan;
-    }
-
     public String getBitbucket_username() {
         return bitbucket_username;
     }
@@ -467,6 +473,14 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
 
     public String getSrm_branch_parent() {
         return srm_branch_parent;
+    }
+
+    public Boolean isSrm_waitForScan() {
+        return srm_waitForScan;
+    }
+
+    public Boolean isSrm_waitForScan_actualValue() {
+        return srm_waitForScan_actualValue;
     }
 
     public Integer getSrm_sca_search_depth() {
@@ -560,6 +574,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     }
 
     @DataBoundSetter
+    public void setBlackduck_waitForScan(Boolean blackduck_waitForScan) {
+        this.blackduck_waitForScan = this.blackduck_waitForScan_actualValue = blackduck_waitForScan;
+    }
+
+    @DataBoundSetter
     public void setBlackduck_search_depth(Integer blackduck_search_depth) {
         this.blackduck_search_depth = blackduck_search_depth;
     }
@@ -622,6 +641,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     @DataBoundSetter
     public void setCoverity_local(Boolean coverity_local) {
         this.coverity_local = coverity_local ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_waitForScan(Boolean coverity_waitForScan) {
+        this.coverity_waitForScan = this.coverity_waitForScan_actualValue = coverity_waitForScan;
     }
 
     @DataBoundSetter
@@ -721,6 +745,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     }
 
     @DataBoundSetter
+    public void setPolaris_waitForScan(Boolean polaris_waitForScan) {
+        this.polaris_waitForScan = this.polaris_waitForScan_actualValue = polaris_waitForScan;
+    }
+
+    @DataBoundSetter
     public void setBitbucket_username(String bitbucket_username) {
         this.bitbucket_username = bitbucket_username;
     }
@@ -817,35 +846,6 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     }
 
     @DataBoundSetter
-    public void setWait_for_scan(Boolean wait_for_scan) {
-        this.wait_for_scan = wait_for_scan;
-    }
-
-    @DataBoundSetter
-    public void setSrm_wait_for_scan(Boolean srm_wait_for_scan) {
-        if (getProduct().contentEquals(SecurityProduct.SRM.name().toLowerCase()))
-            this.srm_wait_for_scan = this.wait_for_scan = srm_wait_for_scan;
-    }
-
-    @DataBoundSetter
-    public void setPolaris_wait_for_scan(Boolean polaris_wait_for_scan) {
-        if (getProduct().contentEquals(SecurityProduct.POLARIS.name().toLowerCase()))
-            this.polaris_wait_for_scan = this.wait_for_scan = polaris_wait_for_scan;
-    }
-
-    @DataBoundSetter
-    public void setCoverity_wait_for_scan(Boolean coverity_wait_for_scan) {
-        if (getProduct().contentEquals(SecurityProduct.COVERITY.name().toLowerCase()))
-            this.coverity_wait_for_scan = this.wait_for_scan = coverity_wait_for_scan;
-    }
-
-    @DataBoundSetter
-    public void setBlackduck_wait_for_scan(Boolean blackduck_wait_for_scan) {
-        if (getProduct().contentEquals(SecurityProduct.BLACKDUCK.name().toLowerCase()))
-            this.blackduck_wait_for_scan = this.wait_for_scan = blackduck_wait_for_scan;
-    }
-
-    @DataBoundSetter
     public void setBitbucket_token(String bitbucket_token) {
         this.bitbucket_token = bitbucket_token;
     }
@@ -923,6 +923,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     @DataBoundSetter
     public void setSrm_branch_parent(String srm_branch_parent) {
         this.srm_branch_parent = Util.fixEmptyAndTrim(srm_branch_parent);
+    }
+
+    @DataBoundSetter
+    public void setSrm_waitForScan(Boolean srm_waitForScan) {
+        this.srm_waitForScan = this.srm_waitForScan_actualValue = srm_waitForScan;
     }
 
     @DataBoundSetter

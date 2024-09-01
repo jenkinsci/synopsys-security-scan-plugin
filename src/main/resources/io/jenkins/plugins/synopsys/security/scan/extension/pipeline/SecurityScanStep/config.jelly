@@ -18,7 +18,7 @@
             <f:entry field="blackduck_scan_full" title="Black Duck Full Scan (Optional)">
                 <f:checkbox/>
             </f:entry>
-            <f:entry field="blackduck_wait_for_scan" title="Black Duck Wait For Scan (Optional)">
+            <f:entry field="blackduck_waitForScan" title="Black Duck Wait For Scan (Optional)">
                 <f:checkbox/>
             </f:entry>
             <f:entry field="blackduck_prComment_enabled" title="Add Comments to Pull Requests (Optional)">
@@ -62,7 +62,7 @@
             <f:entry field="coverity_version" title="Coverity Version Number (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="coverity_wait_for_scan" title="Coverity Wait For Scan (Optional)">
+            <f:entry field="coverity_waitForScan" title="Coverity Wait For Scan (Optional)">
                 <f:checkbox/>
             </f:entry>
             <f:entry field="coverity_prComment_enabled" title="Add Comments to Pull Requests (Optional)">
@@ -94,7 +94,7 @@
             <f:entry field="polaris_branch_parent_name" title="Polaris Parent Branch Name (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="polaris_wait_for_scan" title="Polaris Wait For Scan (Optional)">
+            <f:entry field="polaris_waitForScan" title="Polaris Wait For Scan (Optional)">
                 <f:checkbox/>
             </f:entry>
             <f:entry field="polaris_prComment_enabled" title="Add Comments to Pull Requests (Optional)">
@@ -170,7 +170,7 @@
             <f:entry field="srm_branch_parent" title="SRM Parent Branch Name (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="srm_wait_for_scan" title="SRM Wait For Scan (Optional)">
+            <f:entry field="srm_waitForScan" title="SRM Wait For Scan (Optional)">
                 <f:checkbox/>
             </f:entry>
             <f:entry field="srm_project_directory" title="Project Directory (Optional)">
@@ -304,7 +304,7 @@
                 showParticularDiv(blackduckDiv);
                 hideParticularDiv(coverityToolConfigDiv);
                 showParticularDiv(blackduckToolConfigDiv);
-                setCheckboxToDefaultTrue(['_.blackduck_reports_sarif_groupSCAIssues','_.blackduck_wait_for_scan']);
+                setCheckboxToDefaultTrue(['_.blackduck_reports_sarif_groupSCAIssues','_.blackduck_waitForScan']);
             } else if (selectedOption == 'coverity') {
                 hideParticularDiv(blackduckDiv);
                 hideParticularDiv(polarisDiv);
@@ -312,7 +312,7 @@
                 showParticularDiv(coverityDiv);
                 hideParticularDiv(blackduckToolConfigDiv);
                 showParticularDiv(coverityToolConfigDiv);
-                setCheckboxToDefaultTrue(['_.coverity_wait_for_scan']);
+                setCheckboxToDefaultTrue(['_.coverity_waitForScan']);
             } else if (selectedOption == 'polaris') {
                 hideParticularDiv(blackduckDiv);
                 hideParticularDiv(coverityDiv);
@@ -320,7 +320,7 @@
                 showParticularDiv(polarisDiv);
                 showParticularDiv(blackduckToolConfigDiv);
                 showParticularDiv(coverityToolConfigDiv);
-                setCheckboxToDefaultTrue(['_.polaris_reports_sarif_groupSCAIssues', '_.polaris_wait_for_scan']);
+                setCheckboxToDefaultTrue(['_.polaris_reports_sarif_groupSCAIssues', '_.polaris_waitForScan']);
             } else if (selectedOption == 'srm') {
                 hideParticularDiv(blackduckDiv);
                 hideParticularDiv(coverityDiv);
@@ -328,7 +328,7 @@
                 showParticularDiv(srmDiv);
                 showParticularDiv(blackduckToolConfigDiv);
                 showParticularDiv(coverityToolConfigDiv);
-                setCheckboxToDefaultTrue(['_.srm_wait_for_scan']);
+                setCheckboxToDefaultTrue(['_.srm_waitForScan']);
             } else if (selectedOption == '') {
                 hideAllDivs();
             }
