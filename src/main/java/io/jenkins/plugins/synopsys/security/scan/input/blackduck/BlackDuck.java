@@ -38,6 +38,9 @@ public class BlackDuck {
     @JsonProperty("execution")
     private Execution execution;
 
+    @JsonProperty("waitForScan")
+    private Boolean waitForScan;
+
     public String getUrl() {
         return url;
     }
@@ -124,5 +127,13 @@ public class BlackDuck {
 
     public void setExecution(Execution execution) {
         this.execution = execution;
+    }
+
+    public Boolean isWaitForScan() {
+        return waitForScan;
+    }
+
+    public void setWaitForScan(Boolean waitForScan) {
+        this.waitForScan = waitForScan;
     }
 }

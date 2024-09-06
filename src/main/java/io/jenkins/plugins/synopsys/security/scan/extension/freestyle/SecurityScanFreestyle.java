@@ -34,6 +34,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private Boolean blackduck_reports_sarif_groupSCAIssues;
     private String blackduck_reports_sarif_severities;
     private Boolean blackduck_reports_sarif_groupSCAIssues_temporary;
+    private Boolean blackduck_waitForScan;
+    private Boolean blackduck_waitForScan_actualValue;
     private Integer blackduck_search_depth;
     private String blackduck_config_path;
     private String blackduck_args;
@@ -48,6 +50,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private String coverity_install_directory;
     private String coverity_version;
     private Boolean coverity_local;
+    private Boolean coverity_waitForScan;
+    private Boolean coverity_waitForScan_actualValue;
     private String coverity_build_command;
     private String coverity_clean_command;
     private String coverity_config_path;
@@ -69,6 +73,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private Boolean polaris_reports_sarif_groupSCAIssues;
     private String polaris_reports_sarif_severities;
     private Boolean polaris_reports_sarif_groupSCAIssues_temporary;
+    private Boolean polaris_waitForScan;
+    private Boolean polaris_waitForScan_actualValue;
     private String project_source_archive;
     private String polaris_assessment_mode;
     private String project_source_excludes;
@@ -94,6 +100,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     private String srm_project_id;
     private String srm_branch_name;
     private String srm_branch_parent;
+    private Boolean srm_waitForScan;
+    private Boolean srm_waitForScan_actualValue;
     private String srm_project_directory;
     private Integer srm_sca_search_depth;
     private String srm_sca_config_path;
@@ -171,6 +179,14 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
         return blackduck_reports_sarif_groupSCAIssues_temporary;
     }
 
+    public Boolean isBlackduck_waitForScan() {
+        return blackduck_waitForScan;
+    }
+
+    public Boolean isBlackduck_waitForScan_actualValue() {
+        return blackduck_waitForScan_actualValue;
+    }
+
     public Integer getBlackduck_search_depth() {
         return blackduck_search_depth;
     }
@@ -221,6 +237,14 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
 
     public Boolean isCoverity_local() {
         return coverity_local;
+    }
+
+    public Boolean isCoverity_waitForScan() {
+        return coverity_waitForScan;
+    }
+
+    public Boolean isCoverity_waitForScan_actualValue() {
+        return coverity_waitForScan_actualValue;
     }
 
     public String getCoverity_build_command() {
@@ -301,6 +325,14 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
 
     public Boolean isPolaris_reports_sarif_groupSCAIssues_temporary() {
         return polaris_reports_sarif_groupSCAIssues_temporary;
+    }
+
+    public Boolean isPolaris_waitForScan() {
+        return polaris_waitForScan;
+    }
+
+    public Boolean isPolaris_waitForScan_actualValue() {
+        return polaris_waitForScan_actualValue;
     }
 
     public String getPolaris_assessment_mode() {
@@ -443,6 +475,14 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
         return srm_branch_parent;
     }
 
+    public Boolean isSrm_waitForScan() {
+        return srm_waitForScan;
+    }
+
+    public Boolean isSrm_waitForScan_actualValue() {
+        return srm_waitForScan_actualValue;
+    }
+
     public Integer getSrm_sca_search_depth() {
         return srm_sca_search_depth;
     }
@@ -524,13 +564,18 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
 
     @DataBoundSetter
     public void setBlackduck_reports_sarif_groupSCAIssues(Boolean blackduck_reports_sarif_groupSCAIssues) {
-        this.blackduck_reports_sarif_groupSCAIssues = this.blackduck_reports_sarif_groupSCAIssues_temporary =
-                blackduck_reports_sarif_groupSCAIssues ? true : false;
+        this.blackduck_reports_sarif_groupSCAIssues =
+                this.blackduck_reports_sarif_groupSCAIssues_temporary = blackduck_reports_sarif_groupSCAIssues;
     }
 
     @DataBoundSetter
     public void setBlackduck_reports_sarif_severities(String blackduck_reports_sarif_severities) {
         this.blackduck_reports_sarif_severities = Util.fixEmptyAndTrim(blackduck_reports_sarif_severities);
+    }
+
+    @DataBoundSetter
+    public void setBlackduck_waitForScan(Boolean blackduck_waitForScan) {
+        this.blackduck_waitForScan = this.blackduck_waitForScan_actualValue = blackduck_waitForScan;
     }
 
     @DataBoundSetter
@@ -596,6 +641,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     @DataBoundSetter
     public void setCoverity_local(Boolean coverity_local) {
         this.coverity_local = coverity_local ? true : null;
+    }
+
+    @DataBoundSetter
+    public void setCoverity_waitForScan(Boolean coverity_waitForScan) {
+        this.coverity_waitForScan = this.coverity_waitForScan_actualValue = coverity_waitForScan;
     }
 
     @DataBoundSetter
@@ -680,8 +730,8 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
 
     @DataBoundSetter
     public void setPolaris_reports_sarif_groupSCAIssues(Boolean polaris_reports_sarif_groupSCAIssues) {
-        this.polaris_reports_sarif_groupSCAIssues = this.polaris_reports_sarif_groupSCAIssues_temporary =
-                polaris_reports_sarif_groupSCAIssues ? true : false;
+        this.polaris_reports_sarif_groupSCAIssues =
+                this.polaris_reports_sarif_groupSCAIssues_temporary = polaris_reports_sarif_groupSCAIssues;
     }
 
     @DataBoundSetter
@@ -692,6 +742,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     @DataBoundSetter
     public void setPolaris_reports_sarif_issue_types(String polaris_reports_sarif_issue_types) {
         this.polaris_reports_sarif_issue_types = Util.fixEmptyAndTrim(polaris_reports_sarif_issue_types);
+    }
+
+    @DataBoundSetter
+    public void setPolaris_waitForScan(Boolean polaris_waitForScan) {
+        this.polaris_waitForScan = this.polaris_waitForScan_actualValue = polaris_waitForScan;
     }
 
     @DataBoundSetter
@@ -868,6 +923,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
     @DataBoundSetter
     public void setSrm_branch_parent(String srm_branch_parent) {
         this.srm_branch_parent = Util.fixEmptyAndTrim(srm_branch_parent);
+    }
+
+    @DataBoundSetter
+    public void setSrm_waitForScan(Boolean srm_waitForScan) {
+        this.srm_waitForScan = this.srm_waitForScan_actualValue = srm_waitForScan;
     }
 
     @DataBoundSetter

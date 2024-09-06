@@ -20,6 +20,9 @@ public class SRM {
     @JsonProperty("branch")
     private Branch branch;
 
+    @JsonProperty("waitForScan")
+    private Boolean waitForScan;
+
     public SRM() {
         assessmentTypes = new AssessmentTypes();
         project = new Project();
@@ -63,5 +66,13 @@ public class SRM {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+    public Boolean isWaitForScan() {
+        return waitForScan;
+    }
+
+    public void setWaitForScan(Boolean waitForScan) {
+        this.waitForScan = waitForScan;
     }
 }
