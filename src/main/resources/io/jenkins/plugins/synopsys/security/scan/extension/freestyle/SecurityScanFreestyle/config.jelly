@@ -19,7 +19,7 @@
             <f:entry field="blackduck_scan_full" title="Black Duck Full Scan (Optional)">
                 <f:checkbox checked="${instance.isBlackduck_scan_full() == true}"/>
             </f:entry>
-            <f:entry field="blackduck_waitForScan" title="Black Duck Wait For Scan (Optional)">
+            <f:entry field="blackduck_waitForScan" title="Black Duck Wait For Scan Completion (Optional)">
                 <f:checkbox checked="${instance.isBlackduck_waitForScan() == null || instance.isBlackduck_waitForScan() == true}"/>
             </f:entry>
             <f:entry field="blackduck_project_directory" title="Project Directory (Optional)">
@@ -71,7 +71,7 @@
             <f:entry field="coverity_version" title="Coverity Version Number (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="coverity_waitForScan" title="Coverity Wait For Scan (Optional)">
+            <f:entry field="coverity_waitForScan" title="Coverity Wait For Scan Completion (Optional)">
                 <f:checkbox checked="${instance.isCoverity_waitForScan() == null || instance.isCoverity_waitForScan() == true}" />
             </f:entry>
             <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
@@ -116,7 +116,7 @@
                 <f:textbox/>
                 <div id="error_polaris_branch_name" style="display: block;" class="error error-margin">Polaris Branch Name is missing</div>
             </f:entry>
-            <f:entry field="polaris_waitForScan" title="Polaris Wait For Scan (Optional)">
+            <f:entry field="polaris_waitForScan" title="Polaris Wait For Scan Completion (Optional)">
                 <f:checkbox checked="${instance.isPolaris_waitForScan() == null || instance.isPolaris_waitForScan() == true}" />
             </f:entry>
             <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
@@ -217,7 +217,7 @@
             <f:entry field="srm_branch_parent" title="SRM Parent Branch Name (Optional)">
                 <f:textbox/>
             </f:entry>
-            <f:entry field="srm_waitForScan" title="SRM Wait For Scan (Optional)">
+            <f:entry field="srm_waitForScan" title="SRM Wait For Scan Completion (Optional)">
                 <f:checkbox checked="${instance.isSrm_waitForScan() == null || instance.isSrm_waitForScan() == true}" />
             </f:entry>
             <f:entry field="srm_project_directory" title="Project Directory (Optional)">
