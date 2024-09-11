@@ -21,6 +21,7 @@ public class ExceptionMessages {
         exitCodeToMessage.put(ErrorCode.INVALID_BLACKDUCK_PARAMETERS, "Invalid BlackDuck parameters");
         exitCodeToMessage.put(ErrorCode.INVALID_COVERITY_PARAMETERS, "Invalid Coverity parameters");
         exitCodeToMessage.put(ErrorCode.INVALID_POLARIS_PARAMETERS, "Invalid Polaris parameters");
+        exitCodeToMessage.put(ErrorCode.INVALID_SRM_PARAMETERS, "Invalid SRM parameters");
         exitCodeToMessage.put(ErrorCode.INVALID_BRIDGE_DOWNLOAD_PARAMETERS, "Bridge download parameters are not valid");
         exitCodeToMessage.put(ErrorCode.SYNOPSYS_BRIDGE_DOWNLOAD_FAILED, "Synopsys Bridge download failed");
         exitCodeToMessage.put(
