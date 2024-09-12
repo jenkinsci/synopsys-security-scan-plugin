@@ -211,7 +211,7 @@
                 <f:textbox/>
                 <div id="error_srm_project_id" style="display: block;" class="error error-margin">SRM Project Id is missing</div>
             </f:entry>
-            <f:entry field="srm_branch_name" title="SRM Parent Branch Name (Optional)">
+            <f:entry field="srm_branch_name" title="SRM Branch Name (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="srm_branch_parent" title="SRM Parent Branch Name (Optional)">
