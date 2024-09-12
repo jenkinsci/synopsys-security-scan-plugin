@@ -102,7 +102,19 @@ public class SecurityScanner {
                 logger.info((isPullRequest ? "This is a (PR/MR) event" : "This is not a (PR/MR) event")
                         + (isPullRequest ? " (PR/MR Number: " + changeId + ")" : ""));
 
-                if (!isPullRequest) {
+                boolean waitForScan = true;
+                if (scanParams.containsKey(ApplicationConstants.BLACKDUCK_WAITFORSCAN_KEY)
+                        && ((String) scanParams.get(ApplicationConstants.PRODUCT_KEY))
+                                .equalsIgnoreCase(SecurityProduct.BLACKDUCK.name())) {
+                    waitForScan = (Boolean) scanParams.get(ApplicationConstants.BLACKDUCK_WAITFORSCAN_KEY);
+                } else if (scanParams.containsKey(ApplicationConstants.POLARIS_WAITFORSCAN_KEY)
+                        && ((String) scanParams.get(ApplicationConstants.PRODUCT_KEY))
+                                .equalsIgnoreCase(SecurityProduct.POLARIS.name())) {
+                    waitForScan = (Boolean) scanParams.get(ApplicationConstants.POLARIS_WAITFORSCAN_KEY);
+                }
+
+                // Sarif upload is not applicable when blackduck_waitForScan or polaris_waitForScan param is false
+                if (!isPullRequest && waitForScan) {
                     ScanParametersService scanParametersService = new ScanParametersService(listener, envVars);
                     Set<String> scanType = scanParametersService.getSynopsysSecurityProducts(scanParams);
                     boolean isBlackDuckScan = scanType.contains(SecurityProduct.BLACKDUCK.name());
