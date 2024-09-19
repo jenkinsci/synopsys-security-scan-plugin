@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.jenkins.plugins.synopsys.security.scan.input.report.Reports;
 
 public class Polaris {
+    @JsonProperty("serverUrl")
+    private String serverUrl;
+
     @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     @JsonProperty("accesstoken")
     private String accessToken;
@@ -16,9 +19,6 @@ public class Polaris {
 
     @JsonProperty("assessment")
     private AssessmentTypes assessmentTypes;
-
-    @JsonProperty("serverUrl")
-    private String serverUrl;
 
     @JsonProperty("triage")
     private String triage;
@@ -34,6 +34,9 @@ public class Polaris {
 
     @JsonProperty("reports")
     private Reports reports;
+
+    @JsonProperty("waitForScan")
+    private Boolean waitForScan;
 
     public Polaris() {
         applicationName = new ApplicationName();
@@ -120,5 +123,13 @@ public class Polaris {
 
     public void setTest(Test test) {
         this.test = test;
+    }
+
+    public Boolean isWaitForScan() {
+        return waitForScan;
+    }
+
+    public void setWaitForScan(Boolean waitForScan) {
+        this.waitForScan = waitForScan;
     }
 }

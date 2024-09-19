@@ -19,6 +19,9 @@
             <f:entry field="blackduck_scan_full" title="Black Duck Full Scan (Optional)">
                 <f:checkbox checked="${instance.isBlackduck_scan_full() == true}"/>
             </f:entry>
+            <f:entry field="blackduck_waitForScan" title="Black Duck Wait For Scan Completion (Optional)">
+                <f:checkbox checked="${instance.isBlackduck_waitForScan() == null || instance.isBlackduck_waitForScan() == true}"/>
+            </f:entry>
             <f:entry field="blackduck_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
             </f:entry>
@@ -29,7 +32,7 @@
                 <f:checkbox checked="${instance.isBlackduck_reports_sarif_create() == true}"/>
             </f:entry>
             <f:entry field="blackduck_reports_sarif_groupSCAIssues" title="Group SCA Issues by Component (Optional)">
-                <f:checkbox checked="${instance.isBlackduck_reports_sarif_groupSCAIssues() == true}"/>
+                <f:checkbox checked="${instance.isBlackduck_reports_sarif_groupSCAIssues() == null || instance.isBlackduck_reports_sarif_groupSCAIssues() == true}"/>
             </f:entry>
             <f:entry field="blackduck_reports_sarif_file_path" title="Black Duck SARIF Report File Path (Optional)">
                 <f:textbox/>
@@ -67,6 +70,9 @@
             </f:entry>
             <f:entry field="coverity_version" title="Coverity Version Number (Optional)">
                 <f:textbox/>
+            </f:entry>
+            <f:entry field="coverity_waitForScan" title="Coverity Wait For Scan Completion (Optional)">
+                <f:checkbox checked="${instance.isCoverity_waitForScan() == null || instance.isCoverity_waitForScan() == true}" />
             </f:entry>
             <f:entry field="coverity_local" title="Coverity Local Analysis (Optional)">
                 <f:checkbox checked="${instance.isCoverity_local() == true}"/>
@@ -110,6 +116,9 @@
                 <f:textbox/>
                 <div id="error_polaris_branch_name" style="display: block;" class="error error-margin">Polaris Branch Name is missing</div>
             </f:entry>
+            <f:entry field="polaris_waitForScan" title="Polaris Wait For Scan Completion (Optional)">
+                <f:checkbox checked="${instance.isPolaris_waitForScan() == null || instance.isPolaris_waitForScan() == true}" />
+            </f:entry>
             <f:entry field="polaris_triage" title="Polaris Triage (Optional)">
                 <f:textbox/>
             </f:entry>
@@ -146,7 +155,7 @@
                 <f:checkbox checked="${instance.isPolaris_reports_sarif_create() == true}"/>
             </f:entry>
             <f:entry field="polaris_reports_sarif_groupSCAIssues" title="Group SCA Issues by Component (Optional)">
-                <f:checkbox checked="${instance.isPolaris_reports_sarif_groupSCAIssues() == true}"/>
+                <f:checkbox checked="${instance.isPolaris_reports_sarif_groupSCAIssues() == null || instance.isPolaris_reports_sarif_groupSCAIssues() == true}"/>
             </f:entry>
             <f:entry field="polaris_reports_sarif_file_path" title="Polaris SARIF Report File Path (Optional)">
                 <f:textbox/>
@@ -202,11 +211,14 @@
                 <f:textbox/>
                 <div id="error_srm_project_id" style="display: block;" class="error error-margin">SRM Project Id is missing</div>
             </f:entry>
-            <f:entry field="srm_branch_name" title="SRM Parent Branch Name (Optional)">
+            <f:entry field="srm_branch_name" title="SRM Branch Name (Optional)">
                 <f:textbox/>
             </f:entry>
             <f:entry field="srm_branch_parent" title="SRM Parent Branch Name (Optional)">
                 <f:textbox/>
+            </f:entry>
+            <f:entry field="srm_waitForScan" title="SRM Wait For Scan Completion (Optional)">
+                <f:checkbox checked="${instance.isSrm_waitForScan() == null || instance.isSrm_waitForScan() == true}" />
             </f:entry>
             <f:entry field="srm_project_directory" title="Project Directory (Optional)">
                 <f:textbox/>
@@ -264,20 +276,20 @@
         var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]')?.value;
         var sourceUploadDiv = document.getElementById('source_upload');
 
-        if(selectedOption &amp;&amp; selectedOption !== 'select') {
+        if (selectedOption &amp;&amp; selectedOption !== 'select') {
             document.getElementById(selectedOption).style.display = 'block';
             validateProductField();
             validateCoverityFields();
             validatePolarisFields();
             validateSrmFields();
 
-            if(selectedOption === 'polaris' &amp;&amp; polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
+            if (selectedOption === 'polaris' &amp;&amp; polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
                 showParticularDiv(sourceUploadDiv);
             }
         }
 
         function hideParticularDiv(div) {
-            if(div) {
+            if (div) {
                 div.style.display = 'none';
             }
         }
@@ -295,14 +307,16 @@
                     if (field.type === 'text') {
                         field.value = '';
                     } else if (field.type === 'checkbox') {
-                        field.checked = false;
+                        if (field.name !== "_.srm_waitForScan" &amp;&amp; field.name !== "_.polaris_waitForScan" &amp;&amp; field.name !== "_.blackduck_waitForScan" &amp;&amp; field.name !== "_.coverity_waitForScan" &amp;&amp; field.name !== "_.polaris_reports_sarif_groupSCAIssues" &amp;&amp; field.name !== "_.blackduck_reports_sarif_groupSCAIssues") {
+                            field.checked = false;
+                        }
                     }
                 });
                 // clears polaris assessment mode dropdown value
                 var selectedOption = document.querySelector('select[name="_.product"]')?.value;
-                if(selectedOption !== 'polaris') {
+                if (selectedOption !== 'polaris') {
                     var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]');
-                    if(polarisAssessmentModeOption) {
+                    if (polarisAssessmentModeOption) {
                         polarisAssessmentModeOption.value = ""
                     }
                 }
@@ -310,7 +324,7 @@
         }
 
 
-        document.addEventListener('change', function() {
+        document.addEventListener('change', function () {
             var selectedOption = document.querySelector('select[name="_.product"]')?.value;
             var polarisAssessmentModeOption = document.querySelector('select[name="_.polaris_assessment_mode"]')?.value;
 
@@ -320,11 +334,11 @@
             var srmDiv = document.getElementById('srm');
             var sourceUploadDiv = document.getElementById('source_upload');
 
-            if(polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
+            if (polarisAssessmentModeOption === 'SOURCE_UPLOAD') {
                 showParticularDiv(sourceUploadDiv);
             }
 
-            if(polarisAssessmentModeOption === 'CI' || polarisAssessmentModeOption === '') {
+            if (polarisAssessmentModeOption === 'CI' || polarisAssessmentModeOption === '') {
                 clearInputFields(sourceUploadDiv);
                 hideParticularDiv(sourceUploadDiv);
             }
@@ -385,7 +399,7 @@
         function validateProductField() {
             var errorProductDiv = document.getElementById("error_product_name");
             var selectedOption = document.querySelector('select[name="_.product"]')?.value;
-            if(selectedOption === 'select') {
+            if (selectedOption === 'select') {
                 errorProductDiv.style.display = "block";
             } else {
                 errorProductDiv.style.display = "none";

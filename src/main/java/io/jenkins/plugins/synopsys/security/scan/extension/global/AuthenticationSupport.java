@@ -50,8 +50,8 @@ public class AuthenticationSupport {
     public final HttpResponse attemptCoverityAuthentication(
             String coverityConnectUrl, String coverityCredentialsId, int timeoutInSeconds) {
         String coverityAuthApi = coverityConnectUrl.endsWith("/")
-                ? coverityConnectUrl.concat(ApplicationConstants.COVERITY_VIEWS_API)
-                : coverityConnectUrl.concat("/").concat(ApplicationConstants.COVERITY_VIEWS_API);
+                ? coverityConnectUrl.concat(ApplicationConstants.COVERITY_LOCALES_API)
+                : coverityConnectUrl.concat("/").concat(ApplicationConstants.COVERITY_LOCALES_API);
         String username = scanCredentialsHelper
                 .getUsernameByCredentialsId(coverityCredentialsId)
                 .orElse(null);
