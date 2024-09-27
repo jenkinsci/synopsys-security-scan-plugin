@@ -211,8 +211,9 @@ public class Utility {
         String jobName = envVars.get(ApplicationConstants.ENV_JOB_NAME_KEY);
 
         // Extract the part before the last '/' for potential multibranch projects
-        String jobNameForMultibranchProject =
-                jobName.contains("/") ? jobName.substring(0, jobName.lastIndexOf('/')) : jobName;
+        String jobNameForMultibranchProject = jobName != null
+                ? jobName.contains("/") ? jobName.substring(0, jobName.lastIndexOf('/')) : jobName
+                : null;
 
         // If item is not a 'Folder', then it is a Multibranch pipeline job
         TopLevelItem item =
