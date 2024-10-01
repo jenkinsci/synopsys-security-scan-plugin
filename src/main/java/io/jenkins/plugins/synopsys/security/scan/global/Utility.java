@@ -1,5 +1,6 @@
 package io.jenkins.plugins.synopsys.security.scan.global;
 
+import com.cloudbees.hudson.plugins.folder.Folder;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.Result;
@@ -208,13 +209,24 @@ public class Utility {
         Jenkins jenkins = Jenkins.getInstanceOrNull();
 
         String jobName = envVars.get(ApplicationConstants.ENV_JOB_NAME_KEY);
-        String finalJobName =
-                jobName != null ? jobName.contains("/") ? jobName.substring(0, jobName.indexOf('/')) : jobName : null;
 
-        TopLevelItem job = jenkins != null ? jenkins.getItem(finalJobName) : null;
+        // Extract the part before the last '/' for potential multibranch projects
+        String jobNameForMultibranchProject = jobName != null
+                ? jobName.contains("/") ? jobName.substring(0, jobName.lastIndexOf('/')) : jobName
+                : null;
 
-        if (job != null) {
-            return job.getClass().getSimpleName();
+        // If item is not a 'Folder', then it is a Multibranch pipeline job
+        TopLevelItem item =
+                jenkins != null ? jenkins.getItemByFullName(jobNameForMultibranchProject, TopLevelItem.class) : null;
+
+        // If 'item' is an instanceof 'Folder', it is either 'WorkflowJob' or 'FreestyleJob'
+        // Then try to get the item type with actual 'jobName'
+        if (item instanceof Folder) {
+            item = jenkins != null ? jenkins.getItemByFullName(jobName, TopLevelItem.class) : null;
+        }
+
+        if (item != null) {
+            return item.getClass().getSimpleName();
         } else {
             return "UnknownJobType";
         }
