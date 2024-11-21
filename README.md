@@ -1,12 +1,13 @@
 # [DEPRECATED] Synopsys Security Scan Plugin
 
 <span style="color:red; font-weight:bold;">
-NOTE: This plugin has been deprecated and will not work after February 14, 2025.  
-It is recommended that you migrate to our new <a href="">Black Duck Security Scan</a>.  
-Instructions can be found <a href="<community url>">here</a>.
+NOTE: This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new <a href="">Black Duck Security Scan</a>. Instructions can be found <a href="<community url>">here</a>.
 </span>
 
+$\color{red}{\textsf{NOTE: This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new <a href="">Black Duck Security Scan</a>. Instructions can be found <a href="<community url>">here</a>. \%}}$
+
 $\color{green}{\textsf{100.00 \%}}$
+$\color{red}{\textsf{100.00 \%}}$
 
 
 
