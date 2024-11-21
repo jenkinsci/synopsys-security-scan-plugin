@@ -2,7 +2,16 @@
 
 **⚠️ NOTE:** This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new [Black Duck Security Scan](#). Instructions can be found [here](<community URL>).
 
+\documentclass{article}
 \usepackage{hyperref}
+
+\begin{document}
+
+This is a bare URL: \url{https://www.example.com}
+
+This is a clickable text link: \href{https://www.example.com}{Click here}
+
+\end{document}
 
 $\color{red}{\textsf{NOTE: This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new \%}}$
 
