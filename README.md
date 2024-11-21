@@ -1,22 +1,9 @@
 # [DEPRECATED] Synopsys Security Scan Plugin
 
-<span style="color:red; font-weight:bold;">
-NOTE: This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new <a href="">Black Duck Security Scan</a>. Instructions can be found <a href="<community url>">here</a>.
-</span>
-
-$\color{red}{\textsf{NOTE: This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new <a href="">Black Duck Security Scan</a>. Instructions can be found <a href="<community url>">here</a>. \%}}$
-
 $\color{red}{\textsf{NOTE: This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new \%}}$
-$\textcolor{red}{\textsf{NOTE: This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new \texttt{<a href="">Black Duck Security Scan</a>}. Instructions can be found \texttt{<a href="<community url>">here</a>}.}}$
 
-<span style="color: red;">NOTE:</span> This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new [Black Duck Security Scan](#). Instructions can be found [here](<community url>).
 
-<p>
-  <span style="color: red;">NOTE:</span> This plugin has been deprecated and will not work after February 14, 2025. 
-  It is recommended that you migrate to our new 
-  <a href="#">Black Duck Security Scan</a>. Instructions can be found 
-  <a href="<community url>">here</a>.
-</p>
+$\color{red}{\textsf{NOTE: This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new \textsf{Black Duck Security Scan}}}$ [Black Duck Security Scan](#). Instructions can be found [here](<community url>).
 
 
 
