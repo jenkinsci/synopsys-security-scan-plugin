@@ -8,6 +8,7 @@ $\color{red}{\textsf{NOTE: This plugin has been deprecated and will not work aft
 
 $\color{green}{\textsf{100.00 \%}}$
 $\color{red}{\textsf{100.00 \%}}$
+$\color{red}{\textsf{Random Text \%}}$
 
 
 
