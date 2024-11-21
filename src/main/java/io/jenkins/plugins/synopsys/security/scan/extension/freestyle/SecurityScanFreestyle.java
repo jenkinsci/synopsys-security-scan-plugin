@@ -983,8 +983,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
         Exception unknownException = new Exception();
         LoggerWrapper logger = new LoggerWrapper(listener);
 
-        logger.warn("This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our\n" +
-                "new Black Duck Security Scan (http://...). Instructions can be found at http://<community url>");
+        logger.warn("This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new Black Duck Security Scan (http://...). Instructions can be found at http://<community url>");
 
         logger.println(
                 "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
