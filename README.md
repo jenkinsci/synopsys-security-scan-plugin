@@ -4,6 +4,8 @@
 
 $\color{red}{\textsf{NOTE: This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new \%}}$
 
+ $\href{www.cnn.com}{CNN}$
+
 $\color{red}{\textsf{NOTE: This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new }}$
 \textsf{\href{https://www.example.com}{\textsf{plugin}}}
 
