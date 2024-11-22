@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ApplicationConstants {
-    public static final String DISPLAY_NAME = "Synopsys Security Scan";
+    public static final String DISPLAY_NAME = "[DEPRECATED] Synopsys Security Scan";
     public static final String PIPELINE_NAME = "synopsys_scan";
     public static final String BRIDGE_ARTIFACTORY_URL =
             "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge";

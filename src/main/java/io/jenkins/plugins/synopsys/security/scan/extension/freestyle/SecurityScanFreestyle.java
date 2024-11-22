@@ -1046,7 +1046,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
 
         @Override
         public String getDisplayName() {
-            return "Synopsys Security Scan";
+            return ApplicationConstants.DISPLAY_NAME;
         }
 
         @Override
