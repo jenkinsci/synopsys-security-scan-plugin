@@ -984,10 +984,10 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
         LoggerWrapper logger = new LoggerWrapper(listener);
 
         logger.println(
-                "WARNING: This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new Black Duck Security Scan (http://...). Instructions can be found at http://<community url>");
-
-        logger.println(
                 "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+
+        logger.warn(
+                "This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new Black Duck Security Scan (http://...). Instructions can be found at http://<community url>");
 
         try {
             exitCode = ScanParametersFactory.createPipelineCommand(run, listener, env, launcher, null, workspace)
