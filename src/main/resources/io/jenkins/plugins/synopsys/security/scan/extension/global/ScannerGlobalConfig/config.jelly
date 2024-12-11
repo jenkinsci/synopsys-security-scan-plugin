@@ -1,6 +1,6 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
-    <f:section title="[DEPRECATED] Synopsys Security Scan">
+    <f:section title="DEPRECATED: Synopsys Security Scan">
 
         <!-- Place a single info line above the tabs -->
         <div class="tab-info">Synopsys Security Product Configuration </div>

@@ -11,7 +11,7 @@
   <artifactId>synopsys-security-scan</artifactId>
   <version>${revision}${changelist}</version>
   <packaging>hpi</packaging>
-  <name>[DEPRECATED] Synopsys Security Scan</name>
+  <name>DEPRECATED: Synopsys Security Scan</name>
   <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
   <licenses>
     <license>

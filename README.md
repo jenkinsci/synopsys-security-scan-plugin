@@ -1,4 +1,4 @@
-# [DEPRECATED] Synopsys Security Scan Plugin
+# DEPRECATED: Synopsys Security Scan Plugin
 
 **NOTE:** This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new <a href="">Black Duck Security Scan</a>. Instructions can be found <a href="<community url>">here</a>.
 
@@ -13,7 +13,7 @@ This repository contains a Jenkins plugin implemented as a Maven project. The pl
 You can download the latest artifact from releases: https://updates.jenkins-ci.org/download/plugins/synopsys-security-scan/
 
 # Documentation
-Documentation for Synopsys Security Scan for Jenkins can be found [**here**](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/integrations/jenkinsplugin/jenkins.html)
+Documentation for Synopsys Security Scan for Jenkins can be found [**here**](https://sig-product-docs.synopsys.com/bundle/bridge/page/documentation/c_using-synopsys-jenkins-plugin.html)
 
 # Developers Guide
 Please follow the steps described [**here**](DeveloperGuide.md)
