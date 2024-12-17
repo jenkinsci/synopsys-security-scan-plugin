@@ -1067,6 +1067,9 @@ public class SecurityScanStep extends Step implements SecurityScan, PrCommentSca
             logger.println(
                     "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
 
+            logger.warn(
+                    "This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new Black Duck Security Scan (https://plugins.jenkins.io/blackduck-security-scan/). Instructions can be found at https://documentation.blackduck.com/bundle/bridge/page/documentation/c_using-jenkins-plugin.html");
+
             try {
                 verifyRequiredPlugins(logger, envVars);
 
