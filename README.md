@@ -1,6 +1,6 @@
 # DEPRECATED: Synopsys Security Scan Plugin
 
-**NOTE:** This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new <a href="https://plugins.jenkins.io/blackduck-security-scan/">Black Duck Security Scan</a>. Instructions can be found <a href="https://documentation.blackduck.com/bundle/bridge/page/documentation/c_using-jenkins-plugin.html">here</a>.
+**NOTE:** This plugin has been deprecated and will not work after February 14, 2025. It is required that you migrate to our new <a href="https://plugins.jenkins.io/blackduck-security-scan/">Black Duck Security Scan</a>. Migration instructions can be found <a href="https://community.blackduck.com/s/article/integrations-black-duck-migration-instructions">here</a>. Documentation for the new Black Duck Security Scan can be found <a href="https://documentation.blackduck.com/bundle/bridge/page/documentation/c_using-jenkins-plugin.html">here</a>.
 
 This repository contains a Jenkins plugin implemented as a Maven project. The plugin provides functionality for performing Synopsys Security Scan with Black Duck, Coverity and Polaris. This README.md file serves as a guide for the users of the plugin.
 
