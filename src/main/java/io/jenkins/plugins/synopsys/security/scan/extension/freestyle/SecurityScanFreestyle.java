@@ -983,8 +983,11 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
         Exception unknownException = new Exception();
         LoggerWrapper logger = new LoggerWrapper(listener);
 
-        logger.info(
+        logger.println(
                 "**************************** START EXECUTION OF SYNOPSYS SECURITY SCAN ****************************");
+
+        logger.warn(
+                "This plugin has been deprecated and will not work after February 14, 2025. It is recommended that you migrate to our new Black Duck Security Scan (https://plugins.jenkins.io/blackduck-security-scan/). Instructions can be found at https://documentation.blackduck.com/bundle/bridge/page/documentation/c_using-jenkins-plugin.html");
 
         try {
             exitCode = ScanParametersFactory.createPipelineCommand(run, listener, env, launcher, null, workspace)
@@ -1043,7 +1046,7 @@ public class SecurityScanFreestyle extends Builder implements SecurityScan, Free
 
         @Override
         public String getDisplayName() {
-            return "Synopsys Security Scan";
+            return ApplicationConstants.DISPLAY_NAME;
         }
 
         @Override
